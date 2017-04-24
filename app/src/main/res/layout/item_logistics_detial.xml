@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv_logistics_current_address"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        tools:text="[深圳市]全峰快递员：粉小萌1545132325正在为您派件"
+        android:layout_margin="10dp"
+        android:textSize="14sp"
+        android:textColor="#333" />
+    <TextView
+        android:id="@+id/tv_logistics_arrive_time"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        tools:text="2017-03-31 20:58:32"
+        android:textSize="12sp"
+        android:textColor="#666"
+        android:layout_marginLeft="10dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f3f3f3"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

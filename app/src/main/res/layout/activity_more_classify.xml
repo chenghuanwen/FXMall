@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_more_classify"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#f3f3f3"
+    tools:context="com.dgkj.fxmall.view.MoreClassifyActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <EditText
+        android:id="@+id/tv_search_content"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#fff"
+        android:layout_margin="10dp"
+        android:drawableLeft="@mipmap/sy_sousuo"
+        android:paddingLeft="10dp"
+        android:hint="坚果美食"
+        android:drawablePadding="10dp"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <ListView
+                android:id="@+id/rv_all_classify"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:listSelector="@color/main_color"
+                android:layout_marginTop="10dp"
+                android:background="#f3f3f3"
+                ></ListView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_sub_classify"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:layout_margin="10dp"
+                android:background="#fff"
+                ></android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/circler_back_corner_shape"
+            android:src="@mipmap/title_return_icon"
+            android:layout_margin="10dp"
+            android:layout_gravity="bottom"/>
+    </FrameLayout>
+
+</LinearLayout>

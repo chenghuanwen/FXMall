@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_product_detial"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context="com.dgkj.fxmall.view.ProductDetialActivity">
+<include layout="@layout/activityheader"
+    android:id="@+id/headerview"/>
+    <com.dgkj.fxmall.view.myView.FullyNestScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_image_preview1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/tv_demand_detial"
+                style="@style/demand_detial_texview1"
+                android:padding="10dp"
+                tools:text="秋冬女装韩版尺寸秋冬女装韩版尺寸秋冬女装韩版尺寸秋冬女装韩版尺寸秋冬女装韩版尺寸秋冬女装韩版尺寸秋冬女装韩版尺寸" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_demand_count"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:textColor="#909090"
+                    android:textSize="14sp"
+                    tools:text="需求数量：2568（件）" />
+
+                <TextView
+                    android:id="@+id/tv_product_address"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center|right"
+                    android:textColor="#909090"
+                    android:textSize="14sp"
+                    tools:text="广东：深圳" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:orientation="vertical">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="#f3f3f3" />
+                <TextView
+                   style="@style/demand_detial_texview2"
+                    android:text="描述信息"
+                    />
+                <TextView
+                    android:id="@+id/tv_product_decribe"
+                    tools:text="想找到比这更好的酸辣粉就只能自己做了，而粉小萌就是我为你做的"
+                    android:layout_marginLeft="10dp"
+                    style="@style/demand_detial_texview1"/>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="#f3f3f3" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal">
+                <TextView
+                   style="@style/demand_detial_texview2"
+                    android:text="联系方式："
+                    android:layout_gravity="center_vertical"
+                    />
+                <TextView
+                    android:id="@+id/tv_phone"
+                    tools:text="1581406562"
+                    android:layout_gravity="center_vertical"
+                    style="@style/demand_detial_texview1"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="收货地址："
+                    style="@style/demand_detial_texview2"/>
+                <TextView
+                    android:id="@+id/tv_take_address"
+                    tools:text="广东省深圳市龙岗区布吉街道上水径官坑北六巷八号一楼"
+                    style="@style/demand_detial_texview1"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:background="#f7f7f7">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:textColor="#333"
+                    android:textSize="15sp"
+                    android:gravity="center"
+                    android:text="推荐店铺"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_recommend_store"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </com.dgkj.fxmall.view.myView.FullyNestScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e8e8e8"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_demand_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/dpsx_fh" />
+        </FrameLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e8e8e8"/>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_demand_car"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/xqy_gwc"
+                android:gravity="center"
+                android:text="购物车"
+                android:drawablePadding="5dp"
+                android:layout_gravity="center"
+                android:textColor="#909090"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tv_car_count1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/circler_msg_count_shape"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="#fff" />
+        </FrameLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e8e8e8"/>
+        <TextView
+            android:id="@+id/tv_my_demand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@mipmap/xqy_xd"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="我的需求"
+            android:drawablePadding="5dp"
+            android:textColor="#909090"
+            android:textSize="11sp" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e8e8e8"/>
+
+        <TextView
+            android:id="@+id/tv_recommend"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="#ff518c"
+            android:gravity="center"
+            android:text="推荐给ta店铺"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+
+</LinearLayout>

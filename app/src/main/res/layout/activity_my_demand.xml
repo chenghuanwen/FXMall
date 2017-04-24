@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_my_demand"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#f3f3f3"
+    tools:context="com.dgkj.fxmall.view.MyDemandActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#fff"
+        app:tabIndicatorColor="@color/main_color"
+        app:tabSelectedTextColor="@color/main_color"
+        app:tabTextColor="#333"
+        android:visibility="gone"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <com.dgkj.fxmall.view.myView.ObservableScrollView
+        android:id="@+id/myScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/fl_top_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:background="@color/main_color"
+                        />
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="#fff">
+                        <include layout="@layout/layout_mydemand_table"
+                            />
+                    </FrameLayout>
+                </FrameLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_mydemand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_weight="1"></RelativeLayout>
+
+        </LinearLayout>
+    </com.dgkj.fxmall.view.myView.ObservableScrollView>
+    <ImageButton
+        android:id="@+id/ib_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circler_back_corner_shape"
+        android:src="@mipmap/title_return_icon"
+        android:layout_margin="10dp"
+        android:layout_gravity="bottom"/>
+
+</FrameLayout>
+
+</LinearLayout>

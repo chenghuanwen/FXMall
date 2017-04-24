@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_shopping_car_edit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.dgkj.fxmall.view.ShoppingCarEditActivity"
+    android:background="#f3f3f3">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_shoppingCar_edit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e8e8e8"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:paddingLeft="10dp"
+        android:background="#fff">
+        <CheckBox
+            android:id="@+id/cb_car_deit_all"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="全选"
+            android:textColor="#cfcfcf"
+            android:textSize="12sp"
+            android:paddingLeft="10dp"
+            android:button="@drawable/checkbox_selector"/>
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:text="删除"
+            android:textColor="#fff"
+            android:background="@color/main_color"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

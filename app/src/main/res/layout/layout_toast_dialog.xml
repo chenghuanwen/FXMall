@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null">
+<TextView
+    android:id="@+id/tv_toast_content"
+    android:layout_width="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:layout_height="44dp"
+    android:background="@drawable/toast_circler_corner_shape"
+    android:textSize="15sp"
+    android:textColor="#fff"
+    android:text="删除成功"
+    android:gravity="center"/>
+
+</LinearLayout>

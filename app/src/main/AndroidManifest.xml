@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dgkj.fxmall">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 这个权限用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- SD卡读取权限，用户写入离线定位数据 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <!-- 百度地图 -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="iRPLgnfgzbewlOUU7uk8ehFcKamsGjNi" />
+
+        <!-- 分享配置 AK:1c06d5d7cc080      注意:tencent后面的appid要保持和您配置的QQ的appid一致 -->
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <data android:scheme="tencent100371282" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- 调用新浪原生SDK，需要注册的回调activity -->
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- 微信分享回调 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".view.MainActivity" />
+
+        <!-- 支付宝 -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" />
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" />
+        <activity
+            android:name=".view.PictrueChooserActivity"
+            android:theme="@style/transparentTheme" />
+        <activity android:name=".view.PayActivity" />
+        <activity
+            android:name=".view.HomePageActivity"
+            android:label="@string/app_name"
+            android:theme="@style/transparentTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity android:name=".view.SearchActivity" />
+        <activity
+            android:name=".view.ShoppingCarActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.HomeMsgActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ShangpuRecommendActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.TodayRecommendActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.NewGoodsActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.ProductDetialActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.AllProductsRecommendActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.ShoppingCarEditActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.MessageCenterActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.LogisticsMsgActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.DemandMsgActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.NotifyMsgActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.SearchContentActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.SomeProductSuperClassifyActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.SomeDemandClassifyActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.DemandDetialActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.StoreMainPageActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.StoreMsgActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.UserMsgActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.dgkj.fxmall.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity
+            android:name=".view.SetNicknameActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ChangePhoneActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.BindNewphoneActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.LocationCurrenterCityActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.TakeGoodsAdressActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.AddGoodsAdressActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.SettingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".view.SettingPasswordActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.AboutUsActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.AdviceFeedbackActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".view.MyOrdersActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.RefundActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".view.RechargeActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.WithdrawalActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.PublishDemandActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.AllClassifyActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ApplyStoreActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ReviewProgressActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.MyDemandActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.LoginActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.RegistActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ForgetPasswordActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.SetPasswordActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.SetRegistPasswordActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.InTheSaleActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.TotalCommentActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.OrderDetialActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ShangpuOrderActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.RefundDetialActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ApplyRefundActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.SubmitLogisticsMsgActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.LogisticsDetialActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.PublishProductActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ShangpuAllProductsActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.BatchHandleActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.TheBalanceOfUserActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ShangpuDeliverActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.SetPostageActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.PostageSettingEditActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.TransactionRecordActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.StoreInfoEditActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.PublishCommentActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ConfirmOrderActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.StoreProductsClassifyActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ScreeningProductActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ScreeningStoreActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.SetPayPasswordActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.AccountSafeActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ResetPayPasswordActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.PublishProductDetialActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.MoreClassifyActivity"
+            android:theme="@style/transparentTheme"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.SomeProductSubClassifyActivity"
+            android:theme="@style/transparentTheme">
+            <meta-data
+                android:name="com.dgkj.fxmall.utils.GlideConfiguration"
+                android:value="GlideModule" />
+        </activity>
+        <activity
+            android:name=".view.ApplyStoreAllClassifyActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ChangePhoneByPasswordActivity"
+            android:label="@string/title_activity_change_phone_by_password"
+            android:theme="@style/transparentTheme" />
+        <activity android:name=".view.MyStoreProductDetialActivity"></activity>
+    </application>
+
+</manifest>

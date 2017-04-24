@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_logistics_msg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.dgkj.fxmall.view.LogisticsMsgActivity"
+    android:background="#f3f3f3">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_wuliu_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circler_back_corner_shape"
+            android:src="@mipmap/title_return_icon"
+            android:layout_margin="10dp"
+            android:layout_gravity="bottom"/>
+    </FrameLayout>
+</LinearLayout>

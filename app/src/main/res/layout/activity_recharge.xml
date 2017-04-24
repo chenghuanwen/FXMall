@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_recharge"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#f7f7f7"
+    tools:context="com.dgkj.fxmall.view.RechargeActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <LinearLayout
+        android:id="@+id/ll_select_recharge_type"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="44dp"
+            android:text="选择充值方式"
+            android:textColor="#333"
+            android:textSize="14sp"
+            android:background="#fff"
+            android:paddingLeft="10dp"
+            android:gravity="center_vertical"
+            android:paddingRight="10dp"/>
+        <TextView
+            android:id="@+id/tv_select_account"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:textSize="14sp"
+            android:textColor="#999"
+            android:text="请选择"
+            android:drawableRight="@mipmap/yhj_jt"
+            android:paddingRight="10dp"
+            android:background="#fff"
+            android:gravity="right|center_vertical"
+            android:drawablePadding="10dp"
+            android:paddingLeft="10dp"
+            />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/et_charge_sum"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="请输入充值金额"
+        android:textColor="#333"
+        android:textSize="14sp"
+        android:paddingLeft="10dp"
+        android:gravity="center_vertical"
+        android:drawablePadding="10dp"
+        android:background="#fff"
+        android:paddingRight="10dp"/>
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="确认充值"
+        android:textColor="#fff"
+        android:textSize="14sp"
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:drawablePadding="10dp"
+        android:background="@drawable/circlebutton_shape"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <ImageButton
+        android:id="@+id/ib_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circler_back_corner_shape"
+        android:src="@mipmap/title_return_icon"
+        android:layout_margin="10dp"/>
+
+
+
+</LinearLayout>

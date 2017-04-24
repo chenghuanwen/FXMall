@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="#fff"
+    xmlns:tools="http://schemas.android.com/tools">
+    <CheckBox
+        android:id="@+id/cb_edit_select_single"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:button="@drawable/checkbox_selector"/>
+    <ImageView
+        android:id="@+id/iv_edit_car_goods"
+        android:layout_width="72dp"
+        android:layout_height="96dp"
+        android:src="@mipmap/android_quanzi"
+        android:scaleType="fitXY"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+       <LinearLayout
+           android:layout_width="150dp"
+           android:layout_height="30dp"
+           android:orientation="horizontal"
+           android:background="@mipmap/ddxq_qxdd">
+           <ImageView
+               android:id="@+id/tv_edit_car_minus"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:layout_gravity="center"
+               android:src="@mipmap/gwc_bj_jian" />
+           <View
+               android:layout_width="1dp"
+               android:layout_height="match_parent"
+               android:background="#e8e8e8"/>
+           <TextView
+               android:id="@+id/tv_edit_car_count"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:text="1"
+               android:textSize="20sp"
+               android:gravity="center" />
+           <View
+               android:layout_width="1dp"
+               android:layout_height="match_parent"
+               android:background="#e8e8e8"/>
+           <ImageView
+               android:id="@+id/tv_edit_car_add"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:layout_weight="1"
+               android:src="@mipmap/gwc_bj_add" />
+       </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:background="@mipmap/ddxq_qxdd">
+            <TextView
+                android:id="@+id/tv_edit_car_goods_color"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="颜色：黑色-M码"
+                android:gravity="center|left"
+                android:textColor="#999"
+                android:textSize="13sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:drawableRight="@mipmap/dpsx_xl"/>
+          <!--  <TextView
+                android:id="@+id/tv_edit_car_goods_size"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="尺码：均码"
+                android:gravity="center|left"
+                android:textColor="#909090"
+                android:textSize="14sp"
+                android:drawableRight="@mipmap/sc_wgx"
+                android:paddingRight="5dp"/>-->
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

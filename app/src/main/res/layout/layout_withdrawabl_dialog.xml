@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fff">
+    <TextView
+        android:id="@+id/tv_colse"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:textColor="#333"
+        android:text="请输入支付密码"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:drawableLeft="@mipmap/cz_guanbi"
+        android:paddingLeft="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f3f3f3"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="提现金额"
+        android:textColor="#333"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"/>
+    <TextView
+        android:id="@+id/tv_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="¥200"
+        android:textColor="#333"
+        android:layout_gravity="center" />
+    <com.dgkj.fxmall.view.myView.PasswordInputView
+        android:id="@+id/piv_set"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"></com.dgkj.fxmall.view.myView.PasswordInputView>
+
+</LinearLayout>

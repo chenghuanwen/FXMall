@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_store_products_classify"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#f7f7f7"
+    tools:context="com.dgkj.fxmall.view.StoreProductsClassifyActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <TextView
+        android:id="@+id/tv_all_products"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="全部商品"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:textColor="#333"
+        android:gravity="center_vertical"
+        android:background="#fff"
+        android:paddingLeft="10dp"
+        android:drawableRight="@mipmap/yhj_jt"
+        android:paddingRight="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_store_product_classify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"></LinearLayout>
+
+ <!--   <TextView
+        android:id="@+id/tv_product_type1"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="毛衣"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:textColor="#333"
+        android:gravity="center_vertical"
+        android:background="#fff"
+        android:paddingLeft="10dp"
+        android:drawableRight="@mipmap/yhj_jt"
+        android:paddingRight="10dp"/>
+    <TextView
+        android:id="@+id/tv_product_type2"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="毛衣"
+        android:layout_marginTop="1dp"
+        android:textSize="14sp"
+        android:textColor="#333"
+        android:gravity="center_vertical"
+        android:background="#fff"
+        android:paddingLeft="10dp"
+        android:drawableRight="@mipmap/yhj_jt"
+        android:paddingRight="10dp"/>
+    <TextView
+        android:id="@+id/tv_product_type3"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="毛衣"
+        android:layout_marginTop="1dp"
+        android:textSize="14sp"
+        android:textColor="#333"
+        android:gravity="center_vertical"
+        android:background="#fff"
+        android:paddingLeft="10dp"
+        android:drawableRight="@mipmap/yhj_jt"
+        android:paddingRight="10dp"/>-->
+
+    <ImageButton
+        android:id="@+id/ib_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circler_back_corner_shape"
+        android:src="@mipmap/title_return_icon"
+        android:layout_margin="10dp"
+        android:layout_gravity="bottom"/>
+</LinearLayout>

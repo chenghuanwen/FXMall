@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_set_postage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#f3f3f3"
+    tools:context="com.dgkj.fxmall.view.SetPostageActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_postage_setting"
+        android:background="#fff"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/tv_postage_introduce"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/main_color"
+        android:text="运费模板说明"
+        android:gravity="center"
+        android:layout_marginTop="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circler_back_corner_shape"
+            android:src="@mipmap/title_return_icon"
+            android:layout_margin="10dp"/>
+        <Button
+            android:id="@+id/btn_addmode"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/ib_back"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="70dp"
+            android:text="新增运费模板"
+            android:textColor="#fff"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/circlebutton_shape"/>
+    </RelativeLayout>
+</LinearLayout>

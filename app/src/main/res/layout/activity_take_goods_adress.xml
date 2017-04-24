@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_take_goods_adress"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#f3f3f3"
+    tools:context="com.dgkj.fxmall.view.TakeGoodsAdressActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_goods_address"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone">
+        </android.support.v7.widget.RecyclerView>
+        <TextView
+            android:id="@+id/tv_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="还没有收货地址哦"
+            android:textSize="13sp"
+            android:textColor="#333"
+            android:gravity="center"
+            android:drawablePadding="20dp"
+            android:drawableTop="@mipmap/wshdz_tb"/>
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e8e8e8"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="#fff">
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/dpsx_fh"
+            android:padding="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"/>
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:background="@drawable/circlebutton_shape"
+            android:text="添加"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+</LinearLayout>

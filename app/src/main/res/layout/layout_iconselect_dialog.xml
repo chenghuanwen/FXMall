@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#30000000"
+    android:id="@+id/ll_dialog_container">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/camera_select_background">
+
+        <TextView
+            android:id="@+id/tv_icon_fromCarema"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:textColor="#333"
+            android:textSize="16sp"
+            android:text="拍摄新照片"
+            android:drawableLeft="@mipmap/dsh_scpz_pz"
+            android:gravity="center|left"
+            android:drawablePadding="10dp" />
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/camera_select_background">
+
+        <TextView
+            android:id="@+id/tv_icon_fromPictures"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:text="图片库选择"
+            android:drawablePadding="10dp"
+            android:textColor="#333"
+            android:drawableLeft="@mipmap/dfh_scpz_zpk"
+            android:textSize="16sp"
+            android:gravity="center|left" />
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        />
+    <TextView
+        android:id="@+id/tv_icon_cancle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="取消"
+        android:textColor="#333"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:background="@drawable/camera_select_background"
+        />
+
+</LinearLayout>

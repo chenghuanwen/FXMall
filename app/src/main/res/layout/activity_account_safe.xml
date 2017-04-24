@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_account_safe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#f3f3f3"
+    tools:context="com.dgkj.fxmall.view.AccountSafeActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+
+    <TextView
+        android:id="@+id/tv_change_login_pass"
+        android:text="修改登录密码"
+        style="@style/setting_textview"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_rest_pay_pass"
+        android:text="设置支付密码"
+        style="@style/setting_textview"
+        android:layout_marginTop="10dp"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <ImageButton
+        android:id="@+id/ib_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/circler_back_corner_shape"
+        android:src="@mipmap/title_return_icon"
+        android:layout_margin="10dp"/>
+
+
+</LinearLayout>

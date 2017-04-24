@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_location_currenter_city"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f3f3f3"
+    tools:context="com.dgkj.fxmall.view.LocationCurrenterCityActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="#fff"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/tv_current_city"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="所在地"
+            android:textColor="#333"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="#e8e8e8"
+            android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="44dp"
+            android:layout_height="wrap_content"
+            android:text="定位"
+            android:textColor="#909090"
+            android:textSize="14sp"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:drawableTop="@mipmap/sz_dw"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"/>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_finish"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/circlebutton_shape"
+        android:textColor="#fff"
+        android:textSize="14sp"
+        android:text="完成"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="150dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <ImageButton
+        android:id="@+id/ib_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/circler_back_corner_shape"
+        android:src="@mipmap/title_return_icon"
+        android:layout_margin="10dp"/>
+
+
+</LinearLayout>

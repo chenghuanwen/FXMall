@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginRight="10dp"
+    android:background="#fff"
+    android:layout_marginBottom="20dp">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp">
+        <ImageView
+            android:id="@+id/iv_item_classify"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:src="@mipmap/android_quanzi"
+            android:scaleType="fitXY"/>
+        <ImageView
+            android:id="@+id/iv_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/yixuan"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
+    </FrameLayout>
+    <TextView
+        android:id="@+id/tv_item_classify_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="衣服"
+        android:textSize="13sp"
+        android:textColor="#666"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="#fff" />
+
+</LinearLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_publish_product_detial"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="#f3f3f3"
+    tools:context="com.dgkj.fxmall.view.PublishProductDetialActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.dgkj.fxmall.view.myView.FullyNestScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_below="@+id/headerview">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_add_pitures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:visibility="gone"
+                    ></android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:id="@+id/tv_add_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@mipmap/tjsp_jh"
+                    android:drawablePadding="10dp"
+                    android:text="添加商品详情图片\n(请注意按顺序选择图片)"
+                    android:textColor="#666"
+                    android:textSize="15sp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="150dp"/>
+                <TextView
+                    android:id="@+id/tv_add_continue"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="继续添加"
+                    android:gravity="center"
+                    android:background="@drawable/bai"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_gravity="bottom"
+                    android:visibility="gone"
+                    android:layout_marginBottom="10dp"
+                    />
+            </LinearLayout>
+        </com.dgkj.fxmall.view.myView.FullyNestScrollView>
+
+            <ImageButton
+                android:id="@+id/ib_back"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/circler_back_corner_shape"
+                android:src="@mipmap/title_return_icon"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="10dp"/>
+
+    </FrameLayout>
+
+</LinearLayout>

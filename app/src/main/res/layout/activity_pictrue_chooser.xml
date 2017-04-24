@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_pictrue_chooser"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.dgkj.fxmall.view.PictrueChooserActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <GridView
+        android:id="@+id/gv_picture"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:numColumns="3"></GridView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#303030">
+        <TextView
+            android:id="@+id/folder_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:text="文件夹名"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:layout_marginLeft="10dp"/>
+        <TextView
+            android:id="@+id/sum_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:text="所有图片总数"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"/>
+    </RelativeLayout>
+
+</LinearLayout>

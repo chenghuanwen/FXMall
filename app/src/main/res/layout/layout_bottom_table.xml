@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <RadioGroup
+        android:id="@+id/rg_footer"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="#f7f7f7">
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_shangpu"
+           style="@style/bottom_table_radiobtn"
+            android:text="商铺"
+            android:textColor="#787878"
+            android:drawableTop="@mipmap/sy_sp"/>
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_yewuyuan"
+            style="@style/bottom_table_radiobtn"
+            android:text="业务员"
+            android:textColor="#787878"
+            android:drawableTop="@mipmap/sy_ywy"/>
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_mine"
+            style="@style/bottom_table_radiobtn"
+            android:text="我的"
+            android:textColor="#787878"
+            android:drawableTop="@mipmap/sy_wode"/>
+    </RadioGroup>
+
+</RelativeLayout>

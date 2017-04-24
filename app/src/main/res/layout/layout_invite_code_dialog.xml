@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fff">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="邀请码"
+        android:textColor="#333"
+        android:textSize="20sp"
+        android:gravity="center"/>
+    <EditText
+        android:id="@+id/et_invite_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入邀请码"
+        android:gravity="center"
+        android:textColorHint="#909090"
+        android:textSize="25sp"
+        android:background="@null"
+        android:layout_margin="10dp"
+        android:inputType="text"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#e8e8e8"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_cancle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="#333"
+            android:textSize="15sp"
+            android:text="取消"
+            android:gravity="center"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#e8e8e8"/>
+        <TextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/main_color"
+            android:textSize="15sp"
+            android:text="确认"
+            android:gravity="center"/>
+    </LinearLayout>
+
+
+</LinearLayout>

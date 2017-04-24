@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f7f7f7">
+    <RadioGroup
+        android:id="@+id/rg_top"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:background="#fff"
+        >
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_mydemand"
+            style="@style/demand_table_radiobtn"
+            android:text="我的需求"
+            android:checked="true"
+            android:drawableTop="@mipmap/wdxq"/>
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_recommend"
+            style="@style/demand_table_radiobtn"
+            android:text="推荐的店铺"
+            android:drawableTop="@mipmap/dp"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="80dp"
+            android:background="#e8e8e8"
+            android:layout_gravity="center"/>
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rb_publish_demand"
+            style="@style/demand_table_radiobtn"
+            android:text="发布需求"
+            android:drawableTop="@mipmap/wd_fbxq"/>
+    </RadioGroup>
+
+</RelativeLayout>
