@@ -53,6 +53,11 @@ public class SetPostageActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void refresh() {
         control.getAllPostage(this, sp.get("token"), client, new OnGetAllPostageModelFinishedListener() {
             @Override

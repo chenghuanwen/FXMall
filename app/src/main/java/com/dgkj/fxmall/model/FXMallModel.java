@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.alipay.sdk.app.AuthTask;
 import com.alipay.sdk.app.PayTask;
 import com.dgkj.fxmall.base.BaseActivity;
+import com.dgkj.fxmall.bean.CommentBean;
 import com.dgkj.fxmall.bean.DemandMallClassifyBean;
 import com.dgkj.fxmall.bean.ExpressCompanyBean;
 import com.dgkj.fxmall.bean.LogisticsBean;
@@ -43,6 +44,7 @@ import com.dgkj.fxmall.listener.OnGetLogisticsMsgFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
+import com.dgkj.fxmall.listener.OnGetProductCommentListFinishListener;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
 import com.dgkj.fxmall.listener.OnGetShoppingcarProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductClassifyFinishedListener;
@@ -838,6 +840,12 @@ public class FXMallModel {
                             goods.setProductId(commodity.getInt("id"));
                             goods.setSales(commodity.getInt("sales"));
                             goods.setStatu(commodity.getInt("status"));
+
+                            goods.setDescribeScore(commodity.getInt("describeScore"));
+                            goods.setPriceScore(commodity.getInt("transportScore"));
+                            goods.setQualityScore(commodity.getInt("qualityScore"));
+                            goods.setTotalScore(commodity.getInt("totalScore"));
+
                             JSONArray pictrues = commodity.getJSONArray("pictrue");
                             List<String> mainUrls = new ArrayList<>();
                             for (int j = 0; j < pictrues.length(); j++) {
@@ -1218,6 +1226,7 @@ public class FXMallModel {
                             OrderBean orderBean = new OrderBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             orderBean.setCount(jsonObject.getInt("num"));
+
                             JSONObject order = jsonObject.getJSONObject("orders");
                             orderBean.setId(order.getInt("id"));
                             orderBean.setOrderNum(order.getString("orderNo"));
@@ -1256,21 +1265,143 @@ public class FXMallModel {
                                     orderBean.setState("商家拒绝退款");
                                     break;
                             }
-                            JSONObject takeInfo = jsonObject.getJSONObject("shoppingAddress");
+
+                            JSONObject expressCode = order.getJSONObject("expressCode");
+                            orderBean.setExpress(expressCode.getString("name"));
+
+                            JSONObject takeInfo = order.getJSONObject("shoppingAddress");
                             orderBean.setTakeMan(takeInfo.getString("consignee"));
                             orderBean.setTakePhone(takeInfo.getString("phone"));
                             StringBuffer sb = new StringBuffer();
                             sb.append(takeInfo.getString("province")).append(takeInfo.getString("city")).append(takeInfo.getString("county")).append(takeInfo.getString("particular"));
                             orderBean.setTakeAddress(sb.toString());
+
+                            JSONObject store = order.getJSONObject("store");
+                            orderBean.setStoreName(store.getString("storeName"));
+
                             JSONObject productInfo = jsonObject.getJSONObject("sku");//TODO 商品信息有待完善，字段待确定
-                            orderBean.setSinglePrice(productInfo.getInt("price"));
+                            orderBean.setPostage(productInfo.getInt(""));
                             orderBean.setBrokerage(productInfo.getInt("brokerage"));
+                            orderBean.setSinglePrice(productInfo.getInt("price"));
                             orderBean.setColor(productInfo.getString(""));
                             orderBean.setCount(productInfo.getInt(""));
-                            orderBean.setPostage(productInfo.getInt(""));
                             orderBean.setIntroduce(productInfo.getString(""));
                             orderBean.setUrl(productInfo.getString(""));
-                            orderBean.setStoreName(productInfo.getString(""));
+                            orderBean.setProductId(productInfo.getInt(""));
+                            orderBean.setSkuId(productInfo.getInt(""));
+                            list.add(orderBean);
+                        }
+                        listener.onGetMyOrderInfoFinished(list);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+    /***
+     * @param context
+     * @param token
+     * @param statu
+     * @param isAll
+     * @param client
+     * @param listener
+     */
+    public static void getStoreOrderInfo(final BaseActivity context, String token, final int statu, int isAll,int index,int size,OkHttpClient client, final OnGetMyOrderInfoFinishedListener listener) {
+        final List<OrderBean> list = new ArrayList<>();
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("user.token", token)
+                .add("status", statu + "")
+                .add("index",index+"")
+                .add("size",size+"");
+        if (isAll == 0) {
+            builder.add("isAll", isAll + "");
+        }
+        FormBody body = builder.build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.GET_ORDER_CALSSIFY)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                context.toastInUI(context.getApplicationContext(), "网络异常");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                if (result.contains("1000")) {
+                    try {
+                        JSONObject object = new JSONObject(result);
+                        JSONArray dataset = object.getJSONArray("dataset");
+                        for (int i = 0; i < dataset.length(); i++) {
+                            OrderBean orderBean = new OrderBean();
+                            JSONObject jsonObject = dataset.getJSONObject(i);
+                            orderBean.setCount(jsonObject.getInt("num"));
+
+                            JSONObject order = jsonObject.getJSONObject("orders");
+                            orderBean.setId(order.getInt("id"));
+                            orderBean.setOrderNum(order.getString("orderNo"));
+                            orderBean.setSumPrice(order.getDouble("paySum"));
+                            orderBean.setCreateTime(order.getLong("createTime"));
+                            orderBean.setPayTime(order.getLong("payTime"));
+                            int status = order.getInt("status");
+                            orderBean.setStateNum(status);
+                            switch (status) {//TODO 对退款退货订单还需更细分类，待补充
+                                //卖家
+                                case 0:
+                                    orderBean.setState("等待买家付款");
+                                    break;
+                                case 1:
+                                    orderBean.setState("等待卖家发货");
+                                    break;
+                                case 2:
+                                    orderBean.setState("等待买家收货");
+                                    break;
+                                case 3:
+                                    orderBean.setState("等待买家评价");
+                                    break;
+                                case 4:
+                                    orderBean.setState("交易完成");
+                                    break;
+                                case 5:
+                                    orderBean.setState("等待商家处理退款申请");
+                                    break;
+                                case 6:
+                                    orderBean.setState("商家同意退款");
+                                    break;
+                                case 7:
+                                    orderBean.setState("退款成功");
+                                    break;
+                                case 8:
+                                    orderBean.setState("商家拒绝退款");
+                                    break;
+                            }
+
+                            JSONObject expressCode = order.getJSONObject("expressCode");
+                            orderBean.setExpress(expressCode.getString("name"));
+
+                            JSONObject takeInfo = order.getJSONObject("shoppingAddress");
+                            orderBean.setTakeMan(takeInfo.getString("consignee"));
+                            orderBean.setTakePhone(takeInfo.getString("phone"));
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(takeInfo.getString("province")).append(takeInfo.getString("city")).append(takeInfo.getString("county")).append(takeInfo.getString("particular"));
+                            orderBean.setTakeAddress(sb.toString());
+
+                            JSONObject store = order.getJSONObject("store");
+                            orderBean.setStoreName(store.getString("storeName"));
+
+                            JSONObject productInfo = jsonObject.getJSONObject("sku");//TODO 商品信息有待完善，字段待确定
+                            orderBean.setPostage(productInfo.getInt(""));
+                            orderBean.setBrokerage(productInfo.getInt("brokerage"));
+                            orderBean.setSinglePrice(productInfo.getInt("price"));
+                            orderBean.setColor(productInfo.getString(""));
+                            orderBean.setCount(productInfo.getInt(""));
+                            orderBean.setIntroduce(productInfo.getString(""));
+                            orderBean.setUrl(productInfo.getString(""));
+                            orderBean.setProductId(productInfo.getInt(""));
+                            orderBean.setSkuId(productInfo.getInt(""));
                             list.add(orderBean);
                         }
                         listener.onGetMyOrderInfoFinished(list);
@@ -1295,8 +1426,62 @@ public class FXMallModel {
                 .url(FXConst.GET_EXPRESS_COMPANY_LIST)
                 .build();
         client.newCall(request).enqueue(new Callback() {
+                                            @Override
+                                            public void onFailure(Call call, IOException e) {
+                                            }
+
+                                            @Override
+                                            public void onResponse(Call call, Response response) throws IOException {
+                                                String result = response.body().string();
+                                                if (result.contains("1000")) {
+                                                    try {
+                                                        JSONObject object = new JSONObject(result);
+                                                        JSONArray dataset = object.getJSONArray("dataset");
+                                                        for (int i = 0; i < dataset.length(); i++) {
+                                                            ExpressCompanyBean express = new ExpressCompanyBean();
+                                                            JSONObject jsonObject = dataset.getJSONObject(i);
+                                                            express.setId(jsonObject.getInt("id"));
+                                                            express.setCode(jsonObject.getString("code"));
+                                                            express.setName(jsonObject.getString("name"));
+                                                            list.add(express);
+                                                        }
+                                                        listener.onGetExpressCompanyFinished(list);
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+        );
+    }
+
+    /**
+     * 获取指定商品评论列表
+     *
+     * @param context
+     * @param id       商品id
+     * @param index
+     * @param size
+     * @param client
+     * @param listener
+     */
+    public static void getProductComments(final BaseActivity context, int id, final int index, int size, OkHttpClient client, final OnGetProductCommentListFinishListener listener) {
+        final List<CommentBean> list = new ArrayList<>();
+        FormBody body = new FormBody.Builder()
+                .add("commodity.id", id + "")
+                .add("index", index + "")
+                .add("size", size + "")
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.GET_COMMENTS_FOR_ONE_PRODUCT)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+
             }
 
             @Override
@@ -1304,26 +1489,31 @@ public class FXMallModel {
                 String result = response.body().string();
                 if (result.contains("1000")) {
                     try {
-                        JSONObject object = new JSONObject(result);
-                        JSONArray  dataset = object.getJSONArray("dataset");
-                        for (int i = 0; i<dataset.length(); i++) {
-                            ExpressCompanyBean express = new ExpressCompanyBean();
+                        JSONObject  object = new JSONObject(result);
+                        JSONArray dataset = object.getJSONArray("dataset");
+                        for (int i = 0; i < dataset.length(); i++) {
+                            CommentBean comment = new CommentBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
-                            express.setId(jsonObject.getInt("id"));
-                            express.setCode(jsonObject.getString("code"));
-                            express.setName(jsonObject.getString("name"));
-                            list.add(express);
+                            comment.setContent(jsonObject.getString("content"));
+                            int describeScore = jsonObject.getInt("describeScore");
+                            int qualityScore = jsonObject.getInt("qualityScore");
+                            int transportScore = jsonObject.getInt("transportScore");
+                            float stars = (describeScore + qualityScore + transportScore) / 3f;
+                            comment.setStars(stars);
+                            JSONObject user = jsonObject.getJSONObject("user");
+                            comment.setName(user.getString("nickname"));
+                            comment.setIcon(user.getString("headPortrait"));
+                            list.add(comment);
                         }
-                        listener.onGetExpressCompanyFinished(list);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                        listener.onGetProductCommentListFinished(list);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 }
             }
-
-            );
-        }
+        });
 
     }
+
+}

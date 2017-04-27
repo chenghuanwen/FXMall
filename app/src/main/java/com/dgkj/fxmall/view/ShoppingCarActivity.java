@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -13,15 +11,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.ShoppingCarAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
-import com.dgkj.fxmall.bean.PostageBean;
 import com.dgkj.fxmall.bean.ShoppingCarBean;
 import com.dgkj.fxmall.bean.ShoppingGoodsBean;
-import com.dgkj.fxmall.bean.SuperPostageBean;
 import com.dgkj.fxmall.constans.Position;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
@@ -51,6 +48,8 @@ public class ShoppingCarActivity extends BaseActivity {
     TextView tvTotalPrice;
     @BindView(R.id.btn_pay)
     Button btnPay;
+    @BindView(R.id.activity_shopping_car)
+    LinearLayout activityShoppingCar;
 
     private FXMallControl control;
     private View headerview;
@@ -89,12 +88,17 @@ public class ShoppingCarActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return activityShoppingCar;
+    }
+
     private void refresh() {
         control.getShopingCarData(new OnGetShoppingCarDataListener() {
             @Override
             public void onGetShoppingCarDataFinished(List<ShoppingCarBean> carBeanList) {
                 goodsCount = carBeanList.size();
-                adapter.addAll(carBeanList,true);
+                adapter.addAll(carBeanList, true);
             }
         });
         control.getShoppingcarProducts(this, sp.get("token"), index, 10, client, new OnGetShoppingcarProductsFinishedListener() {
@@ -150,13 +154,12 @@ public class ShoppingCarActivity extends BaseActivity {
     }
 
 
-
     /**
      * 初始化数据列表
      */
     private void initShoppingCar() {
         carBeanList = new ArrayList<>();
-        adapter = new ShoppingCarAdapter(this,R.layout.item_shoppingcar,carBeanList,handler);
+        adapter = new ShoppingCarAdapter(this, R.layout.item_shoppingcar, carBeanList, handler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvShoppingCar.setLayoutManager(layoutManager);
         rvShoppingCar.setAdapter(adapter);
@@ -170,9 +173,9 @@ public class ShoppingCarActivity extends BaseActivity {
         cbSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     adapter.selectAll();
-                }else {
+                } else {
                     adapter.cancleAll();
                 }
             }
@@ -185,38 +188,38 @@ public class ShoppingCarActivity extends BaseActivity {
     private void initHeaderview() {
         control = new FXMallControl();
         //TODO 获取购物车商品总数
-        String title = String.format("购物车（%s",goodsCount+")");
+        String title = String.format("购物车（%s", goodsCount + ")");
         headerview = findViewById(R.id.headerview);
-        setHeaderTitle(headerview,title);
-        setHeaderImage(headerview, -1,"编辑", Position.RIGHT, new View.OnClickListener() {
+        setHeaderTitle(headerview, title);
+        setHeaderImage(headerview, -1, "编辑", Position.RIGHT, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-        //TODO 跳转到编辑界面
-                Intent intent = new Intent(ShoppingCarActivity.this,ShoppingCarEditActivity.class);
+                //TODO 跳转到编辑界面
+                Intent intent = new Intent(ShoppingCarActivity.this, ShoppingCarEditActivity.class);
                 intent.putExtra("data", (Serializable) carBeanList);
-                startActivityForResult(intent,129);
+                startActivityForResult(intent, 129);
             }
         });
     }
 
 
     @OnClick(R.id.iv_car_back)
-    public void back(){
+    public void back() {
         finish();
     }
 
     @OnClick(R.id.btn_pay)
-    public void pay(){
+    public void pay() {
         //TODO 计算总价格付账
-        Intent intent = new Intent(this,ConfirmOrderActivity.class);
+        Intent intent = new Intent(this, ConfirmOrderActivity.class);
         startActivity(intent);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==129 && resultCode==130){
+        if (requestCode == 129 && resultCode == 130) {
             List<ShoppingCarBean> list = (List<ShoppingCarBean>) data.getSerializableExtra("data");
-            adapter.addAll(list,true);
+            adapter.addAll(list, true);
         }
     }
 }

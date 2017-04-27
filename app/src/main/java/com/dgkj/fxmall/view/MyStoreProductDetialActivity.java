@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
@@ -69,6 +68,8 @@ public class MyStoreProductDetialActivity extends BaseActivity {
     Button btnDelete;
     @BindView(R.id.btn_on_off)
     Button btnOnOff;
+    @BindView(R.id.activity_my_store_product_detial)
+    LinearLayout activityMyStoreProductDetial;
     private View headerview;
     private String from = "";
     private int position;//商品在列表中的位置
@@ -87,6 +88,11 @@ public class MyStoreProductDetialActivity extends BaseActivity {
         setData();
     }
 
+    @Override
+    public View getContentView() {
+        return activityMyStoreProductDetial;
+    }
+
     private void disableEdit() {//禁用edittext编辑功能
         etProductTitle.setKeyListener(null);
         etDemandCount.setKeyListener(null);
@@ -99,12 +105,12 @@ public class MyStoreProductDetialActivity extends BaseActivity {
     private void setData() {
         Intent intent = getIntent();
         from = intent.getStringExtra("from");
-        position = intent.getIntExtra("position",-1);
+        position = intent.getIntExtra("position", -1);
 
-        if("sale".equals(from)){
+        if ("sale".equals(from)) {
             btnOnOff.setText("下架");
             statu = 1;
-        }else {
+        } else {
             btnOnOff.setText("上架");
             statu = 0;
         }
@@ -132,15 +138,15 @@ public class MyStoreProductDetialActivity extends BaseActivity {
     }
 
     @OnClick(R.id.btn_delete)
-    public void delete(){
+    public void delete() {
         showDeleteDialog("你确定要删除此商品吗？");
     }
 
     @OnClick(R.id.btn_on_off)
-    public void onOrOffLine(){
-        if("sale".equals(from)){
+    public void onOrOffLine() {
+        if ("sale".equals(from)) {
             showDeleteDialog("你确定下架此商品吗？");
-        }else {
+        } else {
             showDeleteDialog("你确定上架此商品吗？");
         }
     }
@@ -166,12 +172,12 @@ public class MyStoreProductDetialActivity extends BaseActivity {
                 if (titel.contains("删除")) {
                     //TODO 通知服务器删除
                     Intent intent = new Intent();
-                    intent.putExtra("position",position);
-                    setResult(162,intent);
+                    intent.putExtra("position", position);
+                    setResult(162, intent);
                     pw.dismiss();
                     finish();
                 } else {
-                    online(product.getId(),statu);
+                    online(product.getId(), statu);
                 }
 
             }
@@ -189,7 +195,6 @@ public class MyStoreProductDetialActivity extends BaseActivity {
         pw.setCanceledOnTouchOutside(true);
         pw.show();
     }
-
 
 
     /**
@@ -211,15 +216,15 @@ public class MyStoreProductDetialActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-               toastInUI(MyStoreProductDetialActivity.this,"网络异常");
+                toastInUI(MyStoreProductDetialActivity.this, "网络异常");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body().string().contains("1000")) {
-                    toastInUI(MyStoreProductDetialActivity.this,"操作成功");
+                    toastInUI(MyStoreProductDetialActivity.this, "操作成功");
                 } else {
-                    toastInUI(MyStoreProductDetialActivity.this,"操作失败");
+                    toastInUI(MyStoreProductDetialActivity.this, "操作失败");
                 }
             }
         });

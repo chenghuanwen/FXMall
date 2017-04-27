@@ -15,9 +15,51 @@ public class MainProductBean implements Serializable{
     private String address;
     private String express;
     private String vipPrice;
-    private int skuId,count;
+    private int skuId,count,id;
     private String storeName,color;
     private int inventory;
+    private int describeScore,priceScore,qualityScore;
+    private double totalScore;
+
+    public int getDescribeScore() {
+        return describeScore;
+    }
+
+    public void setDescribeScore(int describeScore) {
+        this.describeScore = describeScore;
+    }
+
+    public int getPriceScore() {
+        return priceScore;
+    }
+
+    public void setPriceScore(int priceScore) {
+        this.priceScore = priceScore;
+    }
+
+    public int getQualityScore() {
+        return qualityScore;
+    }
+
+    public void setQualityScore(int qualityScore) {
+        this.qualityScore = qualityScore;
+    }
+
+    public double getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(double totalScore) {
+        this.totalScore = totalScore;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getInventory() {
         return inventory;

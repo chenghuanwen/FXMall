@@ -3,12 +3,12 @@ package com.dgkj.fxmall.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.dgkj.fxmall.R;
@@ -22,7 +22,6 @@ import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
 import com.dgkj.fxmall.view.myView.ItemOffsetDecoration;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +40,13 @@ public class AllClassifyActivity extends BaseActivity {
     ImageView ivBack;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
+    @BindView(R.id.activity_all_classify)
+    LinearLayout activityAllClassify;
     private View headerview;
     private List<SuperClassifyBean> allClassify;
     private List<ProductClassifyBean> subClassify;
     private ProductClassifyAdapter adapter;
-    private String baseClassify="";
+    private String baseClassify = "";
     private FXMallControl control = new FXMallControl();
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private CommonAdapter<SuperClassifyBean> subAdapter;
@@ -60,6 +61,11 @@ public class AllClassifyActivity extends BaseActivity {
         getSuperClassify();
     }
 
+    @Override
+    public View getContentView() {
+        return activityAllClassify;
+    }
+
     /**
      * 获取一级分类
      */
@@ -70,7 +76,7 @@ public class AllClassifyActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        subAdapter.addAll(classifyList,true);
+                        subAdapter.addAll(classifyList, true);
                     }
                 });
             }
@@ -91,10 +97,10 @@ public class AllClassifyActivity extends BaseActivity {
             classify.setTaxon("时尚套装");
             subClassify.add(classify);
         }*/
-         subAdapter = new CommonAdapter<SuperClassifyBean>(this,R.layout.item_all_classify,allClassify) {
+        subAdapter = new CommonAdapter<SuperClassifyBean>(this, R.layout.item_all_classify, allClassify) {
             @Override
             protected void convert(ViewHolder holder, final SuperClassifyBean o, int position) {
-                holder.setText(R.id.tv_base_classify,o.getType());
+                holder.setText(R.id.tv_base_classify, o.getType());
 
             }
         };
@@ -109,7 +115,7 @@ public class AllClassifyActivity extends BaseActivity {
         });
         rvAllClassify.setAdapter(subAdapter);
 
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(this,3);
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         rvSubClassify.setLayoutManager(linearLayoutManager);
         adapter = new ProductClassifyAdapter(this, R.layout.item_all_subclassify, subClassify, "classify");
         ItemOffsetDecoration decoration = new ItemOffsetDecoration(20);
@@ -120,6 +126,7 @@ public class AllClassifyActivity extends BaseActivity {
 
     /**
      * 获取二级分类
+     *
      * @param superTypeId
      */
     private void getSubclassify(int superTypeId) {
@@ -129,7 +136,7 @@ public class AllClassifyActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.addAll(subList,true);
+                        adapter.addAll(subList, true);
                     }
                 });
             }
@@ -146,17 +153,16 @@ public class AllClassifyActivity extends BaseActivity {
     public void back() {
 
 
-
         finish();
     }
 
     @OnClick(R.id.btn_confirm)
-    public void confirm(){
-        String result = baseClassify+"/"+adapter.getSubClassify();
+    public void confirm() {
+        String result = baseClassify + "/" + adapter.getSubClassify();
         Intent intent = new Intent();
-        intent.putExtra("classify",result);
-        intent.putExtra("subId",adapter.getSubClassifyId());
-        setResult(122,intent);
+        intent.putExtra("classify", result);
+        intent.putExtra("subId", adapter.getSubClassifyId());
+        setResult(122, intent);
         finish();
     }
 }

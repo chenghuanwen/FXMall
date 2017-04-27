@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
@@ -14,6 +15,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ChangePhoneByPasswordActivity extends BaseActivity {
+    @BindView(R.id.content_change_phone_by_password)
+    LinearLayout contentChangePhoneByPassword;
     private View headerview;
 
     @BindView(R.id.piv_pay_pass)
@@ -31,6 +34,11 @@ public class ChangePhoneByPasswordActivity extends BaseActivity {
         initHeaderView();
     }
 
+    @Override
+    public View getContentView() {
+        return contentChangePhoneByPassword;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "更换手机");
@@ -38,7 +46,7 @@ public class ChangePhoneByPasswordActivity extends BaseActivity {
 
     @OnClick(R.id.btn_confirm)
     public void confirm() {
-       // jumpTo(BindNewphoneActivity.class, true);
+        // jumpTo(BindNewphoneActivity.class, true);
     }
 
     @OnClick(R.id.ib_back)

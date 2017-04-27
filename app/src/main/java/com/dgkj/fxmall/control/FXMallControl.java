@@ -15,6 +15,7 @@ import com.dgkj.fxmall.listener.OnGetLogisticsMsgFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
+import com.dgkj.fxmall.listener.OnGetProductCommentListFinishListener;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
 import com.dgkj.fxmall.listener.OnGetShoppingcarProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductClassifyFinishedListener;
@@ -133,8 +134,15 @@ public class FXMallControl {
         FXMallModel.getMyOrderInfo(context,token,statu,isAll,client,listener);
     }
 
+    public void getStoreOrderInfo(final BaseActivity context, String token, final int statu, int isAll,int index,int size, OkHttpClient client, final OnGetMyOrderInfoFinishedListener listener){
+        FXMallModel.getStoreOrderInfo(context,token,statu,isAll,index,size,client,listener);
+    }
+
     public void getExpressList(final BaseActivity context, OkHttpClient client, final OnGetExpressCompanyFinishedListener listener){
         FXMallModel.getAllExpressCompany(context,client,listener);
     }
 
+    public void getProductComments(final BaseActivity context, int id, final int index, int size, OkHttpClient client, final OnGetProductCommentListFinishListener listener){
+        FXMallModel.getProductComments(context,id,index,size,client,listener);
+    }
 }

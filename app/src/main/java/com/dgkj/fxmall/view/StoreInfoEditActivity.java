@@ -79,6 +79,11 @@ public class StoreInfoEditActivity extends BaseActivity {
         initHeaderView();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "店铺资料");

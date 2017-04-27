@@ -54,6 +54,11 @@ public class SetRegistPasswordActivity extends BaseActivity {
         phone = getIntent().getStringExtra("phone");
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "注册");

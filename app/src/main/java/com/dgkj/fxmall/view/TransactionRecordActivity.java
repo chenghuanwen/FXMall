@@ -62,6 +62,11 @@ public class TransactionRecordActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void refresh() {
         control.getTransactionRecord(this, sp.get("token"), index, 20, client, new OnGetTransactionRecorderFinishedListener() {
             @Override

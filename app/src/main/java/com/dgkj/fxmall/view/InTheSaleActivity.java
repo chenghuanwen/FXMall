@@ -41,6 +41,8 @@ public class InTheSaleActivity extends BaseActivity {
     RadioGroup rgProduct;
     @BindView(R.id.ll_store_product_classify)
     LinearLayout llStoreProductClassify;
+    @BindView(R.id.activity_in_the_sale)
+    LinearLayout activityInTheSale;
     private String from;
     private View headerview;
     private OkHttpClient client = new OkHttpClient.Builder().build();
@@ -70,8 +72,13 @@ public class InTheSaleActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return activityInTheSale;
+    }
+
     private void refresh() {
-        control.getStoreProductClassify(this, sp.get("token"),statu, client, new OnGetStoreProductClassifyFinishedListener() {
+        control.getStoreProductClassify(this, sp.get("token"), statu, client, new OnGetStoreProductClassifyFinishedListener() {
             @Override
             public void onGetStoreProductClassifyFinished(List<StoreProductClassifyBean> classifyList) {
                 for (int i = 0; i < classifyList.size(); i++) {
@@ -81,7 +88,7 @@ public class InTheSaleActivity extends BaseActivity {
                     TextView tvName = (TextView) view.findViewById(R.id.tv_product_type);
                     TextView tvCount = (TextView) view.findViewById(R.id.tv_classify_count);
                     tvName.setText(classify.getName());
-                    tvCount.setText("("+classify.getCount()+"件)");
+                    tvCount.setText("(" + classify.getCount() + "件)");
                     tvCount.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -122,12 +129,11 @@ public class InTheSaleActivity extends BaseActivity {
     }
 
 
-
     public void goDetial(String type) {
         Intent intent = new Intent(this, ShangpuAllProductsActivity.class);
         intent.putExtra("type", type);
         intent.putExtra("from", from);
-        intent.putExtra("statu",statu);
+        intent.putExtra("statu", statu);
         startActivity(intent);
     }
 

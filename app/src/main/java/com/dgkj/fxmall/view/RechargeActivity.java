@@ -29,6 +29,8 @@ public class RechargeActivity extends BaseActivity {
     LinearLayout tvSelectRechargeType;
     @BindView(R.id.tv_select_account)
     TextView tvSelectAccount;
+    @BindView(R.id.activity_recharge)
+    LinearLayout activityRecharge;
     private View headerview;
 
     @Override
@@ -37,6 +39,11 @@ public class RechargeActivity extends BaseActivity {
         setContentView(R.layout.activity_recharge);
         ButterKnife.bind(this);
         initHeaderView();
+    }
+
+    @Override
+    public View getContentView() {
+        return activityRecharge;
     }
 
     private void initHeaderView() {

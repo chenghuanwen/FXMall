@@ -40,16 +40,18 @@ public class BatchHandleActivity extends BaseActivity {
     TextView tvProductOffline;
     @BindView(R.id.ll_from_rest)
     LinearLayout llFromRest;
+    @BindView(R.id.activity_batch_handle)
+    LinearLayout activityBatchHandle;
     private View headerview;
     private List<StoreProductBean> products;
     private BatchHandleProductsAdapter adapter;
     private int selectCount;
     private AlertDialog pw;
     private String from = "";
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.arg1){
+            switch (msg.arg1) {
                 case 1://选择
                     adapter.notifyDataSetChanged();
                     break;
@@ -71,9 +73,14 @@ public class BatchHandleActivity extends BaseActivity {
 
     }
 
+    @Override
+    public View getContentView() {
+        return activityBatchHandle;
+    }
+
     private void initData() {
         products = (List<StoreProductBean>) getIntent().getSerializableExtra("data");
-        adapter = new BatchHandleProductsAdapter(this, R.layout.item_store_product_batch_handle, products,handler);
+        adapter = new BatchHandleProductsAdapter(this, R.layout.item_store_product_batch_handle, products, handler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBatch.setLayoutManager(layoutManager);
         rvBatch.setAdapter(adapter);
@@ -85,7 +92,7 @@ public class BatchHandleActivity extends BaseActivity {
         setHeaderTitle(headerview, "批量管理");
 
         from = getIntent().getStringExtra("from");
-        LogUtil.i("TAG","from==="+from);
+        LogUtil.i("TAG", "from===" + from);
         if ("sale".equals(from)) {
             llFromRest.setVisibility(View.GONE);
             tvProductOffline.setVisibility(View.VISIBLE);

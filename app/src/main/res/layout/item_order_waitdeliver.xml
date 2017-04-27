@@ -6,7 +6,8 @@
     android:orientation="vertical"
     android:background="#fff"
     android:layout_margin="10dp">
-    <include layout="@layout/item_order_common"/>
+    <include layout="@layout/item_order_common"
+        android:id="@+id/order_common"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="40dp"
@@ -14,7 +15,7 @@
         android:layout_gravity="right"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp">
-        <Button
+     <!--   <Button
             android:id="@+id/btn_apply_refund"
             android:layout_width="80dp"
             android:layout_height="match_parent"
@@ -22,7 +23,7 @@
             android:textColor="#909090"
             android:text="申请退款"
             android:gravity="center"
-            android:background="@mipmap/tkxq_hsan"/>
+            android:background="@mipmap/tkxq_hsan"/>-->
         <Button
             android:id="@+id/btn_notify_deliver"
             android:layout_width="80dp"

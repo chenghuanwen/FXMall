@@ -13,7 +13,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -78,9 +79,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@drawable/whitecircler_corner_shape3"
         android:orientation="vertical"
-        android:layout_marginTop="10dp">
+        android:layout_margin="10dp">
      <TextView
          android:id="@+id/tv_order_store_name"
          android:layout_width="match_parent"
@@ -94,6 +95,11 @@
             android:layout_height="1dp"
             android:background="#f3f3f3"/>
         <LinearLayout
+            android:id="@+id/ll_order_detial_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
+      <!--  <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -161,7 +167,7 @@
 
 
             </LinearLayout>
-        </LinearLayout>
+        </LinearLayout>-->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -239,19 +245,28 @@
             android:textColor="#333"
             android:layout_marginRight="10dp"/>
     </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:background="#fff"
         android:orientation="horizontal">
-        <ImageView
+        <FrameLayout
             android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|left"
-            android:src="@mipmap/dpsx_fh"
-            android:layout_marginLeft="10dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/dpsx_fh"
+                android:layout_marginLeft="10dp"
+                />
+        </FrameLayout>
         <View
             android:layout_width="wrap_content"
             android:layout_weight="1"
@@ -268,6 +283,4 @@
             android:layout_marginRight="10dp"/>
     </LinearLayout>
 
-        </LinearLayout>
-    </ScrollView>
 </LinearLayout>

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,9 +15,6 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.HomePageFragmentAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
-import com.dgkj.fxmall.bean.ShoppingCarBean;
-import com.dgkj.fxmall.bean.ShoppingGoodsBean;
-import com.dgkj.fxmall.bean.SomeDemandClassifyBean;
 import com.dgkj.fxmall.bean.SomeProductClassifyBean;
 import com.dgkj.fxmall.fragment.SomeProductClassifyFragment;
 
@@ -43,6 +40,8 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
     ImageView ivTop;
     @BindView(R.id.tv_title_center)
     TextView tvTitleCenter;
+    @BindView(R.id.activity_some_product_classify)
+    LinearLayout activitySomeProductClassify;
 
 
     private String productType;
@@ -59,9 +58,14 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
         initTitle();
         getData(productType);
 
-        if(Build.VERSION.SDK_INT >= 21 ){
+        if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(Color.parseColor("#62b1fe"));
         }
+    }
+
+    @Override
+    public View getContentView() {
+        return activitySomeProductClassify;
     }
 
 

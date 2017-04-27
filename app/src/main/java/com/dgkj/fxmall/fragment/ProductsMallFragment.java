@@ -115,7 +115,7 @@ public class ProductsMallFragment extends Fragment {
         classifyBeens.add(new DemandMallClassifyBean("家居",R.mipmap.cpdt_jz));
         classifyBeens.add(new DemandMallClassifyBean("箱包",R.mipmap.cpdt_xb));
         classifyBeens.add(new DemandMallClassifyBean("女装",R.mipmap.cpdt_nz));
-        classifyBeens.add(new DemandMallClassifyBean("男装",R.mipmap.cpdt_nz));
+        classifyBeens.add(new DemandMallClassifyBean("男装",R.mipmap.cpdt_nanz));
         classifyBeens.add(new DemandMallClassifyBean("电器",R.mipmap.cpdt_dq));
         classifyBeens.add(new DemandMallClassifyBean("汽车",R.mipmap.cpdt_qc));
         classifyBeens.add(new DemandMallClassifyBean("更多",R.mipmap.cpdt_gd));

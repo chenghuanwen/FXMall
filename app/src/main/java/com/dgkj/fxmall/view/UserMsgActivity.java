@@ -121,6 +121,11 @@ public class UserMsgActivity extends BaseActivity {
         address = intent.getStringExtra("address");
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void setData() {
         //TODO 获取个人信息填充
         Glide.with(this).load(icon).into(civUsemsgIcon);

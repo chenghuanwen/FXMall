@@ -58,6 +58,8 @@ public class ConfirmOrderActivity extends BaseActivity {
     LinearLayout llOrderAddress;
     @BindView(R.id.ll_order_container)
     LinearLayout llOrderContainer;
+    @BindView(R.id.activity_confirm_order)
+    LinearLayout activityConfirmOrder;
     private View headerview;
     private boolean hasDefaultAddress;
     private OkHttpClient client = new OkHttpClient.Builder().build();
@@ -83,12 +85,17 @@ public class ConfirmOrderActivity extends BaseActivity {
 
     }
 
+    @Override
+    public View getContentView() {
+        return activityConfirmOrder;
+    }
+
 
     /**
      * 根据订单数量动态添加订单模板，每家店铺的所有商品为一个订单
      */
     private void initOrderLayout() {
-        for (int i=0;i<orderList.size();i++) {
+        for (int i = 0; i < orderList.size(); i++) {
             ShoppingCarBean carBean = orderList.get(i);
             ArrayList<ShoppingGoodsBean> goods = carBean.getGoods();
             View view = getLayoutInflater().inflate(R.layout.layout_add_comfirm_order_model, llOrderContainer, false);//动态店铺版面
@@ -110,9 +117,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                 TextView tvCount = (TextView) subView.findViewById(R.id.tv_car_goods_count);
                 Glide.with(this).load(orderBean.getUrl()).into(ivPhoto);
                 tvDescribe.setText(orderBean.getIntroduce());
-                tvColorSize.setText("颜色："+orderBean.getColor());
-                tvCount.setText("x"+orderBean.getCount());
-                tvSinglePrice.setText("¥"+orderBean.getPrice());
+                tvColorSize.setText("颜色：" + orderBean.getColor());
+                tvCount.setText("x" + orderBean.getCount());
+                tvSinglePrice.setText("¥" + orderBean.getPrice());
                 sum = orderBean.getPrice() * orderBean.getCount();
 
                 totalCount += orderBean.getCount();
@@ -121,17 +128,17 @@ public class ConfirmOrderActivity extends BaseActivity {
                 subContainer.addView(subView);
             }
 
-            tvSumPay.setText("¥"+ storeSumPrice);
+            tvSumPay.setText("¥" + storeSumPrice);
             totalPrice += storeSumPrice;
 
             llOrderContainer.addView(view);
             addViews.add(view);
             //提交当前店铺订单
-            submitOrderForOneStore(goods,i);
+            submitOrderForOneStore(goods, i);
         }
 
-        tvGoodsCount.setText("总共"+totalCount+"件商品");
-        tvTotalMoney.setText("¥"+totalPrice);
+        tvGoodsCount.setText("总共" + totalCount + "件商品");
+        tvTotalMoney.setText("¥" + totalPrice);
 
     }
 
@@ -212,7 +219,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     /**
      * 提交某家店铺中的订单
      */
-    public void submitOrderForOneStore(List<ShoppingGoodsBean> goods,int position){
+    public void submitOrderForOneStore(List<ShoppingGoodsBean> goods, int position) {
         int[] skuIds = new int[goods.size()];
         int[] nums = new int[goods.size()];
         for (int i = 0; i < goods.size(); i++) {
@@ -223,18 +230,18 @@ public class ConfirmOrderActivity extends BaseActivity {
 
         //先向服务器提交订单
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("orders.user.token",sp.get("token"))
-                .add("orders.shoppingAddress.id",defaultAddressId+"");
+        builder.add("orders.user.token", sp.get("token"))
+                .add("orders.shoppingAddress.id", defaultAddressId + "");
         for (int skuId : skuIds) {
-            builder.add("ids",skuId+"");
+            builder.add("ids", skuId + "");
         }
         for (int num : nums) {
-            builder.add("nums",num+"");
+            builder.add("nums", num + "");
         }
 
         View view = addViews.get(position);
         EditText etLeave = (EditText) view.findViewById(R.id.et_say_to_seller);
-        builder.add("order.leave",etLeave.getText().toString());
+        builder.add("order.leave", etLeave.getText().toString());
 
 
         FormBody formBody = builder.build();
@@ -251,8 +258,8 @@ public class ConfirmOrderActivity extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                LogUtil.i("TAG","订单提交结果==="+result);
-                if(result.contains("1000")){
+                LogUtil.i("TAG", "订单提交结果===" + result);
+                if (result.contains("1000")) {
 
                 }
             }

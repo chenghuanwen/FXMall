@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,6 +48,8 @@ public class MessageCenterActivity extends BaseActivity {
     RelativeLayout rlPublishDemand;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
+    @BindView(R.id.activity_message_center)
+    LinearLayout activityMessageCenter;
 
     private View headerview;
 
@@ -57,6 +60,11 @@ public class MessageCenterActivity extends BaseActivity {
         setContentView(R.layout.activity_message_center);
         ButterKnife.bind(this);
         initHeaderview();
+    }
+
+    @Override
+    public View getContentView() {
+        return activityMessageCenter;
     }
 
     private void initHeaderview() {

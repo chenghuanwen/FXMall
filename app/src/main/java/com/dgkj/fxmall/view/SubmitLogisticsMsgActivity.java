@@ -43,6 +43,11 @@ public class SubmitLogisticsMsgActivity extends BaseActivity {
         initHeaderView();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "提交物流信息");

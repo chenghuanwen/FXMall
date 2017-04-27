@@ -9,13 +9,16 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.OrderBean;
+import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.ApplyRefundActivity;
 import com.dgkj.fxmall.view.LogisticsDetialActivity;
@@ -24,6 +27,7 @@ import com.dgkj.fxmall.view.PublishCommentActivity;
 import com.dgkj.fxmall.view.RefundDetialActivity;
 import com.dgkj.fxmall.view.ShangpuDeliverActivity;
 import com.dgkj.fxmall.view.SubmitLogisticsMsgActivity;
+import com.dgkj.fxmall.view.myView.PasswordInputView;
 import com.dgkj.fxmall.view.myView.PayDialog;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -43,7 +47,7 @@ import okhttp3.Response;
  * Created by Android004 on 2017/3/28.
  */
 
-public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements View.OnClickListener{
+public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implements View.OnClickListener{
     private Context context;
     /**
      * 个人订单中心
@@ -73,8 +77,10 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
     private OkHttpClient client ;
     private SharedPreferencesUnit sp;
     private Handler handler;
+    private List<OrderBean> subOrders;
+    private String from = "";
 
-    public OrderClassifyAdapter(Context context,List<OrderBean> datas,FragmentActivity activity) {
+    public OrderClassifyAdapter(Context context, List<SuperOrderBean> datas, FragmentActivity activity) {
         super(context,-1, datas);
         this.context = context;
         this.activity = activity;
@@ -85,18 +91,57 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
 
 
     @Override
-    protected void convert(ViewHolder holder, final OrderBean order, final int position) {
+    protected void convert(ViewHolder holder, final SuperOrderBean superOrderBean, final int position) {
+        subOrders = superOrderBean.getSubOrders();
+        final OrderBean order = subOrders.get(0);
         holder.setText(R.id.tv_order_storename,order.getStoreName());
         holder.setText(R.id.tv_order_state,order.getState());
         holder.setText(R.id.tv_car_goods_introduce,order.getIntroduce());
         holder.setText(R.id.tv_car_goods_color,"颜色："+order.getColor());
-        holder.setText(R.id.tv_car_goods_size,"尺寸："+order.getSize());
+       // holder.setText(R.id.tv_car_goods_size,"尺寸："+order.getSize());
         holder.setText(R.id.tv_car_goods_price,"¥"+order.getSinglePrice());
         holder.setText(R.id.tv_car_goods_count,"x"+order.getCount());
         holder.setText(R.id.tv_sumPrice,"¥"+(order.getSinglePrice()*order.getCount()));
-        holder.setText(R.id.tv_postage,"(含邮费¥"+order.getPostage()+")");
+        int postage = order.getPostage();
+        if(postage == 0){
+            holder.setText(R.id.tv_postage,"(包邮)");
+        }else {
+            holder.setText(R.id.tv_postage,"(含邮费¥"+ postage +")");
+        }
         ImageView iv = holder.getView(R.id.iv_car_goods);
         Glide.with(context).load(order.getUrl()).placeholder(R.mipmap.android_quanzi).into(iv);
+
+        //动态添加多个商品信息
+        LinearLayout subContainer = holder.getView(R.id.ll_order_sub_container);
+        if(subOrders.size() > 1){
+            for (int i = 1; i < subOrders.size(); i++) {
+                OrderBean orderBean = subOrders.get(i);
+                View view = mInflater.inflate(R.layout.item_order_subcommon, subContainer, false);
+                subContainer.addView(view);
+
+                TextView tvContent = (TextView) view.findViewById(R.id.tv_car_goods_introduce);
+                TextView tvColor = (TextView) view.findViewById(R.id.tv_car_goods_color);
+                TextView tvPrice = (TextView) view.findViewById(R.id.tv_car_goods_price);
+                TextView tvGoodsCount = (TextView) view.findViewById(R.id.tv_car_goods_count);
+                TextView tvSumPrice = (TextView) view.findViewById(R.id.tv_sumPrice);
+                TextView tvPostage = (TextView) view.findViewById(R.id.tv_postage);
+                ImageView ivPhoto = (ImageView) view.findViewById(R.id.iv_car_goods);
+                tvContent.setText(orderBean.getIntroduce());
+                tvColor.setText("颜色："+orderBean.getColor());
+                tvPrice.setText("¥"+orderBean.getSinglePrice());
+                tvGoodsCount.setText("x"+orderBean.getCount());
+                tvSumPrice.setText("¥"+(orderBean.getSinglePrice()*orderBean.getCount()));
+                int postage1 = orderBean.getPostage();
+                if(postage == 0){
+                    tvPostage.setText("(包邮)");
+                }else {
+                    tvPostage.setText("(含邮费¥"+ postage1 +")");
+                }
+                Glide.with(context).load(orderBean.getUrl()).placeholder(R.mipmap.android_quanzi).into(ivPhoto);
+            }
+        }
+
+
 
         TextView type = holder.getView(R.id.tv_money_type);
 
@@ -105,7 +150,17 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, OrderDetialActivity.class);
-                intent.putExtra("order",order);
+                intent.putExtra("order",superOrderBean);
+                intent.putExtra("from",from);
+                context.startActivity(intent);
+            }
+        });
+        holder.setOnClickListener(R.id.ll_order_sub_container, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, OrderDetialActivity.class);
+                intent.putExtra("order",superOrderBean);
+                intent.putExtra("from",from);
                 context.startActivity(intent);
             }
         });
@@ -128,12 +183,13 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
                 });
                 break;
             case WAIT_DELIVER:
-                holder.setOnClickListener(R.id.btn_apply_refund, new View.OnClickListener() {
+              /*  holder.setOnClickListener(R.id.btn_apply_refund, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//申请退款
+
                         showCancleDialog(position,"退款");
                     }
-                });
+                });*/
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提醒发货
@@ -148,16 +204,16 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
                         context.startActivity(new Intent(context, LogisticsDetialActivity.class));
                     }
                 });
-                holder.setOnClickListener(R.id.btn_scale_return, new View.OnClickListener() {
+              /*  holder.setOnClickListener(R.id.btn_scale_return, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//申请退货
                         context.startActivity(new Intent(context, ApplyRefundActivity.class));
                     }
-                });
+                });*/
                 holder.setOnClickListener(R.id.btn_confirm_takegoods, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//确认收货
-
+                        showDeleteDialog(superOrderBean);
                     }
                 });
                 break;
@@ -171,13 +227,15 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//删除订单
-                        showDeleteDialog(position);
+                        showDeleteDialog(position,"user");
                     }
                 });
                 holder.setOnClickListener(R.id.btn_comment, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//评价
-                        context.startActivity(new Intent(context, PublishCommentActivity.class));
+                        Intent intent = new Intent(context, PublishCommentActivity.class);
+                        intent.putExtra("order",superOrderBean);
+                        context.startActivity(intent);
                     }
                 });
                 break;
@@ -185,13 +243,13 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
-
+                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//删除订单
-                        showDeleteDialog(position);
+                        showDeleteDialog(position,"user");
                     }
                 });
                 holder.setOnClickListener(R.id.btn_comment_finish, new View.OnClickListener() {
@@ -303,7 +361,7 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//删除订单
-                        showDeleteDialog(position);
+                        showDeleteDialog(position,"store");
                     }
                 });
                 break;
@@ -334,7 +392,7 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//删除订单
-                        showDeleteDialog(position);
+                        showDeleteDialog(position,"store");
                     }
                 });
 
@@ -345,7 +403,7 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
 
     @Override
     public int getItemViewType(int position) {
-        String state = mDatas.get(position).getState();
+        String state = mDatas.get(position).getSubOrders().get(0).getState();
         switch (state){
             //个人订单
             case "等待买家付款":
@@ -397,67 +455,83 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
             case WAIT_PAY:
               view = mInflater.inflate(R.layout.item_order_waitpay,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             case WAIT_DELIVER:
                view = mInflater.inflate(R.layout.item_order_waitdeliver,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             case WAIT_TAKE_GOODS:
                view = mInflater.inflate(R.layout.item_order_wait_takegoods,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             case WAIT_COMMENT:
               view = mInflater.inflate(R.layout.item_order_wait_comment,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             case ORDER_COMPLETE:
               view = mInflater.inflate(R.layout.item_order_complete,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             case APPLAY_REFUND:
                 view = mInflater.inflate(R.layout.item_order_wait_handler_refund,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             case AGREE_REFUND:
                 view = mInflater.inflate(R.layout.item_order_agree_refund,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             case REDUND_SUCCESSED:
                 view = mInflater.inflate(R.layout.item_order_refund_successed,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "user";
                 break;
             //店铺
             case SELLER_WAIT_DELIVER:
                 view = mInflater.inflate(R.layout.item_store_order_wait_deliver,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
             case SELLER_HAS_DELIVER:
                 view = mInflater.inflate(R.layout.item_store_order_has_deliver,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
             case SELLER_HAS_SOLD:
                 view = mInflater.inflate(R.layout.item_store_order_sold,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
             case BUYER_APPLAY_REFUND:
                 view = mInflater.inflate(R.layout.item_store_order_buyer_apply_refund,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
             case SELLER_WAIT_TAKE_GOODS:
                 view = mInflater.inflate(R.layout.item_store_order_wait_take_goods,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
             case REFUND_COMPLETE:
                 view = mInflater.inflate(R.layout.item_store_order_refund_complete,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
             case WAIT_BUYER_DELIVER:
                 view = mInflater.inflate(R.layout.item_store_wait_buyer_deliver,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
             case SELLER_REFUSED_REFUND:
                 view = mInflater.inflate(R.layout.item_store_refused_apply,parent,false);
                 viewHolder = new ViewHolder(context,view);
+                from = "store";
                 break;
 
         }
@@ -481,6 +555,9 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
         iv2 = (ImageView) contentview.findViewById(R.id.iv_confirm2);
         iv3 = (ImageView) contentview.findViewById(R.id.iv_confirm3);
         iv4 = (ImageView) contentview.findViewById(R.id.iv_confirm4);
+
+        cancleReason = tvReason1.getText().toString();//默认理由
+
         tvReason1.setOnClickListener(this);
         tvReason2.setOnClickListener(this);
         tvReason3.setOnClickListener(this);
@@ -589,7 +666,12 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
     }
 
 
-    private void showDeleteDialog(final int position){
+    /**
+     * 删除订单弹窗
+     * @param position
+     * @param from
+     */
+    private void showDeleteDialog(final int position, final String from){
         View contentview = mInflater.inflate(R.layout.layout_delete_dialog, null);
        final AlertDialog pw = new AlertDialog.Builder(mContext).create();
         pw.setView(contentview);
@@ -597,6 +679,8 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO 向服务器发送删除请求
+                postDeleteInfo2Server(mDatas.get(position).getId(),from);
                 mDatas.remove(position);
                 notifyDataSetChanged();
                 pw.dismiss();
@@ -614,5 +698,142 @@ public class OrderClassifyAdapter extends CommonAdapter<OrderBean> implements Vi
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(true);
         pw.show();
+    }
+
+    /**
+     * 发送删除请求到服务器
+     * @param id
+     * @param from
+     */
+    private void postDeleteInfo2Server(int id, String from) {
+        String url = "";
+        if("user".equals(from)){
+            url = FXConst.DELETE_ORDER_FOR_USER;
+        }else if("store".equals(from)){
+            url = FXConst.DELETE_ORDER_FOR_STORE;
+        }
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"")
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"删除成功！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"删除失败！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 确认收货弹窗
+     * @param orderBean
+     */
+    private void showDeleteDialog(final SuperOrderBean orderBean){
+        View contentview = mInflater.inflate(R.layout.layout_confirm_takegoods_dialog, null);
+        final AlertDialog pw = new AlertDialog.Builder(context).create();
+        pw.setView(contentview);
+        TextView tvCancel = (TextView) contentview.findViewById(R.id.tv_colse);
+        final PasswordInputView piv = (PasswordInputView) contentview.findViewById(R.id.piv_set);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+            }
+        });
+
+        piv.setInputCompletetListener(new InputCompletetListener() {
+            @Override
+            public void inputComplete() {
+                String password = piv.getEditContent();
+                //TODO 检测支付密码的正确性,进行提现
+                confirmTakeGoods(orderBean.getId(),password);
+            }
+
+            @Override
+            public void deleteContent(boolean isDelete) {
+
+            }
+        });
+
+        //设置触摸对话框以外区域，对话框消失
+        pw.setCanceledOnTouchOutside(false);
+        pw.show();
+    }
+
+    /**
+     * 确认收货
+     * @param id 订单id
+     * @param payWord 支付密码
+     */
+    private void confirmTakeGoods(int id,String payWord) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"")
+                .add("user.payPassword",payWord)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.CONFIRM_TAKEGOODS_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                if(result.contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"收货成功！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else if(result.contains("109")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"非法操作！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 }

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#fff"
-    android:orientation="vertical"
-    android:id="@+id/order_comment">
+    android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp">
@@ -35,6 +34,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/order_comment"
         android:layout_width="match_parent"
         android:layout_height="120dp">
         <ImageView
@@ -77,7 +77,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="尺码：均码"
+                    tools:text="尺码：均码"
                     android:gravity="center_vertical"
                     android:textColor="#909090"
                     android:textSize="12sp"/>
@@ -142,5 +142,10 @@
             android:textSize="14sp"
             />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_order_sub_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
 
 </LinearLayout>

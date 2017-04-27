@@ -6,11 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.LogisticsMsgDetialAdapter;
-import com.dgkj.fxmall.adapter.LogiticsMsgAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.LogisticsBean;
 import com.dgkj.fxmall.control.FXMallControl;
@@ -41,6 +41,8 @@ public class LogisticsDetialActivity extends BaseActivity {
     RecyclerView rvLogistics;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
+    @BindView(R.id.activity_logistics_detial)
+    LinearLayout activityLogisticsDetial;
     private View headerview;
     private List<LogisticsBean> msgList = new ArrayList<>();
     private LogisticsMsgDetialAdapter adapter;
@@ -56,11 +58,16 @@ public class LogisticsDetialActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return activityLogisticsDetial;
+    }
+
     private void refresh() {
         control.getLogisticsDetial(new OnGetLogisticsDetialFinishedListener() {
             @Override
             public void OnGetLogisticsDetialFinished(List<LogisticsBean> msgs) {
-                adapter.addAll(msgs,true);
+                adapter.addAll(msgs, true);
                 timeline.setTimelineCount(msgs.size());
             }
         });
@@ -68,7 +75,7 @@ public class LogisticsDetialActivity extends BaseActivity {
     }
 
     private void initData() {
-        adapter = new LogisticsMsgDetialAdapter(this,R.layout.item_logistics_detial,msgList);
+        adapter = new LogisticsMsgDetialAdapter(this, R.layout.item_logistics_detial, msgList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvLogistics.setLayoutManager(layoutManager);
         rvLogistics.setAdapter(adapter);

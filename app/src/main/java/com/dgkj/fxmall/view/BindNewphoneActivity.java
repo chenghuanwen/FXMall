@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -31,8 +32,11 @@ public class BindNewphoneActivity extends BaseActivity {
     Button btnCancel;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
+    @BindView(R.id.activity_bind_newphone)
+    LinearLayout activityBindNewphone;
 
     private View headerview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,27 +45,32 @@ public class BindNewphoneActivity extends BaseActivity {
         initHeaderView();
     }
 
+    @Override
+    public View getContentView() {
+        return activityBindNewphone;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
-        setHeaderTitle(headerview,"更换手机");
+        setHeaderTitle(headerview, "更换手机");
     }
 
     @OnClick(R.id.btn_cancel)
-    public void cancel(){
+    public void cancel() {
         finish();
     }
 
     @OnClick(R.id.btn_confirm)
-    public void confirm(){
+    public void confirm() {
         String phone = etNewPhone.getText().toString();
         String code = etCheckCode.getText().toString();
-        if(TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)){
+        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(code)) {
             toast("请输入手机号和验证码！");
             return;
         }
-        Intent intent = new Intent(this,UserMsgActivity.class);
-        intent.putExtra("from","newphone");
+        Intent intent = new Intent(this, UserMsgActivity.class);
+        intent.putExtra("from", "newphone");
         intent.putExtra("phone", phone);
-        jumpTo(intent,true);
+        jumpTo(intent, true);
     }
 }

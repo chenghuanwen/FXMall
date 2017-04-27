@@ -65,6 +65,11 @@ public class StoreMsgActivity extends BaseActivity {
         setData();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
 
     private void setData() {
         store = (StoreBean) getIntent().getSerializableExtra("store");

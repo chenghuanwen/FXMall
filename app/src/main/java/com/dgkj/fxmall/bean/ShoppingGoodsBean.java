@@ -23,6 +23,40 @@ public class ShoppingGoodsBean implements Serializable{
     private int statu ;//是否已下架
     private int sales;
 
+    private int describeScore,priceScore,qualityScore;
+    private double totalScore;
+
+    public int getDescribeScore() {
+        return describeScore;
+    }
+
+    public void setDescribeScore(int describeScore) {
+        this.describeScore = describeScore;
+    }
+
+    public int getPriceScore() {
+        return priceScore;
+    }
+
+    public void setPriceScore(int priceScore) {
+        this.priceScore = priceScore;
+    }
+
+    public int getQualityScore() {
+        return qualityScore;
+    }
+
+    public void setQualityScore(int qualityScore) {
+        this.qualityScore = qualityScore;
+    }
+
+    public double getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(double totalScore) {
+        this.totalScore = totalScore;
+    }
 
     public int getInventory() {
         return inventory;

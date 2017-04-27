@@ -7,7 +7,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#fff"
-    tools:context="com.dgkj.fxmall.view.ProductDetialActivity">
+    tools:context="com.dgkj.fxmall.view.ProductDetialActivity"
+    android:clipChildren="false"
+    android:clipToPadding="false">
     <com.dgkj.fxmall.view.myView.FullyNestScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -178,7 +180,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="49dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#fff">
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"

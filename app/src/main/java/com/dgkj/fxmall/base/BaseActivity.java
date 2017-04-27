@@ -1,5 +1,7 @@
 package com.dgkj.fxmall.base;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,14 +20,16 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.Position;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
+import com.dgkj.fxmall.view.myView.ShareCommandDialog;
 
 /**我的模块activity基类
  * Created by 成焕文 on 2016/8/8.
  */
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     public boolean DEBUG_MODE = true;
     public Toast toast;
     public SharedPreferencesUnit sp;
+    private ClipboardManager clipboardManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,25 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.parseColor("#62b1fe"));
         }
         sp = SharedPreferencesUnit.getInstance(this);
+        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ClipData primaryClip = clipboardManager.getPrimaryClip();
+        if(primaryClip==null){return;}
+        CharSequence pate = primaryClip.getItemAt(0).getText();
+        if(pate==null){return;}
+        String clip = pate.toString();
+        if(clip.contains("¥FXMall¥")){
+            ShareCommandDialog dialog = new ShareCommandDialog(this,clipboardManager);
+            dialog.showPopupWindow(getContentView());
+        }
+
     }
 
 
@@ -162,4 +185,6 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
+
+    public abstract View getContentView();
 }

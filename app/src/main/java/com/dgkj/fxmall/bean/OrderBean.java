@@ -13,7 +13,7 @@ public class OrderBean implements Serializable{
     private int postage;
     private String state;
     private String orderNum;
-    private int id;
+    private int id;//订单id
     private long payTime;
     private int brokerage;
     private double sumPrice;
@@ -22,6 +22,34 @@ public class OrderBean implements Serializable{
     private String takeMan,takePhone,takeAddress;
     private int stateNum;
     private String buyerLeave;
+    private int productId;//商品id
+    private int skuId;//商品sku id
+    private String express;
+
+
+    public int getSkuId() {
+        return skuId;
+    }
+
+    public void setSkuId(int skuId) {
+        this.skuId = skuId;
+    }
+
+    public String getExpress() {
+        return express;
+    }
+
+    public void setExpress(String express) {
+        this.express = express;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
     public String getBuyerLeave() {
         return buyerLeave;

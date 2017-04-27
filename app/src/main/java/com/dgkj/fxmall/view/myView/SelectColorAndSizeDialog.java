@@ -2,14 +2,20 @@ package com.dgkj.fxmall.view.myView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.PopupWindowCompat;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,7 +39,7 @@ import okhttp3.OkHttpClient;
  * Created by Android004 on 2017/4/5.
  */
 @SuppressLint("ValidFragment")
-public class SelectColorAndSizeDialog extends DialogFragment {
+public class SelectColorAndSizeDialog extends PopupWindow {
     private int resId;
     private ShoppingGoodsBean goods;
     private int count;
@@ -44,6 +50,7 @@ public class SelectColorAndSizeDialog extends DialogFragment {
     private BaseActivity activity;
     private String selectColor = "";
     private OnSelectColorSizeFinishedListener listener;
+    private View conentView;
     public SelectColorAndSizeDialog(BaseActivity activity, int resId, ShoppingGoodsBean goods, String from, OnSelectColorSizeFinishedListener listener){
         this.resId = resId;
         this.goods = goods;
@@ -52,39 +59,29 @@ public class SelectColorAndSizeDialog extends DialogFragment {
         this.listener = listener;
         count = goods.getCount();
         client = new OkHttpClient.Builder().build();
-        sp = SharedPreferencesUnit.getInstance(getContext());
+        sp = SharedPreferencesUnit.getInstance(activity);
         control = new FXMallControl();
+        init();
+        setData();
+
+
     }
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // 使用不带theme的构造器，获得的dialog边框距离屏幕仍有几毫米的缝隙。
-        // Dialog dialog = new Dialog(getActivity());
-        final Dialog dialog = new Dialog(getActivity(), R.style.ColorAndSizeSelectDialog);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 必须在设置布局之前调用
-        dialog.setContentView(resId);
-        dialog.setCanceledOnTouchOutside(true);
 
-        // 设置宽度为屏宽、靠近屏幕底部。
-        Window window = dialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.BOTTOM;
-        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        window.setAttributes(wlp);
-
-        final RadioButton tvCS1 = (RadioButton) dialog.findViewById(R.id.tv_cs_1);
-        final RadioButton tvCS2 = (RadioButton) dialog.findViewById(R.id.tv_cs_2);
-        final RadioButton tvCS3 = (RadioButton) dialog.findViewById(R.id.tv_cs_3);
-        final RadioButton tvCS4 = (RadioButton) dialog.findViewById(R.id.tv_cs_4);
-        TextView tvPrice = (TextView) dialog.findViewById(R.id.tv_price);
-        TextView tvInventory = (TextView) dialog.findViewById(R.id.tv_inventory);
-        final TextView tvColor = (TextView) dialog.findViewById(R.id.tv_color_select);
-        final TextView tvCount = (TextView) dialog.findViewById(R.id.tv_edit_car_count);
-        TextView tvAdd = (TextView) dialog.findViewById(R.id.tv_edit_car_add);
-        TextView tvMius = (TextView) dialog.findViewById(R.id.tv_edit_car_minus);
-        ImageView ivProduct = (ImageView) dialog.findViewById(R.id.iv_product_photo);
-        ImageView ivCancel = (ImageView) dialog.findViewById(R.id.iv_cancel);
-        RadioGroup rgCS = (RadioGroup) dialog.findViewById(R.id.rg_cs);
-        Glide.with(getContext()).load(goods.getUrl()).into(ivProduct);
+    private void setData() {
+        final RadioButton tvCS1 = (RadioButton) conentView.findViewById(R.id.tv_cs_1);
+        final RadioButton tvCS2 = (RadioButton) conentView.findViewById(R.id.tv_cs_2);
+        final RadioButton tvCS3 = (RadioButton) conentView.findViewById(R.id.tv_cs_3);
+        final RadioButton tvCS4 = (RadioButton) conentView.findViewById(R.id.tv_cs_4);
+        TextView tvPrice = (TextView) conentView.findViewById(R.id.tv_price);
+        TextView tvInventory = (TextView) conentView.findViewById(R.id.tv_inventory);
+        final TextView tvColor = (TextView) conentView.findViewById(R.id.tv_color_select);
+        final TextView tvCount = (TextView) conentView.findViewById(R.id.tv_edit_car_count);
+        TextView tvAdd = (TextView) conentView.findViewById(R.id.tv_edit_car_add);
+        TextView tvMius = (TextView) conentView.findViewById(R.id.tv_edit_car_minus);
+        ImageView ivProduct = (ImageView) conentView.findViewById(R.id.iv_product_photo);
+        ImageView ivCancel = (ImageView) conentView.findViewById(R.id.iv_cancel);
+        RadioGroup rgCS = (RadioGroup) conentView.findViewById(R.id.rg_cs);
+        Glide.with(activity).load(goods.getUrl()).into(ivProduct);
         tvPrice.setText("¥"+goods.getPrice());
         tvCount.setText(count+"");
         tvInventory.setText("(库存:"+goods.getInventory()+"件)");
@@ -93,7 +90,7 @@ public class SelectColorAndSizeDialog extends DialogFragment {
         ivCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                dismiss();
             }
         });
 
@@ -135,8 +132,8 @@ public class SelectColorAndSizeDialog extends DialogFragment {
         });
 
         if(resId==R.layout.layout_car_select_color_size){
-            TextView tvAdd2Car = (TextView) dialog.findViewById(R.id.tv_add_to_car);
-            TextView tv2Buy = (TextView) dialog.findViewById(R.id.tv_go_buy);
+            TextView tvAdd2Car = (TextView) conentView.findViewById(R.id.tv_add_to_car);
+            TextView tv2Buy = (TextView) conentView.findViewById(R.id.tv_go_buy);
             tvAdd2Car.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -164,7 +161,7 @@ public class SelectColorAndSizeDialog extends DialogFragment {
                 }
             });
         }else {
-            TextView tvConfirm = (TextView) dialog.findViewById(R.id.tv_confirm);
+            TextView tvConfirm = (TextView) conentView.findViewById(R.id.tv_confirm);
             tvConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -181,16 +178,51 @@ public class SelectColorAndSizeDialog extends DialogFragment {
                         orders.add(carBean);
                         Intent intent = new Intent(activity,ConfirmOrderActivity.class);
                         intent.putExtra("orders",orders);
-                        getContext().startActivity(intent);
+                        activity.startActivity(intent);
                         listener.selectCompelete(selectColor);
                     }else {
                         listener.selectCompelete(selectColor);
-                        dialog.dismiss();
+                        dismiss();
                     }
                 }
             });
         }
 
-        return dialog;
+    }
+
+    private void init() {
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        conentView = inflater.inflate(resId, null);
+        int h = activity.getWindowManager().getDefaultDisplay().getHeight();
+        int w = activity.getWindowManager().getDefaultDisplay().getWidth();
+        // 设置SelectPicPopupWindow的View
+        this.setContentView(conentView);
+        // 设置SelectPicPopupWindow弹出窗体的宽
+        this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        // 设置SelectPicPopupWindow弹出窗体的高
+        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        // 设置SelectPicPopupWindow弹出窗体可点击
+        this.setFocusable(true);
+        this.setOutsideTouchable(true);
+        // 刷新状态
+        this.update();
+        // 实例化一个ColorDrawable颜色为半透明
+        ColorDrawable dw = new ColorDrawable(0000000000);
+        // 点back键和其他地方使其消失,设置了这个才能触发OnDismisslistener ，设置其他控件变化等操作
+        this.setBackgroundDrawable(dw);
+    }
+
+    /**
+     * 显示popupWindow
+     *
+     * @param parent
+     */
+    public void showPopupWindow(View parent) {
+        if (!this.isShowing()) {
+            // 以下拉方式显示popupwindow
+            this.showAtLocation(parent,Gravity.BOTTOM,0,0);
+        } else {
+            this.dismiss();
+        }
     }
 }

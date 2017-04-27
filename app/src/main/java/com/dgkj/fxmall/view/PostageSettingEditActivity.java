@@ -3,9 +3,7 @@ package com.dgkj.fxmall.view;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +20,6 @@ import com.dgkj.fxmall.bean.DistrictSelectBean;
 import com.dgkj.fxmall.bean.PostageBean;
 import com.dgkj.fxmall.bean.SuperPostageBean;
 import com.dgkj.fxmall.constans.FXConst;
-import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.ProvinceManagerUtil;
 
 import java.io.IOException;
@@ -61,6 +58,8 @@ public class PostageSettingEditActivity extends BaseActivity {
     Button btnConfirm;
     @BindView(R.id.ll_model_container)
     LinearLayout llModelContainer;
+    @BindView(R.id.activity_postage_setting_edit)
+    LinearLayout activityPostageSettingEdit;
     private View headerview;
     private ProvinceManagerUtil managerUtil = new ProvinceManagerUtil();
     private int position;//地区选择父选项位置
@@ -69,7 +68,7 @@ public class PostageSettingEditActivity extends BaseActivity {
     private List<String> provinces = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private SuperPostageBean newSuperPost = new SuperPostageBean();
-    private Map<Integer,List<String>> provinceMap = new HashMap<>();
+    private Map<Integer, List<String>> provinceMap = new HashMap<>();
     private int mapKey = 0;
     private SuperPostageBean editSuperPost;
     private int editPosition;
@@ -84,6 +83,11 @@ public class PostageSettingEditActivity extends BaseActivity {
         initData();
     }
 
+    @Override
+    public View getContentView() {
+        return activityPostageSettingEdit;
+    }
+
     private void initData() {
         from = getIntent().getStringExtra("from");
         if ("edit".equals(from)) {
@@ -96,7 +100,7 @@ public class PostageSettingEditActivity extends BaseActivity {
             tvPaostPay.setText(postage.getPostPay());
             tvPaostAddCount.setText(postage.getAddCount());
             tvPaostAddPay.setText(postage.getAddPay());
-            if(posts.size() > 1){
+            if (posts.size() > 1) {
                 for (int i = 1; i < posts.size(); i++) {
                     addModel();
                     postageId = posts.get(i).getDistrictId();
@@ -114,7 +118,7 @@ public class PostageSettingEditActivity extends BaseActivity {
                     for (String province : provinces) {
                         sb.append(province).append("、");
                     }
-                    sb.deleteCharAt(sb.length()-1);
+                    sb.deleteCharAt(sb.length() - 1);
                     tvDistrict.setText(sb.toString());
                     etPostCount.setText(postageBean.getPostCount());
                     etPostPay.setText(postageBean.getPostPay());
@@ -145,7 +149,7 @@ public class PostageSettingEditActivity extends BaseActivity {
             public void onClick(View v) {
                 llModelContainer.removeView(view);
                 viewList.remove(view);
-                if("edit".equals(from)){
+                if ("edit".equals(from)) {
                     //TODO 通知服务器删除该子项模板
                     deleteSubPostage(postageId);
                 }
@@ -161,12 +165,13 @@ public class PostageSettingEditActivity extends BaseActivity {
 
     /**
      * 删除某个模板中某个地区模板
+     *
      * @param postageId
      */
     private void deleteSubPostage(int postageId) {
         FormBody body = new FormBody.Builder()
-                .add("store.user.token",sp.get("token"))
-                .add("freightProvinces.id",postageId+"")
+                .add("store.user.token", sp.get("token"))
+                .add("freightProvinces.id", postageId + "")
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.DELETE_SUB_POSTAGE_MODEL)
@@ -175,15 +180,15 @@ public class PostageSettingEditActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(PostageSettingEditActivity.this,"网络异常");
+                toastInUI(PostageSettingEditActivity.this, "网络异常");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body().string().contains("1000")){
-                    toastInUI(PostageSettingEditActivity.this,"删除成功");
-                }else {
-                    toastInUI(PostageSettingEditActivity.this,"删除失败");
+                if (response.body().string().contains("1000")) {
+                    toastInUI(PostageSettingEditActivity.this, "删除成功");
+                } else {
+                    toastInUI(PostageSettingEditActivity.this, "删除失败");
                 }
             }
         });
@@ -234,7 +239,7 @@ public class PostageSettingEditActivity extends BaseActivity {
                 sb.append("(");
                 List<String> selectDistricts = adapter.getSelectDistricts();
 
-                provinceMap.put(mapKey,selectDistricts);
+                provinceMap.put(mapKey, selectDistricts);
                 mapKey++;
 
                 StringBuffer province = new StringBuffer();
@@ -297,14 +302,14 @@ public class PostageSettingEditActivity extends BaseActivity {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("store.user.token", sp.get("token"))
                 .add("name", name)
-                .add("freightProvinces[0].nums",postCount)
-                .add("freightProvinces[0].cost",postPay)
-                .add("freightProvinces[0].increaseNum",addCount)
-                .add("freightProvinces[0].increaseCost",addPay)
-                .add("freightProvinces[0].provinces","[]");
-        if("edit".equals(from)){
-            builder.add("freightProvinces[0].id",editSuperPost.getPosts().get(0).getId()+"")
-                    .add("id",editSuperPost.getId()+"");
+                .add("freightProvinces[0].nums", postCount)
+                .add("freightProvinces[0].cost", postPay)
+                .add("freightProvinces[0].increaseNum", addCount)
+                .add("freightProvinces[0].increaseCost", addPay)
+                .add("freightProvinces[0].provinces", "[]");
+        if ("edit".equals(from)) {
+            builder.add("freightProvinces[0].id", editSuperPost.getPosts().get(0).getId() + "")
+                    .add("id", editSuperPost.getId() + "");
         }
 
         for (int i = 0; i < viewList.size(); i++) {
@@ -318,12 +323,12 @@ public class PostageSettingEditActivity extends BaseActivity {
             String addPost = etAddCount.getText().toString();
             String addPostPay = etAddPay.getText().toString();
 
-            if(TextUtils.isEmpty(count) || TextUtils.isEmpty(pay) || TextUtils.isEmpty(addPost) || TextUtils.isEmpty(addPostPay)){
+            if (TextUtils.isEmpty(count) || TextUtils.isEmpty(pay) || TextUtils.isEmpty(addPost) || TextUtils.isEmpty(addPostPay)) {
                 toast("请先填写完整模板信息");
                 return;
             }
 
-            PostageBean postageBean= new PostageBean();
+            PostageBean postageBean = new PostageBean();
             postageBean.setPostCount(count);
             postageBean.setPostPay(pay);
             postageBean.setAddCount(addPost);
@@ -331,14 +336,14 @@ public class PostageSettingEditActivity extends BaseActivity {
             postageBean.setProvinces(provinceMap.get(i));
             postlist.add(postageBean);
 
-            builder.add("freightProvinces["+(i+1)+"].nums",count)
-                    .add("freightProvinces["+(i+1)+"].cost",pay)
-                    .add("freightProvinces["+(i+1)+"].increaseNum",addPost)
-                    .add("freightProvinces["+(i+1)+"].increaseCost",addPostPay)
-                    .add("freightProvinces["+(i+1)+"].provinces",provinces.get(i));
-            if("edit".equals(from)){
-                builder.add("freightProvinces["+(i+1)+"].id",editSuperPost.getPosts().get(i+1).getId()+"")
-                        .add("id",editSuperPost.getId()+"");
+            builder.add("freightProvinces[" + (i + 1) + "].nums", count)
+                    .add("freightProvinces[" + (i + 1) + "].cost", pay)
+                    .add("freightProvinces[" + (i + 1) + "].increaseNum", addPost)
+                    .add("freightProvinces[" + (i + 1) + "].increaseCost", addPostPay)
+                    .add("freightProvinces[" + (i + 1) + "].provinces", provinces.get(i));
+            if ("edit".equals(from)) {
+                builder.add("freightProvinces[" + (i + 1) + "].id", editSuperPost.getPosts().get(i + 1).getId() + "")
+                        .add("id", editSuperPost.getId() + "");
             }
         }
         //用于返回上个界面显示
@@ -347,9 +352,9 @@ public class PostageSettingEditActivity extends BaseActivity {
         FormBody body = builder.build();
         Request.Builder requestBuild = new Request.Builder();
         requestBuild.post(body);
-        if("edit".equals(from)){
+        if ("edit".equals(from)) {
             requestBuild.url(FXConst.UPDATE_POSTAGE_MODEL);
-        }else {
+        } else {
             requestBuild.url(FXConst.ADD_POSTAGE_MODEL);
         }
         Request request = requestBuild.build();
@@ -357,15 +362,17 @@ public class PostageSettingEditActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(PostageSettingEditActivity.this,"网络错误！");
+                toastInUI(PostageSettingEditActivity.this, "网络错误！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                    if(response.body().string().contains("1000")){
-                        toastInUI(PostageSettingEditActivity.this,"已成功新增运费模板");
-                        uploadPostageFinish();
-                    }else { toastInUI(PostageSettingEditActivity.this,"新增运费模板失败");}
+                if (response.body().string().contains("1000")) {
+                    toastInUI(PostageSettingEditActivity.this, "已成功新增运费模板");
+                    uploadPostageFinish();
+                } else {
+                    toastInUI(PostageSettingEditActivity.this, "新增运费模板失败");
+                }
             }
         });
 
@@ -376,11 +383,11 @@ public class PostageSettingEditActivity extends BaseActivity {
 
         Intent intent = new Intent();
         intent.putExtra("model", newSuperPost);
-        if("edit".equals(from)){
-            intent.putExtra("from","edit");
-            intent.putExtra("position",editPosition);
-        }else {
-            intent.putExtra("from","new");
+        if ("edit".equals(from)) {
+            intent.putExtra("from", "edit");
+            intent.putExtra("position", editPosition);
+        } else {
+            intent.putExtra("from", "new");
         }
         setResult(132, intent);
         finish();

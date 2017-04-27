@@ -1,12 +1,8 @@
 package com.dgkj.fxmall.view;
 
-import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -31,7 +26,6 @@ import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.HomePageFragmentAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
-import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.constans.Permission;
 import com.dgkj.fxmall.fragment.ProductsMallFragment;
 import com.dgkj.fxmall.fragment.HomePageFragment;
@@ -41,7 +35,6 @@ import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.PermissionUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,7 +44,6 @@ import okhttp3.OkHttpClient;
 
 
 public class HomePageActivity extends BaseActivity {
-
 
     @BindView(R.id.tv_city)
     TextView tvCity;
@@ -112,20 +104,11 @@ public class HomePageActivity extends BaseActivity {
 
     }
 
-
     @Override
-    protected void onResume() {
-        super.onResume();
-        ClipData primaryClip = clipboardManager.getPrimaryClip();
-        if(primaryClip==null){return;}
-        CharSequence pate = primaryClip.getItemAt(0).getText();
-        if(pate==null){return;}
-        String clip = pate.toString();
-        if(clip.contains("¥FXMall¥")){
-            showCommandDialog();
-        }
-
+    public View getContentView() {
+        return contentHomePage ;
     }
+
 
     private void initFooter() {
         rgFooter.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -134,12 +117,15 @@ public class HomePageActivity extends BaseActivity {
                 switch (checkedId){
                     case R.id.rb_shangpu:
                        toMain("sp");
+                        rbShangpu.setChecked(false);
                         break;
                     case R.id.rb_yewuyuan:
                         toMain("yw");
+                        rbYewuyuan.setChecked(false);
                         break;
                     case R.id.rb_mine:
                         toMain("mine");
+                        rbMine.setChecked(false);
                         break;
                 }
             }
@@ -415,39 +401,6 @@ public class HomePageActivity extends BaseActivity {
         }
     }
 
-    private void showCommandDialog(){
-        View contentview = getLayoutInflater().inflate(R.layout.layout_check_command_dialog, null);
-        final AlertDialog pw = new AlertDialog.Builder(this).create();
-        pw.setView(contentview);
-        FrameLayout flContainer = (FrameLayout) contentview.findViewById(R.id.fl_command);
-        flContainer.setBackgroundResource(0);
-        TextView tvGirl = (TextView) contentview.findViewById(R.id.tv_confirm);
-        tvGirl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO 获取商品数据
-                Intent intent = new Intent(HomePageActivity.this,ProductDetialActivity.class);
-                MainProductBean product = new MainProductBean();
-                intent.putExtra("product",product);
-                jumpTo(intent,false);
-                pw.dismiss();
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null,""));
-            }
-        });
-        TextView tvBoy = (TextView) contentview.findViewById(R.id.tv_cancle);
-        tvBoy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pw.dismiss();
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null,""));
-            }
-        });
-
-
-        //设置触摸对话框以外区域，对话框消失
-        pw.setCanceledOnTouchOutside(true);
-        pw.show();
-    }
 
 
 

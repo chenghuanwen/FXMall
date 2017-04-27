@@ -125,6 +125,11 @@ public class TakeGoodsAdressActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void refresh() {
         control.getAllTakeAddress(this,sp.get("token"),client, new OnGetAllAddressFinishedListener() {
             @Override

@@ -25,12 +25,12 @@ public class ChangePhoneActivity extends BaseActivity {
     TextView tvGetCode;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
-    @BindView(R.id.activity_change_phone)
-    LinearLayout activityChangePhone;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
     @BindView(R.id.tv_change_by_paypass)
     TextView tvChangeByPaypass;
+    @BindView(R.id.activity_change_phone)
+    LinearLayout activityChangePhone;
     private View headerview;
 
     @Override
@@ -42,6 +42,11 @@ public class ChangePhoneActivity extends BaseActivity {
         etCheckCode.setText(getIntent().getStringExtra("phone"));
     }
 
+    @Override
+    public View getContentView() {
+        return activityChangePhone;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "更换手机");
@@ -49,8 +54,8 @@ public class ChangePhoneActivity extends BaseActivity {
 
 
     @OnClick(R.id.tv_change_by_paypass)
-    public void byPayPass(){
-        jumpTo(ChangePhoneByPasswordActivity.class,false);
+    public void byPayPass() {
+        jumpTo(ChangePhoneByPasswordActivity.class, false);
     }
 
     @OnClick(R.id.btn_confirm)

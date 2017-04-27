@@ -77,6 +77,11 @@ public class ShangpuDeliverActivity extends BaseActivity {
         setData();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void setData() {
         tvDeliverNumber.setText(order.getOrderNum());
         tvBuyersFeedback.setText(order.getBuyerLeave());

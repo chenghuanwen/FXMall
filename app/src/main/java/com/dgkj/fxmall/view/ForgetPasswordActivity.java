@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -25,6 +26,8 @@ public class ForgetPasswordActivity extends BaseActivity {
     Button btnConfirm;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
+    @BindView(R.id.activity_forget_password)
+    LinearLayout activityForgetPassword;
     private View headerview;
 
     @Override
@@ -33,6 +36,11 @@ public class ForgetPasswordActivity extends BaseActivity {
         setContentView(R.layout.activity_forget_password);
         ButterKnife.bind(this);
         initHeaderView();
+    }
+
+    @Override
+    public View getContentView() {
+        return activityForgetPassword;
     }
 
     private void initHeaderView() {
@@ -46,9 +54,9 @@ public class ForgetPasswordActivity extends BaseActivity {
     }
 
     @OnClick(R.id.btn_confirm)
-    public void next(){
+    public void next() {
         //TODO 检测验证码是否正确
-        jumpTo(SetPasswordActivity.class,true);
+        jumpTo(SetPasswordActivity.class, true);
     }
 
     @OnClick(R.id.ib_back)

@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.MyApplication;
@@ -31,6 +31,8 @@ public class PublishProductDetialActivity extends BaseActivity {
     RecyclerView rvAddPitures;
     @BindView(R.id.tv_add_continue)
     TextView tvAddContinue;
+    @BindView(R.id.activity_publish_product_detial)
+    LinearLayout activityPublishProductDetial;
     private View headerview;
     private PublishProductDetialAdapter adapter;
     private List<String> images;
@@ -44,12 +46,18 @@ public class PublishProductDetialActivity extends BaseActivity {
         initHeaderView();
         initData();
 
-        if(MyApplication.selectedPictures != null){
+        if (MyApplication.selectedPictures != null) {
             tvAddPicture.setVisibility(View.GONE);
             tvAddContinue.setVisibility(View.VISIBLE);
             rvAddPitures.setVisibility(View.VISIBLE);
-            adapter.addAll(MyApplication.selectedPictures,true);
+            adapter.addAll(MyApplication.selectedPictures, true);
         }
+    }
+
+    @Override
+    public View getContentView() {
+
+        return activityPublishProductDetial;
     }
 
     private void initData() {
@@ -63,13 +71,13 @@ public class PublishProductDetialActivity extends BaseActivity {
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "商品详情");
-        setHeaderImage(headerview, -1,"完成", Position.RIGHT, new View.OnClickListener() {
+        setHeaderImage(headerview, -1, "完成", Position.RIGHT, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 List<String> sortData = adapter.getSortData();
                 intent.putStringArrayListExtra("sort", (ArrayList<String>) sortData);
-                setResult(129,intent);
+                setResult(129, intent);
                 finish();
             }
         });
@@ -77,15 +85,14 @@ public class PublishProductDetialActivity extends BaseActivity {
 
     @OnClick(R.id.tv_add_picture)
     public void selectPictures() {
-            Intent intent = new Intent(this, PictrueChooserActivity.class);
-            startActivityForResult(intent, 126);
+        Intent intent = new Intent(this, PictrueChooserActivity.class);
+        startActivityForResult(intent, 126);
     }
 
     @OnClick(R.id.tv_add_continue)
-    public void addContinue(){
-        startActivityForResult(new Intent(this,PictrueChooserActivity.class),128);
+    public void addContinue() {
+        startActivityForResult(new Intent(this, PictrueChooserActivity.class), 128);
     }
-
 
 
     @OnClick(R.id.ib_back)
@@ -103,7 +110,7 @@ public class PublishProductDetialActivity extends BaseActivity {
             adapter.addAll(images, true);
         }
 
-        if(requestCode==128 && resultCode==121){
+        if (requestCode == 128 && resultCode == 121) {
             tvAddPicture.setVisibility(View.GONE);
             tvAddContinue.setVisibility(View.VISIBLE);
             rvAddPitures.setVisibility(View.VISIBLE);

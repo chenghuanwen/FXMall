@@ -1,9 +1,13 @@
 package com.dgkj.fxmall.view;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.AppCompatRadioButton;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
@@ -13,6 +17,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.fragment.MineFragment;
 import com.dgkj.fxmall.fragment.ShangpuFragment;
 import com.dgkj.fxmall.fragment.YeWuYuanFragment;
+import com.dgkj.fxmall.view.myView.ShareCommandDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,12 +33,15 @@ public class MainActivity extends BaseActivity {
     AppCompatRadioButton rbMine;
     @BindView(R.id.rg_footer)
     RadioGroup rgFooter;
+    @BindView(R.id.activity_main)
+    LinearLayout activityMain;
 
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     private ShangpuFragment shangpuFragment;
     private YeWuYuanFragment yeWuYuanFragment;
     private MineFragment mineFragment;
+    private ClipboardManager clipboardManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +53,38 @@ public class MainActivity extends BaseActivity {
         initDisplay();
         initFooter();
 
+        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
     }
+
+    @Override
+    public View getContentView() {
+        return activityMain;
+    }
+
+
+   /* @Override
+    protected void onResume() {
+        super.onResume();
+        ClipData primaryClip = clipboardManager.getPrimaryClip();
+        if (primaryClip == null) {
+            return;
+        }
+        CharSequence pate = primaryClip.getItemAt(0).getText();
+        if (pate == null) {
+            return;
+        }
+        String clip = pate.toString();
+        if (clip.contains("¥FXMall¥")) {
+            ShareCommandDialog dialog = new ShareCommandDialog(this, clipboardManager);
+            dialog.showPopupWindow(activityMain);
+        }
+
+    }*/
+
 
     private void initDisplay() {
         String from = getIntent().getStringExtra("from");
-        switch (from){
+        switch (from) {
             case "sp":
                 rbShangpu.setChecked(true);
                 showSP();
@@ -60,10 +95,10 @@ public class MainActivity extends BaseActivity {
                 break;
             case "mine":
                 rbMine.setChecked(true);
-                if(MyApplication.isLogin){
+                if (MyApplication.isLogin) {
                     showMine();
-                }else {
-                    jumpTo(LoginActivity.class,true);
+                } else {
+                    jumpTo(LoginActivity.class, true);
                 }
                 break;
         }
@@ -74,18 +109,18 @@ public class MainActivity extends BaseActivity {
         rgFooter.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.rb_shangpu:
-                      showSP();
+                        showSP();
                         break;
                     case R.id.rb_yewuyuan:
-                       showYW();
+                        showYW();
                         break;
                     case R.id.rb_mine:
-                        if(MyApplication.isLogin){
+                        if (MyApplication.isLogin) {
                             showMine();
-                        }else {
-                            jumpTo(LoginActivity.class,false);
+                        } else {
+                            jumpTo(LoginActivity.class, false);
                         }
                         break;
                 }
@@ -94,33 +129,33 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private void showSP(){
+    private void showSP() {
         fragmentTransaction = fragmentManager.beginTransaction();
-        if(shangpuFragment == null ){
+        if (shangpuFragment == null) {
             shangpuFragment = new ShangpuFragment();
-            fragmentTransaction.add(R.id.rl_display,shangpuFragment);
+            fragmentTransaction.add(R.id.rl_display, shangpuFragment);
         }
         fragmentTransaction.commit();
         hideFragment(fragmentTransaction);
         fragmentTransaction.show(shangpuFragment);
     }
 
-    private void showYW(){
+    private void showYW() {
         fragmentTransaction = fragmentManager.beginTransaction();
-        if(yeWuYuanFragment == null ){
+        if (yeWuYuanFragment == null) {
             yeWuYuanFragment = new YeWuYuanFragment();
-            fragmentTransaction.add(R.id.rl_display,yeWuYuanFragment);
+            fragmentTransaction.add(R.id.rl_display, yeWuYuanFragment);
         }
         fragmentTransaction.commit();
         hideFragment(fragmentTransaction);
         fragmentTransaction.show(yeWuYuanFragment);
     }
 
-    private void showMine(){
+    private void showMine() {
         fragmentTransaction = fragmentManager.beginTransaction();
-        if(mineFragment == null ){
+        if (mineFragment == null) {
             mineFragment = new MineFragment();
-            fragmentTransaction.add(R.id.rl_display,mineFragment);
+            fragmentTransaction.add(R.id.rl_display, mineFragment);
         }
         fragmentTransaction.commit();
         hideFragment(fragmentTransaction);
@@ -129,19 +164,20 @@ public class MainActivity extends BaseActivity {
 
     /**
      * 隐藏所有Fragment
+     *
      * @param fragmentTransaction
      */
     private void hideFragment(FragmentTransaction fragmentTransaction) {
-        if(shangpuFragment != null){
+        if (shangpuFragment != null) {
             fragmentTransaction.hide(shangpuFragment);
         }
-        if(yeWuYuanFragment != null){
+        if (yeWuYuanFragment != null) {
             fragmentTransaction.hide(yeWuYuanFragment);
         }
-        if(mineFragment != null){
+        if (mineFragment != null) {
             fragmentTransaction.hide(mineFragment);
         }
-        if(mineFragment != null){
+        if (mineFragment != null) {
             fragmentTransaction.hide(mineFragment);
         }
 

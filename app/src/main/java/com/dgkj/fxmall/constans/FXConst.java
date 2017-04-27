@@ -108,6 +108,20 @@ public class FXConst {
 
     public static final String GET_EXPRESS_COMPANY_LIST = FXM_URL_PORT+"expressCodeAction_express";
     public static final String SHANGPU_DELIVER_URL = FXM_URL_PORT+"orderAction_shipments";
+    public static final String CONFIRM_TAKEGOODS_URL = FXM_URL_PORT+"orderAction_ok";
+
+    public static final String WHETHER_IS_FIRST_SET_PAYWORD = FXM_URL_PORT+"userAction_isPass";
+    public static final String SET_PAYWORD_URL = FXM_URL_PORT+"userAction_paypssword";
+    public static final String PUBLISH_COMMENT_URL = FXM_URL_PORT+"estimateAction_estimate";
+    public static final String GET_COMMENTS_FOR_ONE_PRODUCT = FXM_URL_PORT+"estimateAction_getEstimate";
+
+    public static final String GET_STORE_ORDER_CLASSIFY = FXM_URL_PORT+"orderAction_storeOrde";
+    public static final String DELETE_ORDER_FOR_STORE = FXM_URL_PORT+"orderAction_delSO";
+    public static final String DELETE_ORDER_FOR_USER = FXM_URL_PORT+"orderAction_delUO";
+    public static final String USER_APPLY_REFUND_URL = FXM_URL_PORT+"refundOrderAction";
+    public static final String STORE_AGREE_REFUND_URL = FXM_URL_PORT+"refundOrderAction_agree";
+
+
 
 
 

@@ -49,6 +49,11 @@ public class WithdrawalActivity extends BaseActivity {
         initHeaderView();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "提现");

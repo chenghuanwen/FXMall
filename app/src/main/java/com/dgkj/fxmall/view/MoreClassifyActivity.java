@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.dgkj.fxmall.R;
@@ -40,11 +39,13 @@ public class MoreClassifyActivity extends BaseActivity {
     ImageButton ibBack;
     @BindView(R.id.tv_search_content)
     EditText tvSearchContent;
+    @BindView(R.id.activity_more_classify)
+    LinearLayout activityMoreClassify;
     private View headerview;
     private List<SuperClassifyBean> allClassify;
     private List<ProductClassifyBean> subClassify;
     private ProductClassifyAdapter adapter;
-    private String baseClassify="";
+    private String baseClassify = "";
     private FXMallControl control = new FXMallControl();
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private CommonAdapter<SuperClassifyBean> subAdapter;
@@ -62,6 +63,11 @@ public class MoreClassifyActivity extends BaseActivity {
         getSuperClassify();
     }
 
+    @Override
+    public View getContentView() {
+        return activityMoreClassify;
+    }
+
     /**
      * 获取一级分类
      */
@@ -69,7 +75,7 @@ public class MoreClassifyActivity extends BaseActivity {
         control.getStoreSuperClassify(this, sp.get("token"), client, new OnGetStoreSuperClassifyFinishedListener() {
             @Override
             public void onGetStoreSuperClassifyFinished(List<SuperClassifyBean> classifyList) {
-                subAdapter.addAll(classifyList,true);
+                subAdapter.addAll(classifyList, true);
             }
         });
     }
@@ -95,10 +101,10 @@ public class MoreClassifyActivity extends BaseActivity {
             classify.setTaxon("时尚套装");
             subClassify.add(classify);
         }*/
-        subAdapter = new CommonAdapter<SuperClassifyBean>(this,R.layout.item_all_classify,allClassify) {
+        subAdapter = new CommonAdapter<SuperClassifyBean>(this, R.layout.item_all_classify, allClassify) {
             @Override
             protected void convert(ViewHolder holder, final SuperClassifyBean o, int position) {
-                holder.setText(R.id.tv_base_classify,o.getType());
+                holder.setText(R.id.tv_base_classify, o.getType());
 
             }
         };
@@ -113,7 +119,7 @@ public class MoreClassifyActivity extends BaseActivity {
         });
         rvAllClassify.setAdapter(subAdapter);
 
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(this,3);
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         rvSubClassify.setLayoutManager(linearLayoutManager);
         adapter = new ProductClassifyAdapter(this, R.layout.item_all_subclassify, subClassify, "search");
         ItemOffsetDecoration decoration = new ItemOffsetDecoration(20);
@@ -123,13 +129,14 @@ public class MoreClassifyActivity extends BaseActivity {
 
     /**
      * 获取二级分类
+     *
      * @param superTypeId
      */
     private void getSubclassify(int superTypeId) {
         control.getSubclassify(this, superTypeId, client, new OnGetSubclassifyFinishedListener() {
             @Override
             public void onGetSubclassifyFinished(List<ProductClassifyBean> subList) {
-                adapter.addAll(subList,true);
+                adapter.addAll(subList, true);
             }
         });
     }

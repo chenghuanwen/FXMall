@@ -53,6 +53,11 @@ public class RegistActivity extends BaseActivity {
         userId = getIntent().getIntExtra("userId",-1);
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "注册");

@@ -1,27 +1,42 @@
 package com.dgkj.fxmall.view;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.HomePageFragmentAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.OrderBean;
+import com.dgkj.fxmall.bean.SuperOrderBean;
+import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.fragment.MyOrderClassifyFragment;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MyOrdersActivity extends BaseActivity {
     @BindView(R.id.tabLayout)
@@ -30,17 +45,20 @@ public class MyOrdersActivity extends BaseActivity {
     ImageButton ibBack;
     @BindView(R.id.vp_order)
     ViewPager vpOrder;
+    @BindView(R.id.activity_my_orders)
+    LinearLayout activityMyOrders;
     private View headerview;
     private ArrayList<Fragment> fragments;
-    private List<OrderBean> allOrder;
-    private List<OrderBean> waitPay;
-    private List<OrderBean> waitDeliver;
-    private List<OrderBean> waitTakeGoods;
-    private List<OrderBean> waitComment;
+    private List<SuperOrderBean> allOrder;
+    private List<SuperOrderBean> waitPay;
+    private List<SuperOrderBean> waitDeliver;
+    private List<SuperOrderBean> waitTakeGoods;
+    private List<SuperOrderBean> waitComment;
+    private List<OrderBean> waitPayOrders,waitDeliverOrders,waitTakeOrders,waitCommentOrders;
     private HomePageFragmentAdapter adapter;
-    private String[] states = new String[]{"等待买家付款","等待卖家发货","等待买家收货","等待买家评价","交易完成"};
+    private String[] states = new String[]{"等待买家付款", "等待卖家发货", "等待买家收货", "等待买家评价", "交易完成"};
     private String from = "";
-    private int statu,isAll;
+    private int statu, isAll;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
 
@@ -51,32 +69,47 @@ public class MyOrdersActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initHeaderView();
-        refresh(statu,0);
-      /*  initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
-        initTab();*/
+        refresh(statu, 0);
+        initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
+        initTab();
+    }
+
+    @Override
+    public View getContentView() {
+        return activityMyOrders;
     }
 
     private void refresh(int statu, int isAll) {
+        waitPayOrders = new ArrayList<>();
+        waitDeliverOrders = new ArrayList<>();
+        waitTakeOrders = new ArrayList<>();
+        waitCommentOrders = new ArrayList<>();
+
         control.getMyOrderInfo(this, sp.get("token"), statu, isAll, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
             public void onGetMyOrderInfoFinished(List<OrderBean> orders) {
-                allOrder.addAll(orders);
+                allOrder.addAll(sortProductsOfOrder(orders));
                 for (OrderBean order : orders) {
-                    switch (order.getStateNum()){
+                    switch (order.getStateNum()) {
                         case 0:
-                            waitPay.add(order);
+                            waitPayOrders.add(order);
                             break;
                         case 1:
-                            waitDeliver.add(order);
+                            waitDeliverOrders.add(order);
                             break;
                         case 2:
-                            waitTakeGoods.add(order);
+                            waitTakeOrders.add(order);
                             break;
                         case 3:
-                            waitComment.add(order);
+                            waitCommentOrders.add(order);
                             break;
                     }
                 }
+                waitDeliver.addAll(sortProductsOfOrder(waitDeliverOrders));
+                waitPay.addAll(sortProductsOfOrder(waitPayOrders));
+                waitTakeGoods.addAll(sortProductsOfOrder(waitTakeOrders));
+                waitComment.addAll(sortProductsOfOrder(waitCommentOrders));
+
                 initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
                 initTab();
             }
@@ -93,19 +126,27 @@ public class MyOrdersActivity extends BaseActivity {
 
         //TEST
         for (int i = 0; i < 5; i++) {
-            OrderBean order = new OrderBean();
-            order.setStoreName("粉小萌酸辣粉旗舰店");
-            order.setColor("蓝色");
-            order.setSize("均码");
-            order.setCount(i);
-            order.setHasComment(true);
-            order.setIntroduce("啊好多覅家乐福卡静安寺独立开发安静地离开房间阿萨德开了房");
-            order.setPostage(20);
-            order.setSinglePrice(56);
-            order.setSumPrice(56);
-            order.setState(states[i]);
-            order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
-            allOrder.add(order);
+            List<OrderBean> list = new ArrayList<>();
+            SuperOrderBean superOrderBean = new SuperOrderBean();
+            for (int j = 0; j <5; j++) {
+                OrderBean order = new OrderBean();
+                order.setStoreName("粉小萌酸辣粉旗舰店");
+                order.setColor("蓝色");
+                order.setSize("均码");
+                order.setCount(j+1);
+                order.setHasComment(true);
+                order.setIntroduce("啊好多覅家乐福卡静安寺独立开发安静地离开房间阿萨德开了房");
+                order.setPostage(20);
+                order.setSinglePrice(56);
+                order.setSumPrice(56);
+                order.setState(states[i]);
+                order.setStateNum(i);
+                order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
+                list.add(order);
+            }
+            superOrderBean.setId(i);
+            superOrderBean.setSubOrders(list);
+            allOrder.add(superOrderBean);
         }
 
         waitPay.add(allOrder.get(0));
@@ -118,11 +159,11 @@ public class MyOrdersActivity extends BaseActivity {
         fragments.add(new MyOrderClassifyFragment(waitDeliver));
         fragments.add(new MyOrderClassifyFragment(waitTakeGoods));
         fragments.add(new MyOrderClassifyFragment(waitComment));
-        adapter = new HomePageFragmentAdapter(getSupportFragmentManager(),fragments);
+        adapter = new HomePageFragmentAdapter(getSupportFragmentManager(), fragments);
         vpOrder.setAdapter(adapter);
 
         from = getIntent().getStringExtra("from");
-        switch (from){
+        switch (from) {
             case "all":
                 vpOrder.setCurrentItem(0);
                 break;
@@ -144,12 +185,12 @@ public class MyOrdersActivity extends BaseActivity {
     }
 
     private void initTab() {
-        tabLayout.addTab(tabLayout.newTab().setText("全部"),true);
+        tabLayout.addTab(tabLayout.newTab().setText("全部"), true);
         tabLayout.addTab(tabLayout.newTab().setText("待付款"));
         tabLayout.addTab(tabLayout.newTab().setText("待发货"));
         tabLayout.addTab(tabLayout.newTab().setText("待收货"));
         tabLayout.addTab(tabLayout.newTab().setText("待评价"));
-        tabLayout.setupWithViewPager(vpOrder,true);
+        tabLayout.setupWithViewPager(vpOrder, true);
         tabLayout.getTabAt(0).setText("全部");
         tabLayout.getTabAt(1).setText("待付款");
         tabLayout.getTabAt(2).setText("待发货");
@@ -167,6 +208,7 @@ public class MyOrdersActivity extends BaseActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
             }
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
@@ -183,4 +225,51 @@ public class MyOrdersActivity extends BaseActivity {
     public void back() {
         finish();
     }
+
+
+    public  List<SuperOrderBean> sortProductsOfOrder(List<OrderBean> orders) {
+        //将所有运费模板按照id进行分类，相同的id属于同一个大模板
+        List<SuperOrderBean> superPostageList = new ArrayList<>();
+        Map<OrderBean, List<OrderBean>> map = new HashMap<>();
+        OrderBean post = new OrderBean();
+        if (orders.size() > 0) {
+            for (int i = 0; i < orders.size(); i++) {
+                int key = orders.get(i).getId();//获取当条数据的id值
+                if (post.getId() >= 0) {
+                    boolean b = key == post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
+                    if (b) {
+                        post = new OrderBean();
+                    }
+                }
+                post.setId(key);//为key值设置id
+
+                //将相同id 的key所有的数据都指向一个数据集合
+                List<OrderBean> posts = map.get(post);//key值变时，集合也会变
+                //当第一次次集合没有初始化时，创建一个新集合，此后这相同的数据全部添加到此集合
+                if (posts == null) {
+                    posts = new ArrayList<>();
+                }
+                posts.add(orders.get(i));//将相同数据添加到集合
+                map.put(post, posts);//将相同的数据放入map（不断覆盖，直至最后一次得到相同全部数据）
+            }
+
+            //TODO 集成数据:遍历map，将数据添加到listView实体类集合
+            Iterator iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                OrderBean postageBean = (OrderBean) entry.getKey();
+
+                SuperOrderBean superPost = new SuperOrderBean();
+                int id = postageBean.getId();
+                ArrayList<OrderBean> posts = (ArrayList<OrderBean>) entry.getValue();
+                superPost.setId(id);
+                superPost.setSubOrders(posts);
+                superPostageList.add(superPost);
+            }
+
+        }
+        return superPostageList;
+    }
+
+
 }

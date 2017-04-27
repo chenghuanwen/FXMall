@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.ShoppingCarEditAdapter;
@@ -47,6 +48,8 @@ public class ShoppingCarEditActivity extends BaseActivity {
     CheckBox cbCarDeitAll;
     @BindView(R.id.btn_delete)
     Button btnDelete;
+    @BindView(R.id.activity_shopping_car_edit)
+    LinearLayout activityShoppingCarEdit;
 
     private View headerview;
     private int goodsCount;
@@ -56,10 +59,10 @@ public class ShoppingCarEditActivity extends BaseActivity {
     private List<EditCarSelectedBean> selectPositions = new ArrayList<>();
     private List<ShoppingcarProductCountChangeBean> countChangeBeanList;
     private OkHttpClient client = new OkHttpClient.Builder().build();
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1://选择某个商品
                     EditCarSelectedBean editBean = new EditCarSelectedBean();
                     editBean.setSubPosition(msg.arg2);
@@ -76,9 +79,9 @@ public class ShoppingCarEditActivity extends BaseActivity {
                     break;
                 case 3://购买数量改变
                     ArrayList<ShoppingGoodsBean> currentItemGoods = carBeanList.get(msg.arg1).getGoods();
-                   ShoppingGoodsBean goods = (ShoppingGoodsBean) msg.obj;
+                    ShoppingGoodsBean goods = (ShoppingGoodsBean) msg.obj;
                     currentItemGoods.remove(msg.arg2);
-                    currentItemGoods.add(msg.arg2,goods);
+                    currentItemGoods.add(msg.arg2, goods);
                     carBeanList.get(msg.arg1).setGoods(currentItemGoods);
 
                     ShoppingcarProductCountChangeBean changeBean = new ShoppingcarProductCountChangeBean();
@@ -96,7 +99,7 @@ public class ShoppingCarEditActivity extends BaseActivity {
                             adapter.notifyDataSetChanged();
                         }
                     });
-                    dialog.show(getSupportFragmentManager(),"");
+                    dialog.showPopupWindow(activityShoppingCarEdit);
                     break;
             }
         }
@@ -115,6 +118,11 @@ public class ShoppingCarEditActivity extends BaseActivity {
 
     }
 
+    @Override
+    public View getContentView() {
+        return activityShoppingCarEdit;
+    }
+
 
     /**
      * 设置头部信息
@@ -124,7 +132,7 @@ public class ShoppingCarEditActivity extends BaseActivity {
         countChangeBeanList = new ArrayList<>();
 
         headerview = findViewById(R.id.headerview);
-        setHeaderImage(headerview, -1,"完成", Position.RIGHT, new View.OnClickListener() {
+        setHeaderImage(headerview, -1, "完成", Position.RIGHT, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO 编辑完成，通知服务器数量改变
@@ -133,9 +141,9 @@ public class ShoppingCarEditActivity extends BaseActivity {
                 }
 
                 //返回购物车
-                Intent intent = new Intent(ShoppingCarEditActivity.this,ShoppingCarActivity.class);
+                Intent intent = new Intent(ShoppingCarEditActivity.this, ShoppingCarActivity.class);
                 intent.putExtra("data", (Serializable) carBeanList);
-                setResult(130,intent);
+                setResult(130, intent);
                 finish();
             }
         });
@@ -146,9 +154,9 @@ public class ShoppingCarEditActivity extends BaseActivity {
      */
     private void notifyProductCountChange(ShoppingcarProductCountChangeBean bean) {
         FormBody body = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
-                .add("num",bean.getChangeCount()+"")
-                .add("ids",bean.getCarId()+"")
+                .add("user.token", sp.get("token"))
+                .add("num", bean.getChangeCount() + "")
+                .add("ids", bean.getCarId() + "")
                 .build();
         Request request = new Request.Builder()
                 .post(body)
@@ -173,11 +181,11 @@ public class ShoppingCarEditActivity extends BaseActivity {
 
         //TODO 获取购物车商品总数
         goodsCount = carBeanList.size();
-        String title = String.format("购物车（%s",goodsCount+")");
-        setHeaderTitle(headerview,title);
+        String title = String.format("购物车（%s", goodsCount + ")");
+        setHeaderTitle(headerview, title);
 
         changeList = new ArrayList<>();
-        adapter = new ShoppingCarEditAdapter(this,R.layout.item_shoppingcar,carBeanList,handler);
+        adapter = new ShoppingCarEditAdapter(this, R.layout.item_shoppingcar, carBeanList, handler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvShoppingCarEdit.setLayoutManager(layoutManager);
         rvShoppingCarEdit.setAdapter(adapter);
@@ -191,9 +199,9 @@ public class ShoppingCarEditActivity extends BaseActivity {
         cbCarDeitAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     adapter.selectAll();
-                }else {
+                } else {
                     adapter.cancleAll();
                 }
             }
@@ -201,13 +209,13 @@ public class ShoppingCarEditActivity extends BaseActivity {
     }
 
     @OnClick(R.id.btn_delete)
-    public void delete(){
+    public void delete() {
         //TODO 通知服务器删除选中商品
         int size = selectPositions.size();
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("user.token",sp.get("token"));
+        builder.add("user.token", sp.get("token"));
         for (EditCarSelectedBean selectPosition : selectPositions) {
-            builder.add("ids",carBeanList.get(selectPosition.getSuperPosition()).getGoods().get(selectPosition.getSubPosition()).getCarId()+"");
+            builder.add("ids", carBeanList.get(selectPosition.getSuperPosition()).getGoods().get(selectPosition.getSubPosition()).getCarId() + "");
         }
         FormBody body = builder.build();
         Request request = new Request.Builder()
@@ -217,32 +225,32 @@ public class ShoppingCarEditActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(ShoppingCarEditActivity.this,"网络异常");
+                toastInUI(ShoppingCarEditActivity.this, "网络异常");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                    if(response.body().string().contains("1000")){
-                        toastInUI(ShoppingCarEditActivity.this,"删除成功");
-                    }else {
-                        toastInUI(ShoppingCarEditActivity.this,"删除失败");
-                    }
+                if (response.body().string().contains("1000")) {
+                    toastInUI(ShoppingCarEditActivity.this, "删除成功");
+                } else {
+                    toastInUI(ShoppingCarEditActivity.this, "删除失败");
+                }
             }
         });
 
         //删除本地数据
-        if(size >0){
-            LogUtil.i("TAG",selectPositions.toString());
+        if (size > 0) {
+            LogUtil.i("TAG", selectPositions.toString());
             for (EditCarSelectedBean selectPosition : selectPositions) {
                 ArrayList<ShoppingGoodsBean> currentItemGoods = carBeanList.get(selectPosition.getSuperPosition()).getGoods();
                 currentItemGoods.remove(selectPosition.getSubPosition());
                 carBeanList.get(selectPosition.getSuperPosition()).setGoods(currentItemGoods);
-                if(carBeanList.get(selectPosition.getSuperPosition()).getGoods().size()==0){
-                        carBeanList.remove(selectPosition.getSuperPosition());
+                if (carBeanList.get(selectPosition.getSuperPosition()).getGoods().size() == 0) {
+                    carBeanList.remove(selectPosition.getSuperPosition());
                 }
             }
         }
         adapter.notifyDataSetChanged();
-       // adapter.addAll(carBeanList,true);
+        // adapter.addAll(carBeanList,true);
     }
 }

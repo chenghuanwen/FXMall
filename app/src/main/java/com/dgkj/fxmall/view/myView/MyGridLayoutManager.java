@@ -25,9 +25,7 @@ public class MyGridLayoutManager extends GridLayoutManager {
     @Override
     public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
         int height = 0;
-        LogUtil.i("TAG", "onMeasure---MeasureSpec-" + View.MeasureSpec.getSize(heightSpec));
         int childCount = getItemCount();
-        LogUtil.i("TAG","商品数量==="+childCount);
         if(childCount>0){
             for (int i = 0; i < childCount; i++) {
                 //View child = recycler.getViewForPosition(i);//会报数组越界错误
@@ -35,12 +33,10 @@ public class MyGridLayoutManager extends GridLayoutManager {
                 if(child==null) return;
                 measureChild(child, widthSpec, heightSpec);
                 if (i % getSpanCount() == 0) {
-                    LogUtil.i("TAG","测量高度中==getSpanCount"+getSpanCount());
                     int measuredHeight = child.getMeasuredHeight() + getDecoratedBottom(child);
                     height += measuredHeight;
                 }
             }
-            LogUtil.i("TAG", "onMeasure---height-" + height);
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec), height);
         }else {
             super.onMeasure(recycler,state,widthSpec,heightSpec);

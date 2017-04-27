@@ -39,7 +39,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.FormBody;
 
 public class PublishDemandActivity extends BaseActivity {
     @BindView(R.id.avf_demand)
@@ -68,6 +67,8 @@ public class PublishDemandActivity extends BaseActivity {
     TextView tvLocation;
     @BindView(R.id.et_detial_adress)
     EditText etDetialAdress;
+    @BindView(R.id.activity_publish_demand)
+    LinearLayout activityPublishDemand;
     private View headerview;
     private ArrayList<String> images;//选择图片
     private String classify;
@@ -89,6 +90,11 @@ public class PublishDemandActivity extends BaseActivity {
         mLocationClient.registerLocationListener(mListener);
     }
 
+    @Override
+    public View getContentView() {
+        return activityPublishDemand;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "发布需求");
@@ -107,51 +113,51 @@ public class PublishDemandActivity extends BaseActivity {
     }
 
     @OnClick(R.id.btn_publish)
-    public void publish(){
+    public void publish() {
         String titel = etDemandTitle.getText().toString();
         String describe = etDemandDestribe.getText().toString();
         String count = etDemandCount.getText().toString();
         String phone = etDemandPhone.getText().toString();
         String address = etDetialAdress.getText().toString() + etCurrentAddress.getText().toString();
-        if(TextUtils.isEmpty(titel) || TextUtils.isEmpty(describe) ||TextUtils.isEmpty(count) ||TextUtils.isEmpty(phone) ||TextUtils.isEmpty(address)){
+        if (TextUtils.isEmpty(titel) || TextUtils.isEmpty(describe) || TextUtils.isEmpty(count) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(address)) {
             toast("请填写完整信息");
             return;
         }
-        if(subClassifyId < 0){
+        if (subClassifyId < 0) {
             toast("您还未选择商品分类");
             return;
         }
-        if(images.size() == 0){
+        if (images.size() == 0) {
             toast("请选择商品图片");
             return;
         }
 
-        Map<String,String> params = new HashMap<>();
-        params.put("user.token",sp.get("token"));
-        params.put("title",titel);
-        params.put("detail",describe);
-        params.put("num",count);
-        params.put("address",address);
-        params.put("phone",phone);
-        params.put("subCategory.id",subClassifyId+"");
+        Map<String, String> params = new HashMap<>();
+        params.put("user.token", sp.get("token"));
+        params.put("title", titel);
+        params.put("detail", describe);
+        params.put("num", count);
+        params.put("address", address);
+        params.put("phone", phone);
+        params.put("subCategory.id", subClassifyId + "");
         List<File> files = new ArrayList<>();
         for (String image : images) {
             File file = new File(image);
             files.add(file);
         }
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_DEMAND_URL,params,"file",files,null,null);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_DEMAND_URL, params, "file", files, null, null);
     }
-    
+
     @OnClick(R.id.ll_demand_classify)
     public void selectClassify() {
         startActivityForResult(new Intent(this, AllClassifyActivity.class), 118);
     }
 
     @OnClick(R.id.tv_location)
-    public void getLocation(){
+    public void getLocation() {
         checkLocationPermission();
     }
-    
+
 
     private void checkLocationPermission() {
         if (!PermissionUtil.isOverMarshmallow()) {
@@ -225,7 +231,7 @@ public class PublishDemandActivity extends BaseActivity {
 
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
-                final String city = address.province+address.city+address.district;
+                final String city = address.province + address.city + address.district;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -238,14 +244,13 @@ public class PublishDemandActivity extends BaseActivity {
                 // 网络定位结果
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
-                final String city = address.province+address.city+address.district;
+                final String city = address.province + address.city + address.district;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         etCurrentAddress.setText(city);
                     }
                 });
-
 
 
             } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
@@ -307,13 +312,13 @@ public class PublishDemandActivity extends BaseActivity {
             avfDemand.startFlipping();
         } else if (requestCode == 118 && resultCode == 122) {
             classify = data.getStringExtra("classify");
-            subClassifyId = data.getIntExtra("subId",1);
+            subClassifyId = data.getIntExtra("subId", 1);
             tvClassify.setText(classify);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-    
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

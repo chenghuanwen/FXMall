@@ -63,6 +63,11 @@ public class SetNicknameActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void initHeaderview() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "个人资料");

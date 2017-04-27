@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -40,6 +41,7 @@ public class RefundDetialActivity extends BaseActivity {
     @BindView(R.id.iv_evidence3)
     ImageView ivEvidence3;
     private View headerview;
+    private LinearLayout contentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,12 @@ public class RefundDetialActivity extends BaseActivity {
         //setContentView(R.layout.activity_refund_detial_for_logistics);//第一次进入点击物流信息按钮填写寄件信息，后续点击显示物流进度
         ButterKnife.bind(this);
         initHeaderView();
+        contentView = (LinearLayout) findViewById(R.id.activity_refund_detial);
+    }
+
+    @Override
+    public View getContentView() {
+        return contentView;
     }
 
     private void initHeaderView() {

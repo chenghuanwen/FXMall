@@ -1,6 +1,7 @@
 package com.dgkj.fxmall.view;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ScreeningProductActivity extends BaseActivity {
 
@@ -33,5 +35,15 @@ public class ScreeningProductActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screening);
         ButterKnife.bind(this);
+    }
+
+    @OnClick(R.id.tv_cancle)
+    public void cancel(){
+        finish();
+    }
+
+    @Override
+    public View getContentView() {
+        return null;
     }
 }

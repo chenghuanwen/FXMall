@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.MyApplication;
@@ -42,6 +43,8 @@ public class LoginActivity extends BaseActivity {
     TextView tvRegist;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
+    @BindView(R.id.activity_login)
+    LinearLayout activityLogin;
     private View headerview;
     private OkHttpClient client;
     private AlertDialog pw;
@@ -58,6 +61,11 @@ public class LoginActivity extends BaseActivity {
         sp = SharedPreferencesUnit.getInstance(this);
     }
 
+    @Override
+    public View getContentView() {
+        return activityLogin;
+    }
+
 
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
@@ -66,28 +74,28 @@ public class LoginActivity extends BaseActivity {
 
 
     @OnClick(R.id.tv_regist)
-    public void regist(){
+    public void regist() {
         //先检测是否需要弹出邀请码弹窗
         Request request = new Request.Builder().url(FXConst.GET_INVITECODE_CONFIG).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(LoginActivity.this,"网络错误，请稍后重试");
+                toastInUI(LoginActivity.this, "网络错误，请稍后重试");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000") && string.contains("true")){
+                if (string.contains("1000") && string.contains("true")) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             showInviteDialog();
                         }
                     });
-                }else if(string.contains("1000") && string.contains("false")){
-                    Intent intent = new Intent(LoginActivity.this,RegistActivity.class);
-                   // intent.putExtra("id",userId);
+                } else if (string.contains("1000") && string.contains("false")) {
+                    Intent intent = new Intent(LoginActivity.this, RegistActivity.class);
+                    // intent.putExtra("id",userId);
                     startActivity(intent);
                 }
 
@@ -97,24 +105,27 @@ public class LoginActivity extends BaseActivity {
     }
 
     @OnClick(R.id.tv_forget_password)
-    public void forgetPassword(){
-        startActivity(new Intent(this,ForgetPasswordActivity.class));
+    public void forgetPassword() {
+        startActivity(new Intent(this, ForgetPasswordActivity.class));
     }
 
     @OnClick(R.id.btn_login)
-    public void login(){
+    public void login() {
         //TODO 登录
         String urer = etNewPhone.getText().toString();
         String pass = etCheckCode.getText().toString();
-        if(TextUtils.isEmpty(urer) || TextUtils.isEmpty(pass)){
+        if (TextUtils.isEmpty(urer) || TextUtils.isEmpty(pass)) {
             toast("请输入正确的用户名和密码！");
             return;
         }
+        MyApplication.isLogin = true;
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("from", "mine");
+        jumpTo(intent, true);
 
-
-        FormBody body = new FormBody.Builder()
-                .add("phone",urer)
-                .add("password",pass)
+     /*   FormBody body = new FormBody.Builder()
+                .add("phone", urer)
+                .add("password", pass)
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.USER_LOGIN_URL)
@@ -123,32 +134,32 @@ public class LoginActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(LoginActivity.this,"网络异常，请稍后重试！");
+                toastInUI(LoginActivity.this, "网络异常，请稍后重试！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
 
-                if(result.contains("1000")){
-                    toastInUI(LoginActivity.this,"登录成功");
+                if (result.contains("1000")) {
+                    toastInUI(LoginActivity.this, "登录成功");
                     try {
                         JSONObject object = new JSONObject(result);
                         String token = object.getString("token");
-                        sp.put("token",token);
-                        LogUtil.i("TAG","token===="+sp.get("token"));
+                        sp.put("token", token);
+                        LogUtil.i("TAG", "token====" + sp.get("token"));
                         MyApplication.isLogin = true;
-                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                        intent.putExtra("from","mine");
-                        jumpTo(intent,true);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("from", "mine");
+                        jumpTo(intent, true);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else if(result.contains("109")){
-                    toastInUI(LoginActivity.this,"用户名或密码错误，请重新输入");
+                } else if (result.contains("109")) {
+                    toastInUI(LoginActivity.this, "用户名或密码错误，请重新输入");
                 }
             }
-        });
+        });*/
 
     }
 
@@ -158,9 +169,9 @@ public class LoginActivity extends BaseActivity {
         finish();
     }
 
-    private void showInviteDialog(){
+    private void showInviteDialog() {
         View contentview = getLayoutInflater().inflate(R.layout.layout_invite_code_dialog, null);
-         pw = new AlertDialog.Builder(LoginActivity.this).create();
+        pw = new AlertDialog.Builder(LoginActivity.this).create();
         pw.setView(contentview);
         final EditText etCode = (EditText) contentview.findViewById(R.id.et_invite_code);
         TextView tvGirl = (TextView) contentview.findViewById(R.id.tv_confirm);
@@ -188,7 +199,7 @@ public class LoginActivity extends BaseActivity {
 
     private void checkInviteCode(String code) {
         FormBody body = new FormBody.Builder()
-                .add("invitationCode",code)
+                .add("invitationCode", code)
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.CHECK_INVITE_CODE)
@@ -197,7 +208,7 @@ public class LoginActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(LoginActivity.this,"网络错误，请稍后重试");
+                toastInUI(LoginActivity.this, "网络错误，请稍后重试");
             }
 
             @Override
@@ -206,14 +217,14 @@ public class LoginActivity extends BaseActivity {
                 try {
                     JSONObject object = new JSONObject(result);
                     int code = object.getInt("code");
-                    if(code == 1000){
+                    if (code == 1000) {
                         String userId = object.getString("user");
-                        Intent intent = new Intent(LoginActivity.this,RegistActivity.class);
-                        intent.putExtra("id",userId);
+                        Intent intent = new Intent(LoginActivity.this, RegistActivity.class);
+                        intent.putExtra("id", userId);
                         startActivity(intent);
                         pw.dismiss();
-                    }else {
-                        toastInUI(LoginActivity.this,"邀请码输入错误，请重新输入！");
+                    } else {
+                        toastInUI(LoginActivity.this, "邀请码输入错误，请重新输入！");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

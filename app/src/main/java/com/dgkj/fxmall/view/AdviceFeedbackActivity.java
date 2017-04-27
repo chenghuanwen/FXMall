@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -17,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AdviceFeedbackActivity extends BaseActivity{
+public class AdviceFeedbackActivity extends BaseActivity {
 
     @BindView(R.id.cb_type1)
     CheckBox cbType1;
@@ -44,6 +45,8 @@ public class AdviceFeedbackActivity extends BaseActivity{
     TextView tvFeedback3;
     @BindView(R.id.tv_feedback_4)
     TextView tvFeedback4;
+    @BindView(R.id.activity_advice_feedback)
+    LinearLayout activityAdviceFeedback;
     private View headerview;
     private String adviceType = "";
 
@@ -59,11 +62,16 @@ public class AdviceFeedbackActivity extends BaseActivity{
         setCheckListener();
     }
 
+    @Override
+    public View getContentView() {
+        return activityAdviceFeedback;
+    }
+
     private void setCheckListener() {
         cbType1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     closeAllCheck();
                     cbType1.setChecked(true);
                     adviceType = tvFeedback1.getText().toString();
@@ -73,7 +81,7 @@ public class AdviceFeedbackActivity extends BaseActivity{
         cbType2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     closeAllCheck();
                     cbType2.setChecked(true);
                     adviceType = tvFeedback2.getText().toString();
@@ -83,7 +91,7 @@ public class AdviceFeedbackActivity extends BaseActivity{
         cbType3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     closeAllCheck();
                     cbType3.setChecked(true);
                     adviceType = tvFeedback3.getText().toString();
@@ -93,7 +101,7 @@ public class AdviceFeedbackActivity extends BaseActivity{
         cbType4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     closeAllCheck();
                     cbType4.setChecked(true);
                     adviceType = tvFeedback4.getText().toString();
@@ -108,7 +116,7 @@ public class AdviceFeedbackActivity extends BaseActivity{
     }
 
 
-    public void closeAllCheck(){
+    public void closeAllCheck() {
         cbType1.setChecked(false);
         cbType2.setChecked(false);
         cbType3.setChecked(false);

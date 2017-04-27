@@ -30,6 +30,25 @@ public class CommentAdapter extends CommonAdapter<CommentBean> {
         CircleImageView civ = holder.getView(R.id.civ_comment);
         Glide.with(context).load(commentBean.getIcon()).placeholder(R.mipmap.android_quanzi).into(civ);
         //TODO 根据平分数选择不同的星星图片
-        holder.setImageResource(R.id.iv_comment_stars,R.mipmap.sc_zcx);
+        float stars = commentBean.getStars();
+        if(stars<=1.0){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.xqy_yhpj1);
+        }else if(stars>1.0 && stars<1.9){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.c_yb);
+        }else if(stars>=1.9 && stars<=2.4){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.xqy_yhpj2);
+        }else if(stars>2.4 && stars<2.9){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.c_eb);
+        }else if(stars>=2.9 && stars<=3.4){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.xqy_yhpj3);
+        }else if(stars>3.4 && stars<=3.9){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.c_sb);
+        }else if(stars>3.9 && stars<=4.4){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.xqy_yhpj4);
+        }else if(stars>4.4 && stars<=4.9){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.c_sib);
+        }else if(stars>4.9){
+            holder.setImageResource(R.id.iv_comment_stars,R.mipmap.xqy_yhpj5);
+        }
     }
 }

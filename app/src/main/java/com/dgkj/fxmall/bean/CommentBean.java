@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class CommentBean implements Serializable {
     private String icon,name,content;
-    private int stars;
+    private float stars;
 
     public String getName() {
         return name;
@@ -34,11 +34,11 @@ public class CommentBean implements Serializable {
         this.icon = icon;
     }
 
-    public int getStars() {
+    public float getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(float stars) {
         this.stars = stars;
     }
 }

@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -24,7 +25,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 
 public class DemandDetialActivity extends BaseActivity {
@@ -55,6 +55,8 @@ public class DemandDetialActivity extends BaseActivity {
     TextView tvMyDemand;
     @BindView(R.id.tv_recommend)
     TextView tvRecommend;
+    @BindView(R.id.activity_product_detial)
+    LinearLayout activityProductDetial;
 
     private View headerview;
     private MainDemandBean demandBean;
@@ -76,8 +78,15 @@ public class DemandDetialActivity extends BaseActivity {
         setData();
     }
 
+    @Override
+    public View getContentView() {
+        return activityProductDetial;
+    }
+
     private void setData() {
-        if(demandBean == null){return;}
+        if (demandBean == null) {
+            return;
+        }
 
         adapter = new ProductDetialImageAdapter(this, R.layout.item_product_detial_image, demandBean.getUrls());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -88,16 +97,16 @@ public class DemandDetialActivity extends BaseActivity {
         rvImagePreview1.setAdapter(adapter);
 
         tvProductDecribe.setText(demandBean.getIntroduce());
-        tvDemandCount.setText(demandBean.getDemand()+"件");
+        tvDemandCount.setText(demandBean.getDemand() + "件");
         tvDemandDetial.setText(demandBean.getTitel());
         tvPhone.setText(demandBean.getPhone());
         String address = demandBean.getAddress();
         int index = address.indexOf("市");
-        tvProductAddress.setText(address.substring(0,index+1));
+        tvProductAddress.setText(address.substring(0, index + 1));
         tvTakeAddress.setText(address);
 
         storeList = new ArrayList<>();
-        storeAdapter = new SearchStoreAdapter(this,R.layout.item_shangpu_search_result,storeList,"recommend");
+        storeAdapter = new SearchStoreAdapter(this, R.layout.item_shangpu_search_result, storeList, "recommend");
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         rvRecommendStore.setLayoutManager(layoutManager1);
         rvRecommendStore.setAdapter(adapter);
@@ -114,37 +123,36 @@ public class DemandDetialActivity extends BaseActivity {
         control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_RECOMMEND_STORES_FOR_DEMAND, 1, 20, client, new OnGetMyRecommendStoreFinishedListener() {
             @Override
             public void onGetMyRecommendStoreFinished(List<StoreBean> stores) {
-                storeAdapter.addAll(stores,true);
+                storeAdapter.addAll(stores, true);
             }
         });
     }
 
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
-        setHeaderTitle(headerview,"需求详情");
+        setHeaderTitle(headerview, "需求详情");
     }
-
 
 
     @OnClick(R.id.tv_demand_car)
-    public void toCar(){
-        jumpTo(ShoppingCarActivity.class,false);
+    public void toCar() {
+        jumpTo(ShoppingCarActivity.class, false);
     }
 
     @OnClick(R.id.tv_my_demand)
-    public void myDemand(){
-        jumpTo(MyDemandActivity.class,false);
+    public void myDemand() {
+        jumpTo(MyDemandActivity.class, false);
     }
 
     @OnClick(R.id.tv_recommend)
-    public void recommend(){
+    public void recommend() {
         //TODO 推荐店铺
-        RecommendStoreDialog dialog = new RecommendStoreDialog(this,demandBean.getId());
-        dialog.show(getSupportFragmentManager(),"");
+        RecommendStoreDialog dialog = new RecommendStoreDialog(this, demandBean.getId());
+        dialog.show(getSupportFragmentManager(), "");
     }
 
     @OnClick(R.id.iv_demand_back)
-    public void back(){
+    public void back() {
         finish();
     }
 }

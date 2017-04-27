@@ -6,7 +6,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -40,6 +42,8 @@ public class SearchContentActivity extends BaseActivity {
     ImageView ivBack;
     @BindView(R.id.iv_gotop)
     ImageView ivGoTop;
+    @BindView(R.id.activity_search_content)
+    LinearLayout activitySearchContent;
     private List<MainProductBean> productList;
     private MainProductDisplayAdapter adapter;
     private List<StoreBean> storeList;
@@ -61,6 +65,11 @@ public class SearchContentActivity extends BaseActivity {
         getSearchData();
     }
 
+    @Override
+    public View getContentView() {
+        return activitySearchContent;
+    }
+
     private void getSearchData() {
         if ("商品".equals(searchType)) {
             control.getSearchProducts(this, searchType, index, 15, client, new OnGetStoreProductsFinishedListener() {
@@ -69,11 +78,11 @@ public class SearchContentActivity extends BaseActivity {
                     //TODO 写一个通用的商品实体类
                 }
             });
-        }else {
+        } else {
             control.getSearchStores(this, searchType, index, 20, client, new OnGetMyRecommendStoreFinishedListener() {
                 @Override
                 public void onGetMyRecommendStoreFinished(List<StoreBean> stores) {
-                    storeAdapter.addAll(stores,true);
+                    storeAdapter.addAll(stores, true);
                 }
             });
         }
@@ -102,7 +111,7 @@ public class SearchContentActivity extends BaseActivity {
         storeAdapter = new SearchStoreAdapter(this, R.layout.item_shangpu_search_result, storeList, "search");
 
         if ("商品".equals(searchType)) {
-            GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+            GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
             rvSearchContent.setLayoutManager(layoutManager);
             rvSearchContent.setAdapter(adapter);
         } else {
@@ -183,12 +192,12 @@ public class SearchContentActivity extends BaseActivity {
     }
 
     @OnClick(R.id.iv_gotop)
-    public void goTop(){
+    public void goTop() {
         rvSearchContent.smoothScrollToPosition(0);
     }
 
     @OnClick(R.id.tv_screening)
-    public void screening(){
-        jumpTo(ScreeningProductActivity.class,true);
+    public void screening() {
+        jumpTo(ScreeningProductActivity.class, true);
     }
 }

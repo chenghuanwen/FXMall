@@ -16,6 +16,7 @@ import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.adapter.OrderClassifyAdapter;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.OrderBean;
+import com.dgkj.fxmall.bean.SuperOrderBean;
 
 import java.util.List;
 
@@ -24,14 +25,14 @@ import java.util.List;
  */
 @SuppressLint("ValidFragment")
 public class MyOrderClassifyFragment extends Fragment {
-    private List<OrderBean> mainList;
+    private List<SuperOrderBean> mainList;
     private Handler mHandler;
     private RecyclerView recyclerView;
     private OrderClassifyAdapter adapter;
     public MyOrderClassifyFragment(){
 
     }
-    public MyOrderClassifyFragment(List<OrderBean> datas){
+    public MyOrderClassifyFragment(List<SuperOrderBean> datas){
         mainList = datas;
       //  mHandler = handler;
 

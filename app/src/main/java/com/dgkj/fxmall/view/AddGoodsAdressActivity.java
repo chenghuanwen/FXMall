@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,8 @@ public class AddGoodsAdressActivity extends BaseActivity {
     Button btnFinish;
     @BindView(R.id.tv_location)
     TextView tvLocation;
+    @BindView(R.id.activity_add_goods_adress)
+    LinearLayout activityAddGoodsAdress;
 
     private View headerview;
     private String from = "";
@@ -85,90 +88,94 @@ public class AddGoodsAdressActivity extends BaseActivity {
         client = new OkHttpClient.Builder().build();
     }
 
+    @Override
+    public View getContentView() {
+        return activityAddGoodsAdress;
+    }
+
     private void setData() {
         from = getIntent().getStringExtra("from");
-        if("edit".equals(from)){
+        if ("edit".equals(from)) {
             addressBean = (TakeGoodsAddressBean) getIntent().getSerializableExtra("address");
             etTakegoodsMan.setText(addressBean.getName());
             etPhoneNumber.setText(addressBean.getPhone());
             String address = addressBean.getAddress();
             int index = address.indexOf("区");
-            if(index<0){
+            if (index < 0) {
                 index = address.indexOf("县");
             }
-            etCurrentAddress.setText(address.substring(0,index+1));
-            etDetialAdress.setText(address.substring(index+1,address.length()));
+            etCurrentAddress.setText(address.substring(0, index + 1));
+            etDetialAdress.setText(address.substring(index + 1, address.length()));
         }
     }
 
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
-        setHeaderTitle(headerview,"编辑收货地址");
+        setHeaderTitle(headerview, "编辑收货地址");
     }
 
 
     @OnClick(R.id.iv_back)
-    public void back(){
+    public void back() {
         finish();
     }
 
     @OnClick(R.id.tv_location)
-    public void location(){
+    public void location() {
         checkLocationPermission();
     }
 
     @OnClick(R.id.btn_finish)
-    public void confirm(){
+    public void confirm() {
         //TODO 将地址信息发送到服务器
         final String phone = etPhoneNumber.getText().toString();
         final String user = etTakegoodsMan.getText().toString();
         final String address = etCurrentAddress.getText().toString();
         final String detial = etDetialAdress.getText().toString();
-        if(TextUtils.isEmpty(phone) || TextUtils.isEmpty(user) || TextUtils.isEmpty(address) || TextUtils.isEmpty(detial)){
+        if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(user) || TextUtils.isEmpty(address) || TextUtils.isEmpty(detial)) {
             toast("请填写完整的收货信息！");
             return;
         }
 
 
         int indexOf = address.indexOf("省");
-        if(indexOf<0){
+        if (indexOf < 0) {
             indexOf = address.indexOf("自治区");
         }
-        String province = address.substring(0,indexOf+1);
+        String province = address.substring(0, indexOf + 1);
         int index = address.indexOf("区");
-        if(index<0){
+        if (index < 0) {
             index = address.indexOf("县");
         }
-        String city = address.substring(indexOf+1,index+1);
-        String district = address.substring(index+1,address.length());
+        String city = address.substring(indexOf + 1, index + 1);
+        String district = address.substring(index + 1, address.length());
 
         FormBody body = null;
 
-        if("edit".equals(from)){
+        if ("edit".equals(from)) {
             body = new FormBody.Builder()
-                    .add("user.token",sp.get("token"))
-                    .add("province",province)
-                    .add("city",city)
-                    .add("county",district)
-                    .add("consignee",user)
-                    .add("phone",phone)
-                    .add("particular",detial)
-                    .add("id",addressBean.getId()+"")
+                    .add("user.token", sp.get("token"))
+                    .add("province", province)
+                    .add("city", city)
+                    .add("county", district)
+                    .add("consignee", user)
+                    .add("phone", phone)
+                    .add("particular", detial)
+                    .add("id", addressBean.getId() + "")
                     .build();
             url = FXConst.UPDATE_TAKE_ADDRESS;
-        }else {
+        } else {
             body = new FormBody.Builder()
-                    .add("user.token",sp.get("token"))
-                    .add("province",province)
-                    .add("city",city)
-                    .add("county",district)
-                    .add("consignee",user)
-                    .add("phone",phone)
-                    .add("particular",detial)
+                    .add("user.token", sp.get("token"))
+                    .add("province", province)
+                    .add("city", city)
+                    .add("county", district)
+                    .add("consignee", user)
+                    .add("phone", phone)
+                    .add("particular", detial)
                     .build();
             url = FXConst.ADD_TAKE_ADDRESS;
         }
-
 
 
         Request request = new Request.Builder()
@@ -178,24 +185,24 @@ public class AddGoodsAdressActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(AddGoodsAdressActivity.this,"网络异常！");
+                toastInUI(AddGoodsAdressActivity.this, "网络异常！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
-                    toastInUI(AddGoodsAdressActivity.this,"收货地址添加成功");
+                if (result.contains("1000")) {
+                    toastInUI(AddGoodsAdressActivity.this, "收货地址添加成功");
                     TakeGoodsAddressBean takeAddress = new TakeGoodsAddressBean();
                     takeAddress.setPhone(phone);
                     takeAddress.setName(user);
                     takeAddress.setAddress(address + detial);
                     Intent intent = new Intent();
-                    intent.putExtra("address",takeAddress);
-                    if("edit".equals(from)){
-                        intent.putExtra("position",getIntent().getIntExtra("position",-1));
+                    intent.putExtra("address", takeAddress);
+                    if ("edit".equals(from)) {
+                        intent.putExtra("position", getIntent().getIntExtra("position", -1));
                     }
-                    setResult(141,intent);
+                    setResult(141, intent);
                     finish();
                 }
             }
@@ -277,7 +284,7 @@ public class AddGoodsAdressActivity extends BaseActivity {
 
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
-                final String city = address.province+address.city+address.district;
+                final String city = address.province + address.city + address.district;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -290,14 +297,13 @@ public class AddGoodsAdressActivity extends BaseActivity {
                 // 网络定位结果
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
-                final String city = address.province+address.city+address.district;
+                final String city = address.province + address.city + address.district;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         etCurrentAddress.setText(city);
                     }
                 });
-
 
 
             } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
@@ -393,7 +399,6 @@ public class AddGoodsAdressActivity extends BaseActivity {
             mLocationClient.start();
         }
     }
-
 
 
 }

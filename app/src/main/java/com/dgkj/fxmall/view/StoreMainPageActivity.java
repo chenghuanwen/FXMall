@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,7 +19,6 @@ import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.StoreBean;
-import com.dgkj.fxmall.view.myView.ShareDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +62,8 @@ public class StoreMainPageActivity extends BaseActivity {
     TextView tvProductClassify;
     @BindView(R.id.tv_store_msg)
     TextView tvStoreMsg;
+    @BindView(R.id.activity_store_main_page)
+    LinearLayout activityStoreMainPage;
 
     private StoreBean store;
     private List<MainProductBean> goods;
@@ -80,8 +82,13 @@ public class StoreMainPageActivity extends BaseActivity {
         setDatas();
     }
 
+    @Override
+    public View getContentView() {
+        return activityStoreMainPage;
+    }
+
     private void initTablayout() {
-        tabStoreMain.addTab(tabStoreMain.newTab().setText("综合"),true);
+        tabStoreMain.addTab(tabStoreMain.newTab().setText("综合"), true);
         tabStoreMain.addTab(tabStoreMain.newTab().setText("销量"));
         tabStoreMain.addTab(tabStoreMain.newTab().setText("新品"));
         tabStoreMain.setTabMode(TabLayout.MODE_FIXED);
@@ -93,7 +100,9 @@ public class StoreMainPageActivity extends BaseActivity {
         tvCarCount.setText(carCount + "");
         tvMsgCount.setText(msgCount + "");
         store = (StoreBean) getIntent().getSerializableExtra("store");
-        if(store==null){return;}
+        if (store == null) {
+            return;
+        }
         Glide.with(this).load(store.getIconUrl()).placeholder(R.mipmap.android_quanzi).into(civShangpuItem);
         tvStoreName.setText(store.getName());
         tvStoreAddress.setText(store.getAdress());
@@ -158,13 +167,13 @@ public class StoreMainPageActivity extends BaseActivity {
     }
 
     @OnClick(R.id.tv_product_classify)
-    public void productClassify(){
-        jumpTo(StoreProductsClassifyActivity.class,false);
+    public void productClassify() {
+        jumpTo(StoreProductsClassifyActivity.class, false);
     }
 
     @OnClick(R.id.tv_store_msg)
-    public void storeMsg(){
-        jumpTo(StoreMsgActivity.class,false);
+    public void storeMsg() {
+        jumpTo(StoreMsgActivity.class, false);
     }
 
     @OnClick(R.id.ib_back)

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,11 +15,16 @@ import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.OrderBean;
+import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.InputCompletetListener;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.TimeFormatUtils;
+import com.dgkj.fxmall.view.myView.PasswordInputView;
 import com.dgkj.fxmall.view.myView.PayDialog;
 
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,37 +53,42 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     TextView tvCarGoodsIntroduce;
     @BindView(R.id.tv_car_goods_color)
     TextView tvCarGoodsColor;
-  /*  @BindView(R.id.tv_car_goods_size)
-    TextView tvCarGoodsSize;*/
+
     @BindView(R.id.tv_car_goods_price)
     TextView tvCarGoodsPrice;
     @BindView(R.id.tv_car_goods_count)
     TextView tvCarGoodsCount;
     @BindView(R.id.tv_order_getMoney)
     TextView tvOrderGetMoney;
-  /*  @BindView(R.id.tv_buyers_feedback)
-    TextView tvBuyersFeedback;*/
+
     @BindView(R.id.tv_order_express)
     TextView tvOrderExpress;
     @BindView(R.id.iv_back)
-    ImageView ivBack;
+    FrameLayout ivBack;
     @BindView(R.id.tv_order_number)
     TextView tvOrderNum;
     @BindView(R.id.tv_order_create_time)
     TextView tvCreateTime;
 
     private View headerview;
+    private SuperOrderBean superOrder;
     private OrderBean order;
     private TextView tvChangeTakeAddress,tvCancelOrder,tvApplyRefund,tvLogistics,tvDeleteOrder;
     private TextView tvPayTime;
     private Button btnPay,btnNotifyDeliver,btnConfirmTake,btnComment,btnCheckLogistics;
     private OkHttpClient client = new OkHttpClient.Builder().build();
+    private LinearLayout contentView;
+    private String from = "";
+    private int sumPrice;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO 根据不同的订单状态选择不同的界面，各界面内不同的控件由findviewbyid查找
-        order = (OrderBean) getIntent().getSerializableExtra("order");
+        from = getIntent().getStringExtra("from");
+        superOrder = (SuperOrderBean) getIntent().getSerializableExtra("order");
+        order = superOrder.getSubOrders().get(0);
         int stateNum = order.getStateNum();
         switch (stateNum){
             case 0:
@@ -89,59 +101,67 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 tvChangeTakeAddress.setOnClickListener(this);
                 tvCancelOrder.setOnClickListener(this);
                 btnPay.setOnClickListener(this);
+                addProductLayout(R.layout.item_order_detail_no_opration_common);
                 break;
             case 1:
                 setContentView(R.layout.activity_order_detial_for_user_wait_deliver);//待发货
-               // setContentView(R.layout.activity_order_detial_for_store_wait_deliver);//待发货
-                tvApplyRefund = (TextView) findViewById(R.id.tv_apply_refund);
+              //  setContentView(R.layout.activity_order_detial_for_store_wait_deliver);//待发货
                 tvPayTime = (TextView) findViewById(R.id.tv_order_pay_time);
                 tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
                 btnNotifyDeliver = (Button) findViewById(R.id.btn_notify_deliver);
-                tvApplyRefund.setOnClickListener(this);
                 btnNotifyDeliver.setOnClickListener(this);
+                addProductLayout(R.layout.item_order_detail_apply_refund_common);
                 break;
             case 2:
                 setContentView(R.layout.activity_order_detial_for_wait_take);//待收货
                 tvLogistics = (TextView) findViewById(R.id.tv_logistics);
-                tvApplyRefund = (TextView) findViewById(R.id.tv_apply_refund);
                 btnConfirmTake = (Button) findViewById(R.id.btn_confirm_take);
                 tvPayTime = (TextView) findViewById(R.id.tv_order_pay_time);
                 tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
                 tvLogistics.setOnClickListener(this);
-                tvApplyRefund.setOnClickListener(this);
                 btnConfirmTake.setOnClickListener(this);
+                addProductLayout(R.layout.item_order_detail_apply_refund_common);
                 break;
-            case 3:
+            case 4:
                 setContentView(R.layout.activity_order_detial_for_complete);//交易完成
                 tvLogistics = (TextView) findViewById(R.id.tv_logistics);
                 tvDeleteOrder = (TextView) findViewById(R.id.tv_delete_order);
                 tvPayTime = (TextView) findViewById(R.id.tv_order_pay_time);
                 tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
-                btnComment = (Button) findViewById(R.id.btn_comment);
                 tvLogistics.setOnClickListener(this);
                 tvDeleteOrder.setOnClickListener(this);
-                btnComment.setOnClickListener(this);
+                addProductLayout(R.layout.item_order_detail_no_opration_common);
                 break;
-            case 4:
-                setContentView(R.layout.activity_order_detial_for_wait_comment);//交易完成
+            case 3:
+                setContentView(R.layout.activity_order_detial_for_wait_comment);//待评价
                 tvLogistics = (TextView) findViewById(R.id.tv_logistics);
                 tvDeleteOrder = (TextView) findViewById(R.id.tv_delete_order);
                 tvPayTime = (TextView) findViewById(R.id.tv_order_pay_time);
-                tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
                 btnComment = (Button) findViewById(R.id.btn_comment);
+                tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
                 tvLogistics.setOnClickListener(this);
                 tvDeleteOrder.setOnClickListener(this);
                 btnComment.setOnClickListener(this);
+                addProductLayout(R.layout.item_order_detail_no_opration_common);
                 break;
             case 5:
                 setContentView(R.layout.activity_order_detial_for_has_deliver);//已发货
                 btnCheckLogistics = (Button) findViewById(R.id.btn_logistics_msg);
                 btnCheckLogistics.setOnClickListener(this);
+                addProductLayout(R.layout.item_order_detail_no_opration_common);
                 break;
         }
+
+        contentView = (LinearLayout) findViewById(R.id.activity_order_detial);
+
         ButterKnife.bind(this);
         initHeaderView();
         setData();
+    }
+
+    @Override
+    public View getContentView() {
+        return contentView;
     }
 
     private void setData() {
@@ -149,17 +169,68 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         tvOrderTakePhone.setText(order.getTakePhone());
         tvOrderTakeAddress.setText(order.getTakeAddress());
         tvOrderStoreName.setText(order.getStoreName());
-        Glide.with(this).load(order.getUrl()).into(ivCarGoods);
+       /* Glide.with(this).load(order.getUrl()).into(ivCarGoods);
         tvCarGoodsIntroduce.setText(order.getIntroduce());
         tvCarGoodsColor.setText(order.getColor());
         tvCarGoodsPrice.setText("¥"+order.getSinglePrice());
-        tvCarGoodsPrice.setText("x"+order.getCount());
-        tvOrderGetMoney.setText("¥"+order.getSinglePrice()*order.getCount());
-        tvOrderExpress.setText("¥"+order.getPostage());
+        tvCarGoodsCount.setText("x"+order.getCount());*/
+        int postage = order.getPostage();
+        if(postage == 0){
+            tvOrderGetMoney.setText("¥"+sumPrice+"(包邮)");
+        }else {
+            tvOrderGetMoney.setText("¥"+sumPrice+"(含邮费¥"+ postage +")");
+        }
         tvOrderNum.setText("订单编号:"+order.getOrderNum());
         tvCreateTime.setText("创建时间："+ TimeFormatUtils.long2String(order.getCreateTime()));
 
     }
+
+
+    public void addProductLayout(int resId){
+        //动态添加多个商品信息
+        List<OrderBean> subOrders = superOrder.getSubOrders();
+        LinearLayout orderContainer = (LinearLayout) findViewById(R.id.ll_order_detial_container);
+            for (int i = 0; i < subOrders.size(); i++) {
+                OrderBean orderBean = subOrders.get(i);
+                View view = getLayoutInflater().inflate(resId, orderContainer, false);
+
+                TextView tvContent = (TextView) view.findViewById(R.id.tv_car_goods_introduce);
+                TextView tvColor = (TextView) view.findViewById(R.id.tv_car_goods_color);
+                TextView tvPrice = (TextView) view.findViewById(R.id.tv_car_goods_price);
+                TextView tvGoodsCount = (TextView) view.findViewById(R.id.tv_car_goods_count);
+                ImageView ivPhoto = (ImageView) view.findViewById(R.id.iv_car_goods);
+                tvContent.setText(orderBean.getIntroduce());
+                tvColor.setText("颜色："+orderBean.getColor());
+                tvPrice.setText("¥"+orderBean.getSinglePrice());
+                tvGoodsCount.setText("x"+orderBean.getCount());
+                Glide.with(this).load(orderBean.getUrl()).placeholder(R.mipmap.android_quanzi).into(ivPhoto);
+                if(resId == R.layout.item_order_detail_apply_refund_common){
+                    tvApplyRefund = (TextView) view.findViewById(R.id.tv_apply_refund);
+                    tvApplyRefund.setOnClickListener(this);
+                }
+
+                sumPrice += orderBean.getSinglePrice()*orderBean.getCount();
+
+                orderContainer.addView(view);
+
+                //  TextView tvSumPrice = (TextView) view.findViewById(R.id.tv_sumPrice);
+                //TextView tvPostage = (TextView) view.findViewById(R.id.tv_postage);
+                // tvSumPrice.setText("¥"+(orderBean.getSinglePrice()*orderBean.getCount()));
+               /* int postage = orderBean.getPostage();
+                if(postage == 0){
+                    tvPostage.setText("(包邮)");
+                }else {
+                    tvPostage.setText("(含邮费¥"+ postage +")");
+                }*/
+            }
+
+
+
+
+    }
+
+
+
 
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
@@ -176,10 +247,11 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_cancle_order://取消订单
-                showCancleDialog("取消订单");
+                showCancleDialog("取消订单",null);
                 break;
             case R.id.tv_delete_order://删除订单
                 //TODO 同时删除本地和服务器中数据
+                showDeleteDialog(from);
                 break;
             case R.id.tv_logistics://物流信息
                 Intent intent = new Intent(OrderDetialActivity.this,LogisticsDetialActivity.class);
@@ -187,7 +259,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 jumpTo(intent,false);
                 break;
             case R.id.tv_apply_refund://申请退款
-                showCancleDialog("申请退款");
+                showCancleDialog("申请退款",order);//TODO 需获取当前所点击的商品
                 break;
             case R.id.tv_chagne_address://修改收货地址
                 startActivityForResult(new Intent(OrderDetialActivity.this,TakeGoodsAdressActivity.class),171);
@@ -216,11 +288,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.btn_comment://去评论
                 Intent intent2 = new Intent(OrderDetialActivity.this,PublishCommentActivity.class);
-                intent2.putExtra("orderId",order.getId());
+                intent2.putExtra("order",superOrder);
                 jumpTo(intent2,false);
                 break;
-
-
 
             //弹窗点击处理
             case R.id.tv_reason1:
@@ -260,7 +330,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private ImageView iv1,iv2,iv3,iv4;
     private String cancleReason;
     private AlertDialog pw;
-    private void showCancleDialog(String type){
+    private void showCancleDialog(final String type, final OrderBean order){
         View contentview = getLayoutInflater().inflate(R.layout.layout_reason_of_cancel_order, null);
         pw = new AlertDialog.Builder(this).create();
         pw.setView(contentview);
@@ -274,6 +344,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         iv2 = (ImageView) contentview.findViewById(R.id.iv_confirm2);
         iv3 = (ImageView) contentview.findViewById(R.id.iv_confirm3);
         iv4 = (ImageView) contentview.findViewById(R.id.iv_confirm4);
+
+        cancleReason = tvReason1.getText().toString();//默认理由
+
         tvReason1.setOnClickListener(this);
         tvReason2.setOnClickListener(this);
         tvReason3.setOnClickListener(this);
@@ -284,8 +357,17 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO 向服务器发送取消请求
-                cancelOrder(order.getId(),cancleReason);
+                if("申请退款".equals(type)){
+                    Intent intent = new Intent(OrderDetialActivity.this,ApplyRefundActivity.class);
+                    intent.putExtra("reason",cancleReason);
+                    intent.putExtra("money",order.getSinglePrice()*order.getCount());
+                    intent.putExtra("orderId",order.getId());
+                    intent.putExtra("skuId",order.getSkuId());
+                    jumpTo(intent,false);
+                }else {
+                    //TODO 向服务器发送取消请求
+                    cancelOrder(order.getId(),cancleReason);
+                }
 
                 pw.dismiss();
             }
@@ -336,29 +418,138 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void showDeleteDialog(){
-        View contentview = getLayoutInflater().inflate(R.layout.layout_delete_dialog, null);
+        View contentview = getLayoutInflater().inflate(R.layout.layout_confirm_takegoods_dialog, null);
         final AlertDialog pw = new AlertDialog.Builder(this).create();
         pw.setView(contentview);
-        TextView tvConfirm = (TextView) contentview.findViewById(R.id.tv_confirm);
-        tvConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                pw.dismiss();
-            }
-        });
-        TextView tvCancel = (TextView) contentview.findViewById(R.id.tv_cancle);
+        TextView tvCancel = (TextView) contentview.findViewById(R.id.tv_colse);
+        final PasswordInputView piv = (PasswordInputView) contentview.findViewById(R.id.piv_set);
         tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 pw.dismiss();
             }
         });
 
+        piv.setInputCompletetListener(new InputCompletetListener() {
+            @Override
+            public void inputComplete() {
+                String password = piv.getEditContent();
+                //TODO 检测支付密码的正确性,进行提现
+                confirmTakeGoods(order.getId(),password);
+            }
+
+            @Override
+            public void deleteContent(boolean isDelete) {
+
+            }
+        });
 
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(false);
         pw.show();
     }
+
+
+    /**
+     * 确认收货
+     * @param id 订单id
+     * @param payWord 支付密码
+     */
+    private void confirmTakeGoods(int id,String payWord) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"")
+                .add("user.payPassword",payWord)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.CONFIRM_TAKEGOODS_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                toastInUI(OrderDetialActivity.this,"网络异常！");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                if(result.contains("1000")){
+                        toastInUI(OrderDetialActivity.this,"收货成功");
+                    }else if(result.contains("109")){
+                        toastInUI(OrderDetialActivity.this,"非法操作");
+                    }
+            }
+        });
+    }
+
+
+    /**
+     * 删除订单弹窗
+     * @param from
+     */
+    private void showDeleteDialog(final String from){
+        View contentview = getLayoutInflater().inflate(R.layout.layout_delete_dialog, null);
+        final AlertDialog pw = new AlertDialog.Builder(this).create();
+        pw.setView(contentview);
+        TextView tvGirl = (TextView) contentview.findViewById(R.id.tv_confirm);
+        tvGirl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO 向服务器发送删除请求
+                postDeleteInfo2Server(superOrder.getId(),from);
+                pw.dismiss();
+            }
+        });
+        TextView tvBoy = (TextView) contentview.findViewById(R.id.tv_cancle);
+        tvBoy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw.dismiss();
+            }
+        });
+
+        //设置触摸对话框以外区域，对话框消失
+        pw.setCanceledOnTouchOutside(true);
+        pw.show();
+    }
+
+    /**
+     * 发送删除请求到服务器
+     * @param id
+     * @param from
+     */
+    private void postDeleteInfo2Server(int id, String from) {
+        String url = "";
+        if("user".equals(from)){
+            url = FXConst.DELETE_ORDER_FOR_USER;
+        }else if("store".equals(from)){
+            url = FXConst.DELETE_ORDER_FOR_STORE;
+        }
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"")
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                toastInUI(OrderDetialActivity.this,"网络异常");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    toastInUI(OrderDetialActivity.this,"删除成功");
+                }else {
+                    toastInUI(OrderDetialActivity.this,"删除失败");
+                }
+            }
+        });
+    }
+
 
 }

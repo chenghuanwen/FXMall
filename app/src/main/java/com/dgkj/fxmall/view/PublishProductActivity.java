@@ -77,12 +77,14 @@ public class PublishProductActivity extends BaseActivity {
     ListView rvPostageSelect;
     @BindView(R.id.cb_deliver)
     CheckBox cbDeliver;
+    @BindView(R.id.activity_publish_product)
+    LinearLayout activityPublishProduct;
     private View headerview;
     private String classify = "";
     private List<View> viewList = new ArrayList<>();
     private List<File> mainImages = new ArrayList<>();
     private List<File> detialImages = new ArrayList<>();
-    private int classifyId ,postageId;
+    private int classifyId, postageId;
     private List<SuperPostageBean> superPostageList;
     private List<PostageModelSelectBean> postageModelSelectList;
     private CommonAdapter<PostageModelSelectBean> selectAdapter;
@@ -99,6 +101,11 @@ public class PublishProductActivity extends BaseActivity {
         getPostage();
         setListener();
 
+    }
+
+    @Override
+    public View getContentView() {
+        return activityPublishProduct;
     }
 
     /**
@@ -164,10 +171,10 @@ public class PublishProductActivity extends BaseActivity {
         cbDeliver.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     tvPostageModel.setVisibility(View.VISIBLE);
                     //rvPostageSelect.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     tvPostageModel.setVisibility(View.GONE);
                     rvPostageSelect.setVisibility(View.GONE);
                 }
@@ -227,14 +234,14 @@ public class PublishProductActivity extends BaseActivity {
         String inventory = etProductSaveCount.getText().toString();
         String colorSize = etProductType.getText().toString();
         String price = etProductPrice.getText().toString();
-        if(TextUtils.isEmpty(titel) || TextUtils.isEmpty(describe) || TextUtils.isEmpty(brokerage) || TextUtils.isEmpty(inventory)
-                || TextUtils.isEmpty(colorSize) ||TextUtils.isEmpty(price)){
+        if (TextUtils.isEmpty(titel) || TextUtils.isEmpty(describe) || TextUtils.isEmpty(brokerage) || TextUtils.isEmpty(inventory)
+                || TextUtils.isEmpty(colorSize) || TextUtils.isEmpty(price)) {
             toast("请输入完整信息");
             return;
         }
         StringBuffer sb = new StringBuffer();//{"content":"黄色","price":20,"inventory":100,"brokerage":5},
-        sb.append("{\"content\":\""+colorSize+"\",\"price\":"+price+",\"inventory\":"+inventory+",\"brokerage\":"+brokerage+"}");
-        sbType.append("[").append(sb.toString()+",");
+        sb.append("{\"content\":\"" + colorSize + "\",\"price\":" + price + ",\"inventory\":" + inventory + ",\"brokerage\":" + brokerage + "}");
+        sbType.append("[").append(sb.toString() + ",");
         for (int i = 0; i < viewList.size(); i++) {
             View view = viewList.get(i);
             EditText etColor = (EditText) view.findViewById(R.id.et_product_type);
@@ -245,30 +252,30 @@ public class PublishProductActivity extends BaseActivity {
             String addPrice = etPrice.getText().toString();
             String addInventory = etInventory.getText().toString();
             String addBrokerage = etBrokerage.getText().toString();
-            if(TextUtils.isEmpty(addColor) || TextUtils.isEmpty(addPrice) || TextUtils.isEmpty(addInventory) || TextUtils.isEmpty(addBrokerage)){
+            if (TextUtils.isEmpty(addColor) || TextUtils.isEmpty(addPrice) || TextUtils.isEmpty(addInventory) || TextUtils.isEmpty(addBrokerage)) {
                 toast("请输入完整信息");
                 return;
             }
-            if(classifyId < 0){
+            if (classifyId < 0) {
                 toast("你还未选择商品分类");
             }
 
             StringBuffer sbAdd = new StringBuffer();//{"content":"黄色","price":20,"inventory":100,"brokerage":5},
-            sb.append("{\"content\":\""+addColor+"\",\"price\":"+addPrice+",\"inventory\":"+addInventory+",\"brokerage\":"+addBrokerage+"}");
-            sbType.append(sbAdd.toString()+",");
+            sb.append("{\"content\":\"" + addColor + "\",\"price\":" + addPrice + ",\"inventory\":" + addInventory + ",\"brokerage\":" + addBrokerage + "}");
+            sbType.append(sbAdd.toString() + ",");
         }
-        sbType.deleteCharAt(sbType.length()-1);
+        sbType.deleteCharAt(sbType.length() - 1);
         sbType.append("]");
 
-        Map<String,String> params = new HashMap<>();
-        params.put("commodity.store.user.token",sp.get("token"));
-        params.put("commodity.name",titel);
-        params.put("commodity.detail",describe);
-        params.put("commodity.subCastegory.id",classifyId+"");
-        params.put("commodity.freightModel.id",postageId+"");//TODO 区分：若没有运费模板
-        params.put("jsonString",sbType.toString());
+        Map<String, String> params = new HashMap<>();
+        params.put("commodity.store.user.token", sp.get("token"));
+        params.put("commodity.name", titel);
+        params.put("commodity.detail", describe);
+        params.put("commodity.subCastegory.id", classifyId + "");
+        params.put("commodity.freightModel.id", postageId + "");//TODO 区分：若没有运费模板
+        params.put("jsonString", sbType.toString());
 
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_PRODUCT_URL,params,"file",mainImages,"commodity.url",detialImages);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_PRODUCT_URL, params, "file", mainImages, "commodity.url", detialImages);
         //TODO 添加上传进度提示
 
         MyApplication.selectedPictures = null;
@@ -280,12 +287,12 @@ public class PublishProductActivity extends BaseActivity {
     }
 
     @OnClick(R.id.tv_postage_model)
-    public void selectPostage(){
+    public void selectPostage() {
         rvPostageSelect.setVisibility(View.VISIBLE);
-        selectAdapter = new CommonAdapter<PostageModelSelectBean>(this,R.layout.item_all_classify,postageModelSelectList) {
+        selectAdapter = new CommonAdapter<PostageModelSelectBean>(this, R.layout.item_all_classify, postageModelSelectList) {
             @Override
             protected void convert(ViewHolder viewHolder, PostageModelSelectBean item, int position) {
-                viewHolder.setText(R.id.tv_base_classify,item.getName());
+                viewHolder.setText(R.id.tv_base_classify, item.getName());
             }
         };
         rvPostageSelect.setAdapter(selectAdapter);
@@ -320,7 +327,7 @@ public class PublishProductActivity extends BaseActivity {
         } else if (requestCode == 118 && resultCode == 122) {
             classify = data.getStringExtra("classify");
             tvProductClassify.setText(classify);
-            classifyId = data.getIntExtra("subId",-1);
+            classifyId = data.getIntExtra("subId", -1);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

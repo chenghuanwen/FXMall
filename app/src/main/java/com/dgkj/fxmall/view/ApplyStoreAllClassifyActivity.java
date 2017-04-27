@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.StoreSuperClassifyAdapter;
@@ -32,6 +33,8 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
     ImageButton ivBack;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
+    @BindView(R.id.activity_apply_store_all_classify)
+    LinearLayout activityApplyStoreAllClassify;
     private View headerview;
     private int selectPosition;
     private String selectType = "";
@@ -39,15 +42,15 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
     private StoreSuperClassifyAdapter adapter;
     private FXMallControl control = new FXMallControl();
     private OkHttpClient client = new OkHttpClient.Builder().build();
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if(msg.what == 1){
+            if (msg.what == 1) {
                 int position = msg.arg1;
                 for (int i = 0; i < classifyBeanList.size(); i++) {
-                    if(position != i){
+                    if (position != i) {
                         classifyBeanList.get(i).setSelected(false);
-                    }else {
+                    } else {
                         classifyBeanList.get(i).setSelected(true);
                         selectPosition = position;
                         selectType = classifyBeanList.get(position).getType();
@@ -57,6 +60,7 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +68,13 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
         initList();
-       // setListener();
+        // setListener();
         refresh();
+    }
+
+    @Override
+    public View getContentView() {
+        return activityApplyStoreAllClassify;
     }
 
     private void refresh() {
@@ -78,7 +87,7 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter.addAll(classifyList,true);
+                                adapter.addAll(classifyList, true);
                             }
                         });
                     }
@@ -89,7 +98,7 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
 
     private void initList() {
         classifyBeanList = new ArrayList<>();
-        adapter = new StoreSuperClassifyAdapter(this,R.layout.item_store_super_classfiy,classifyBeanList,handler);
+        adapter = new StoreSuperClassifyAdapter(this, R.layout.item_store_super_classfiy, classifyBeanList, handler);
         rvAllClassify.setAdapter(adapter);
     }
 
@@ -100,14 +109,12 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
     }
 
 
-
-
     @OnClick(R.id.btn_confirm)
-    public void confirm(){
+    public void confirm() {
         Intent intent = new Intent();
-        intent.putExtra("id",selectPosition);
-        intent.putExtra("classify",selectType);
-        setResult(152,intent);
+        intent.putExtra("id", selectPosition);
+        intent.putExtra("classify", selectType);
+        setResult(152, intent);
         finish();
     }
 

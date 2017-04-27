@@ -3,10 +3,10 @@ package com.dgkj.fxmall.view;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
@@ -14,7 +14,6 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
-import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,8 @@ public class NewGoodsActivity extends BaseActivity {
     ImageView ivScreening;
     @BindView(R.id.iv_go_top)
     ImageView ivGoTop;
+    @BindView(R.id.activity_new_goods)
+    LinearLayout activityNewGoods;
     private View headerview;
     private List<MainProductBean> productList;
     private MainProductDisplayAdapter adapter;
@@ -52,6 +53,11 @@ public class NewGoodsActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return activityNewGoods;
+    }
+
     private void initTabLayout() {
         tabLayout.addTab(tabLayout.newTab().setText("综合"), true);
         tabLayout.addTab(tabLayout.newTab().setText("销量"));
@@ -60,7 +66,7 @@ public class NewGoodsActivity extends BaseActivity {
 
         productList = new ArrayList<>();
         adapter = new MainProductDisplayAdapter(this, R.layout.item_main_product, productList, "product");
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvSearchContent.setLayoutManager(layoutManager);
         rvSearchContent.setAdapter(adapter);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -115,17 +121,17 @@ public class NewGoodsActivity extends BaseActivity {
     }
 
     @OnClick(R.id.iv_car)
-    public void goCar(){
-        jumpTo(ShoppingCarActivity.class,true);
+    public void goCar() {
+        jumpTo(ShoppingCarActivity.class, true);
     }
 
     @OnClick(R.id.iv_screening)
-    public void screening(){
-        jumpTo(ScreeningProductActivity.class,true);
+    public void screening() {
+        jumpTo(ScreeningProductActivity.class, true);
     }
 
     @OnClick(R.id.iv_go_top)
-    public void goTop(){
+    public void goTop() {
         rvSearchContent.smoothScrollToPosition(0);
     }
 }

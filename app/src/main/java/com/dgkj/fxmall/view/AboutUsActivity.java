@@ -3,6 +3,7 @@ package com.dgkj.fxmall.view;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -17,6 +18,8 @@ public class AboutUsActivity extends BaseActivity {
     ImageButton ibBack;
     @BindView(R.id.tv_current_version)
     TextView tvCurrentVersion;
+    @BindView(R.id.activity_about_us)
+    RelativeLayout activityAboutUs;
     private View headerview;
 
     @Override
@@ -27,13 +30,18 @@ public class AboutUsActivity extends BaseActivity {
         initHeaderView();
     }
 
+    @Override
+    public View getContentView() {
+        return activityAboutUs;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "关于我们");
     }
 
     @OnClick(R.id.ib_back)
-    public void back(){
+    public void back() {
         finish();
     }
 }

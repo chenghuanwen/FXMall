@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,6 @@ import com.dgkj.fxmall.bean.ImageFolder;
 import com.dgkj.fxmall.constans.Permission;
 import com.dgkj.fxmall.constans.Position;
 import com.dgkj.fxmall.listener.OnPictureScanFinishedListener;
-import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.PermissionUtil;
 import com.dgkj.fxmall.utils.PictureScanUtil;
 import com.dgkj.fxmall.view.myView.ListDirPopWindown;
@@ -39,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PictrueChooserActivity extends BaseActivity implements ListDirPopWindown.OnFolderSelectListener{
+public class PictrueChooserActivity extends BaseActivity implements ListDirPopWindown.OnFolderSelectListener {
 
     private static final int FX_REQUEST_PERMISSION_CODE = 101;
 
@@ -49,6 +49,8 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
     TextView folderName;
     @BindView(R.id.sum_count)
     TextView sumCount;
+    @BindView(R.id.activity_pictrue_chooser)
+    LinearLayout activityPictrueChooser;
     private View headerview;
 
     private ProgressDialog pd;
@@ -65,7 +67,7 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pictrue_chooser);
         ButterKnife.bind(this);
-    //    pd = ProgressDialog.show(this,"","正在加载...");
+        //    pd = ProgressDialog.show(this,"","正在加载...");
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -73,33 +75,38 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
 
         initHeaderview();
 
-        if(PermissionUtil.isOverMarshmallow() && !PermissionUtil.isPermissionValid(this, Permission.PERMISSIONS_READ_STORAGE)){
-            Toast.makeText(this,"允许访问sd卡，才能进行此操作！",Toast.LENGTH_SHORT).show();
+        if (PermissionUtil.isOverMarshmallow() && !PermissionUtil.isPermissionValid(this, Permission.PERMISSIONS_READ_STORAGE)) {
+            Toast.makeText(this, "允许访问sd卡，才能进行此操作！", Toast.LENGTH_SHORT).show();
             requestPermissionsAndroidM();
             return;
-        }else {
+        } else {
             pictureScan();
         }
 
     }
 
+    @Override
+    public View getContentView() {
+        return activityPictrueChooser;
+    }
+
     private void initHeaderview() {
         headerview = findViewById(R.id.headerview);
-        setHeaderTitle(headerview,"选择图片");
-        setHeaderImage(headerview, R.mipmap.title_return_icon,"", Position.LEFT, new View.OnClickListener() {
+        setHeaderTitle(headerview, "选择图片");
+        setHeaderImage(headerview, R.mipmap.title_return_icon, "", Position.LEFT, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        setHeaderImage(headerview, -1,"确定", Position.RIGHT, new View.OnClickListener() {
+        setHeaderImage(headerview, -1, "确定", Position.RIGHT, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSelectImgs = mAdapter.getSelectImgs();
                 //TODO 上传已选则图片
                 Intent intent = new Intent();
-                intent.putStringArrayListExtra("images",mSelectImgs);
-                setResult(121,intent);
+                intent.putStringArrayListExtra("images", mSelectImgs);
+                setResult(121, intent);
                 finish();
             }
         });
@@ -108,20 +115,20 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
 
     private void pictureScan() {
 
-       new PictureScanUtil().scanStart(new OnPictureScanFinishedListener() {
-           @Override
-           public void onPictureScanFinish(ArrayList<ImageFolder> folders, int totalCount, File mImgDir) {
-            //   pd.dismiss();
-               imageFolders = folders;
-               setData(mImgDir,totalCount);//设置数据，显示图片数量最多的文件夹的所有图片
-               initListDirPopupWindw();//初始化文件就列表弹窗
-           }
-       });
+        new PictureScanUtil().scanStart(new OnPictureScanFinishedListener() {
+            @Override
+            public void onPictureScanFinish(ArrayList<ImageFolder> folders, int totalCount, File mImgDir) {
+                //   pd.dismiss();
+                imageFolders = folders;
+                setData(mImgDir, totalCount);//设置数据，显示图片数量最多的文件夹的所有图片
+                initListDirPopupWindw();//初始化文件就列表弹窗
+            }
+        });
     }
 
     private void initListDirPopupWindw() {
-        mDirWindow = new ListDirPopWindown(ViewGroup.LayoutParams.MATCH_PARENT, (int) (screenHeight*0.7),imageFolders,
-                getLayoutInflater().inflate(R.layout.layout_folder_popuwindow,null));
+        mDirWindow = new ListDirPopWindown(ViewGroup.LayoutParams.MATCH_PARENT, (int) (screenHeight * 0.7), imageFolders,
+                getLayoutInflater().inflate(R.layout.layout_folder_popuwindow, null));
 
         mDirWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
@@ -140,7 +147,7 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
         images = Arrays.asList(mImgDir.list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                if(name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg"))
+                if (name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".jpeg"))
                     return true;
                 return false;
             }
@@ -149,9 +156,9 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
             @Override
             public void run() {
                 //文件夹路径和图片路径分开保存，极大地减少了内存的消耗
-                mAdapter = new PictureChooserAdapter(MyApplication.getContext(),R.layout.item_picture_chooser,images,mImgDir.getAbsolutePath());
+                mAdapter = new PictureChooserAdapter(MyApplication.getContext(), R.layout.item_picture_chooser, images, mImgDir.getAbsolutePath());
                 gvPicture.setAdapter(mAdapter);
-                sumCount.setText(totalCount+"张");
+                sumCount.setText(totalCount + "张");
                 folderName.setText(mImgDir.getAbsolutePath().substring(mImgDir.getAbsolutePath().lastIndexOf("/")));
             }
         });
@@ -160,8 +167,8 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
 
 
     @OnClick(R.id.folder_name)
-    public void onFolderNameClick(){
-        mDirWindow.showAsDropDown(folderName,0,0);
+    public void onFolderNameClick() {
+        mDirWindow.showAsDropDown(folderName, 0, 0);
         //设置背景色变暗
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = 0.3f;
@@ -174,7 +181,7 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
         images = Arrays.asList(currentDir.list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                if(name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")){
+                if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")) {
                     return true;
                 }
                 return false;
@@ -182,73 +189,72 @@ public class PictrueChooserActivity extends BaseActivity implements ListDirPopWi
         }));
 
 
-        mAdapter = new PictureChooserAdapter(MyApplication.getContext(),R.layout.item_picture_chooser,images,currentDir.getAbsolutePath());
+        mAdapter = new PictureChooserAdapter(MyApplication.getContext(), R.layout.item_picture_chooser, images, currentDir.getAbsolutePath());
         gvPicture.setAdapter(mAdapter);
         //mAdapter.notifyDataSetChanged();
-        sumCount.setText(folder.getCount()+"张");
+        sumCount.setText(folder.getCount() + "张");
         folderName.setText(folder.getName());
         mDirWindow.dismiss();
 
     }
 
 
-
-
     /**
      * 申请6.0动态权限
      */
     private void requestPermissionsAndroidM() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> needPermissionRequest = new ArrayList<>();
             needPermissionRequest.add(Permission.PERMISSIONS_READ_STORAGE);
-           // needPermissionRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-           // needPermissionRequest.add(Manifest.permission.CAMERA);
-            PermissionUtil.requestPermissions(PictrueChooserActivity.this,FX_REQUEST_PERMISSION_CODE,needPermissionRequest);
+            // needPermissionRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            // needPermissionRequest.add(Manifest.permission.CAMERA);
+            PermissionUtil.requestPermissions(PictrueChooserActivity.this, FX_REQUEST_PERMISSION_CODE, needPermissionRequest);
         }
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == FX_REQUEST_PERMISSION_CODE){
-            permissionsResult(permissions,grantResults);
+        if (requestCode == FX_REQUEST_PERMISSION_CODE) {
+            permissionsResult(permissions, grantResults);
 
-        }else {
+        } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
     /**
      * 响应权限请求结果
-     * @param permissions 申请的权限集合
+     *
+     * @param permissions  申请的权限集合
      * @param grantResults 权限授权结果集合
      */
     private void permissionsResult(String[] permissions, int[] grantResults) {
         List<String> needPermission = new ArrayList<>();
         for (int i = 0; i < grantResults.length; i++) {
-            if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
-                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     needPermission.add(permissions[i]);
                 }
             }
         }
 
-        if(needPermission.size()>0){
+        if (needPermission.size() > 0) {
             StringBuffer permissionMsg = new StringBuffer();
             for (int i = 0; i < needPermission.size(); i++) {
-                if(needPermission.get(i).equals(Permission.PERMISSIONS_READ_STORAGE)){
-                    permissionMsg.append(","+"请求访问相册");
-                }else if(needPermission.get(i).equals(Permission.PERMISSIONS_WRITE_STORAGE)){
-                    permissionMsg.append(","+"请求访问SD卡");
-                }else if(needPermission.get(i).equals(Manifest.permission.CAMERA)){
-                    permissionMsg.append(","+"请求打开相机");
+                if (needPermission.get(i).equals(Permission.PERMISSIONS_READ_STORAGE)) {
+                    permissionMsg.append("," + "请求访问相册");
+                } else if (needPermission.get(i).equals(Permission.PERMISSIONS_WRITE_STORAGE)) {
+                    permissionMsg.append("," + "请求访问SD卡");
+                } else if (needPermission.get(i).equals(Manifest.permission.CAMERA)) {
+                    permissionMsg.append("," + "请求打开相机");
                 }
             }
             String strMessage = "请允许使用\"" + permissionMsg.substring(1).toString() + "\"权限, 以正常使用APP的所有功能.";
 
             Toast.makeText(PictrueChooserActivity.this, strMessage, Toast.LENGTH_SHORT).show();
-        }else {
-           pictureScan();
+        } else {
+            pictureScan();
         }
     }
 

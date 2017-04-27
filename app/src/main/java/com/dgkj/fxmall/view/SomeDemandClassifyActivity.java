@@ -5,8 +5,9 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -16,13 +17,10 @@ import com.dgkj.fxmall.bean.MainDemandBean;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.ProductClassifyBean;
 import com.dgkj.fxmall.bean.SomeDemandClassifyBean;
-
-import com.dgkj.fxmall.bean.SomeProductClassifyBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.fragment.SomeDemandClassifyFragment;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +46,8 @@ public class SomeDemandClassifyActivity extends BaseActivity {
     ImageView ivTop;
     @BindView(R.id.tv_title_center)
     TextView tvTitleCenter;
+    @BindView(R.id.activity_some_product_classify)
+    LinearLayout activitySomeProductClassify;
 
 
     private String productType;
@@ -58,7 +58,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
     private String[] subClassify;
-    private int [] subId;
+    private int[] subId;
     private int index = 1;
 
     @Override
@@ -67,15 +67,17 @@ public class SomeDemandClassifyActivity extends BaseActivity {
         setContentView(R.layout.activity_some_product_classify);
         ButterKnife.bind(this);
 
-        superId = getIntent().getIntExtra("superId",-1);
+        superId = getIntent().getIntExtra("superId", -1);
 
         initTitle();
         getData();
 
     }
 
-
-
+    @Override
+    public View getContentView() {
+        return activitySomeProductClassify;
+    }
 
 
     /**
@@ -96,12 +98,12 @@ public class SomeDemandClassifyActivity extends BaseActivity {
                 for (int j = 0; j < subClassify.length; j++) {
                     final SomeDemandClassifyBean classifyBean = new SomeDemandClassifyBean();
                     classifyBean.setType(subClassify[j]);
-                   control.getDemandByClassify(SomeDemandClassifyActivity.this, subId[j], index, 20, client, new OnGetMyDemandDataFinishedListener() {
-                       @Override
-                       public void onGetMyDemandDataFinished(List<MainDemandBean> demandList) {
-                           classifyBean.setSubList(demandList);
-                       }
-                   });
+                    control.getDemandByClassify(SomeDemandClassifyActivity.this, subId[j], index, 20, client, new OnGetMyDemandDataFinishedListener() {
+                        @Override
+                        public void onGetMyDemandDataFinished(List<MainDemandBean> demandList) {
+                            classifyBean.setSubList(demandList);
+                        }
+                    });
                     mainList.add(classifyBean);
                 }
                 initTab(mainList);
@@ -109,7 +111,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
         });
 
         //本地测试数据
-        String[] type = new String[]{"上衣","寸衫","风衣","T恤","马甲","丝巾","披肩"};
+        String[] type = new String[]{"上衣", "寸衫", "风衣", "T恤", "马甲", "丝巾", "披肩"};
         List<String> url = new ArrayList<>();
         url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
         url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
@@ -132,10 +134,10 @@ public class SomeDemandClassifyActivity extends BaseActivity {
                 productBean.setTitel("粉小萌酸辣粉");
                 list.add(productBean);
             }
-           classifyBean.setSubList(list);
+            classifyBean.setSubList(list);
             mainList.add(classifyBean);
         }
-       initTab(mainList);
+        initTab(mainList);
     }
 
     /**
@@ -147,20 +149,19 @@ public class SomeDemandClassifyActivity extends BaseActivity {
         for (SomeDemandClassifyBean classifyBean : list) {
             fragments.add(new SomeDemandClassifyFragment(classifyBean.getSubList()));
         }
-        vpProduct.setAdapter(new HomePageFragmentAdapter(getSupportFragmentManager(),fragments));
+        vpProduct.setAdapter(new HomePageFragmentAdapter(getSupportFragmentManager(), fragments));
         vpProduct.setCurrentItem(0);
         vpProduct.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
 
         for (SomeDemandClassifyBean classifyBean : list) {
-            tabLayout.addTab(tabLayout.newTab().setText(classifyBean.getType()),true);
+            tabLayout.addTab(tabLayout.newTab().setText(classifyBean.getType()), true);
         }
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabLayout.setupWithViewPager(vpProduct,true);
+        tabLayout.setupWithViewPager(vpProduct, true);
         for (int i = 0; i < list.size(); i++) {//与viewpager连用后续重新设置标题
             tabLayout.getTabAt(i).setText(list.get(i).getType());
         }
-
 
 
     }
@@ -172,25 +173,25 @@ public class SomeDemandClassifyActivity extends BaseActivity {
 
 
     @OnClick(R.id.iv_top)
-    public void gotop(){
+    public void gotop() {
 
     }
 
 
     @OnClick(R.id.iv_car)
-    public void screening(){
-       // jumpTo(ScreeningProductActivity.class,false);
-        startActivityForResult(new Intent(this,ScreeningProductActivity.class),137);
+    public void screening() {
+        // jumpTo(ScreeningProductActivity.class,false);
+        startActivityForResult(new Intent(this, ScreeningProductActivity.class), 137);
     }
 
 
     @OnClick(R.id.iv_mine)
-    public void publish(){
-        jumpTo(PublishDemandActivity.class,true);
+    public void publish() {
+        jumpTo(PublishDemandActivity.class, true);
     }
 
     @OnClick(R.id.iv_back)
-    public void back(){
+    public void back() {
         finish();
     }
 }

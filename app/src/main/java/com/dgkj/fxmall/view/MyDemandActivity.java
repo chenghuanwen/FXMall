@@ -9,12 +9,11 @@ import android.support.v7.widget.AppCompatRadioButton;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import com.dgkj.fxmall.R;
-import com.dgkj.fxmall.adapter.MainDemandDisplayAdapter;
-import com.dgkj.fxmall.adapter.SearchStoreAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainDemandBean;
 import com.dgkj.fxmall.bean.StoreBean;
@@ -24,7 +23,6 @@ import com.dgkj.fxmall.fragment.MydemandFragment;
 import com.dgkj.fxmall.fragment.RecommendFragment;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
-import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.view.myView.ObservableScrollView;
 
 import java.util.ArrayList;
@@ -54,6 +52,8 @@ public class MyDemandActivity extends BaseActivity {
     ImageButton ibBack;
     @BindView(R.id.myScrollView)
     ObservableScrollView myScrollView;
+    @BindView(R.id.activity_my_demand)
+    LinearLayout activityMyDemand;
     private View headerview;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -108,7 +108,7 @@ public class MyDemandActivity extends BaseActivity {
 
         //TEST
         for (int i = 0; i < 10; i++) {
-            StoreBean store  = new StoreBean();
+            StoreBean store = new StoreBean();
             store.setAdress("广东深圳");
             store.setDescribeScore(5.00);
             store.setGoodsCount(134);
@@ -121,7 +121,7 @@ public class MyDemandActivity extends BaseActivity {
             storeList.add(store);
         }
 
-        control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_MY_RECOMMEND_STORES,storeIndex, 20, client, new OnGetMyRecommendStoreFinishedListener() {
+        control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_MY_RECOMMEND_STORES, storeIndex, 20, client, new OnGetMyRecommendStoreFinishedListener() {
             @Override
             public void onGetMyRecommendStoreFinished(List<StoreBean> stores) {
                 storeList.addAll(stores);
@@ -136,6 +136,11 @@ public class MyDemandActivity extends BaseActivity {
         tabLayout.getTabAt(0).select();
     }
 
+    @Override
+    public View getContentView() {
+        return activityMyDemand;
+    }
+
     /***
      * 处理scrollview滑动
      */
@@ -145,31 +150,31 @@ public class MyDemandActivity extends BaseActivity {
         myScrollView.setOnScollChangedListener(new ObservableScrollView.OnScollChangedListener() {
             @Override
             public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-                int [] location = new int[2];
+                int[] location = new int[2];
                 flTopBackground.getLocationOnScreen(location);//获取该布局在屏幕中的位置
                 int distance = location[1];
-                if(distance<40){
+                if (distance < 40) {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             flTopBackground.setVisibility(View.GONE);
                             tabLayout.setVisibility(View.VISIBLE);
-                            if(rbMydemand.isChecked()){
+                            if (rbMydemand.isChecked()) {
                                 tabLayout.getTabAt(0).select();
-                            }else {
+                            } else {
                                 tabLayout.getTabAt(1).select();
                             }
                         }
-                    },500);
+                    }, 500);
 
-                }else {
+                } else {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             flTopBackground.setVisibility(View.VISIBLE);
                             tabLayout.setVisibility(View.GONE);
                         }
-                    },500);
+                    }, 500);
 
                 }
             }

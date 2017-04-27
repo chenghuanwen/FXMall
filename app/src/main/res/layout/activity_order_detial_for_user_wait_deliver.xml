@@ -79,9 +79,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@drawable/whitecircler_corner_shape3"
         android:orientation="vertical"
-        android:layout_marginTop="10dp">
+        android:layout_margin="10dp">
      <TextView
          android:id="@+id/tv_order_store_name"
          android:layout_width="match_parent"
@@ -95,6 +95,11 @@
             android:layout_height="1dp"
             android:background="#f3f3f3"/>
         <LinearLayout
+            android:id="@+id/ll_order_detial_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
+       <!-- <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -159,10 +164,44 @@
                         android:textColor="#999"
                         android:textSize="13sp" />
                 </RelativeLayout>
-
-
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="1dp"
+            android:background="#fff"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tv_apply_refund"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:textColor="#333"
+                android:textSize="15sp"
+                android:text="申请退款"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:background="@mipmap/ddxq_qxdd"/>
+            <Button
+                android:id="@+id/btn_notify_deliver"
+                android:layout_width="90dp"
+                android:background="@drawable/circlebutton_shape"
+                android:layout_height="40dp"
+                android:text="提醒发货"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textColor="#fff"
+                android:layout_marginRight="10dp"/>
+        </LinearLayout>
+-->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -214,6 +253,12 @@
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"/>
     </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/whitecircler_corner_shape3"
+                android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -282,52 +327,46 @@
                     android:textSize="14sp"
                     android:layout_margin="10dp"/>
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e8e8e8"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <LinearLayout
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e8e8e8"/>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:layout_marginTop="1dp"
         android:background="#fff"
         android:orientation="horizontal">
-        <ImageView
+        <FrameLayout
             android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|left"
-            android:src="@mipmap/dpsx_fh"
-            android:layout_marginLeft="10dp"/>
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tv_apply_refund"
-            android:layout_width="90dp"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:textColor="#333"
-            android:textSize="15sp"
-            android:text="申请退款"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:layout_marginRight="10dp"
-            android:background="@mipmap/ddxq_qxdd"/>
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/dpsx_fh"
+                android:layout_marginLeft="10dp"
+                />
+        </FrameLayout>
+
         <Button
             android:id="@+id/btn_notify_deliver"
-            android:layout_width="90dp"
+            android:layout_width="220dp"
             android:background="@drawable/circlebutton_shape"
             android:layout_height="40dp"
             android:text="提醒发货"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:gravity="center"
             android:textSize="14sp"
             android:textColor="#fff"
             android:layout_marginRight="10dp"/>
-    </LinearLayout>
+    </RelativeLayout>
+
 
 </LinearLayout>

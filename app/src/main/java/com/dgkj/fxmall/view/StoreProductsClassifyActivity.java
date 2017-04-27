@@ -27,6 +27,8 @@ public class StoreProductsClassifyActivity extends BaseActivity {
     ImageButton ibBack;
     @BindView(R.id.ll_store_product_classify)
     LinearLayout llStoreProductClassify;
+    @BindView(R.id.activity_store_products_classify)
+    LinearLayout activityStoreProductsClassify;
     private View headerview;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
@@ -40,8 +42,13 @@ public class StoreProductsClassifyActivity extends BaseActivity {
         refresh();
     }
 
+    @Override
+    public View getContentView() {
+        return activityStoreProductsClassify;
+    }
+
     private void refresh() {
-        control.getStoreProductClassify(this, sp.get("token"),0, client, new OnGetStoreProductClassifyFinishedListener() {
+        control.getStoreProductClassify(this, sp.get("token"), 0, client, new OnGetStoreProductClassifyFinishedListener() {
             @Override
             public void onGetStoreProductClassifyFinished(List<StoreProductClassifyBean> classifyList) {
                 for (int i = 0; i < classifyList.size(); i++) {
@@ -51,7 +58,7 @@ public class StoreProductsClassifyActivity extends BaseActivity {
                     TextView tvName = (TextView) view.findViewById(R.id.tv_product_type);
                     TextView tvCount = (TextView) view.findViewById(R.id.tv_classify_count);
                     tvName.setText(classify.getName());
-                    tvCount.setText("("+classify.getCount()+"件)");
+                    tvCount.setText("(" + classify.getCount() + "件)");
                     tvCount.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

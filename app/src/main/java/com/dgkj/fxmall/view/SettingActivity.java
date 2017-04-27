@@ -54,6 +54,11 @@ public class SettingActivity extends BaseActivity {
         getCacheSize();
     }
 
+    @Override
+    public View getContentView() {
+        return null;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "设置");

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,8 @@ public class LocationCurrenterCityActivity extends BaseActivity {
     Button btnFinish;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
+    @BindView(R.id.activity_location_currenter_city)
+    LinearLayout activityLocationCurrenterCity;
 
     private View headerview;
     private static final int FX_REQUEST_PERMISSION_CODE = 100;
@@ -75,18 +78,21 @@ public class LocationCurrenterCityActivity extends BaseActivity {
 
     }
 
+    @Override
+    public View getContentView() {
+        return activityLocationCurrenterCity;
+    }
+
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "编辑地址");
     }
 
 
-
     @OnClick(R.id.tv_location)
-    public void location(){
+    public void location() {
         checkLocationPermission();
     }
-
 
 
     private void checkLocationPermission() {
@@ -161,7 +167,7 @@ public class LocationCurrenterCityActivity extends BaseActivity {
 
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
-                final String city = address.province+address.city;
+                final String city = address.province + address.city;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -174,14 +180,13 @@ public class LocationCurrenterCityActivity extends BaseActivity {
                 // 网络定位结果
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
-                final String city = address.province+address.city;
+                final String city = address.province + address.city;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         tvCurrentCity.setText(city);
                     }
                 });
-
 
 
             } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
@@ -220,14 +225,12 @@ public class LocationCurrenterCityActivity extends BaseActivity {
     }
 
 
-
-
     @OnClick(R.id.btn_finish)
-    public void confirm(){
-       //TODO 将当前地址发送到服务器
+    public void confirm() {
+        //TODO 将当前地址发送到服务器
         FormBody body = new FormBody.Builder()
-                .add("token",sp.get("token"))
-                .add("location",tvCurrentCity.getText().toString())
+                .add("token", sp.get("token"))
+                .add("location", tvCurrentCity.getText().toString())
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.CHANGE_USER_ADDRESS)
@@ -236,17 +239,17 @@ public class LocationCurrenterCityActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(LocationCurrenterCityActivity.this,"网络异常");
+                toastInUI(LocationCurrenterCityActivity.this, "网络异常");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
-                    toastInUI(LocationCurrenterCityActivity.this,"昵称修改成功！");
-                   finish();
-                }else {
-                    toastInUI(LocationCurrenterCityActivity.this,"昵称修改失败！");
+                if (result.contains("1000")) {
+                    toastInUI(LocationCurrenterCityActivity.this, "昵称修改成功！");
+                    finish();
+                } else {
+                    toastInUI(LocationCurrenterCityActivity.this, "昵称修改失败！");
                 }
             }
         });
@@ -254,7 +257,7 @@ public class LocationCurrenterCityActivity extends BaseActivity {
     }
 
     @OnClick(R.id.ib_back)
-    public void back(){
+    public void back() {
         finish();
     }
 
