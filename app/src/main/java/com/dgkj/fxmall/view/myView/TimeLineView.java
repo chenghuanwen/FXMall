@@ -15,7 +15,8 @@ import android.view.View;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.utils.LogUtil;
 
-/**自定义时间轴效果
+/**
+ * 自定义时间轴效果
  * Created by 成焕文 on 2017/3/31.
  */
 
@@ -64,20 +65,21 @@ public class TimeLineView extends View {
 
     /**
      * 自己需求第一个显示的颜色图片
-     * */
+     */
 
     private Bitmap bitmapHead;
+
     public TimeLineView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public TimeLineView(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public TimeLineView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context,attrs,defStyleAttr);
+        init(context, attrs, defStyleAttr);
     }
 
     /**
@@ -162,8 +164,13 @@ public class TimeLineView extends View {
                 /**
                  * 画第一个节点下面的轴
                  */
-                canvas.drawRect(new Rect(viewWidth - timelineWidth / 2,
+              /*  canvas.drawRect(new Rect(viewWidth - timelineWidth / 2,
                         (int) (2 * timelineHeadRadius + marginTop) + 5,
+                        viewWidth + timelineWidth / 2, (int) (2
+                        * timelineHeadRadius + timelineRadiusDistance
+                        + marginTop + 5)), mPaint);*/
+                canvas.drawRect(new Rect(viewWidth - timelineWidth / 2,
+                        marginTop + 15,
                         viewWidth + timelineWidth / 2, (int) (2
                         * timelineHeadRadius + timelineRadiusDistance
                         + marginTop + 5)), mPaint);
@@ -197,15 +204,11 @@ public class TimeLineView extends View {
                 canvas.drawRect(
                         new Rect(
                                 viewWidth - timelineWidth / 2,
-                                (int) (j
-                                        * (2 * timelineRadius + timelineRadiusDistance)
-                                        - timelineRadiusDistance + 2
-                                        * (timelineHeadRadius - timelineRadius) + marginTop),
+                                (int) (j * (2 * timelineRadius + timelineRadiusDistance) - timelineRadiusDistance +
+                                        2 * (timelineHeadRadius - timelineRadius) + marginTop),
                                 viewWidth + timelineWidth / 2,
-                                (int) (j
-                                        * (2 * timelineRadius + timelineRadiusDistance)
-                                        + 2
-                                        * (timelineHeadRadius - timelineRadius) + marginTop)),
+                                (int) (j * (2 * timelineRadius + timelineRadiusDistance) +
+                                        2 * (timelineHeadRadius - timelineRadius) + marginTop)),
                         mPaint);
             }
 

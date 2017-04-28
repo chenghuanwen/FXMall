@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#30000000">
+    android:background="#e8e8e8">
 <TextView
     android:id="@+id/tv_search_goods"
     android:layout_width="100dp"
@@ -11,7 +11,7 @@
     android:text="退货退款"
     android:gravity="center"
     android:paddingRight="10dp"
-    android:textColor="#fff"
+    android:textColor="#333"
     android:textSize="16sp"/>
     <View
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         android:layout_height="40dp"
         android:text="仅退款"
         android:gravity="center"
-        android:textColor="#fff"
+        android:textColor="#333"
         android:textSize="16sp"/>
 
 

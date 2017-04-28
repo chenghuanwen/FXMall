@@ -179,7 +179,7 @@ public class ShangpuOrderActivity extends BaseActivity {
         subSols = new ArrayList<>();
         subRefund = new ArrayList<>();
 
-        control.getMyOrderInfo(this, sp.get("token"), statu, isAll, client, new OnGetMyOrderInfoFinishedListener() {
+        control.getStoreOrderInfo(this, sp.get("token"), statu, isAll,index,20, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
             public void onGetMyOrderInfoFinished(List<OrderBean> orders) {
                 allOrder.addAll(sortProductsOfOrder(orders));

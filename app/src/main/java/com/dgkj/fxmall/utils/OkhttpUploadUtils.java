@@ -32,7 +32,7 @@ public class OkhttpUploadUtils {
     private static Context context;
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
     private Handler handler = new Handler(Looper.getMainLooper());
-
+    private OkhttpUploadUtils(){}
     public static OkhttpUploadUtils getInstance(Context cont) {
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);

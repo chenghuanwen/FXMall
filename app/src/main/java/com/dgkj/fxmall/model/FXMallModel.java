@@ -1268,6 +1268,8 @@ public class FXMallModel {
 
                             JSONObject expressCode = order.getJSONObject("expressCode");
                             orderBean.setExpress(expressCode.getString("name"));
+                            orderBean.setExpressCode(expressCode.getString("code"));
+                            orderBean.setExpressCodeId(expressCode.getInt("id"));
 
                             JSONObject takeInfo = order.getJSONObject("shoppingAddress");
                             orderBean.setTakeMan(takeInfo.getString("consignee"));
@@ -1278,6 +1280,9 @@ public class FXMallModel {
 
                             JSONObject store = order.getJSONObject("store");
                             orderBean.setStoreName(store.getString("storeName"));
+                            orderBean.setStoreUser(store.getString("storekeeper"));
+                            orderBean.setStorePhone(store.getString("phone"));
+                            orderBean.setStoreAddress(store.getString("address"));
 
                             JSONObject productInfo = jsonObject.getJSONObject("sku");//TODO 商品信息有待完善，字段待确定
                             orderBean.setPostage(productInfo.getInt(""));
@@ -1320,7 +1325,7 @@ public class FXMallModel {
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
-                .url(FXConst.GET_ORDER_CALSSIFY)
+                .url(FXConst.GET_STORE_ORDER_CLASSIFY)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -1381,6 +1386,8 @@ public class FXMallModel {
 
                             JSONObject expressCode = order.getJSONObject("expressCode");
                             orderBean.setExpress(expressCode.getString("name"));
+                            orderBean.setExpressCode(expressCode.getString("code"));
+                            orderBean.setExpressCodeId(expressCode.getInt("id"));
 
                             JSONObject takeInfo = order.getJSONObject("shoppingAddress");
                             orderBean.setTakeMan(takeInfo.getString("consignee"));

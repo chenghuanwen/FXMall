@@ -191,7 +191,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         List<OrderBean> subOrders = superOrder.getSubOrders();
         LinearLayout orderContainer = (LinearLayout) findViewById(R.id.ll_order_detial_container);
             for (int i = 0; i < subOrders.size(); i++) {
-                OrderBean orderBean = subOrders.get(i);
+                final OrderBean orderBean = subOrders.get(i);
                 View view = getLayoutInflater().inflate(resId, orderContainer, false);
 
                 TextView tvContent = (TextView) view.findViewById(R.id.tv_car_goods_introduce);
@@ -206,7 +206,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 Glide.with(this).load(orderBean.getUrl()).placeholder(R.mipmap.android_quanzi).into(ivPhoto);
                 if(resId == R.layout.item_order_detail_apply_refund_common){
                     tvApplyRefund = (TextView) view.findViewById(R.id.tv_apply_refund);
-                    tvApplyRefund.setOnClickListener(this);
+                    tvApplyRefund.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showCancleDialog("申请退款",orderBean);//TODO 需获取当前所点击的商品
+                        }
+                    });
                 }
 
                 sumPrice += orderBean.getSinglePrice()*orderBean.getCount();
@@ -223,9 +228,6 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     tvPostage.setText("(含邮费¥"+ postage +")");
                 }*/
             }
-
-
-
 
     }
 
@@ -258,9 +260,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 intent.putExtra("orderId",order.getId());
                 jumpTo(intent,false);
                 break;
-            case R.id.tv_apply_refund://申请退款
+           /* case R.id.tv_apply_refund://申请退款
                 showCancleDialog("申请退款",order);//TODO 需获取当前所点击的商品
-                break;
+                break;*/
             case R.id.tv_chagne_address://修改收货地址
                 startActivityForResult(new Intent(OrderDetialActivity.this,TakeGoodsAdressActivity.class),171);
                 break;

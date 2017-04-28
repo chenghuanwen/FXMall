@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 public class OrderBean implements Serializable{
     private String storeName,url,introduce,color,size;
+    private String storeUser,storePhone,storeAddress;
     private int count;
     private int singlePrice;
     private int postage;
@@ -24,8 +25,67 @@ public class OrderBean implements Serializable{
     private String buyerLeave;
     private int productId;//商品id
     private int skuId;//商品sku id
-    private String express;
+    private String express,expressCode;
+    private int expressCodeId;//快递编码id
+    private int refundId;//退款id
+    private String agreeRefundTime;
 
+
+    public int getExpressCodeId() {
+        return expressCodeId;
+    }
+
+    public void setExpressCodeId(int expressCodeId) {
+        this.expressCodeId = expressCodeId;
+    }
+
+    public String getAgreeRefundTime() {
+        return agreeRefundTime;
+    }
+
+    public void setAgreeRefundTime(String agreeRefundTime) {
+        this.agreeRefundTime = agreeRefundTime;
+    }
+
+    public String getStorePhone() {
+        return storePhone;
+    }
+
+    public void setStorePhone(String storePhone) {
+        this.storePhone = storePhone;
+    }
+
+    public String getStoreAddress() {
+        return storeAddress;
+    }
+
+    public void setStoreAddress(String storeAddress) {
+        this.storeAddress = storeAddress;
+    }
+
+    public String getStoreUser() {
+        return storeUser;
+    }
+
+    public void setStoreUser(String storeUser) {
+        this.storeUser = storeUser;
+    }
+
+    public int getRefundId() {
+        return refundId;
+    }
+
+    public void setRefundId(int refundId) {
+        this.refundId = refundId;
+    }
+
+    public String getExpressCode() {
+        return expressCode;
+    }
+
+    public void setExpressCode(String expressCode) {
+        this.expressCode = expressCode;
+    }
 
     public int getSkuId() {
         return skuId;

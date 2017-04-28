@@ -421,15 +421,12 @@ public class ApplyStoreActivity extends BaseActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //将拍照的图片保存到本地
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), System.currentTimeMillis() + ".jpg");
-        LogUtil.i("TAG", "准备拍照==========");
         Uri iconUri = null;
         if (Build.VERSION.SDK_INT >= 24) {
             iconUri = FileProvider.getUriForFile(this, "com.dgkj.fxmall.fileprovider", file);
-            LogUtil.i("TAG", "7.0uri====" + iconUri);
         } else {
             iconUri = Uri.fromFile(file);
         }
-        LogUtil.i("TAG", "准备拍照URI==========");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, iconUri);
         startActivityForResult(intent, 102);
     }

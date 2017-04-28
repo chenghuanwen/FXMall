@@ -183,13 +183,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case WAIT_DELIVER:
-              /*  holder.setOnClickListener(R.id.btn_apply_refund, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {//申请退款
 
-                        showCancleDialog(position,"退款");
-                    }
-                });*/
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提醒发货
@@ -204,12 +198,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                         context.startActivity(new Intent(context, LogisticsDetialActivity.class));
                     }
                 });
-              /*  holder.setOnClickListener(R.id.btn_scale_return, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {//申请退货
-                        context.startActivity(new Intent(context, ApplyRefundActivity.class));
-                    }
-                });*/
+
                 holder.setOnClickListener(R.id.btn_confirm_takegoods, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//确认收货
@@ -262,8 +251,10 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
             case  AGREE_REFUND:
                 holder.setOnClickListener(R.id.btn_submit_logistic, new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        context.startActivity(new Intent(context, SubmitLogisticsMsgActivity.class));
+                    public void onClick(View v) {//提交物流信息
+                        Intent intent = new Intent(context, SubmitLogisticsMsgActivity.class);
+                        intent.putExtra("order",superOrderBean.getSubOrders().get(0));
+                        context.startActivity(intent);
                     }
                 });
                 break;
@@ -295,10 +286,10 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                         context.startActivity(new Intent(context, LogisticsDetialActivity.class));
                     }
                 });
-                holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
+                holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {//删除订单
                     @Override
                     public void onClick(View v) {
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                       showDeleteDialog(position,"store");
                     }
                 });
                 break;
@@ -313,13 +304,13 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_refused_apply, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//拒绝买家的申请
-
+                        refusedRefund(superOrderBean.getSubOrders().get(0));
                     }
                 });
                 holder.setOnClickListener(R.id.btn_agree_apply, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//同意买家的申请
-
+                        agreeRefund(superOrderBean.getSubOrders().get(0));
                     }
                 });
                 break;
@@ -398,6 +389,98 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
                 break;
         }
+    }
+
+    /**
+     * 卖家拒绝退款
+     * @param orderBean
+     */
+    private void refusedRefund(OrderBean orderBean) {
+        FormBody body = new FormBody.Builder()
+                .add("orderCommodity.orders.user.token",sp.get("token"))
+                .add("orderCommodity.sku.id",orderBean.getSkuId()+"")
+                .add("orderCommodity.orders.id",orderBean.getId()+"")
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.STORE_REFUSED_REFUND_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"已拒绝退款申请！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"操作失败，请稍后重试！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    /**
+     *卖家同意退款
+     * @param orderBean
+     */
+    private void agreeRefund(OrderBean orderBean) {
+        FormBody body = new FormBody.Builder()
+                .add("orders.user.token",sp.get("token"))
+                .add("id",orderBean.getRefundId()+"")
+                .add("orders.id",orderBean.getId()+"")
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.STORE_AGREE_REFUND_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"已同意退款！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"操作失败，请稍后重试！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
 

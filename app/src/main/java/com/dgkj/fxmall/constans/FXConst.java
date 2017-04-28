@@ -120,6 +120,8 @@ public class FXConst {
     public static final String DELETE_ORDER_FOR_USER = FXM_URL_PORT+"orderAction_delUO";
     public static final String USER_APPLY_REFUND_URL = FXM_URL_PORT+"refundOrderAction";
     public static final String STORE_AGREE_REFUND_URL = FXM_URL_PORT+"refundOrderAction_agree";
+    public static final String STORE_REFUSED_REFUND_URL = FXM_URL_PORT+"refundOrderAction_repulse";
+    public static final String USER_SUBMIT_LOGISTICS_URL = FXM_URL_PORT+"refundOrderAction_wibill";
 
 
 
