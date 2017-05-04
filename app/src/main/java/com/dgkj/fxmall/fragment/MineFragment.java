@@ -17,9 +17,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
+import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
@@ -31,6 +33,7 @@ import com.dgkj.fxmall.view.MyOrdersActivity;
 import com.dgkj.fxmall.view.PublishDemandActivity;
 import com.dgkj.fxmall.view.RechargeActivity;
 import com.dgkj.fxmall.view.RefundActivity;
+import com.dgkj.fxmall.view.ReviewProgressActivity;
 import com.dgkj.fxmall.view.SettingActivity;
 import com.dgkj.fxmall.view.ShoppingCarActivity;
 import com.dgkj.fxmall.view.TheBalanceOfUserActivity;
@@ -38,10 +41,15 @@ import com.dgkj.fxmall.view.UserMsgActivity;
 import com.dgkj.fxmall.view.WithdrawalActivity;
 import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -176,20 +184,20 @@ public class MineFragment extends Fragment {
                 float x = event.getX();
                 float y = event.getY();
                 int top = scrollView.getTop();
-                LogUtil.i("TAG","scrollview距离顶部距离=="+top);
+               // LogUtil.i("TAG","scrollview距离顶部距离=="+top);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         downX = x;
                         downY = y;
-                        LogUtil.i("TAG", "按下时坐标== x=" + downX + "==y==" + downY);
+                      //  LogUtil.i("TAG", "按下时坐标== x=" + downX + "==y==" + downY);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float dx = x - downX;
                         float dy = y - downY;
-                        LogUtil.i("TAG", "滑动距离 x==" + dx + "y===" + dy);
+                      //  LogUtil.i("TAG", "滑动距离 x==" + dx + "y===" + dy);
                         if (dy > 0 && Math.abs(dy) > Math.abs(dx) && dy > 300) {
-                            LogUtil.i("TAG", "向下滑动======");
+                         //   LogUtil.i("TAG", "向下滑动======");
                           /*  layoutParams.height = 200;
                             tvJumpTip.setLayoutParams(layoutParams);*/
                             tvJumpTip.setVisibility(View.VISIBLE);
@@ -219,10 +227,21 @@ public class MineFragment extends Fragment {
 
     private void setData() {
         //TODO 设置邀请码和账户余额
-        Glide.with(this).load(iconUrl).into(civMyIcon);
-        tvUsername.setText(nickname);
-        tvInviteCode.setText(invitationCode);
-        tvAccountRest.setText(balance);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(getContext()).load(iconUrl).into(civMyIcon);
+                try {
+                    String nick = URLDecoder.decode(nickname, "utf-8");
+                    tvUsername.setText(nick);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                tvInviteCode.setText(invitationCode);
+                tvAccountRest.setText(balance);
+            }
+        });
 
     }
 
@@ -240,7 +259,16 @@ public class MineFragment extends Fragment {
 
     @OnClick(R.id.iv_setting)
     public void setting() {
-        getContext().startActivity(new Intent(getContext(), SettingActivity.class));
+        Intent intent = new Intent(getContext(), SettingActivity.class);
+            intent.putExtra("icon",iconUrl);
+            intent.putExtra("nick",nickname);
+            intent.putExtra("code",invitationCode);
+            intent.putExtra("gender",gender);
+            intent.putExtra("realname",realname);
+            intent.putExtra("phone",phone);
+            intent.putExtra("address",location);
+            getContext().startActivity(intent);
+
     }
 
     @OnClick(R.id.fl_msg_center)
@@ -297,7 +325,71 @@ public class MineFragment extends Fragment {
 
     @OnClick(R.id.rl_apply_store)
     public void applayStore() {
-        getContext().startActivity(new Intent(getContext(), ApplyStoreActivity.class));
+        getMyStoreInfo();
+    }
+
+    /**
+     * 获取店铺申请审核状态
+     */
+    private void getMyStoreInfo() {
+        FormBody body = new FormBody.Builder()
+                .add("store.token",sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.GET_STORE_DETIAL_INFO)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                Intent intent = new Intent(getContext(), ReviewProgressActivity.class);
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        JSONObject dataset = object.getJSONObject("dataset");
+                        StoreBean storeBean = new StoreBean();
+                        storeBean.setName(dataset.getString("storeName"));
+                        storeBean.setAdress(dataset.getString("address"));
+                        storeBean.setLicence(dataset.getString("license"));
+                        storeBean.setKeeper(dataset.getString("storekeeper"));
+                        storeBean.setPhone(dataset.getString("phone"));
+                        JSONArray storePictrues = dataset.getJSONArray("storePictrue");
+                        List<String> urls = new ArrayList<>();
+                        for (int i = 0; i < storePictrues.length(); i++) {
+                            urls.add(storePictrues.getString(i));
+                        }
+                        storeBean.setMainUrls(urls);
+
+                        int status = dataset.getInt("status");
+                        if(status==0){//待审核
+                            intent.putExtra("statu","wait");
+                            intent.putExtra("store",storeBean);
+                            getContext().startActivity(intent);
+                        }else if(status==1){//审核通过
+                            intent.putExtra("statu","ok");
+                            intent.putExtra("store",storeBean);
+                            getContext().startActivity(intent);
+                        }else if(status==2){
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getContext(),"你的店铺已被禁用，如有疑问请想平台反馈！",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else if(string.contains("1008")){
+                    getContext().startActivity(new Intent(getContext(), ApplyStoreActivity.class));
+                }
+            }
+        });
     }
 
     @OnClick(R.id.rl_post_demand)

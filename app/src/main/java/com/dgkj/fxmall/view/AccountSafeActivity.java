@@ -2,6 +2,7 @@ package com.dgkj.fxmall.view;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,6 +29,10 @@ public class AccountSafeActivity extends BaseActivity {
     TextView tvRestPayPass;
     @BindView(R.id.activity_account_safe)
     LinearLayout activityAccountSafe;
+    @BindView(R.id.tv_cancel_yewuyuan)
+    TextView tvCancelYewuyuan;
+    @BindView(R.id.ib_back)
+    ImageButton ibBack;
     private View headerview;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private boolean isRestPayword;
@@ -88,6 +93,12 @@ public class AccountSafeActivity extends BaseActivity {
         } else {
             jumpTo(SetPayPasswordActivity.class, false);
         }
+    }
+
+
+    @OnClick(R.id.tv_cancel_yewuyuan)
+    public void cancel(){
+        jumpTo(CancelYeWuYuanActivity.class,false);
     }
 
     @OnClick(R.id.ib_back)

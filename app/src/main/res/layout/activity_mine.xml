@@ -283,10 +283,10 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="20dp"/>
                     <TextView
-                        android:text="没有找不到，只有想不到"
+                        android:text="没有找不到,只有想不到"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="5dp"
-                        android:textSize="11sp"
+                        android:textSize="10sp"
                         android:layout_below="@+id/tv_my_demand"
                         style="@style/usercenter_textview3"/>
 

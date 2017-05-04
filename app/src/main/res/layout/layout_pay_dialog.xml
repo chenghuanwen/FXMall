@@ -64,8 +64,7 @@
         android:drawablePadding="5dp"
         android:drawableRight="@drawable/checkbox_selector"
         android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:checked="true"/>
+        android:layout_marginLeft="10dp" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

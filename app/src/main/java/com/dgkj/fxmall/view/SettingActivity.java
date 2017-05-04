@@ -1,20 +1,28 @@
 package com.dgkj.fxmall.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.utils.DataCleanManager;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingActivity extends BaseActivity {
 
@@ -40,8 +48,17 @@ public class SettingActivity extends BaseActivity {
     Button tvCleanFinish;
     @BindView(R.id.tv_newst_version)
     Button tvNewstVersion;
+    @BindView(R.id.civ_set)
+    CircleImageView civSet;
+    @BindView(R.id.tv_username)
+    TextView tvUsername;
+    @BindView(R.id.activity_setting)
+    LinearLayout activitySetting;
+    @BindView(R.id.tv_invite_code)
+    TextView tvInviteCode;
 
     private View headerview;
+    private String icon = "", nick = "", inviteCode = "",gender="",realname="",phone="",location="";
     private Handler handler = new Handler();
 
     @Override
@@ -51,7 +68,28 @@ public class SettingActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initHeaderView();
+        setData();
         getCacheSize();
+    }
+
+    private void setData() {
+        Intent intent = getIntent();
+        icon = intent.getStringExtra("icon");
+        nick = intent.getStringExtra("nick");
+        inviteCode = intent.getStringExtra("code");
+        realname = intent.getStringExtra("realname");
+        phone = intent.getStringExtra("phone");
+        location = intent.getStringExtra("address");
+        gender = intent.getStringExtra("gender");
+        Glide.with(this).load(icon).into(civSet);
+        tvInviteCode.setText(inviteCode);
+        try {
+            String nickname = URLDecoder.decode(nick, "utf-8");
+            tvUsername.setText(nickname);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -67,24 +105,32 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.tv_user_msg)
     public void userMsg() {
+        Intent intent = new Intent(this,UserMsgActivity.class);
+        intent.putExtra("icon",icon);
+        intent.putExtra("nick",nick);
+        intent.putExtra("code",inviteCode);
+        intent.putExtra("gender",gender);
+        intent.putExtra("realname",realname);
+        intent.putExtra("phone",phone);
+        intent.putExtra("address",location);
         jumpTo(UserMsgActivity.class, false);
     }
 
 
     @OnClick(R.id.tv_change_password)
     public void changePassword() {
-        jumpTo(AccountSafeActivity.class,false);
+        jumpTo(AccountSafeActivity.class, false);
     }
 
 
     @OnClick(R.id.tv_about_us)
     public void aboutus() {
-        jumpTo(AboutUsActivity.class,false);
+        jumpTo(AboutUsActivity.class, false);
     }
 
     @OnClick(R.id.tv_advice_feedback)
     public void feedback() {
-        jumpTo(AdviceFeedbackActivity.class,false);
+        jumpTo(AdviceFeedbackActivity.class, false);
     }
 
     @OnClick(R.id.tv_check_update)
@@ -123,6 +169,12 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.btn_logout)
+    public void logout() {
+        sp.put("login", "false");
+        MyApplication.isLogin = false;
+        jumpTo(HomePageActivity.class, true);
+    }
 
     @OnClick(R.id.ib_back)
     public void back() {

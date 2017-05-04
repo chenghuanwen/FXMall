@@ -31,6 +31,6 @@
         android:id="@+id/piv_set"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="20dp"></com.dgkj.fxmall.view.myView.PasswordInputView>
+        android:layout_marginBottom="20dp"></com.dgkj.fxmall.view.myView.PasswordInputView>
 
 </LinearLayout>

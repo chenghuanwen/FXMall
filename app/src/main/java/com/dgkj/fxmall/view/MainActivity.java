@@ -62,26 +62,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-   /* @Override
-    protected void onResume() {
-        super.onResume();
-        ClipData primaryClip = clipboardManager.getPrimaryClip();
-        if (primaryClip == null) {
-            return;
-        }
-        CharSequence pate = primaryClip.getItemAt(0).getText();
-        if (pate == null) {
-            return;
-        }
-        String clip = pate.toString();
-        if (clip.contains("¥FXMall¥")) {
-            ShareCommandDialog dialog = new ShareCommandDialog(this, clipboardManager);
-            dialog.showPopupWindow(activityMain);
-        }
-
-    }*/
-
-
     private void initDisplay() {
         String from = getIntent().getStringExtra("from");
         switch (from) {
@@ -95,7 +75,8 @@ public class MainActivity extends BaseActivity {
                 break;
             case "mine":
                 rbMine.setChecked(true);
-                if (MyApplication.isLogin) {
+                String login = sp.get("login");
+                if ("true".equals(login)) {
                     showMine();
                 } else {
                     jumpTo(LoginActivity.class, true);

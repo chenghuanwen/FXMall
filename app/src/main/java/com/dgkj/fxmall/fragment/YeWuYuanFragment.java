@@ -16,8 +16,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
-import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.view.CancelYeWuYuanActivity;
 import com.dgkj.fxmall.view.HomePageActivity;
+import com.dgkj.fxmall.view.MyVIPActivity;
 import com.dgkj.fxmall.view.RechargeActivity;
 import com.dgkj.fxmall.view.WithdrawalActivity;
 import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
@@ -46,6 +47,8 @@ public class YeWuYuanFragment extends Fragment {
     SwipeRefreshLayout srlRefresh;
     @BindView(R.id.tv_jump_tip)
     TextView tvJumpTip;
+    @BindView(R.id.tv_vip)
+    TextView tvVip;
     private float downX, downY = 300;
 
     @Nullable
@@ -75,7 +78,7 @@ public class YeWuYuanFragment extends Fragment {
     @OnClick(R.id.tv_withDrawal)
     public void withdrawal() {
         Intent intent = new Intent(getContext(), WithdrawalActivity.class);
-        intent.putExtra("", "");//TODO 传入当前用户信息
+        intent.putExtra("rest", "100");//TODO 传入当前用户信息
         getContext().startActivity(intent);
     }
 
@@ -84,6 +87,12 @@ public class YeWuYuanFragment extends Fragment {
         ShareInvitaCodeDialog dialog = new ShareInvitaCodeDialog("FENXIOAMENG1236213");
         dialog.show(getFragmentManager(), "");
     }
+
+    @OnClick({R.id.tv_vip,R.id.tv_my_vip_count})
+    public void toVipDetial(){
+        getActivity().startActivity(new Intent(getContext(), MyVIPActivity.class));
+    }
+
 
     private void refresh2Home() {
         srlRefresh.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.RED, Color.YELLOW);
@@ -94,20 +103,16 @@ public class YeWuYuanFragment extends Fragment {
                 float x = event.getX();
                 float y = event.getY();
                 int top = scrollView.getTop();
-                LogUtil.i("TAG", "scrollview距离顶部距离==" + top);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         downX = x;
                         downY = y;
-                        LogUtil.i("TAG", "按下时坐标== x=" + downX + "==y==" + downY);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float dx = x - downX;
                         float dy = y - downY;
-                        LogUtil.i("TAG", "滑动距离 x==" + dx + "y===" + dy);
                         if (dy > 0 && Math.abs(dy) > Math.abs(dx) && dy > 300) {
-                            LogUtil.i("TAG", "向下滑动======");
                           /*  layoutParams.height = 200;
                             tvJumpTip.setLayoutParams(layoutParams);*/
                             tvJumpTip.setVisibility(View.VISIBLE);

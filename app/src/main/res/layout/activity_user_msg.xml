@@ -61,6 +61,7 @@
             android:id="@+id/tv_gender"
             android:layout_toLeftOf="@+id/iv_next3"
             android:text="男"
+            android:textColor="#909090"
             style="@style/usermsg_textview1"
             />
         <ImageView

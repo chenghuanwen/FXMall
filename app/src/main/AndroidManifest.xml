@@ -401,7 +401,10 @@
             android:name=".view.ChangePhoneByPasswordActivity"
             android:label="@string/title_activity_change_phone_by_password"
             android:theme="@style/transparentTheme" />
-        <activity android:name=".view.MyStoreProductDetialActivity"></activity>
+        <activity android:name=".view.MyStoreProductDetialActivity" />
+        <activity android:name=".view.CancelYeWuYuanActivity" />
+        <activity android:name=".view.MyVIPActivity" />
+        <activity android:name=".view.CancelYeWuYuanFinishActivity"></activity>
     </application>
 
 </manifest>

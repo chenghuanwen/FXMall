@@ -84,11 +84,13 @@ public class SomeProductClassifyFragment extends Fragment {
                         List<MainProductBean> list = new ArrayList<>();
                         for (int j = 0; j < 5; j++) {
                             MainProductBean productBean = new MainProductBean();
-                            productBean.setUrl(url);
-                            productBean.setPrice("88");
+                            productBean.setUrls(url);
+                            productBean.setDetialUrls(url);
+                            productBean.setUrl(url.get(0));
+                            productBean.setPrice(88);
                             productBean.setExpress("韵达快递");
                             productBean.setSales("465");
-                            productBean.setVipPrice("58");
+                            productBean.setVipPrice(58);
                             productBean.setAddress("广东深圳");
                             productBean.setIntroduce("粉小萌，够猛，够萌，够亮，够酸，够辣，这酸辣爽");
                             list.add(productBean);

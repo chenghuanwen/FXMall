@@ -153,7 +153,7 @@ public class ApplyStoreActivity extends BaseActivity {
         selectPhoto();
     }
 
-    @OnClick(R.id.btn_submit_finish)
+    @OnClick(R.id.btn_submit)
     public void submit() {
         //TODO 上传申请资料
         String storeName = etApplyStoreName.getText().toString();
@@ -176,7 +176,7 @@ public class ApplyStoreActivity extends BaseActivity {
         params.put("address", address);
         params.put("storekeeper", userName);
         params.put("phone", phone);
-        params.put("category.id", classifyId + "");
+        params.put("category.id", classifyId + "".trim());
 
         if (images.size() == 0) {
             toast("请先添加店铺图片");
@@ -526,7 +526,7 @@ public class ApplyStoreActivity extends BaseActivity {
             avfApplyStore.setAdapter(new ViewFlipperAdapter(images, this));
             avfApplyStore.setAutoStart(true);
             avfApplyStore.startFlipping();
-        } else if (requestCode == 118 && resultCode == 152) {
+        } else if (requestCode==118 && resultCode==152) {
             classifyId = data.getIntExtra("id", -1);
             classify = data.getStringExtra("classify");
             tvClassify.setText(classify);

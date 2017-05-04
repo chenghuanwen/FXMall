@@ -1,6 +1,7 @@
 package com.dgkj.fxmall.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Android004 on 2017/3/27.
@@ -10,8 +11,50 @@ public class StoreBean implements Serializable{
     private String name,adress,iconUrl,createTime,recommender;
     private boolean hasRealNameCheck;
     private int stars,totalScals,goodsCount,id;
-    private Double describeScore,priceScore,qualityScore;
+    private Double describeScore,priceScore,qualityScore,totalScore;
+    private String licence;
+    private List<String> mainUrls;
+    private String keeper,phone;
 
+    public Double getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(Double totalScore) {
+        this.totalScore = totalScore;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getKeeper() {
+        return keeper;
+    }
+
+    public void setKeeper(String keeper) {
+        this.keeper = keeper;
+    }
+
+    public String getLicence() {
+        return licence;
+    }
+
+    public void setLicence(String licence) {
+        this.licence = licence;
+    }
+
+    public List<String> getMainUrls() {
+        return mainUrls;
+    }
+
+    public void setMainUrls(List<String> mainUrls) {
+        this.mainUrls = mainUrls;
+    }
 
     public int getId() {
         return id;

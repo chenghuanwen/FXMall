@@ -68,7 +68,27 @@ public class SearchStoreAdapter extends CommonAdapter<StoreBean> {
         TextView tv3 =  holder.getView(R.id.tv_quality_ok);
         tv3.setText(changeColor(qualityOk));
 
-        //TODO 根据评分数选择不同的分数图片
+        //TODO 根据平分数选择不同的星星图片
+        float stars = storeBean.getStars();
+        if(stars<=1.0){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.dppj_dj1);
+        }else if(stars>1.0 && stars<1.9){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.lan_yiban);
+        }else if(stars>=1.9 && stars<=2.4){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.dppj_dj2);
+        }else if(stars>2.4 && stars<2.9){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.lan_erban);
+        }else if(stars>=2.9 && stars<=3.4){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.dppj_dj3);
+        }else if(stars>3.4 && stars<=3.9){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.lan_sanban);
+        }else if(stars>3.9 && stars<=4.4){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.dppj_dj4);
+        }else if(stars>4.4 && stars<=4.9){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.lan_siban);
+        }else if(stars>4.9){
+            holder.setImageResource(R.id.rb_commend,R.mipmap.dppj_dj5);
+        }
 
 
         holder.setOnClickListener(R.id.tv_enter_store, new View.OnClickListener() {

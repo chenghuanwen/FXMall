@@ -7,11 +7,13 @@ import android.os.Handler;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.listener.OnGetAllAddressFinishedListener;
 import com.dgkj.fxmall.listener.OnGetAllPostageModelFinishedListener;
+import com.dgkj.fxmall.listener.OnGetBannerFinishedListener;
 import com.dgkj.fxmall.listener.OnGetDemandClassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetDemandDatasFinishedListener;
 import com.dgkj.fxmall.listener.OnGetExpressCompanyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetLogisticsDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetLogisticsMsgFinishedListener;
+import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
@@ -24,6 +26,7 @@ import com.dgkj.fxmall.listener.OnGetStoreSuperClassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetTransactionRecorderFinishedListener;
+import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.model.FXMallModel;
 
 import okhttp3.OkHttpClient;
@@ -122,7 +125,7 @@ public class FXMallControl {
         FXMallModel.getMyRecommendStore(context,token,url,index,size,client,listener);
     }
 
-    public void getSearchProducts(final BaseActivity context, String key, final int index, int size, OkHttpClient client, final OnGetStoreProductsFinishedListener listener){
+    public void getSearchProducts(final BaseActivity context, String key, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener){
         FXMallModel.getSearchProducts(context,key,index,size,client,listener);
     }
 
@@ -144,5 +147,13 @@ public class FXMallControl {
 
     public void getProductComments(final BaseActivity context, int id, final int index, int size, OkHttpClient client, final OnGetProductCommentListFinishListener listener){
         FXMallModel.getProductComments(context,id,index,size,client,listener);
+    }
+
+    public void getBanners(OkHttpClient client, final OnGetBannerFinishedListener listener){
+        FXMallModel.getBanners(client,listener);
+    }
+
+    public void getMainRecommendStores(OkHttpClient client, OnGetMainRecommendStoreFinishedListener listener){
+        FXMallModel.getMainRecommentStores(client,listener);
     }
 }

@@ -136,6 +136,7 @@
                     android:text="店主姓名"
                     android:layout_marginLeft="10dp"/>
                 <TextView
+                    android:id="@+id/tv_keeper"
                     style="@style/store_review_texview4"
                     tools:text="粉小萌"/>
             </LinearLayout>
@@ -154,17 +155,7 @@
             </LinearLayout>
             <View
                 style="@style/store_review_view"/>
-            <LinearLayout
-                style="@style/store_review_linearlayout1">
-                <TextView
-                    style="@style/store_review_texview3"
-                    android:text="身份证号"
-                    android:layout_marginLeft="10dp"/>
-                <TextView
-                    android:id="@+id/tv_store_IDcard"
-                    style="@style/store_review_texview4"
-                    tools:text="165465465413654654"/>
-            </LinearLayout>
+
             <View
                 style="@style/store_review_view"/>
             <LinearLayout
@@ -210,8 +201,8 @@
 </ScrollView>
     <ImageButton
         android:id="@+id/ib_back"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="@drawable/circler_back_corner_shape"
         android:src="@mipmap/title_return_icon"
         android:layout_margin="10dp"

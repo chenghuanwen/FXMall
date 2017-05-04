@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e8e8e8"/>
+
     <RadioGroup
         android:id="@+id/rg_pay"
         android:layout_width="match_parent"

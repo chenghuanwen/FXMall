@@ -18,6 +18,7 @@ import com.dgkj.fxmall.bean.TakeGoodsAddressBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetAllAddressFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,11 +57,12 @@ public class TakeGoodsAdressActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1://TODO 设为默认发送到服务器
+                    LogUtil.i("TAG","设置默认===");
                     TakeGoodsAddressBean address = (TakeGoodsAddressBean) msg.obj;
                     adressManagerAdapter.notifyDataSetChanged();
                     FormBody body = new FormBody.Builder()
                             .add("user.token",sp.get("token"))
-                            .add("id",address.getId()+"")
+                            .add("id",address.getId()+"".trim())
                             .build();
                     Request request = new Request.Builder()
                             .url(FXConst.SET_DEFAULT_TAKE_ADDRESS)
@@ -74,7 +76,9 @@ public class TakeGoodsAdressActivity extends BaseActivity {
 
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
-                            if(response.body().string().contains("1000")){
+                            String string = response.body().string();
+                            LogUtil.i("TAG","设置默认结果==="+string);
+                            if(string.contains("1000")){
                                 toastInUI(TakeGoodsAdressActivity.this,"已成功设为默认地址");
                             }
                         }
@@ -105,7 +109,12 @@ public class TakeGoodsAdressActivity extends BaseActivity {
                             if(response.body().string().contains("1000")){
                                 toastInUI(TakeGoodsAdressActivity.this,"删除成功");
                                 addressList.remove(positon);
-                                adressManagerAdapter.notifyDataSetChanged();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adressManagerAdapter.notifyDataSetChanged();
+                                    }
+                                });
                             }
                         }
                     });

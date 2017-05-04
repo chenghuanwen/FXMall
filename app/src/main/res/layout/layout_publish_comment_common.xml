@@ -208,6 +208,6 @@
             android:layout_margin="10dp"
             android:gravity="top"
             android:padding="10dp"
-            android:background="@mipmap/ddxq_qxdd"/>
+            android:background="@mipmap/kuang"/>
     </LinearLayout>
 </LinearLayout>

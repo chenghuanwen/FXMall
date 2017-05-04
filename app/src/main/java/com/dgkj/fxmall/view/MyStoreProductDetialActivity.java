@@ -124,7 +124,7 @@ public class MyStoreProductDetialActivity extends BaseActivity {
 
         etProductTitle.setText(product.getTitel());
         etProductDestribe.setText(product.getDescribe());
-        etProductPrice.setText(product.getPrice());
+        etProductPrice.setText("¥"+product.getPrice());
         etProductType.setText(product.getColor());
         etProductSaveCount.setText(product.getInventory());
         etDemandCount.setText(product.getBrokerage());

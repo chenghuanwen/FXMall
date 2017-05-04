@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.CommentAdapter;
 import com.dgkj.fxmall.adapter.ProductDetialImageAdapter;
@@ -25,6 +29,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.CommentBean;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.ShoppingGoodsBean;
+import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetProductCommentListFinishListener;
 import com.dgkj.fxmall.listener.OnSelectColorSizeFinishedListener;
@@ -34,6 +39,8 @@ import com.dgkj.fxmall.view.myView.ShareDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,6 +112,7 @@ public class ProductDetialActivity extends BaseActivity {
     LinearLayout activityProductDetial;
 
     private ProductDetialImageAdapter adapter;
+    private ProductDetialImageAdapter detialAdapter;
     private MainProductBean product;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
@@ -122,7 +130,6 @@ public class ProductDetialActivity extends BaseActivity {
 
     @Override
     public View getContentView() {
-        LogUtil.i("TAG","获取contentview=======");
         return activityProductDetial;
     }
 
@@ -143,6 +150,7 @@ public class ProductDetialActivity extends BaseActivity {
         if (product == null) {
             return;
         }
+        //产品信息
         tvProductDetial.setText(product.getIntroduce());
         tvProductPrice.setText("¥" + product.getPrice());
         tvProductExpress.setText(product.getExpress());
@@ -150,7 +158,46 @@ public class ProductDetialActivity extends BaseActivity {
         tvProductAddress.setText(product.getAddress());
         tvVipPrice.setText("会员价¥" + product.getVipPrice());
 
-        adapter = new ProductDetialImageAdapter(this, R.layout.item_product_detial_image, product.getUrl());
+        //店铺信息
+        StoreBean storeBean = product.getStoreBean();
+        tvStoreName.setText(storeBean.getName());
+        tvStoreAddress.setText(product.getAddress());
+        Glide.with(this).load(storeBean.getIconUrl()).into(civShangpuItem);
+        tvTotalGoods.setText(storeBean.getGoodsCount()+"");
+        tvTotalSales.setText(storeBean.getTotalScals()+"");
+
+        String describe = "描述相符 " + storeBean.getDescribeScore();
+        String reasonable = "价格合理 " + storeBean.getPriceScore();
+        String qualityOk = "质量满意 " + storeBean.getQualityScore();
+        tvDescribe.setText(changeColor(describe));
+        tvPriceReasonable.setText(changeColor(reasonable));
+        tvQualityOk.setText(changeColor(qualityOk));
+
+        //TODO 根据平分数选择不同的星星图片
+        float stars = storeBean.getStars();
+        if(stars<=1.0){
+            rbCommend.setImageResource(R.mipmap.dppj_dj1);
+        }else if(stars>1.0 && stars<1.9){
+            rbCommend.setImageResource(R.mipmap.lan_yiban);
+        }else if(stars>=1.9 && stars<=2.4){
+            rbCommend.setImageResource(R.mipmap.dppj_dj2);
+        }else if(stars>2.4 && stars<2.9){
+            rbCommend.setImageResource(R.mipmap.lan_erban);
+        }else if(stars>=2.9 && stars<=3.4){
+            rbCommend.setImageResource(R.mipmap.dppj_dj3);
+        }else if(stars>3.4 && stars<=3.9){
+            rbCommend.setImageResource(R.mipmap.lan_sanban);
+        }else if(stars>3.9 && stars<=4.4){
+            rbCommend.setImageResource(R.mipmap.dppj_dj4);
+        }else if(stars>4.4 && stars<=4.9){
+            rbCommend.setImageResource(R.mipmap.lan_siban);
+        }else if(stars>4.9){
+            rbCommend.setImageResource(R.mipmap.dppj_dj5);
+        }
+
+
+        //商品图片详情
+        adapter = new ProductDetialImageAdapter(this, R.layout.item_product_main_image, product.getUrls());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         layoutManager.scrollToPositionWithOffset(1, 100);
@@ -158,7 +205,23 @@ public class ProductDetialActivity extends BaseActivity {
         rvImagePreview.setLayoutManager(layoutManager);
         rvImagePreview.setAdapter(adapter);
 
+        detialAdapter = new ProductDetialImageAdapter(this,R.layout.item_product_detial_image,product.getDetialUrls());
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        rvGoodsDetial.setLayoutManager(manager);
+        rvGoodsDetial.setAdapter(detialAdapter);
+
+
+        //商品评论区
         commentList = new ArrayList<>();
+        //TEST
+        for (int i = 0; i < 4; i++) {
+            CommentBean commentBean = new CommentBean();
+            commentBean.setIcon("http://img2015.zdface.com/20161230/3e633f4d71c824931bff72fff3d241b8.jpg");
+            commentBean.setContent("棒棒哒");
+            commentBean.setName("鼎诰瘟神");
+            commentBean.setStars(4.6f);
+            commentList.add(commentBean);
+        }
         commentAdapter = new CommentAdapter(this, R.layout.item_comment, commentList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvDetialComment.setLayoutManager(linearLayoutManager);
@@ -199,10 +262,10 @@ public class ProductDetialActivity extends BaseActivity {
         goodsBean.setCount(product.getCount());
         goodsBean.setIntroduce(product.getIntroduce());
         goodsBean.setSkuId(product.getSkuId());
-        goodsBean.setUrl(product.getUrl().get(0));
-        goodsBean.setPrice(Double.parseDouble(product.getVipPrice()));
+        goodsBean.setUrl(product.getUrl());
+        goodsBean.setPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
-        goodsBean.setStoreName(product.getStoreName());
+        goodsBean.setStoreName(product.getStoreBean().getName());
         goodsBean.setInventory(product.getInventory());
         SelectColorAndSizeDialog dialog = new SelectColorAndSizeDialog(this, R.layout.layout_edit_select_color_size, goodsBean, "buy", new OnSelectColorSizeFinishedListener() {
             @Override
@@ -219,10 +282,10 @@ public class ProductDetialActivity extends BaseActivity {
         goodsBean.setCount(product.getCount());
         goodsBean.setIntroduce(product.getIntroduce());
         goodsBean.setSkuId(product.getSkuId());
-        goodsBean.setUrl(product.getUrl().get(0));
-        goodsBean.setPrice(Double.parseDouble(product.getVipPrice()));
+        goodsBean.setUrl(product.getUrls().get(0));
+        goodsBean.setPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
-        goodsBean.setStoreName(product.getStoreName());
+        goodsBean.setStoreName(product.getStoreBean().getName());
         goodsBean.setInventory(product.getInventory());
          SelectColorAndSizeDialog dialog = new SelectColorAndSizeDialog(this, R.layout.layout_car_select_color_size, goodsBean, "edit", new OnSelectColorSizeFinishedListener() {
              @Override
@@ -233,29 +296,6 @@ public class ProductDetialActivity extends BaseActivity {
          dialog.showPopupWindow(activityProductDetial);
 
 
-       /* AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.layout_edit_select_color_size, null);
-        builder.setView(view);
-        AlertDialog alertDialog = builder.create();
-        WindowManager windowManager = getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        Window window = alertDialog.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = display.getWidth(); //设置宽度
-        lp.height = display.getHeight();
-        window.setAttributes(lp);
-        alertDialog.show();*/
-
-
-       /* View contentview = getLayoutInflater().inflate(R.layout.layout_car_select_color_size, null);
-        PopupWindow pw = new PopupWindow(contentview, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        //设置触摸对话框以外区域，对话框消失
-        pw.setFocusable(true);
-        ColorDrawable cd = new ColorDrawable(Color.parseColor("#00000000"));
-        pw.setBackgroundDrawable(cd);
-        //pw.showAsDropDown(tvSearchType);
-        pw.showAtLocation(activityProductDetial, Gravity.BOTTOM, 0, 0);*/
     }
 
     @OnClick(R.id.tv_all_comment)
@@ -267,6 +307,22 @@ public class ProductDetialActivity extends BaseActivity {
 
     @OnClick(R.id.tv_enter_store)
     public void enterStore() {
-        jumpTo(StoreMainPageActivity.class, false);
+        Intent intent = new Intent(this,StoreMainPageActivity.class);
+        intent.putExtra("store",product.getStoreBean());
+        jumpTo(intent, false);
+    }
+
+
+    public SpannableString changeColor(String s){
+        SpannableString sp = new SpannableString(s);
+        Pattern pattern = Pattern.compile("\\d+\\.?\\d*");
+        Matcher matcher = pattern.matcher(s);
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            // LogUtil.i("TAG","start=="+start+"end=="+end);
+            sp.setSpan(new ForegroundColorSpan(Color.parseColor("#ff4a42")),start,end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return sp;
     }
 }

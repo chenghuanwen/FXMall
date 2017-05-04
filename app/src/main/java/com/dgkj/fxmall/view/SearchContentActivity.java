@@ -21,6 +21,7 @@ import com.dgkj.fxmall.bean.StoreProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
+import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,10 +73,11 @@ public class SearchContentActivity extends BaseActivity {
 
     private void getSearchData() {
         if ("商品".equals(searchType)) {
-            control.getSearchProducts(this, searchType, index, 15, client, new OnGetStoreProductsFinishedListener() {
+            control.getSearchProducts(this, searchType, index, 15, client, new OnSearchProductsFinishedListener() {
                 @Override
-                public void OnGetStoreProductsFinished(List<StoreProductBean> products) {
+                public void onSearchProductsFinished(List<MainProductBean> products) {
                     //TODO 写一个通用的商品实体类
+                    adapter.addAll(products,true);
                 }
             });
         } else {

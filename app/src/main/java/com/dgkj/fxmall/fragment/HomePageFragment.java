@@ -18,15 +18,20 @@ import android.widget.TextView;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.adapter.ProductClassifyAdapter;
+import com.dgkj.fxmall.bean.BannerBean;
 import com.dgkj.fxmall.bean.MainProductBean;
+import com.dgkj.fxmall.bean.MainRecommendStoreBean;
 import com.dgkj.fxmall.bean.ProductClassifyBean;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnGetBannerFinishedListener;
+import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
 import com.dgkj.fxmall.utils.BannerImageLoader;
+import com.dgkj.fxmall.view.NewGoodsActivity;
 import com.dgkj.fxmall.view.ProductDetialActivity;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
 import com.dgkj.fxmall.view.myView.FullyLinearLayoutManager;
-import com.dgkj.fxmall.view.NewGoodsActivity;
 import com.dgkj.fxmall.view.myView.MyGridLayoutManager;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
@@ -82,6 +87,26 @@ public class HomePageFragment extends Fragment {
     LinearLayout llTodayRecommend;
     @BindView(R.id.ll_new_goods)
     RelativeLayout llNewGoods;
+    @BindView(R.id.tv_store1_name)
+    TextView tvStore1Name;
+    @BindView(R.id.tv_store1_describe)
+    TextView tvStore1Describe;
+    @BindView(R.id.iv_store1)
+    ImageView ivStore1;
+    @BindView(R.id.tv_store2_name)
+    TextView tvStore2Name;
+    @BindView(R.id.tv_store2_describe)
+    TextView tvStore2Describe;
+    @BindView(R.id.iv_store2)
+    ImageView ivStore2;
+    @BindView(R.id.tv_store3_name)
+    TextView tvStore3Name;
+    @BindView(R.id.tv_store3_describe)
+    TextView tvStore3Describe;
+    @BindView(R.id.iv_store3)
+    ImageView ivStore3;
+    @BindView(R.id.tv_ll)
+    TextView tvLl;
 
     private ArrayList<String> bannerDatas;
     private OkHttpClient okHttpClient;
@@ -89,6 +114,7 @@ public class HomePageFragment extends Fragment {
     private List<ProductClassifyBean> classifys;
     private MainProductDisplayAdapter productDisplayAdapter;
     private ProductClassifyAdapter classifyAdapter;
+    private FXMallControl control = new FXMallControl();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -115,14 +141,28 @@ public class HomePageFragment extends Fragment {
             MainProductBean productBean = new MainProductBean();
             productBean.setAddress("深圳");
             productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-            productBean.setPrice("35");
-            productBean.setVipPrice("25");
+            productBean.setPrice(35);
+            productBean.setVipPrice(25);
             productBean.setSales("10000");
-            productBean.setUrl(url);
+            productBean.setUrls(url);
+            productBean.setUrl(url.get(0));
+            productBean.setDetialUrls(url);
             productBean.setExpress("韵达快递");
+            StoreBean storeBean = new StoreBean();
+            storeBean.setStars(3);
+            storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+            storeBean.setName("粉小萌");
+            storeBean.setQualityScore(4.2);
+            storeBean.setDescribeScore(4.8);
+            storeBean.setPriceScore(4.0);
+            storeBean.setAdress("广东省深圳市龙岗区");
+            storeBean.setGoodsCount(1000);
+            storeBean.setTotalScals(300);
+            storeBean.setCreateTime("2017-5-2");
+            productBean.setStoreBean(storeBean);
             list.add(productBean);
         }
-        productDisplayAdapter.addAll(list,true);
+        productDisplayAdapter.addAll(list, true);
 
         for (int i = 0; i < 8; i++) {
             ProductClassifyBean bean = new ProductClassifyBean();
@@ -130,7 +170,7 @@ public class HomePageFragment extends Fragment {
             bean.setTaxon("衣服");
             list1.add(bean);
         }
-        classifyAdapter.addAll(list1,true);
+        classifyAdapter.addAll(list1, true);
 
     }
 
@@ -141,11 +181,11 @@ public class HomePageFragment extends Fragment {
         FullyLinearLayoutManager linearLayoutManager = new FullyLinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvRecommendGoods.setLayoutManager(linearLayoutManager);
-        classifyAdapter = new ProductClassifyAdapter(getContext(),R.layout.item_product_classify,classifys,"product");
+        classifyAdapter = new ProductClassifyAdapter(getContext(), R.layout.item_product_classify, classifys, "product");
         rvRecommendGoods.setAdapter(classifyAdapter);
         //  rvHomeDisplay.setLayoutManager(new FullyLinearLayoutManager(getContext()));
 
-        productDisplayAdapter = new MainProductDisplayAdapter(getContext(),R.layout.item_main_product,mainProducts,"product");
+        productDisplayAdapter = new MainProductDisplayAdapter(getContext(), R.layout.item_main_product, mainProducts, "product");
 
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getContext(), 2);
         gridLayoutManager.setAutoMeasureEnabled(true);
@@ -160,25 +200,6 @@ public class HomePageFragment extends Fragment {
         getNewgoodsShelves();
         getProductsRecommend();
         getMainProductDisplay();*/
-
-    }
-
-
-    /**
-     * \获取banner轮播推荐图片链接
-     */
-    private void getBannerData() {
-        okHttpClient.newCall(new Request.Builder().url(FXConst.GET_BANNER_URL).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
 
     }
 
@@ -204,17 +225,7 @@ public class HomePageFragment extends Fragment {
      * 获取今日推荐数据
      */
     private void getTodayRecommend() {
-        okHttpClient.newCall(new Request.Builder().url(FXConst.TODAY_RECOMMEND_URL).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
     }
 
     /**
@@ -269,13 +280,19 @@ public class HomePageFragment extends Fragment {
     }
 
 
-
-
-
-
-
     @OnClick(R.id.rl_store)
-    public void storeRecommend(){//跳转到商铺推荐界面
+    public void storeRecommend() {//跳转到商铺推荐界面
+        control.getMainRecommendStores(okHttpClient, new OnGetMainRecommendStoreFinishedListener() {
+            @Override
+            public void onGetMainRecommendStoreFinishedListener(List<MainRecommendStoreBean> recommendList) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }
+        });
         Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
         //TODO 需将商铺推荐数据实体类集合传递下去
         StoreBean storeBean = new StoreBean();
@@ -288,13 +305,13 @@ public class HomePageFragment extends Fragment {
         storeBean.setCreateTime("2017-05-01");
         storeBean.setGoodsCount(23213);
         storeBean.setIconUrl("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        intent.putExtra("store",storeBean);
-        jumpTo(intent,false);
+        intent.putExtra("store", storeBean);
+        jumpTo(intent, false);
 
     }
 
     @OnClick(R.id.ll_today_recommend)
-    public void todayRecommend(){
+    public void todayRecommend() {
         Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
         //TODO 需将商铺推荐数据实体类集合传递下去,需要判断推荐的是商品还是店铺
         StoreBean storeBean = new StoreBean();
@@ -307,12 +324,12 @@ public class HomePageFragment extends Fragment {
         storeBean.setCreateTime("2017-05-01");
         storeBean.setGoodsCount(23213);
         storeBean.setIconUrl("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        intent.putExtra("store",storeBean);
-        jumpTo(intent,false);
+        intent.putExtra("store", storeBean);
+        jumpTo(intent, false);
     }
 
-    @OnClick({R.id.new_goods1,R.id.new_goods2,R.id.new_goods3,R.id.new_goods4,R.id.new_goods5})
-    public void newGoods(){
+    @OnClick({R.id.new_goods1, R.id.new_goods2, R.id.new_goods3, R.id.new_goods4, R.id.new_goods5})
+    public void newGoods() {
         Intent intent = new Intent(getContext(), ProductDetialActivity.class);
         //TODO 需将商铺推荐数据实体类集合传递下去
         MainProductBean productBean = new MainProductBean();
@@ -324,24 +341,64 @@ public class HomePageFragment extends Fragment {
         url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
         productBean.setIntroduce("粉小萌来啦，这酸爽，绝了，88一箱全国包邮");
         productBean.setAddress("广东深圳");
-        productBean.setVipPrice("58");
+        productBean.setVipPrice(58);
         productBean.setSales("1536");
         productBean.setExpress("韵达快递");
-        productBean.setPrice("88");
-        productBean.setUrl(url);
-        productBean.setStoreName("我是你的菜");
-        intent.putExtra("product",productBean);
-        jumpTo(intent,false);
+        productBean.setPrice(88);
+        productBean.setUrls(url);
+        productBean.setUrl(url.get(0));
+        productBean.getStoreBean().setName("我是你的菜");
+        productBean.setDetialUrls(url);
+        StoreBean storeBean = new StoreBean();
+        storeBean.setStars(3);
+        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+        storeBean.setName("粉小萌");
+        storeBean.setQualityScore(4.2);
+        storeBean.setDescribeScore(4.8);
+        storeBean.setPriceScore(4.0);
+        storeBean.setAdress("广东省深圳市龙岗区");
+        storeBean.setGoodsCount(1000);
+        storeBean.setTotalScals(300);
+        storeBean.setCreateTime("2017-5-2");
+        productBean.setStoreBean(storeBean);
+        intent.putExtra("product", productBean);
+        jumpTo(intent, false);
     }
 
-    @OnClick({R.id.tv_newgoods_all,R.id.ll_new_goods})
-    public void allProductRecommend(){
-        jumpTo(NewGoodsActivity.class,false);
+    @OnClick({R.id.tv_newgoods_all, R.id.ll_new_goods})
+    public void allProductRecommend() {
+        jumpTo(NewGoodsActivity.class, false);
     }
 
 
     private void initBanner() {
         bannerDatas = new ArrayList<>();
+        control.getBanners(okHttpClient, new OnGetBannerFinishedListener() {
+            @Override
+            public void onGetBannerFinishedListener(List<BannerBean> banners) {
+                for (BannerBean bannerBean : banners) {
+                    bannerDatas.add(bannerBean.getUrl());
+                }
+                banner.setImageLoader(new BannerImageLoader());
+                banner.setImages(bannerDatas);
+                banner.start();
+                banner.setOnBannerListener(new OnBannerListener() {//根据不同的推荐内容跳转到不同的详情界面
+                    @Override
+                    public void OnBannerClick(int position) {
+                        switch (position) {
+                            case 0:
+                                jumpTo(ProductDetialActivity.class, false);
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                        }
+                    }
+                });
+            }
+        });
+
         bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
         bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383291_6518.jpg");
         bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
@@ -351,9 +408,9 @@ public class HomePageFragment extends Fragment {
         banner.setOnBannerListener(new OnBannerListener() {//根据不同的推荐内容跳转到不同的详情界面
             @Override
             public void OnBannerClick(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
-                        jumpTo(ProductDetialActivity.class,false);
+                        jumpTo(ProductDetialActivity.class, false);
                         break;
                     case 1:
                         break;
@@ -380,8 +437,6 @@ public class HomePageFragment extends Fragment {
             getActivity().finish();
         }
     }
-
-
 
 
 }

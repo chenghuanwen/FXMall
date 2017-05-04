@@ -260,14 +260,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 intent.putExtra("orderId",order.getId());
                 jumpTo(intent,false);
                 break;
-           /* case R.id.tv_apply_refund://申请退款
-                showCancleDialog("申请退款",order);//TODO 需获取当前所点击的商品
-                break;*/
+
             case R.id.tv_chagne_address://修改收货地址
                 startActivityForResult(new Intent(OrderDetialActivity.this,TakeGoodsAdressActivity.class),171);
                 break;
             case R.id.btn_pay://付款
-                PayDialog dialog = new PayDialog(OrderDetialActivity.this);
+                PayDialog dialog = new PayDialog(OrderDetialActivity.this,order.getId());
                 dialog.show(getSupportFragmentManager(), "");
                 break;
             case R.id.btn_notify_deliver://提醒发货

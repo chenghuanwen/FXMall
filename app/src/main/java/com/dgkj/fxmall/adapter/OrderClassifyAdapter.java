@@ -177,7 +177,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_pay, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//去付款
-                        PayDialog dialog = new PayDialog(context);
+                        PayDialog dialog = new PayDialog(context,superOrderBean.getId());
                         dialog.show(activity.getSupportFragmentManager(),"");
                     }
                 });
@@ -186,7 +186,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {//提醒发货
+                    public void onClick(View v) {//提醒卖家发货
 
                     }
                 });
@@ -331,7 +331,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_agree_refund, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//同意退款
-
+                        confirmRefund(superOrderBean.getSubOrders().get(0));
                     }
                 });
                 break;
@@ -366,7 +366,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {//提醒发货
+                    public void onClick(View v) {//提醒买家发货
 
                     }
                 });
@@ -390,6 +390,55 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
         }
     }
+
+
+    /**
+     * 卖家确认退款
+     * @param orderBean
+     */
+    private void confirmRefund(OrderBean orderBean) {
+        FormBody body = new FormBody.Builder()
+                .add("orderCommodity.orders.user.token",sp.get("token"))
+                .add("orderCommodity.sku.id",orderBean.getSkuId()+"")
+                .add("orderCommodity.orders.id",orderBean.getId()+"")
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.STORE_CONFIRM_REFUND)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"已确认退款！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"操作失败，请稍后重试！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
 
     /**
      * 卖家拒绝退款
@@ -856,9 +905,37 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         piv.setInputCompletetListener(new InputCompletetListener() {
             @Override
             public void inputComplete() {
-                String password = piv.getEditContent();
+                final String password = piv.getEditContent();
                 //TODO 检测支付密码的正确性,进行提现
-                confirmTakeGoods(orderBean.getId(),password);
+                FormBody body = new FormBody.Builder()
+                        .add("token",sp.get("token"))
+                        .add("payPassword",password)
+                        .build();
+                Request request = new Request.Builder()
+                        .post(body)
+                        .url(FXConst.CHECK_PAY_PASSWORD)
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String string = response.body().string();
+                        if(string.contains("1000")){
+                            confirmTakeGoods(orderBean.getId(),password);
+                        }else if(string.contains("1003")){
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context,"密码错误！",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+
             }
 
             @Override

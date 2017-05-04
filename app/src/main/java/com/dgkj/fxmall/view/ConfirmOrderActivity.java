@@ -212,8 +212,8 @@ public class ConfirmOrderActivity extends BaseActivity {
     public void submitOrder() {
 
         //订单提交成功，进行付款
-        PayDialog dialog = new PayDialog(ConfirmOrderActivity.this);
-        dialog.show(getSupportFragmentManager(), "");
+     /*   PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,o);
+        dialog.show(getSupportFragmentManager(), "");*/
     }
 
     /**

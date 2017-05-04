@@ -21,6 +21,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -63,6 +66,12 @@ public class StoreInfoEditActivity extends BaseActivity {
     ImageButton ibBack;
     @BindView(R.id.btn_save)
     Button btnSave;
+    @BindView(R.id.civ_usemsg_icon)
+    CircleImageView civUsemsgIcon;
+    @BindView(R.id.rl_icon)
+    RelativeLayout rlIcon;
+    @BindView(R.id.activity_store_information)
+    LinearLayout activityStoreInformation;
     private View headerview;
     private static final int TM_REQUEST_PERMISSION_CODE = 110;
     private File file;
@@ -89,21 +98,21 @@ public class StoreInfoEditActivity extends BaseActivity {
         setHeaderTitle(headerview, "店铺资料");
     }
 
-    @OnClick(R.id.tv_select_store_iocn)
-    public void selectIcon(){
-       selectPhoto();
+    @OnClick({R.id.tv_select_store_iocn,R.id.rl_icon})
+    public void selectIcon() {
+        selectPhoto();
     }
 
     @OnClick(R.id.btn_save)
-    public void save(){
+    public void save() {
         String introduce = etStoreIntroduce.getText().toString();
-        if(TextUtils.isEmpty(introduce)){
+        if (TextUtils.isEmpty(introduce)) {
             toast("请先填写完整信息");
             return;
         }
 
         FormBody body = new FormBody.Builder()
-                .add("intro",introduce)
+                .add("intro", introduce)
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.UPLOAD_STORE_INTRODUCE)
@@ -112,13 +121,13 @@ public class StoreInfoEditActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(StoreInfoEditActivity.this,"网络异常！");
+                toastInUI(StoreInfoEditActivity.this, "网络异常！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body().string().contains("1000")){
-                    toastInUI(StoreInfoEditActivity.this,"店铺信息更新成功！");
+                if (response.body().string().contains("1000")) {
+                    toastInUI(StoreInfoEditActivity.this, "店铺信息更新成功！");
                 }
             }
         });
@@ -187,32 +196,32 @@ public class StoreInfoEditActivity extends BaseActivity {
     }
 
 
-
-    public void takePicture(){
+    public void takePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //将拍照的图片保存到本地
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), System.currentTimeMillis() + ".jpg");
-        LogUtil.i("TAG","准备拍照==========");
+        LogUtil.i("TAG", "准备拍照==========");
         Uri iconUri = null;
-        if(Build.VERSION.SDK_INT >= 24){
-            iconUri = FileProvider.getUriForFile(this,"com.dgkj.fxmall.fileprovider",file);
-            LogUtil.i("TAG","7.0uri===="+iconUri);
-        }else {
+        if (Build.VERSION.SDK_INT >= 24) {
+            iconUri = FileProvider.getUriForFile(this, "com.dgkj.fxmall.fileprovider", file);
+            LogUtil.i("TAG", "7.0uri====" + iconUri);
+        } else {
             iconUri = Uri.fromFile(file);
         }
-        LogUtil.i("TAG","准备拍照URI==========");
+        LogUtil.i("TAG", "准备拍照URI==========");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, iconUri);
         startActivityForResult(intent, 102);
     }
 
-    public void selectPicture(){
+    public void selectPicture() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, 101);
     }
 
     /**
-     *  7.0 获取图片文件uri
+     * 7.0 获取图片文件uri
+     *
      * @param context
      * @param file
      * @return
@@ -220,16 +229,16 @@ public class StoreInfoEditActivity extends BaseActivity {
     private Uri getImageContentUri(Context context, File file) {
         String filePath = file.getAbsolutePath();
         Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Images.Media._ID},MediaStore.Images.Media.DATA+"=?",new String[]{filePath},null);
-        if(cursor!=null && cursor.moveToFirst()){
+                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=?", new String[]{filePath}, null);
+        if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
             Uri baseUri = Uri.parse("content://media/external/images/media");
-            return Uri.withAppendedPath(baseUri,""+id);
-        }else {
-            if(file.exists()){
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (file.exists()) {
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(MediaStore.Images.Media.DATA,filePath);
-                return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
+                contentValues.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
             }
         }
         return null;
@@ -255,10 +264,10 @@ public class StoreInfoEditActivity extends BaseActivity {
             crop(uri);//裁剪头像
         } else if (resultCode == RESULT_OK && requestCode == 102) {//拍照
             Uri uri1 = null;
-            if(Build.VERSION.SDK_INT >= 24){
-                uri1 = getImageContentUri(this,file);
-                LogUtil.i("TAG","7.0uri1111111111===="+uri1);
-            }else {
+            if (Build.VERSION.SDK_INT >= 24) {
+                uri1 = getImageContentUri(this, file);
+                LogUtil.i("TAG", "7.0uri1111111111====" + uri1);
+            } else {
                 uri1 = Uri.fromFile(file);
             }
             crop(uri1);//裁剪头像
@@ -293,8 +302,6 @@ public class StoreInfoEditActivity extends BaseActivity {
         }
 
 
-
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -318,11 +325,10 @@ public class StoreInfoEditActivity extends BaseActivity {
     }
 
 
-
     private void uploadIcon(final File iconFile) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("token",sp.get("token"))
-                .addPart(Headers.of("Content-Disposition", "form-data; name=file;filename="+iconFile.getName()), RequestBody.create(MediaType.parse("image/png"),iconFile));
+        builder.addFormDataPart("token", sp.get("token"))
+                .addPart(Headers.of("Content-Disposition", "form-data; name=file;filename=" + iconFile.getName()), RequestBody.create(MediaType.parse("image/png"), iconFile));
         MultipartBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -331,29 +337,30 @@ public class StoreInfoEditActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(StoreInfoEditActivity.this,"网络繁忙！");
+                toastInUI(StoreInfoEditActivity.this, "网络繁忙！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
-                    toastInUI(StoreInfoEditActivity.this,"头像上传成功！");
+                if (result.contains("1000")) {
+                    toastInUI(StoreInfoEditActivity.this, "头像上传成功！");
                     try {
                         JSONObject object = new JSONObject(result);
                         String iconUrl = object.getString("dataset");
-                        if(iconFile != null){iconFile.delete();}
-                        LogUtil.i("TAG","头像网络地址==="+iconUrl);
+                        if (iconFile != null) {
+                            iconFile.delete();
+                        }
+                        LogUtil.i("TAG", "头像网络地址===" + iconUrl);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else {
-                    toastInUI(StoreInfoEditActivity.this,"头像上传失败！");
+                } else {
+                    toastInUI(StoreInfoEditActivity.this, "头像上传失败！");
                 }
             }
         });
     }
-
 
 
     @OnClick(R.id.ib_back)

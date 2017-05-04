@@ -39,10 +39,10 @@ public class MainProductDisplayAdapter extends CommonAdapter<MainProductBean> {
         viewHolder.setText(R.id.tv_main_item_title,product.getIntroduce());
         viewHolder.setText(R.id.tv_main_item_address,product.getAddress());
         viewHolder.setText(R.id.tv_main_item_price,"¥"+product.getPrice());
-        viewHolder.setText(R.id.tv_main_item_vipPrice,"会员价：¥"+product.getPrice());
-        viewHolder.setText(R.id.tv_main_item_sale,"销量："+product.getSales());
+        viewHolder.setText(R.id.tv_main_item_vipPrice,"会员价:¥"+product.getPrice());
+        viewHolder.setText(R.id.tv_main_item_sale,"销量:"+product.getSales());
         ImageView view = viewHolder.getView(R.id.iv_main_item);
-        Glide.with(context).load(product.getUrl().get(0)).placeholder(R.mipmap.android_quanzi).into(view);
+        Glide.with(context).load(product.getUrl()).placeholder(R.mipmap.android_quanzi).into(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

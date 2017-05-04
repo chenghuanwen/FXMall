@@ -42,6 +42,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,17 +110,23 @@ public class UserMsgActivity extends BaseActivity {
         setContentView(R.layout.activity_user_msg);
         ButterKnife.bind(this);
         initHeaderview();
-        setData();
 
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(this);
         Intent intent = getIntent();
-        icon = intent.getStringExtra("icon");
-        nick = intent.getStringExtra("nick");
-        gender = intent.getStringExtra("gender");
-        name = intent.getStringExtra("realname");
-        phone = intent.getStringExtra("phone");
-        address = intent.getStringExtra("address");
+        try {
+            gender = intent.getStringExtra("gender").trim();
+            name = intent.getStringExtra("realname");
+            name = URLDecoder.decode(name,"utf-8");
+            phone = intent.getStringExtra("phone");
+            address = intent.getStringExtra("address");
+            icon = intent.getStringExtra("icon");
+            nick = intent.getStringExtra("nick");
+            nick = URLDecoder.decode(nick,"utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        setData();
     }
 
     @Override
@@ -273,15 +281,12 @@ public class UserMsgActivity extends BaseActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //将拍照的图片保存到本地
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), System.currentTimeMillis() + ".jpg");
-        LogUtil.i("TAG","准备拍照==========");
         Uri iconUri = null;
         if(Build.VERSION.SDK_INT >= 24){
             iconUri = FileProvider.getUriForFile(this,"com.dgkj.fxmall.fileprovider",file);
-            LogUtil.i("TAG","7.0uri===="+iconUri);
         }else {
            iconUri = Uri.fromFile(file);
         }
-        LogUtil.i("TAG","准备拍照URI==========");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, iconUri);
         startActivityForResult(intent, 102);
     }
@@ -387,7 +392,6 @@ public class UserMsgActivity extends BaseActivity {
             Uri uri1 = null;
             if(Build.VERSION.SDK_INT >= 24){
                 uri1 = getImageContentUri(this,file);
-                LogUtil.i("TAG","7.0uri1111111111===="+uri1);
             }else {
                 uri1 = Uri.fromFile(file);
             }
@@ -410,7 +414,6 @@ public class UserMsgActivity extends BaseActivity {
                         iconFile.createNewFile();
                     }
                     FileOutputStream out = new FileOutputStream(iconFile);
-                    LogUtil.i("TAG", "头像截取临时文件==" + iconFile.getAbsolutePath());
                     out.write(imageData);
                     out.flush();
                     out.close();
@@ -481,7 +484,6 @@ public class UserMsgActivity extends BaseActivity {
                         JSONObject object = new JSONObject(result);
                         String iconUrl = object.getString("dataset");
                         if(iconFile != null){iconFile.delete();}
-                        LogUtil.i("TAG","头像网络地址==="+iconUrl);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -122,8 +122,7 @@ public class LoginActivity extends BaseActivity {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra("from", "mine");
         jumpTo(intent, true);
-
-     /*   FormBody body = new FormBody.Builder()
+      /*  FormBody body = new FormBody.Builder()
                 .add("phone", urer)
                 .add("password", pass)
                 .build();
@@ -147,6 +146,7 @@ public class LoginActivity extends BaseActivity {
                         JSONObject object = new JSONObject(result);
                         String token = object.getString("token");
                         sp.put("token", token);
+                        sp.put("login","true");
                         LogUtil.i("TAG", "token====" + sp.get("token"));
                         MyApplication.isLogin = true;
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -160,7 +160,6 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });*/
-
     }
 
 

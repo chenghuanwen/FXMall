@@ -8,6 +8,7 @@ import android.text.style.BackgroundColorSpan;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -25,34 +26,35 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class StoreMsgActivity extends BaseActivity {
 
+
     @BindView(R.id.civ_store_icon)
     CircleImageView civStoreIcon;
     @BindView(R.id.tv_store_name)
     TextView tvStoreName;
+    @BindView(R.id.iv_store_msg_stars)
+    ImageView ivStoreMsgStars;
     @BindView(R.id.iv_store_stars)
     ImageView ivStoreStars;
     @BindView(R.id.tv_store_sales)
     TextView tvStoreSales;
     @BindView(R.id.tv_store_goods)
     TextView tvStoreGoods;
-    @BindView(R.id.tv_create_time_adress)
-    TextView tvCreateTimeAdress;
-
-    @BindView(R.id.ib_store_msg_back)
-    ImageButton ibStoreMsgBack;
-    @BindView(R.id.iv_store_msg_stars)
-    ImageView ivStoreMsgStars;
     @BindView(R.id.tv_has_checked)
     TextView tvHasChecked;
+    @BindView(R.id.tv_create_time_adress)
+    TextView tvCreateTimeAdress;
+    @BindView(R.id.tv_tore_msg_introduce)
+    TextView tvToreMsgIntroduce;
     @BindView(R.id.tv_store_describe_ok)
     TextView tvStoreDescribeOk;
     @BindView(R.id.tv_store_price_ok)
     TextView tvStorePriceOk;
     @BindView(R.id.tv_store_quality_ok)
     TextView tvStoreQualityOk;
-    @BindView(R.id.tv_tore_msg_introduce)
-    TextView tvToreMsgIntroduce;
-
+    @BindView(R.id.ib_store_msg_back)
+    ImageButton ibStoreMsgBack;
+    @BindView(R.id.activity_store_msg)
+    LinearLayout activityStoreMsg;
     private StoreBean store;
 
 
@@ -73,25 +75,40 @@ public class StoreMsgActivity extends BaseActivity {
 
     private void setData() {
         store = (StoreBean) getIntent().getSerializableExtra("store");
-        if(store==null){return;}
+        if (store == null) {
+            return;
+        }
         Glide.with(this).load(store.getIconUrl()).placeholder(R.mipmap.android_quanzi).into(civStoreIcon);
         //TODO 设置商品评分图片
-        //Glide.with(this).load().placeholder(R.mipmap.android_quanzi).into(ivStoreStars);
+        double stars = (store.getDescribeScore() + store.getQualityScore() + store.getPriceScore()) / 3;
+        if(stars<=1.0){
+            ivStoreMsgStars.setImageResource(R.mipmap.dpzy_dj1);
+        }else if(stars>1.0 && stars<1.9){
+            ivStoreMsgStars.setImageResource(R.mipmap.yb);
+        }else if(stars>=1.9 && stars<=2.4){
+            ivStoreMsgStars.setImageResource(R.mipmap.dpzy_dj2);
+        }else if(stars>2.4 && stars<2.9){
+            ivStoreMsgStars.setImageResource(R.mipmap.eb);
+        }else if(stars>=2.9 && stars<=3.4){
+            ivStoreMsgStars.setImageResource(R.mipmap.dpzy_dj3);
+        }else if(stars>3.4 && stars<=3.9){
+            ivStoreMsgStars.setImageResource(R.mipmap.sb);
+        }else if(stars>3.9 && stars<=4.4){
+            ivStoreMsgStars.setImageResource(R.mipmap.dpzy_dj4);
+        }else if(stars>4.4 && stars<=4.9){
+            ivStoreMsgStars.setImageResource(R.mipmap.sib);
+        }else if(stars>4.9){
+            ivStoreMsgStars.setImageResource(R.mipmap.dpzy_dj5);
+        }
 
         tvStoreName.setText(store.getName());
         tvStoreSales.setText("销售总量" + store.getTotalScals());
         tvStoreGoods.setText("宝贝数" + store.getGoodsCount());
         tvCreateTimeAdress.setText(String.format("创建时间：%s I %s", store.getCreateTime(), store.getAdress()));
-        String s = String.format("描述相符   %s %n 价格合理   %s %n 质量满意   %s", store.getDescribeScore(), store.getPriceScore(), store.getQualityScore());
-        SpannableString sp = new SpannableString(s);
-        Pattern pattern = Pattern.compile("^[0-9]+(.[0-9]{2})");
-        Matcher matcher = pattern.matcher(s);
-        while (matcher.find()) {
-            int start = matcher.start();
-            int end = matcher.end();
-            sp.setSpan(new BackgroundColorSpan(Color.parseColor("#ff6138")), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-       // tvDynamicScore.setText(sp);
+        tvStoreDescribeOk.setText(store.getDescribeScore()+"");
+        tvStorePriceOk.setText(store.getPriceScore()+"");
+        tvStoreQualityOk.setText(store.getQualityScore()+"");
+
         //TODO 判断是否已实名认证
         if (store.isHasRealNameCheck()) {
             tvHasChecked.setText("已通过分销商资格名认证");
@@ -102,7 +119,7 @@ public class StoreMsgActivity extends BaseActivity {
     }
 
     @OnClick(R.id.ib_store_msg_back)
-    public void back(){
+    public void back() {
         finish();
     }
 }

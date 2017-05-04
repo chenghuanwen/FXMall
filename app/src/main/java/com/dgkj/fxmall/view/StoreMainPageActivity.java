@@ -106,9 +106,30 @@ public class StoreMainPageActivity extends BaseActivity {
         Glide.with(this).load(store.getIconUrl()).placeholder(R.mipmap.android_quanzi).into(civShangpuItem);
         tvStoreName.setText(store.getName());
         tvStoreAddress.setText(store.getAdress());
-        //TODO 设置评分图片
+
         tvStoreSales.setText("销售总量" + store.getTotalScals());
         tvStoreGoods.setText("宝贝数" + store.getGoodsCount());
+        //TODO 设置商品评分图片
+        double stars = (store.getDescribeScore() + store.getQualityScore() + store.getPriceScore()) / 3;
+        if(stars<=1.0){
+           rbCommend.setImageResource(R.mipmap.dppj_dj1);
+        }else if(stars>1.0 && stars<1.9){
+            rbCommend.setImageResource(R.mipmap.lan_yiban);
+        }else if(stars>=1.9 && stars<=2.4){
+            rbCommend.setImageResource(R.mipmap.dppj_dj2);
+        }else if(stars>2.4 && stars<2.9){
+            rbCommend.setImageResource(R.mipmap.lan_erban);
+        }else if(stars>=2.9 && stars<=3.4){
+            rbCommend.setImageResource(R.mipmap.dppj_dj3);
+        }else if(stars>3.4 && stars<=3.9){
+            rbCommend.setImageResource(R.mipmap.lan_sanban);
+        }else if(stars>3.9 && stars<=4.4){
+            rbCommend.setImageResource(R.mipmap.dppj_dj4);
+        }else if(stars>4.4 && stars<=4.9){
+            rbCommend.setImageResource(R.mipmap.lan_siban);
+        }else if(stars>4.9){
+            rbCommend.setImageResource(R.mipmap.dppj_dj5);
+        }
 
         goods = new ArrayList<>();
         adapter = new MainProductDisplayAdapter(this, R.layout.item_main_product, goods, "product");

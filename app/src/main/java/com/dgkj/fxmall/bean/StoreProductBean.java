@@ -8,11 +8,30 @@ import java.util.List;
  */
 
 public class StoreProductBean implements Serializable{
-    private String url,describe,price,sales,inventory,titel;
+    private String url,describe,sales,inventory,titel;
     private List<String> mainUrls,detialUrls;
     private boolean isSelect;
     private int id,statu,skuID,brokerage;
     private String color;
+    private double price;
+    private double vipPrice;
+
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getVipPrice() {
+        return vipPrice;
+    }
+
+    public void setVipPrice(double vipPrice) {
+        this.vipPrice = vipPrice;
+    }
 
     public int getBrokerage() {
         return brokerage;
@@ -100,14 +119,6 @@ public class StoreProductBean implements Serializable{
 
     public void setDescribe(String describe) {
         this.describe = describe;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
     public String getSales() {

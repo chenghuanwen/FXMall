@@ -30,7 +30,6 @@ public class FXConst {
     public static final String FXM_URL_PORT = "http://192.168.3.170:9090/Distribution/";
 
 
-    public static final String GET_BANNER_URL = "";//获取banner图片链接
     public static final String RECOMMEND_STORE_URL = "";//推荐商家
     public static final String TODAY_RECOMMEND_URL = "";//今日推荐
     public static final String NEWGOODS_SHELVES_URL = "";//新品上架
@@ -74,7 +73,7 @@ public class FXConst {
     public static final String GET_STORE_PROCUCT_ALL_CLASSIFY = FXM_URL_PORT+"commodityAction_getCommodityTypeTotal";
     public static final String GET_STORE_ALL_PROCUCT = FXM_URL_PORT+"commodityAction_getCommodityDesc";
     public static final String PRODUCT_ONLINE_OFFLINE = FXM_URL_PORT+"commodityAction_updateStatus";
-    public static final String USER_WITHDRAWABL_URL = FXM_URL_PORT+"userAction_topUp";
+    public static final String USER_RECHARGE_URL = FXM_URL_PORT+"userAction_topUp";
     public static final String GET_TRANSACTION_RECORDS = FXM_URL_PORT+"userAction_financialDetails";
     public static final String GET_STORE_SALE_COUNT = FXM_URL_PORT+"commodityAction_getStatusTotal";
 
@@ -122,12 +121,14 @@ public class FXConst {
     public static final String STORE_AGREE_REFUND_URL = FXM_URL_PORT+"refundOrderAction_agree";
     public static final String STORE_REFUSED_REFUND_URL = FXM_URL_PORT+"refundOrderAction_repulse";
     public static final String USER_SUBMIT_LOGISTICS_URL = FXM_URL_PORT+"refundOrderAction_wibill";
+    public static final String STORE_CONFIRM_REFUND = FXM_URL_PORT+"refundOrderAction_ok";
 
 
-
-
-
-
+    public static final String CHECK_PAY_PASSWORD = FXM_URL_PORT+"userAction_checkPayPass";
+    public static final String GET_BANNER_URL= FXM_URL_PORT+"slideShowAction_getSlide";
+    public static final String GET_MAIN_RECOMMEND_STORES_URLS = FXM_URL_PORT+"recommendStoreAction_getRS";
+    public static final String GET_POSTAGE_OF_SOME_DISTRICT = FXM_URL_PORT+"commodityAction_freight";
+    public static final String GET_COUNT_OF_STORE_ORDER = FXM_URL_PORT+"orderAction_getSToatal";
 
 
 

@@ -8,18 +8,20 @@ import java.util.List;
  */
 
 public class MainProductBean implements Serializable{
-    private List<String> url;
+    private List<String> urls,detialUrls;
     private String introduce;
-    private String price;
+    private double price;
     private String sales;
     private String address;
     private String express;
-    private String vipPrice;
+    private double vipPrice;
     private int skuId,count,id;
-    private String storeName,color;
-    private int inventory;
-    private int describeScore,priceScore,qualityScore;
-    private double totalScore;
+    private String color;
+    private int inventory,brokerage;
+    private StoreBean storeBean;
+    private String url;
+
+    private int describeScore,priceScore,qualityScore,totalScore;
 
     public int getDescribeScore() {
         return describeScore;
@@ -45,12 +47,52 @@ public class MainProductBean implements Serializable{
         this.qualityScore = qualityScore;
     }
 
-    public double getTotalScore() {
+    public int getTotalScore() {
         return totalScore;
     }
 
-    public void setTotalScore(double totalScore) {
+    public void setTotalScore(int totalScore) {
         this.totalScore = totalScore;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public List<String> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(List<String> urls) {
+        this.urls = urls;
+    }
+
+    public int getBrokerage() {
+        return brokerage;
+    }
+
+    public void setBrokerage(int brokerage) {
+        this.brokerage = brokerage;
+    }
+
+    public List<String> getDetialUrls() {
+        return detialUrls;
+    }
+
+    public void setDetialUrls(List<String> detialUrls) {
+        this.detialUrls = detialUrls;
+    }
+
+    public StoreBean getStoreBean() {
+        return storeBean;
+    }
+
+    public void setStoreBean(StoreBean storeBean) {
+        this.storeBean = storeBean;
     }
 
     public int getId() {
@@ -77,14 +119,6 @@ public class MainProductBean implements Serializable{
         this.count = count;
     }
 
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
     public String getColor() {
         return color;
     }
@@ -101,11 +135,11 @@ public class MainProductBean implements Serializable{
         this.skuId = skuId;
     }
 
-    public String getVipPrice() {
+    public double getVipPrice() {
         return vipPrice;
     }
 
-    public void setVipPrice(String vipPrice) {
+    public void setVipPrice(double vipPrice) {
         this.vipPrice = vipPrice;
     }
 
@@ -125,13 +159,6 @@ public class MainProductBean implements Serializable{
         this.address = address;
     }
 
-    public List<String> getUrl() {
-        return url;
-    }
-
-    public void setUrl(List<String> url) {
-        this.url = url;
-    }
 
     public String getIntroduce() {
         return introduce;
@@ -141,11 +168,11 @@ public class MainProductBean implements Serializable{
         this.introduce = introduce;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

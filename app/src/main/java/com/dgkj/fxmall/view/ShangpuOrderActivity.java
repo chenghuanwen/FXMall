@@ -157,7 +157,6 @@ public class ShangpuOrderActivity extends BaseActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
                 vpOrder.setCurrentItem(position);
-
             }
 
             @Override

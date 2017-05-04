@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_my_vip"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f7f7f7"
+    tools:context="com.dgkj.fxmall.view.MyVIPActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#fff"
+        app:tabIndicatorColor="@color/main_color"
+        app:tabSelectedTextColor="@color/main_color"
+        app:tabTextColor="#333"
+        app:tabIndicatorHeight="2dp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_my_vip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+    <ImageButton
+        android:id="@+id/ib_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circler_back_corner_shape"
+        android:src="@mipmap/title_return_icon"
+        android:layout_margin="10dp"/>
+
+</LinearLayout>

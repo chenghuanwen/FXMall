@@ -108,7 +108,7 @@ public class AllClassifyActivity extends BaseActivity {
         rvAllClassify.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                baseClassify = subClassify.get(position).getTaxon();
+                baseClassify = allClassify.get(position).getType();
                 int superTypeId = allClassify.get(position).getId();
                 getSubclassify(superTypeId);
             }

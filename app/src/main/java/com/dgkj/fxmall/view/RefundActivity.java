@@ -12,13 +12,20 @@ import com.dgkj.fxmall.adapter.OrderClassifyAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.bean.SuperOrderBean;
+import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
+import com.dgkj.fxmall.model.FXMallModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 
 public class RefundActivity extends BaseActivity {
 
@@ -30,8 +37,12 @@ public class RefundActivity extends BaseActivity {
     LinearLayout activityRefund;
     private View headerview;
     private List<SuperOrderBean> orderBeanList;
+    private List<OrderBean> refundOrders = new ArrayList<>();
     private OrderClassifyAdapter adapter;
     private String[] states = new String[]{"等待商家处理退款申请", "商家同意退款", "退款成功", "商家拒绝退款", "商家拒绝退款"};
+    private OkHttpClient client = new OkHttpClient.Builder().build();
+    private FXMallControl control = new FXMallControl();
+    private int statu, isAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +85,20 @@ public class RefundActivity extends BaseActivity {
         }
 
 
+        control.getMyOrderInfo(this, sp.get("token"), statu, isAll, client, new OnGetMyOrderInfoFinishedListener() {
+            @Override
+            public void onGetMyOrderInfoFinished(List<OrderBean> orders) {
+                for (OrderBean order : orders) {
+                    if(order.getStateNum()==4){
+                        refundOrders.add(order);
+                    }
+                }
+                List<SuperOrderBean> superOrderBeen = sortProductsOfOrder(refundOrders);
+                adapter.addAll(superOrderBeen,true);
+            }
+        });
+
+
         adapter = new OrderClassifyAdapter(this, orderBeanList, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvRefundOrder.setLayoutManager(layoutManager);
@@ -89,4 +114,49 @@ public class RefundActivity extends BaseActivity {
     public void back() {
         finish();
     }
+
+    public  List<SuperOrderBean> sortProductsOfOrder(List<OrderBean> orders) {
+        //将所有运费模板按照id进行分类，相同的id属于同一个大模板
+        List<SuperOrderBean> superPostageList = new ArrayList<>();
+        Map<OrderBean, List<OrderBean>> map = new HashMap<>();
+        OrderBean post = new OrderBean();
+        if (orders.size() > 0) {
+            for (int i = 0; i < orders.size(); i++) {
+                int key = orders.get(i).getId();//获取当条数据的id值
+                if (post.getId() >= 0) {
+                    boolean b = key == post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
+                    if (b) {
+                        post = new OrderBean();
+                    }
+                }
+                post.setId(key);//为key值设置id
+
+                //将相同id 的key所有的数据都指向一个数据集合
+                List<OrderBean> posts = map.get(post);//key值变时，集合也会变
+                //当第一次次集合没有初始化时，创建一个新集合，此后这相同的数据全部添加到此集合
+                if (posts == null) {
+                    posts = new ArrayList<>();
+                }
+                posts.add(orders.get(i));//将相同数据添加到集合
+                map.put(post, posts);//将相同的数据放入map（不断覆盖，直至最后一次得到相同全部数据）
+            }
+
+            //TODO 集成数据:遍历map，将数据添加到listView实体类集合
+            Iterator iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                OrderBean postageBean = (OrderBean) entry.getKey();
+
+                SuperOrderBean superPost = new SuperOrderBean();
+                int id = postageBean.getId();
+                ArrayList<OrderBean> posts = (ArrayList<OrderBean>) entry.getValue();
+                superPost.setId(id);
+                superPost.setSubOrders(posts);
+                superPostageList.add(superPost);
+            }
+
+        }
+        return superPostageList;
+    }
+
 }

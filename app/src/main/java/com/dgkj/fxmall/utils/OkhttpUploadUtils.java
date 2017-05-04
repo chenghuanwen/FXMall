@@ -14,6 +14,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -51,7 +52,6 @@ public class OkhttpUploadUtils {
     public void sendMultipart(final String reqUrl, final Map<String, String> params, final String pic_key, final List<File> files,final String image_key ,final List<File> fileList) {
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
-
         if(params != null){
             for (String key : params.keySet()) {
                 builder.addFormDataPart(key,params.get(key));
@@ -60,13 +60,15 @@ public class OkhttpUploadUtils {
 
         if(files != null){
             for (File file : files) {
+               // builder.addPart(Headers.of("Content-Disposition", "form-data; name="+pic_key+";filename="+file.getName()), RequestBody.create(MediaType.parse("image/png"),file));
                 builder.addFormDataPart(pic_key,file.getName(), RequestBody.create(MEDIA_TYPE_PNG,file));
             }
         }
 
         if(fileList != null){
             for (File file : fileList) {
-                builder.addFormDataPart(image_key,file.getName(), RequestBody.create(MEDIA_TYPE_PNG,file));
+               // builder.addPart(Headers.of("Content-Disposition", "form-data; name="+image_key+";filename="+file.getName()), RequestBody.create(MediaType.parse("image/png"),file));
+             builder.addFormDataPart(image_key,file.getName(), RequestBody.create(MEDIA_TYPE_PNG,file));
             }
         }
 
@@ -88,11 +90,20 @@ public class OkhttpUploadUtils {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body().string().contains("1000")){
+                String string = response.body().string();
+                LogUtil.i("TAG","店铺申请结果==="+string);
+                if(string.contains("1000")){
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context,"上传成功！",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,"提交成功！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else if(string.contains("1008")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"您已申请过店铺",Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else {

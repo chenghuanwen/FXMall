@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
@@ -33,6 +34,7 @@ import com.dgkj.fxmall.view.SetPostageActivity;
 import com.dgkj.fxmall.view.ShangpuOrderActivity;
 import com.dgkj.fxmall.view.StoreInfoEditActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -180,7 +182,6 @@ public class ShangpuFragment extends Fragment {
                                 case 5:
                                     ivShangpuStars.setImageResource(R.mipmap.dpzy_dj5);
                                     break;
-
                             }
                         }
                     });
@@ -224,6 +225,49 @@ public class ShangpuFragment extends Fragment {
                 }
             }
         });
+
+        FormBody body1 = new FormBody.Builder()
+                .add("store.user.token",sp.get("token"))
+                .build();
+        Request request2 = new Request.Builder()
+                .post(body1)
+                .url(FXConst.GET_COUNT_OF_STORE_ORDER)
+                .build();
+        client.newCall(request2).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        JSONArray dataset = object.getJSONArray("dataset");
+                        final int waitdeliver = dataset.getInt(0);
+                        final int hasdeliver = dataset.getInt(1);
+                        final int sold = dataset.getInt(2);
+                        final int refund = dataset.getInt(3);
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvWaitDeliverCount.setText(waitdeliver +"");
+                                tvHasDeliverCount.setText(hasdeliver +"");
+                                tvSoldCount.setText(sold +"");
+                                tvRefundCount.setText(refund +"");
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else {
+
+                }
+            }
+        });
+
 
 
     }
