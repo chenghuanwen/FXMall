@@ -68,7 +68,7 @@ public class SettingActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initHeaderView();
-        setData();
+       // setData();
         getCacheSize();
     }
 

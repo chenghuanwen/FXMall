@@ -79,7 +79,7 @@ public class ShangpuFragment extends Fragment {
     TextView tvOrderCount;
     @BindView(R.id.tv_incom)
     TextView tvIncom;
-    @BindView(R.id.tv_refund)
+    @BindView(R.id.textView)
     TextView tvRefund;
     @BindView(R.id.tv_publish_product)
     TextView tvPublishProduct;
@@ -268,9 +268,116 @@ public class ShangpuFragment extends Fragment {
             }
         });
 
+        FormBody body2 = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .build();
+        Request request3 = new Request.Builder()
+                .post(body2)
+                .url(FXConst.GET_MY_STORE_ORDER_COUNT)
+                .build();
+        client.newCall(request3).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        final int dataset = object.getInt("dataset");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvOrderCount.setText(dataset+"");
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        FormBody body3 = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .build();
+        Request request4 = new Request.Builder()
+                .post(body3)
+                .url(FXConst.GET_MY_STORE_REFUND_COUNT)
+                .build();
+        client.newCall(request4).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        final int dataset = object.getInt("dataset");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvRefund.setText(dataset+"");
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        getSomeCount(3,tvIncom);
 
     }
+
+
+    /**
+     * 获取佣金数
+     * @param time
+     * @param tv
+     */
+    public void getSomeCount(int time, final TextView tv){
+        FormBody body1 = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("time",time+"")
+                .build();
+        Request request1 = new Request.Builder()
+                .post(body1)
+                .url(FXConst.GET_INCOME_URL)
+                .build();
+        client.newCall(request1).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    JSONObject object = null;
+                    try {
+                        object = new JSONObject(string);
+                        final int count = object.getInt("dataset");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tv.setText(count+"");
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+
 
     @OnClick(R.id.tv_publish_product)
     public void publishProduct() {
@@ -394,7 +501,9 @@ public class ShangpuFragment extends Fragment {
             public void onRefresh() {
                 srlRefresh.setRefreshing(false);
                 tvJumpTip.setVisibility(View.GONE);
-                startActivity(new Intent(getContext(), HomePageActivity.class));
+                Intent intent = new Intent(getContext(), HomePageActivity.class);
+                intent.putExtra("from","");
+                startActivity(intent);
             }
         });
     }

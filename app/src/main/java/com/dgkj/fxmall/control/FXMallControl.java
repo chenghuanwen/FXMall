@@ -17,6 +17,7 @@ import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
+import com.dgkj.fxmall.listener.OnGetProductCSFinishedListener;
 import com.dgkj.fxmall.listener.OnGetProductCommentListFinishListener;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
 import com.dgkj.fxmall.listener.OnGetShoppingcarProductsFinishedListener;
@@ -155,5 +156,8 @@ public class FXMallControl {
 
     public void getMainRecommendStores(OkHttpClient client, OnGetMainRecommendStoreFinishedListener listener){
         FXMallModel.getMainRecommentStores(client,listener);
+    }
+    public void getProductCS(OkHttpClient client, int id, final OnGetProductCSFinishedListener listener){
+        FXMallModel.getProductCS(client,id,listener);
     }
 }

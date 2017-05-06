@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.adapter.ProductClassifyAdapter;
@@ -193,6 +194,17 @@ public class HomePageFragment extends Fragment {
         rvHomeDisplay.setLayoutManager(gridLayoutManager);
         rvHomeDisplay.setHasFixedSize(true);
         rvHomeDisplay.setAdapter(productDisplayAdapter);
+
+        //TEST
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689173&di=e3c6c0aac909543ffe89fb9b67f917d7&imgtype=0&src=http%3A%2F%2Fzkres2.myzaker.com%2F201703%2F58de50e11bc8e02d3400005c_640.jpg").into(ivStore1);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689155&di=2a9cccc3be8dc8477b0a02cd825ab3c3&imgtype=0&src=http%3A%2F%2Fwww.hxw163.com%2Fuploadfile%2F2017%2F0325%2F20170325110600403.jpg").into(ivStore2);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689152&di=2c76f93145aa678f6c8e10ba452fb0a8&imgtype=0&src=http%3A%2F%2Fzkres2.myzaker.com%2F201703%2F58de0c3ca07aec595d04543c_640.jpg").into(ivStore3);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974097848&di=e03d075d5270399abf3017d5f28ded3a&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170319%2F1572047f77034527ab1242ae292efc41_th.jpeg").into(ivRecommend);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150352&di=50d4277e4cbbb74f24803b0cc967c70a&imgtype=0&src=http%3A%2F%2Fimg4.duitang.com%2Fuploads%2Fitem%2F201608%2F02%2F20160802172340_W528L.jpeg").into(newGoods1);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150344&di=0ba39eb86045a759464936ad002dec0c&imgtype=0&src=http%3A%2F%2Fimg5.duitang.com%2Fuploads%2Fitem%2F201512%2F09%2F20151209225838_2G3Zc.thumb.700_0.jpeg").into(newGoods2);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150340&di=6c86ce998672986123e8df590335555a&imgtype=0&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201604%2F26%2F20160426184930_ivKdF.jpeg").into(newGoods3);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150336&di=48182bee774f3d62e89100a7f73fbea2&imgtype=0&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201607%2F23%2F20160723104550_hFtTn.thumb.700_0.jpeg").into(newGoods4);
+        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974260222&di=7e54dac3ff5cfff89438fa1da97c2242&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201510%2F27%2F20151027171037_3tiQZ.jpeg").into(newGoods5);
 
        /* getBannerData();
         getStoreRecommend();
@@ -381,7 +393,12 @@ public class HomePageFragment extends Fragment {
                 }
                 banner.setImageLoader(new BannerImageLoader());
                 banner.setImages(bannerDatas);
-                banner.start();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        banner.start();
+                    }
+                });
                 banner.setOnBannerListener(new OnBannerListener() {//根据不同的推荐内容跳转到不同的详情界面
                     @Override
                     public void OnBannerClick(int position) {

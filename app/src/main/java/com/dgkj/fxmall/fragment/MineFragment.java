@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +37,7 @@ import com.dgkj.fxmall.view.RefundActivity;
 import com.dgkj.fxmall.view.ReviewProgressActivity;
 import com.dgkj.fxmall.view.SettingActivity;
 import com.dgkj.fxmall.view.ShoppingCarActivity;
+import com.dgkj.fxmall.view.StoreMainPageActivity;
 import com.dgkj.fxmall.view.TheBalanceOfUserActivity;
 import com.dgkj.fxmall.view.UserMsgActivity;
 import com.dgkj.fxmall.view.WithdrawalActivity;
@@ -133,7 +135,7 @@ public class MineFragment extends Fragment {
 
         getUserInfo();
 
-       // setData();
+       setData();
         refresh2Home();
         return view;
     }
@@ -220,7 +222,9 @@ public class MineFragment extends Fragment {
             public void onRefresh() {
                 srlRefresh.setRefreshing(false);
                 tvJumpTip.setVisibility(View.GONE);
-                startActivity(new Intent(getContext(), HomePageActivity.class));
+                Intent intent = new Intent(getContext(), HomePageActivity.class);
+                intent.putExtra("from","");
+                startActivity(intent);
             }
         });
     }
@@ -333,7 +337,7 @@ public class MineFragment extends Fragment {
      */
     private void getMyStoreInfo() {
         FormBody body = new FormBody.Builder()
-                .add("store.token",sp.get("token"))
+                .add("user.token",sp.get("token"))
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.GET_STORE_DETIAL_INFO)
@@ -347,6 +351,7 @@ public class MineFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","店铺信息==="+string);
                 Intent intent = new Intent(getContext(), ReviewProgressActivity.class);
                 if(string.contains("1000")){
                     try {
@@ -358,7 +363,17 @@ public class MineFragment extends Fragment {
                         storeBean.setLicence(dataset.getString("license"));
                         storeBean.setKeeper(dataset.getString("storekeeper"));
                         storeBean.setPhone(dataset.getString("phone"));
-                        JSONArray storePictrues = dataset.getJSONArray("storePictrue");
+                        String pictrues = dataset.getString("storePictrue");
+                        String logo = dataset.getString("logo");
+                        String intro = dataset.getString("intro");
+                        if(!TextUtils.isEmpty(logo) || !TextUtils.isEmpty(intro)){
+                            Intent intent1 = new Intent(getContext(), StoreMainPageActivity.class);
+                            storeBean.setIconUrl(logo);
+                            intent.putExtra("store",storeBean);
+                            getActivity().startActivity(intent1);
+                            return;
+                        }
+                        JSONArray storePictrues = new JSONArray(pictrues);
                         List<String> urls = new ArrayList<>();
                         for (int i = 0; i < storePictrues.length(); i++) {
                             urls.add(storePictrues.getString(i));
@@ -410,7 +425,9 @@ public class MineFragment extends Fragment {
 
     @OnClick(R.id.rl_balance)
     public void balance() {
-        getContext().startActivity(new Intent(getContext(), TheBalanceOfUserActivity.class));
+        Intent intent = new Intent(getContext(), TheBalanceOfUserActivity.class);
+        intent.putExtra("balance",balance);
+        getContext().startActivity(intent);
     }
 
     /**

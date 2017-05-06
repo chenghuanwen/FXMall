@@ -551,5 +551,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==171){}
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

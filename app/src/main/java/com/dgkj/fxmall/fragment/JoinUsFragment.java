@@ -1,6 +1,7 @@
 package com.dgkj.fxmall.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -18,7 +19,9 @@ import com.dgkj.fxmall.view.RechargeActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+@SuppressLint("ValidFragment")
 public class JoinUsFragment extends Fragment {
 
     @BindView(R.id.rb_join_store)
@@ -31,7 +34,16 @@ public class JoinUsFragment extends Fragment {
     View underline1;
     @BindView(R.id.underline2)
     View underline2;
+    @BindView(R.id.btn_confirm)
+    Button btnConfirm;
+    private String from = "";
 
+    public JoinUsFragment() {
+    }
+
+    public JoinUsFragment(String from) {
+        this.from = from;
+    }
 
     @Nullable
     @Override
@@ -39,6 +51,11 @@ public class JoinUsFragment extends Fragment {
         View view = inflater.inflate(R.layout.layout_joinus_fragment, container, false);
         ButterKnife.bind(this, view);
         joinOption();
+        if (from.equals("sp")) {
+            rbJoinStore.setChecked(true);
+        } else {
+            rbJoinYewuyuan.setChecked(true);
+        }
         return view;
     }
 
@@ -46,16 +63,23 @@ public class JoinUsFragment extends Fragment {
         rgProduct.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId==R.id.rb_join_store){
+                if (checkedId == R.id.rb_join_store) {
                     underline1.setVisibility(View.VISIBLE);
                     underline2.setVisibility(View.GONE);
-                    startActivity(new Intent(getContext(), ApplyStoreActivity.class));
-                }else {
+                } else {
                     underline1.setVisibility(View.GONE);
                     underline2.setVisibility(View.VISIBLE);
-                    startActivity(new Intent(getContext(), RechargeActivity.class));
                 }
             }
         });
+    }
+
+    @OnClick(R.id.btn_confirm)
+    public void confirm(){
+        if(from.equals("sp")){
+            startActivity(new Intent(getContext(), ApplyStoreActivity.class));
+        }else {
+            startActivity(new Intent(getContext(), RechargeActivity.class));
+        }
     }
 }

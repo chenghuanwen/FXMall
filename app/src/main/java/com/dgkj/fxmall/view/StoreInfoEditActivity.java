@@ -112,6 +112,7 @@ public class StoreInfoEditActivity extends BaseActivity {
         }
 
         FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
                 .add("intro", introduce)
                 .build();
         Request request = new Request.Builder()
@@ -276,7 +277,7 @@ public class StoreInfoEditActivity extends BaseActivity {
             Bundle bundle = data.getExtras();
             Bitmap bitmap = bundle.getParcelable("data");
             if (bitmap != null) {
-                //civUsemsgIcon.setImageBitmap(bitmap);//设置头像
+                civUsemsgIcon.setImageBitmap(bitmap);//设置头像
                 //将头像转为二进制数组写入临时文件传给服务器
                 baos = new ByteArrayOutputStream(bitmap.getWidth() * bitmap.getHeight() * 4);
                 //baos = new ByteArrayOutputStream();
@@ -327,7 +328,7 @@ public class StoreInfoEditActivity extends BaseActivity {
 
     private void uploadIcon(final File iconFile) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("token", sp.get("token"))
+        builder.addFormDataPart("user.token", sp.get("token"))
                 .addPart(Headers.of("Content-Disposition", "form-data; name=file;filename=" + iconFile.getName()), RequestBody.create(MediaType.parse("image/png"), iconFile));
         MultipartBody body = builder.build();
         Request request = new Request.Builder()
@@ -345,7 +346,12 @@ public class StoreInfoEditActivity extends BaseActivity {
                 String result = response.body().string();
                 if (result.contains("1000")) {
                     toastInUI(StoreInfoEditActivity.this, "头像上传成功！");
-                    try {
+                    if (iconFile != null) {
+                        iconFile.delete();
+                    }
+
+
+                   /* try {
                         JSONObject object = new JSONObject(result);
                         String iconUrl = object.getString("dataset");
                         if (iconFile != null) {
@@ -354,7 +360,7 @@ public class StoreInfoEditActivity extends BaseActivity {
                         LogUtil.i("TAG", "头像网络地址===" + iconUrl);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                 } else {
                     toastInUI(StoreInfoEditActivity.this, "头像上传失败！");
                 }

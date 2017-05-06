@@ -521,8 +521,8 @@ public class ApplyStoreActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 117 && resultCode == 121) {
-            images = data.getStringArrayListExtra("images");
             tvAddStorePhotos.setVisibility(View.GONE);
+            images = data.getStringArrayListExtra("images");
             avfApplyStore.setAdapter(new ViewFlipperAdapter(images, this));
             avfApplyStore.setAutoStart(true);
             avfApplyStore.startFlipping();

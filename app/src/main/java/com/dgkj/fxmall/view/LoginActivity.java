@@ -98,10 +98,8 @@ public class LoginActivity extends BaseActivity {
                     // intent.putExtra("id",userId);
                     startActivity(intent);
                 }
-
             }
         });
-
     }
 
     @OnClick(R.id.tv_forget_password)
@@ -118,11 +116,11 @@ public class LoginActivity extends BaseActivity {
             toast("请输入正确的用户名和密码！");
             return;
         }
-        MyApplication.isLogin = true;
+    /*    MyApplication.isLogin = true;
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra("from", "mine");
-        jumpTo(intent, true);
-      /*  FormBody body = new FormBody.Builder()
+        jumpTo(intent, true);*/
+        FormBody body = new FormBody.Builder()
                 .add("phone", urer)
                 .add("password", pass)
                 .build();
@@ -139,14 +137,16 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-
+                LogUtil.i("TAG","登录结果==="+result);
                 if (result.contains("1000")) {
                     toastInUI(LoginActivity.this, "登录成功");
                     try {
                         JSONObject object = new JSONObject(result);
                         String token = object.getString("token");
+                        int userId = object.getInt("dataset");
                         sp.put("token", token);
                         sp.put("login","true");
+                        sp.put("userId",userId+"");
                         LogUtil.i("TAG", "token====" + sp.get("token"));
                         MyApplication.isLogin = true;
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -159,7 +159,7 @@ public class LoginActivity extends BaseActivity {
                     toastInUI(LoginActivity.this, "用户名或密码错误，请重新输入");
                 }
             }
-        });*/
+        });
     }
 
 

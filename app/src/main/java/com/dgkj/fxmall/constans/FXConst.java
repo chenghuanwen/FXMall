@@ -129,6 +129,17 @@ public class FXConst {
     public static final String GET_MAIN_RECOMMEND_STORES_URLS = FXM_URL_PORT+"recommendStoreAction_getRS";
     public static final String GET_POSTAGE_OF_SOME_DISTRICT = FXM_URL_PORT+"commodityAction_freight";
     public static final String GET_COUNT_OF_STORE_ORDER = FXM_URL_PORT+"orderAction_getSToatal";
+    public static final String DELETE_THE_RECOMMEND_STORE = FXM_URL_PORT+"recommendAction_delStore";
+    public static final String GET_VIP_PRICE_URL = FXM_URL_PORT+"commodityAction_discount";
+
+
+    public static final String GET_INCOME_URL = FXM_URL_PORT+"financialDetailsAction_income";
+    public static final String GET_MY_VIP_COUNT_URL = FXM_URL_PORT+"userSubAction_userCount";
+    public static final String GET_PRODUCT_CS_CLASSIFY = FXM_URL_PORT+"skuAction_getSku";
+    public static final String GET_MY_STORE_ORDER_COUNT = FXM_URL_PORT+"orderAction_getSCount";
+    public static final String GET_MY_STORE_REFUND_COUNT = FXM_URL_PORT+"refundOrderAction_refundSum";
+    public static final String SEARCH_ONE_STORE_PRODUCT = FXM_URL_PORT+"commodityAction_fuzzStore";
+    public static final String CHANGE_TAKE_ADDRESS_OF_ORDER = FXM_URL_PORT+"orderAction_upSAupSA";
 
 
 

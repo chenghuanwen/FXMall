@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -46,14 +47,17 @@ public class SearchActivity extends BaseActivity {
     EditText etSearchContent;
     /* @BindView(R.id.iv_search)
      ImageView ivSearch;*/
-    @BindView(R.id.tv_cancle_search)
-    TextView tvCancleSearch;
+
     @BindView(R.id.tv_change_batch)
     TextView tvChangeBatch;
     @BindView(R.id.rv_hot_search)
     RecyclerView rvHotSearch;
     @BindView(R.id.activity_search)
     LinearLayout activitySearch;
+    @BindView(R.id.tv_cancle_search)
+    TextView tvCancleSearch;
+    @BindView(R.id.ib_back)
+    ImageButton ibBack;
     private PopupWindow pw;
     private List<String> hotWords;
     private CommonAdapter<String> adapter;
@@ -104,7 +108,12 @@ public class SearchActivity extends BaseActivity {
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             words.add(jsonObject.getString("word"));
                         }
-                        adapter.addAll(words, true);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.addAll(words, true);
+                            }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -185,6 +194,11 @@ public class SearchActivity extends BaseActivity {
 
     @OnClick(R.id.tv_cancle_search)
     public void cancle() {
+        finish();
+    }
+
+    @OnClick(R.id.ib_back)
+    public void back(){
         finish();
     }
 }

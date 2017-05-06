@@ -1,7 +1,7 @@
 package com.dgkj.fxmall.view;
 
-import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,7 +17,6 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.fragment.MineFragment;
 import com.dgkj.fxmall.fragment.ShangpuFragment;
 import com.dgkj.fxmall.fragment.YeWuYuanFragment;
-import com.dgkj.fxmall.view.myView.ShareCommandDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +41,7 @@ public class MainActivity extends BaseActivity {
     private YeWuYuanFragment yeWuYuanFragment;
     private MineFragment mineFragment;
     private ClipboardManager clipboardManager;
+    private String userId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,8 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         fragmentManager = getSupportFragmentManager();
+        userId = sp.get("userId");
+
         initDisplay();
         initFooter();
 
@@ -64,23 +66,35 @@ public class MainActivity extends BaseActivity {
 
     private void initDisplay() {
         String from = getIntent().getStringExtra("from");
+        String login = sp.get("login");
+        if (!"true".equals(login)) {
+            jumpTo(LoginActivity.class, true);
+            return;
+        }
         switch (from) {
             case "sp":
-                rbShangpu.setChecked(true);
-                showSP();
+                if(userId.equals("3")){
+                    rbShangpu.setChecked(true);
+                    showSP();
+                }else {
+                    Intent intent = new Intent(this,HomePageActivity.class);
+                    intent.putExtra("from","sp");
+                    jumpTo(intent,true);
+                }
                 break;
             case "yw":
-                rbYewuyuan.setChecked(true);
-                showYW();
+                if(userId.equals("2")){
+                    rbYewuyuan.setChecked(true);
+                    showYW();
+                }else {
+                    Intent intent = new Intent(this,HomePageActivity.class);
+                    intent.putExtra("from","yw");
+                    jumpTo(intent,true);
+                }
                 break;
             case "mine":
                 rbMine.setChecked(true);
-                String login = sp.get("login");
-                if ("true".equals(login)) {
-                    showMine();
-                } else {
-                    jumpTo(LoginActivity.class, true);
-                }
+                showMine();
                 break;
         }
 

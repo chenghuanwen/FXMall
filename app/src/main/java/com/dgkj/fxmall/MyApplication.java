@@ -20,6 +20,8 @@ public class MyApplication extends Application {
     private static IWXAPI api;
     public static  boolean isLogin;
     public static List<String> selectedPictures;
+    public static String currentProvince = "";
+    public static int vipRate;
     @Override
     public void onCreate() {
         super.onCreate();

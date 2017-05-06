@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.model.FXMallModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,11 +34,13 @@ public class OkhttpUploadUtils {
     private static Context context;
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
     private Handler handler = new Handler(Looper.getMainLooper());
+    private static LoadProgressDialogUtil loadDialog;
     private OkhttpUploadUtils(){}
     public static OkhttpUploadUtils getInstance(Context cont) {
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
         context = cont;
+        loadDialog = new LoadProgressDialogUtil(cont);
         return new OkhttpUploadUtils();
     }
 
@@ -50,11 +53,13 @@ public class OkhttpUploadUtils {
      * @param files   要上传的文件集合
      */
     public void sendMultipart(final String reqUrl, final Map<String, String> params, final String pic_key, final List<File> files,final String image_key ,final List<File> fileList) {
+        loadDialog.buildProgressDialog();
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
         if(params != null){
             for (String key : params.keySet()) {
                 builder.addFormDataPart(key,params.get(key));
+                LogUtil.i("TAG","上传参数===key=="+key+"value=="+params.get(key));
             }
         }
 
@@ -83,6 +88,7 @@ public class OkhttpUploadUtils {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        FXMallModel.loadDialog.cancelProgressDialog();
                         Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -91,11 +97,12 @@ public class OkhttpUploadUtils {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                LogUtil.i("TAG","店铺申请结果==="+string);
+                LogUtil.i("TAG","图片上传结果==="+string);
                 if(string.contains("1000")){
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            loadDialog.cancelProgressDialog();
                             Toast.makeText(context,"提交成功！",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -103,6 +110,7 @@ public class OkhttpUploadUtils {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            loadDialog.cancelProgressDialog();
                             Toast.makeText(context,"您已申请过店铺",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -110,6 +118,7 @@ public class OkhttpUploadUtils {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            loadDialog.cancelProgressDialog();
                             Toast.makeText(context,"网络繁忙！",Toast.LENGTH_SHORT).show();
                         }
                     });

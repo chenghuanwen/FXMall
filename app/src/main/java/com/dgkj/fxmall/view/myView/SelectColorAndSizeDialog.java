@@ -6,8 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.PopupWindowCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +26,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
+import com.dgkj.fxmall.adapter.SelectColorAndSizeAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
+import com.dgkj.fxmall.bean.ColorSizeBean;
 import com.dgkj.fxmall.bean.ShoppingCarBean;
 import com.dgkj.fxmall.bean.ShoppingGoodsBean;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnGetProductCSFinishedListener;
 import com.dgkj.fxmall.listener.OnSelectColorSizeFinishedListener;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.ConfirmOrderActivity;
@@ -33,6 +40,7 @@ import com.dgkj.fxmall.view.ConfirmOrderActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 
 /**
@@ -51,6 +59,25 @@ public class SelectColorAndSizeDialog extends PopupWindow {
     private String selectColor = "";
     private OnSelectColorSizeFinishedListener listener;
     private View conentView;
+    private RecyclerView rvcs;
+    private TextView tvPrice,tvInventory,tvColor,tvCount,tvAdd,tvMius;
+    private ImageView ivProduct,ivCancel;
+    private SelectColorAndSizeAdapter adapter;
+    private List<ColorSizeBean> colorSizeList;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == 1){
+                adapter.notifyDataSetChanged();
+                ColorSizeBean bean = (ColorSizeBean) msg.obj;
+                tvColor.setText(bean.getColor());
+                tvInventory.setText(bean.getInventory());
+                Glide.with(activity).load(bean.getUrl());
+                selectColor = bean.getColor();
+            }
+            super.handleMessage(msg);
+        }
+    };
     public SelectColorAndSizeDialog(BaseActivity activity, int resId, ShoppingGoodsBean goods, String from, OnSelectColorSizeFinishedListener listener){
         this.resId = resId;
         this.goods = goods;
@@ -62,25 +89,40 @@ public class SelectColorAndSizeDialog extends PopupWindow {
         sp = SharedPreferencesUnit.getInstance(activity);
         control = new FXMallControl();
         init();
+        initColor();
+        getColorAndSize();
         setData();
 
 
     }
 
+    private void initColor() {
+        colorSizeList = new ArrayList<>();
+        adapter = new SelectColorAndSizeAdapter(activity,R.layout.item_product_color_size,colorSizeList,handler);
+        GridLayoutManager layoutManager = new GridLayoutManager(activity,4);
+        rvcs.setLayoutManager(layoutManager);
+        rvcs.setAdapter(adapter);
+    }
+
+    /**
+     * 获取该商品不同的颜色和尺寸
+     */
+    private void getColorAndSize() {
+       control.getProductCS(client, goods.getProductId(), new OnGetProductCSFinishedListener() {
+           @Override
+           public void onGetProductCSFinishedListener(List<ColorSizeBean> sizes) {
+               for (ColorSizeBean size : sizes) {
+                   if(goods.getColor().equals(size.getColor())){
+                       size.setCheck(true);
+                   }
+               }
+              adapter.addAll(sizes,true);
+           }
+       });
+    }
+
     private void setData() {
-        final RadioButton tvCS1 = (RadioButton) conentView.findViewById(R.id.tv_cs_1);
-        final RadioButton tvCS2 = (RadioButton) conentView.findViewById(R.id.tv_cs_2);
-        final RadioButton tvCS3 = (RadioButton) conentView.findViewById(R.id.tv_cs_3);
-        final RadioButton tvCS4 = (RadioButton) conentView.findViewById(R.id.tv_cs_4);
-        TextView tvPrice = (TextView) conentView.findViewById(R.id.tv_price);
-        TextView tvInventory = (TextView) conentView.findViewById(R.id.tv_inventory);
-        final TextView tvColor = (TextView) conentView.findViewById(R.id.tv_color_select);
-        final TextView tvCount = (TextView) conentView.findViewById(R.id.tv_edit_car_count);
-        TextView tvAdd = (TextView) conentView.findViewById(R.id.tv_edit_car_add);
-        TextView tvMius = (TextView) conentView.findViewById(R.id.tv_edit_car_minus);
-        ImageView ivProduct = (ImageView) conentView.findViewById(R.id.iv_product_photo);
-        ImageView ivCancel = (ImageView) conentView.findViewById(R.id.iv_cancel);
-        RadioGroup rgCS = (RadioGroup) conentView.findViewById(R.id.rg_cs);
+        selectColor = goods.getColor();
         Glide.with(activity).load(goods.getUrl()).into(ivProduct);
         tvPrice.setText("¥"+goods.getPrice());
         tvCount.setText(count+"");
@@ -94,27 +136,8 @@ public class SelectColorAndSizeDialog extends PopupWindow {
             }
         });
 
-        rgCS.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
-                    case R.id.tv_cs_1:
-                        selectColor = tvCS1.getText().toString();
 
-                        break;
-                    case R.id.tv_cs_2:
-                        selectColor = tvCS2.getText().toString();
-                        break;
-                    case R.id.tv_cs_3:
-                        selectColor = tvCS3.getText().toString();
-                        break;
-                    case R.id.tv_cs_4:
-                        selectColor = tvCS4.getText().toString();
-                        break;
-                }
-                tvColor.setText("“"+selectColor+"”");
-            }
-        });
+        tvColor.setText("“"+selectColor+"”");
 
         tvAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +216,17 @@ public class SelectColorAndSizeDialog extends PopupWindow {
     private void init() {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         conentView = inflater.inflate(resId, null);
+
+        rvcs = (RecyclerView) conentView.findViewById(R.id.rv_cs);
+        tvPrice = (TextView) conentView.findViewById(R.id.tv_price);
+        tvInventory = (TextView) conentView.findViewById(R.id.tv_inventory);
+        tvColor = (TextView) conentView.findViewById(R.id.tv_color_select);
+        tvCount = (TextView) conentView.findViewById(R.id.tv_edit_car_count);
+        tvAdd = (TextView) conentView.findViewById(R.id.tv_edit_car_add);
+        tvMius = (TextView) conentView.findViewById(R.id.tv_edit_car_minus);
+        ivProduct = (ImageView) conentView.findViewById(R.id.iv_product_photo);
+        ivCancel = (ImageView) conentView.findViewById(R.id.iv_cancel);
+
         int h = activity.getWindowManager().getDefaultDisplay().getHeight();
         int w = activity.getWindowManager().getDefaultDisplay().getWidth();
         // 设置SelectPicPopupWindow的View

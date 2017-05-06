@@ -26,6 +26,7 @@ public class TheBalanceOfUserActivity extends BaseActivity {
     @BindView(R.id.tv_withdrawal)
     TextView tvWithdrawal;
     private View headerview;
+    private String balance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,9 @@ public class TheBalanceOfUserActivity extends BaseActivity {
         setContentView(R.layout.activity_the_balance_of_user);
         ButterKnife.bind(this);
         initHeaderView();
+
+        balance = getIntent().getStringExtra("balance");
+        tvBalance.setText(balance);
     }
 
     @Override

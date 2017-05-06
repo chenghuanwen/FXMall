@@ -80,6 +80,7 @@ public class HomePageActivity extends BaseActivity {
     private BDLocationListener mListener = new MyLocationListener();
     private OkHttpClient okHttpClient;
     private ClipboardManager clipboardManager;
+    private String from="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +89,9 @@ public class HomePageActivity extends BaseActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        from = getIntent().getStringExtra("from");
+
         initViewPager();
         initTabLayout();
         initFooter();
@@ -101,6 +105,10 @@ public class HomePageActivity extends BaseActivity {
         okHttpClient = new OkHttpClient.Builder().build();
 
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+        if(from.equals("sp") || from.equals("yw")){
+            vpFragment.setCurrentItem(3);
+        }
 
     }
 
@@ -146,7 +154,7 @@ public class HomePageActivity extends BaseActivity {
         fragments.add(new HomePageFragment());
         fragments.add(new ProductsMallFragment());
         fragments.add(new DemandMallFragment());
-        fragments.add(new JoinUsFragment());
+        fragments.add(new JoinUsFragment(from));
 
         vpFragment.setAdapter(new HomePageFragmentAdapter(getSupportFragmentManager(), fragments));
         vpFragment.setCurrentItem(0);
@@ -259,6 +267,7 @@ public class HomePageActivity extends BaseActivity {
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
                 final String city = location.getAddress().city;
+                MyApplication.currentProvince = location.getProvince();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -271,6 +280,7 @@ public class HomePageActivity extends BaseActivity {
                 // 网络定位结果
                 sb.append("addr : ");
                 sb.append(location.getAddrStr());    //获取地址信息
+                MyApplication.currentProvince = location.getProvince();
                 final String city = location.getAddress().city;
                 runOnUiThread(new Runnable() {
                     @Override
@@ -286,7 +296,14 @@ public class HomePageActivity extends BaseActivity {
                 // 离线定位结果
                 sb.append("describe : ");
                 sb.append("离线定位成功，离线定位结果也是有效的" + location.getAddrStr());
-
+                MyApplication.currentProvince = location.getProvince();
+                final String city = location.getAddress().city;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvCity.setText(city);
+                    }
+                });
             } else if (location.getLocType() == BDLocation.TypeServerError) {
 
                 sb.append("describe : ");

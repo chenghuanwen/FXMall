@@ -45,8 +45,6 @@ public class TakeGoodsAdressActivity extends BaseActivity {
     @BindView(R.id.rv_goods_address)
     RecyclerView rvAdress;
 
-
-
     private View headerview;
     private List<TakeGoodsAddressBean> addressList;
     private AdressManagerAdapter adressManagerAdapter;

@@ -86,61 +86,11 @@
         android:textColor="#999"
         android:text="型号"
         android:layout_marginLeft="10dp" />
-    <RadioGroup
-        android:id="@+id/rg_cs"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-        <RadioButton
-            android:id="@+id/tv_cs_1"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:text="红色"
-            android:layout_marginTop="20dp"
-            android:layout_margin="10dp"
-            android:textColor="@drawable/product_color_selector"
-            android:background="@drawable/product_background_selector"
-            android:button="@null"
-            android:gravity="center"/>
-        <RadioButton
-            android:id="@+id/tv_cs_2"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:text="灰色"
-            android:button="@null"
-            android:layout_marginTop="20dp"
-            android:layout_margin="10dp"
-            android:textColor="@drawable/product_color_selector"
-            android:background="@drawable/product_background_selector"
-            android:gravity="center"/>
-        <RadioButton
-            android:id="@+id/tv_cs_3"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:text="绿色"
-            android:layout_marginTop="20dp"
-            android:button="@null"
-            android:layout_margin="10dp"
-            android:checked="true"
-            android:textColor="@drawable/product_color_selector"
-            android:background="@drawable/product_background_selector"
-            android:gravity="center"/>
-        <RadioButton
-            android:id="@+id/tv_cs_4"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:text="黑色"
-            android:button="@null"
-            android:layout_marginTop="20dp"
-            android:layout_margin="10dp"
-            android:textColor="@drawable/product_color_selector"
-            android:background="@drawable/product_background_selector"
-            android:gravity="center"/>
-    </RadioGroup>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

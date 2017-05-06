@@ -27,7 +27,7 @@
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon144"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -94,11 +94,6 @@
             android:name=".view.HomePageActivity"
             android:label="@string/app_name"
             android:theme="@style/transparentTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
@@ -401,10 +396,24 @@
             android:name=".view.ChangePhoneByPasswordActivity"
             android:label="@string/title_activity_change_phone_by_password"
             android:theme="@style/transparentTheme" />
-        <activity android:name=".view.MyStoreProductDetialActivity" />
-        <activity android:name=".view.CancelYeWuYuanActivity" />
-        <activity android:name=".view.MyVIPActivity" />
-        <activity android:name=".view.CancelYeWuYuanFinishActivity"></activity>
+        <activity android:name=".view.MyStoreProductDetialActivity"
+            android:theme="@style/transparentTheme"/>
+        <activity android:name=".view.CancelYeWuYuanActivity"
+            android:theme="@style/transparentTheme"/>
+        <activity android:name=".view.MyVIPActivity"
+            android:theme="@style/transparentTheme"/>
+        <activity android:name=".view.CancelYeWuYuanFinishActivity"
+            android:theme="@style/transparentTheme"/>
+        <activity android:name=".view.GuideActivity"
+            android:theme="@style/transparentTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.LoadingActivity"
+            android:theme="@style/transparentTheme"></activity>
     </application>
 
 </manifest>

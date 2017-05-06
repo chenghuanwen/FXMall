@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.AuthTask;
 import com.alipay.sdk.app.PayTask;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.BannerBean;
+import com.dgkj.fxmall.bean.ColorSizeBean;
 import com.dgkj.fxmall.bean.CommentBean;
 import com.dgkj.fxmall.bean.DemandMallClassifyBean;
 import com.dgkj.fxmall.bean.ExpressCompanyBean;
@@ -48,6 +50,8 @@ import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
+import com.dgkj.fxmall.listener.OnGetPostageFinishedListener;
+import com.dgkj.fxmall.listener.OnGetProductCSFinishedListener;
 import com.dgkj.fxmall.listener.OnGetProductCommentListFinishListener;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
 import com.dgkj.fxmall.listener.OnGetShoppingcarProductsFinishedListener;
@@ -58,6 +62,7 @@ import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetTransactionRecorderFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
 
 import org.json.JSONArray;
@@ -66,7 +71,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -258,7 +262,7 @@ public class FXMallModel {
                             ProductClassifyBean classify = new ProductClassifyBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             classify.setTaxon(jsonObject.getString("name"));
-                            classify.setUrl("http://img3.duitang.com/uploads/item/201505/05/20150505210633_NHRj4.jpeg");
+                            classify.setUrl(jsonObject.getString("url"));
                             classify.setId(jsonObject.getInt("id"));
                             list.add(classify);
                         }
@@ -321,14 +325,17 @@ public class FXMallModel {
                             product.setStatu(commodity.getInt("status"));
                             product.setSkuID(commodity.getInt("id"));
                             product.setTitel(commodity.getString("name"));
-                            JSONArray detailUrl = commodity.getJSONArray("detailUrl");
+                            String urls = commodity.getString("detailUrl");
+                            JSONArray detailUrl = new JSONArray(urls);
+
                             List<String> mainImages = new ArrayList<>();
                             for (int j = 0; j < detailUrl.length(); j++) {
                                 mainImages.add(detailUrl.getString(j));
                             }
                             product.setDetialUrls(mainImages);
                             List<String> detialImages = new ArrayList<>();
-                            JSONArray pictrues = commodity.getJSONArray("pictrue");
+                            String pictrue = commodity.getString("pictrue");
+                            JSONArray pictrues = new JSONArray(pictrue);
                             for (int k = 0; k < pictrues.length(); k++) {
                                 detialImages.add(pictrues.getString(k));
                             }
@@ -530,8 +537,7 @@ public class FXMallModel {
                             SuperClassifyBean classify = new SuperClassifyBean();
                             classify.setId(jsonObject.getInt("id"));
                             classify.setType(jsonObject.getString("name"));
-                            //classify.setUrl(jsonObject.getString("url"));
-                            //classify.setUrl("http://img5q.duitang.com/uploads/item/201504/13/20150413H2605_LYRWc.jpeg");
+                            classify.setUrl(jsonObject.getString("url"));
                             list.add(classify);
                         }
                         listener.onGetStoreSuperClassifyFinished(list);
@@ -855,13 +861,15 @@ public class FXMallModel {
                             goods.setQualityScore(commodity.getInt("qualityScore"));
                             goods.setTotalScore(commodity.getInt("totalScore"));
 
-                            JSONArray pictrues = commodity.getJSONArray("pictrue");
+                            String pictrue = commodity.getString("pictrue");
+                            JSONArray pictrues = new JSONArray(pictrue);
                             List<String> mainUrls = new ArrayList<>();
                             for (int j = 0; j < pictrues.length(); j++) {
                                 mainUrls.add(pictrues.getString(i));
                             }
                             goods.setMainUrls(mainUrls);
-                            JSONArray detailUrls = commodity.getJSONArray("detailUrl");
+                            String urls = commodity.getString("detailUrl");
+                            JSONArray detailUrls = new JSONArray(urls);
                             List<String> detailImages = new ArrayList<>();
                             for (int k = 0; k < detailUrls.length(); k++) {
                                 detailImages.add(detailUrls.getString(k));
@@ -925,7 +933,8 @@ public class FXMallModel {
                             demandBean.setPhone(jsonObject.getString("phone"));
                             demandBean.setId(jsonObject.getInt("id"));
                             demandBean.setDemand(jsonObject.getInt("num"));
-                            JSONArray photos = object.getJSONArray("url");
+                            String photo = object.getString("url");
+                            JSONArray photos = new JSONArray(photo);
                             List<String> urls = new ArrayList<>();
                             for (int j = 0; j < photos.length(); j++) {
                                 urls.add(photos.getString(j));
@@ -987,7 +996,8 @@ public class FXMallModel {
                             demandBean.setPhone(jsonObject.getString("phone"));
                             demandBean.setId(jsonObject.getInt("id"));
                             demandBean.setDemand(jsonObject.getInt("num"));
-                            JSONArray photos = object.getJSONArray("url");
+                            String photo = object.getString("url");
+                            JSONArray photos = new JSONArray(photo);
                             List<String> urls = new ArrayList<>();
                             for (int j = 0; j < photos.length(); j++) {
                                 urls.add(photos.getString(j));
@@ -1118,14 +1128,16 @@ public class FXMallModel {
                             product.setIntroduce(commodity.getString("detail"));
                             product.setSales(commodity.getInt("sales") + "");
                             product.setInventory(commodity.getInt("inventory"));
-                            JSONArray detailUrl = commodity.getJSONArray("detailUrl");
+                            String detailUrls = commodity.getString("detailUrl");
+                            JSONArray detailUrl = new JSONArray(detailUrls);
                             List<String> mainImages = new ArrayList<>();
                             for (int j = 0; j < detailUrl.length(); j++) {
                                 mainImages.add(detailUrl.getString(j));
                             }
                             product.setDetialUrls(mainImages);
                             List<String> detialImages = new ArrayList<>();
-                            JSONArray pictrues = commodity.getJSONArray("pictrue");
+                            String pictrue = commodity.getString("pictrue");
+                            JSONArray pictrues = new JSONArray(pictrue);
                             for (int k = 0; k < pictrues.length(); k++) {
                                 detialImages.add(pictrues.getString(k));
                             }
@@ -1327,13 +1339,14 @@ public class FXMallModel {
                             orderBean.setColor(productInfo.getString("content"));
                             orderBean.setSkuId(productInfo.getInt("id"));
                             JSONObject commodity = productInfo.getJSONObject("commodity");
-                            //TODO 根据当前定位城市算出邮费
-                            //orderBean.setPostage(productInfo.getInt(""));
                             orderBean.setIntroduce(commodity.getString("detail"));
                             //orderBean.setCount(commodity.getInt("num"));
                             orderBean.setProductId(commodity.getInt("id"));
-                            JSONArray pictures = commodity.getJSONArray("pictrue");
+                            String picture = commodity.getString("pictrue");
+                            JSONArray pictures = new JSONArray(picture);
                             orderBean.setUrl(pictures.getString(0));
+                            //TODO 根据当前定位城市算出邮费
+                            orderBean.setPostage(productInfo.getInt(""));
                             list.add(orderBean);
                         }
                         listener.onGetMyOrderInfoFinished(list);
@@ -1455,7 +1468,8 @@ public class FXMallModel {
                            // orderBean.setCount(commodity.getInt("num"));
                             orderBean.setUrl(commodity.getString("detail"));
                             orderBean.setProductId(commodity.getInt("id"));
-                            JSONArray pictures = commodity.getJSONArray("pictrue");
+                            String picture = commodity.getString("pictrue");
+                            JSONArray pictures = new JSONArray(picture);
                             orderBean.setUrl(pictures.getString(0));
                             list.add(orderBean);
                         }
@@ -1649,6 +1663,120 @@ public class FXMallModel {
                             list.add(recommendStoreBean);
                         }
                         listener.onGetMainRecommendStoreFinishedListener(list);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 获取某个商品的不同颜色尺寸
+     * @param client
+     * @param id
+     * @param listener
+     */
+    public static void getProductCS(OkHttpClient client, int id, final OnGetProductCSFinishedListener listener){
+        final List<ColorSizeBean> list = new ArrayList<>();
+        FormBody body = new FormBody.Builder()
+                .add("commodity.id",id+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.GET_PRODUCT_CS_CLASSIFY)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        JSONArray dataset = object.getJSONArray("dataset");
+                        for (int i = 0; i < dataset.length(); i++) {
+                            JSONObject jsonObject = dataset.getJSONObject(i);
+                            ColorSizeBean cs = new ColorSizeBean();
+                            cs.setId(jsonObject.getInt("id"));
+                            cs.setBrokrage(jsonObject.getInt("brokerage"));
+                            cs.setInventory(jsonObject.getInt("inventory"));
+                            cs.setPrice(jsonObject.getInt("price"));
+                            cs.setColor(jsonObject.getString("content"));
+                            cs.setUrl(jsonObject.getString("url"));
+                            list.add(cs);
+                        }
+                        listener.onGetProductCSFinishedListener(list);
+                    } catch (JSONException e) {
+
+
+                    }
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 根据地区计算某个商品的邮费
+     * @param province
+     * @param productId
+     */
+    private static OkHttpClient client;
+    public static LoadProgressDialogUtil loadDialog;
+    static {
+        client = new OkHttpClient.Builder().build();
+       // loadDialog = new LoadProgressDialogUtil();
+    }
+    public static void getPostage(int productId, final OnGetPostageFinishedListener listener){
+        FormBody body = new FormBody.Builder()
+                    .add("id",productId+"".trim())
+                    .add("address", MyApplication.currentProvince)
+                    .build();
+        Request request = new Request.Builder()
+                .url(FXConst.GET_POSTAGE_OF_SOME_DISTRICT)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        double total = object.getDouble("total");
+                        listener.onGetPostageFinishedListener(total);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取会员折扣比例
+     */
+    public static void getVipRate(){
+        client.newCall(new Request.Builder().url(FXConst.GET_VIP_PRICE_URL).build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        int total = object.getInt("total");
+                        MyApplication.vipRate = total;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

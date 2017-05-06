@@ -50,7 +50,7 @@ public class ProductClassifyAdapter extends CommonAdapter<ProductClassifyBean> {
                    ImageView iv = viewHolder.getView(R.id.iv_selected);
                     iv.setVisibility(View.VISIBLE);
                     subClassify = item.getTaxon();
-                    subClassifyId = position;
+                    subClassifyId = item.getId();
                     return;
                 }else if("search".equals(from)){
                     intent = new Intent(context, SearchContentActivity.class);

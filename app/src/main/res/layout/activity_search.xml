@@ -104,9 +104,19 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_hot_search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#f3f3f3"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#fff"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="40dp"></android.support.v7.widget.RecyclerView>
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
+    <ImageButton
+        android:id="@+id/ib_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circler_back_corner_shape"
+        android:src="@mipmap/title_return_icon"
+        android:layout_margin="10dp"
+        android:layout_gravity="bottom"/>
 
 </LinearLayout>

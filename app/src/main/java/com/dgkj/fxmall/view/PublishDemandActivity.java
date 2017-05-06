@@ -136,10 +136,10 @@ public class PublishDemandActivity extends BaseActivity {
         params.put("user.token", sp.get("token"));
         params.put("title", titel);
         params.put("detail", describe);
-        params.put("num", count);
+        params.put("num", count.trim());
         params.put("address", address);
         params.put("phone", phone);
-        params.put("subCategory.id", subClassifyId + "");
+        params.put("subCategory.id", subClassifyId+ "".trim());
         List<File> files = new ArrayList<>();
         for (String image : images) {
             File file = new File(image);

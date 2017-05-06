@@ -86,17 +86,7 @@ public class AllClassifyActivity extends BaseActivity {
     private void initDatas() {
         allClassify = new ArrayList<>();
         subClassify = new ArrayList<>();
-      /*  //TEST
-        for (int i = 0; i < 10; i++) {
-            allClassify.add("服装");
-        }
 
-        for (int i = 0; i < 20; i++) {
-            ProductClassifyBean classify = new ProductClassifyBean();
-            classify.setUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490778845608&di=59152ae78c6655e37565a97559ec5bd6&imgtype=0&src=http%3A%2F%2Fgb.cri.cn%2Fmmsource%2Fimages%2F2010%2F09%2F27%2Feo100927986.jpg");
-            classify.setTaxon("时尚套装");
-            subClassify.add(classify);
-        }*/
         subAdapter = new CommonAdapter<SuperClassifyBean>(this, R.layout.item_all_classify, allClassify) {
             @Override
             protected void convert(ViewHolder holder, final SuperClassifyBean o, int position) {

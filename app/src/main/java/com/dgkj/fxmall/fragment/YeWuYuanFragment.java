@@ -16,6 +16,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
+import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.CancelYeWuYuanActivity;
 import com.dgkj.fxmall.view.HomePageActivity;
 import com.dgkj.fxmall.view.MyVIPActivity;
@@ -23,9 +25,21 @@ import com.dgkj.fxmall.view.RechargeActivity;
 import com.dgkj.fxmall.view.WithdrawalActivity;
 import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class YeWuYuanFragment extends Fragment {
 
@@ -50,6 +64,8 @@ public class YeWuYuanFragment extends Fragment {
     @BindView(R.id.tv_vip)
     TextView tvVip;
     private float downX, downY = 300;
+    private SharedPreferencesUnit sp = SharedPreferencesUnit.getInstance(getContext());
+    private OkHttpClient client = new OkHttpClient.Builder().build();
 
     @Nullable
     @Override
@@ -65,8 +81,82 @@ public class YeWuYuanFragment extends Fragment {
      * 初始化业务员的各基础信息
      */
     private void initData() {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.GET_MY_VIP_COUNT_URL)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        final int count = object.getInt("dataset");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvMyVipCount.setText(count+"");
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 
+        getSomeCount(1,tvTodayCommission);
+        getSomeCount(2,tvMonthCommission);
     }
+
+
+    /**
+     * 获取佣金数
+     * @param time
+     * @param tv
+     */
+    public void getSomeCount(int time, final TextView tv){
+        FormBody body1 = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("time",time+"")
+                .build();
+        Request request1 = new Request.Builder()
+                .post(body1)
+                .url(FXConst.GET_INCOME_URL)
+                .build();
+        client.newCall(request1).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    JSONObject object = null;
+                    try {
+                        object = new JSONObject(string);
+                        final int count = object.getInt("dataset");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tv.setText(count+"");
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
 
     @OnClick(R.id.tv_recharge)
     public void recharge() {
@@ -135,7 +225,9 @@ public class YeWuYuanFragment extends Fragment {
             public void onRefresh() {
                 srlRefresh.setRefreshing(false);
                 tvJumpTip.setVisibility(View.GONE);
-                startActivity(new Intent(getContext(), HomePageActivity.class));
+                Intent intent = new Intent(getContext(), HomePageActivity.class);
+                intent.putExtra("from","");
+                startActivity(intent);
             }
         });
     }

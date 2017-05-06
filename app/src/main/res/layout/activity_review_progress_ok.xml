@@ -22,6 +22,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
     <TextView
+        android:id="@+id/tv_review_state"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="审核通过"
