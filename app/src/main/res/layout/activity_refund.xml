@@ -18,9 +18,9 @@
             android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
         <ImageButton
             android:id="@+id/ib_back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/gray_corner_shape"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circler_back_corner_shape"
             android:src="@mipmap/title_return_icon"
             android:layout_margin="10dp"
             android:layout_gravity="bottom"/>

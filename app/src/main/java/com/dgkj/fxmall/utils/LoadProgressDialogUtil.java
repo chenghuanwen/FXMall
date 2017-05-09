@@ -32,10 +32,8 @@ public class LoadProgressDialogUtil {
         }
         progressDialog.setContentView(R.layout.layout_load_dialog);
         progressDialog.setCancelable(true);
-        progressDialog.getWindow().setBackgroundDrawableResource(
-                android.R.color.transparent);
-        TextView msg = (TextView) progressDialog
-                .findViewById(R.id.id_tv_loadingmsg);
+        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        TextView msg = (TextView) progressDialog.findViewById(R.id.id_tv_loadingmsg);
         msg.setText(context.getString(id));
         progressDialog.show();
     }
@@ -50,10 +48,8 @@ public class LoadProgressDialogUtil {
         }
         progressDialog.setContentView(R.layout.layout_load_dialog);
         progressDialog.setCancelable(true);
-        progressDialog.getWindow().setBackgroundDrawableResource(
-                android.R.color.transparent);
-        TextView msg = (TextView) progressDialog
-                .findViewById(R.id.id_tv_loadingmsg);
+        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        TextView msg = (TextView) progressDialog.findViewById(R.id.id_tv_loadingmsg);
         msg.setText("卖力加载中");
         progressDialog.show();
     }

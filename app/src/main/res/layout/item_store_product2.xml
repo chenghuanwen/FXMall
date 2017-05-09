@@ -108,7 +108,7 @@
             android:layout_gravity="center"
             android:drawablePadding="5dp"
             android:paddingTop="5dp"
-            android:drawableTop="@mipmap/qbsp_xj"
+            android:drawableTop="@mipmap/qbsp_sj"
             android:gravity="center"/>
 
     </LinearLayout>

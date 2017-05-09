@@ -46,6 +46,7 @@ public class ProductClassifyAdapter extends CommonAdapter<ProductClassifyBean> {
                 Intent intent = null;
                 if("product".equals(from)){
                     intent = new Intent(context,SomeProductSubClassifyActivity.class);
+                    intent.putExtra("subId",item.getId());
                 }else if("classify".equals(from)){
                    ImageView iv = viewHolder.getView(R.id.iv_selected);
                     iv.setVisibility(View.VISIBLE);

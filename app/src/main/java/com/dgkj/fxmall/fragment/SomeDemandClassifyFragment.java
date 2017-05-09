@@ -65,4 +65,8 @@ public class SomeDemandClassifyFragment extends Fragment {
             }
         });
     }
+
+    public void goTop(){
+        recyclerView.smoothScrollToPosition(0);
+    }
 }

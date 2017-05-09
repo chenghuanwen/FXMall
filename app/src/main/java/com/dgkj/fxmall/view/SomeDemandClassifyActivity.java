@@ -64,7 +64,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_some_product_classify);
+        setContentView(R.layout.activity_some_demand_classify);
         ButterKnife.bind(this);
 
         superId = getIntent().getIntExtra("superId", -1);
@@ -174,13 +174,13 @@ public class SomeDemandClassifyActivity extends BaseActivity {
 
     @OnClick(R.id.iv_top)
     public void gotop() {
-
+        SomeDemandClassifyFragment fragment = (SomeDemandClassifyFragment) fragments.get(vpProduct.getCurrentItem());
+        fragment.goTop();
     }
 
 
     @OnClick(R.id.iv_car)
     public void screening() {
-        // jumpTo(ScreeningProductActivity.class,false);
         startActivityForResult(new Intent(this, ScreeningProductActivity.class), 137);
     }
 

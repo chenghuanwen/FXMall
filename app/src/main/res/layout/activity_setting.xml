@@ -11,6 +11,14 @@
 
     <include layout="@layout/activityheader"
         android:id="@+id/headerview"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,16 +67,24 @@
         android:text="账户安全"
         style="@style/setting_textview" />
     <TextView
+        android:id="@+id/tv_product_place"
+        android:text="商品展位"
+        style="@style/setting_textview" />
+
+    <TextView
         android:id="@+id/tv_about_us"
         android:text="关于我们"
-        style="@style/setting_textview" />
+        style="@style/setting_textview"
+        android:layout_marginTop="10dp"/>
     <TextView
     android:id="@+id/tv_advice_feedback"
     android:text="意见反馈"
-    style="@style/setting_textview" />
+    style="@style/setting_textview"
+        android:layout_marginTop="5dp"/>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
         <TextView
             android:id="@+id/tv_check_update"
             android:text="检测更新"
@@ -76,8 +92,8 @@
         <Button
             android:id="@+id/tv_newst_version"
             android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:background="@drawable/gray_corner_shape"
+            android:layout_height="50dp"
+            android:background="@drawable/toast_circler_corner_shape"
             android:textColor="#fff"
             android:textSize="14sp"
             android:text="已是最新版本"
@@ -121,8 +137,8 @@
         <Button
             android:id="@+id/tv_clean_finish"
             android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:background="@drawable/circler_back_corner_shape"
+            android:layout_height="50dp"
+            android:background="@drawable/toast_circler_corner_shape"
             android:text="正在清理"
             android:textColor="#fff"
             android:layout_gravity="center"
@@ -139,11 +155,10 @@
         android:background="@drawable/circlebutton_shape"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="50dp"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_marginTop="30dp"/>
+        </LinearLayout>
+    </ScrollView>
+
     <ImageButton
         android:id="@+id/ib_back"
         android:layout_width="40dp"

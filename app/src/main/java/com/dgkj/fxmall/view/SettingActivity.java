@@ -56,9 +56,11 @@ public class SettingActivity extends BaseActivity {
     LinearLayout activitySetting;
     @BindView(R.id.tv_invite_code)
     TextView tvInviteCode;
+    @BindView(R.id.tv_product_place)
+    TextView tvProductPlace;
 
     private View headerview;
-    private String icon = "", nick = "", inviteCode = "",gender="",realname="",phone="",location="";
+    private String icon = "", nick = "", inviteCode = "", gender = "", realname = "", phone = "", location = "";
     private Handler handler = new Handler();
 
     @Override
@@ -68,7 +70,7 @@ public class SettingActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initHeaderView();
-       // setData();
+        setData();
         getCacheSize();
     }
 
@@ -81,7 +83,7 @@ public class SettingActivity extends BaseActivity {
         phone = intent.getStringExtra("phone");
         location = intent.getStringExtra("address");
         gender = intent.getStringExtra("gender");
-        Glide.with(this).load(icon).into(civSet);
+        Glide.with(this).load(icon).error(R.mipmap.sz_tx).into(civSet);
         tvInviteCode.setText(inviteCode);
         try {
             String nickname = URLDecoder.decode(nick, "utf-8");
@@ -105,15 +107,15 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.tv_user_msg)
     public void userMsg() {
-        Intent intent = new Intent(this,UserMsgActivity.class);
-        intent.putExtra("icon",icon);
-        intent.putExtra("nick",nick);
-        intent.putExtra("code",inviteCode);
-        intent.putExtra("gender",gender);
-        intent.putExtra("realname",realname);
-        intent.putExtra("phone",phone);
-        intent.putExtra("address",location);
-        jumpTo(UserMsgActivity.class, false);
+        Intent intent = new Intent(this, UserMsgActivity.class);
+        intent.putExtra("icon", icon);
+        intent.putExtra("nick", nick);
+        intent.putExtra("code", inviteCode);
+        intent.putExtra("gender", gender);
+        intent.putExtra("realname", realname);
+        intent.putExtra("phone", phone);
+        intent.putExtra("address", location);
+        jumpTo(intent, false);
     }
 
 
@@ -168,6 +170,13 @@ public class SettingActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+
+
+    @OnClick(R.id.tv_product_place)
+    public void buyPlace(){
+        jumpTo(ConfirmBuyProductPlaceActivity.class,false);
+    }
+
 
     @OnClick(R.id.btn_logout)
     public void logout() {

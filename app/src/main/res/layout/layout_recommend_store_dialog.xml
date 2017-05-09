@@ -13,18 +13,18 @@
         android:textSize="15sp" />
 
 
-        <EditText
-            android:id="@+id/et_store_name"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@mipmap/ddxq_qxdd"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="60dp"
-            android:hint="输入你要推荐店铺的全称"
-            android:textColorHint="#909090"
-            android:paddingLeft="10dp"/>
+    <EditText
+        android:id="@+id/et_store_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@mipmap/ddxq_qxdd"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="60dp"
+        android:hint="输入你要推荐店铺的全称"
+        android:textColorHint="#909090"
+        android:paddingLeft="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"

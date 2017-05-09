@@ -153,7 +153,7 @@ public class ShareDialog extends DialogFragment implements View.OnClickListener{
         TextView tvGirl = (TextView) contentview.findViewById(R.id.tv_confirm);
         TextView tvCommand = (TextView) contentview.findViewById(R.id.tv_command);
         //TODO 生成口令
-        tvCommand.setText("【"+goods.getIntroduce()+"】复制这条信息，打开分销商城app进行查看"+"¥FXMall¥");
+        tvCommand.setText("【"+goods.getIntroduce()+"】复制这条信息，打开分销商城app进行查看"+"¥FXMall"+goods.getId()+"¥");
 
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +165,7 @@ public class ShareDialog extends DialogFragment implements View.OnClickListener{
                         sp.setShareType(Platform.SHARE_TEXT);
                         //生成分享口令
                         // sp.setTitle("【"+goods.getIntroduce()+"】");
-                        sp.setText("【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall¥");
+                        sp.setText("【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall"+goods.getId()+"¥");
                         sp.setTitleUrl("http://www.baidu.com");
                         Platform qzone = ShareSDK.getPlatform(QZone.NAME);
                         qzone.setPlatformActionListener(new ShareListener());
@@ -181,7 +181,7 @@ public class ShareDialog extends DialogFragment implements View.OnClickListener{
                         qq.setPlatformActionListener(new ShareListener());
                         clipboardManager.setPrimaryClip(ClipData.newPlainText(null,spQ.getText()));
                         qq.share(spQ);*/
-                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null,"【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall¥"));
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null,"【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall"+goods.getId()+"¥"));
                         openApp("com.tencent.mobileqq");
                         break;
                     case "WeChat":
@@ -193,18 +193,18 @@ public class ShareDialog extends DialogFragment implements View.OnClickListener{
                         weixin.setPlatformActionListener(new ShareListener());
                         clipboardManager.setPrimaryClip(ClipData.newPlainText(null,spW.getText()));
                         weixin.share(spW);*/
-                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null,"【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall¥"));
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null,"【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall"+goods.getId()+"¥"));
                         openApp("com.tencent.mm");
                         break;
                     case "alipay":
-                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null,"【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall¥"));
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText(null,"【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall"+goods.getId()+"¥"));
                         openApp("Alipay");
                         break;
                     case "Friends":
                         WechatMoments.ShareParams spF = new WechatMoments.ShareParams();
                         spF.setShareType(Platform.SHARE_TEXT);
                         spF.setTitle("【"+goods.getIntroduce()+"】");
-                        spF.setText("【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall¥");
+                        spF.setText("【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall"+goods.getId()+"¥");
                         Platform friends = ShareSDK.getPlatform(WechatMoments.NAME);
                         friends.setPlatformActionListener(new ShareListener());
                         clipboardManager.setPrimaryClip(ClipData.newPlainText(null,spF.getText()));
@@ -214,7 +214,7 @@ public class ShareDialog extends DialogFragment implements View.OnClickListener{
                         SinaWeibo.ShareParams spS = new SinaWeibo.ShareParams();
                         spS.setShareType(Platform.SHARE_TEXT);
                         spS.setTitle("【"+goods.getIntroduce()+"】");
-                        spS.setText("【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall¥");
+                        spS.setText("【"+goods.getIntroduce()+"】"+"复制这条信息，打开分销商城app进行查看"+"¥FXMall"+goods.getId()+"¥");
                         Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
                         weibo.setPlatformActionListener(new ShareListener());
                         clipboardManager.setPrimaryClip(ClipData.newPlainText(null,spS.getText()));

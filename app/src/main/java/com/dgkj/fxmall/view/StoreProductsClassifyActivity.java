@@ -53,16 +53,21 @@ public class StoreProductsClassifyActivity extends BaseActivity {
             public void onGetStoreProductClassifyFinished(List<StoreProductClassifyBean> classifyList) {
                 for (int i = 0; i < classifyList.size(); i++) {
                     final StoreProductClassifyBean classify = classifyList.get(i);
-                    View view = getLayoutInflater().inflate(R.layout.layout_add_store_product_classify, llStoreProductClassify);
-                    llStoreProductClassify.addView(view);
-                    TextView tvName = (TextView) view.findViewById(R.id.tv_product_type);
-                    TextView tvCount = (TextView) view.findViewById(R.id.tv_classify_count);
-                    tvName.setText(classify.getName());
-                    tvCount.setText("(" + classify.getCount() + "件)");
-                    tvCount.setOnClickListener(new View.OnClickListener() {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void onClick(View v) {
-                            jump(classify.getName());
+                        public void run() {
+                            View view = getLayoutInflater().inflate(R.layout.layout_add_store_product_classify,null);
+                            llStoreProductClassify.addView(view);
+                            TextView tvName = (TextView) view.findViewById(R.id.tv_product_type);
+                            TextView tvCount = (TextView) view.findViewById(R.id.tv_classify_count);
+                            tvName.setText(classify.getName());
+                            tvCount.setText("(" + classify.getCount() + "件)");
+                            tvCount.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    jump(classify.getName());
+                                }
+                            });
                         }
                     });
                 }

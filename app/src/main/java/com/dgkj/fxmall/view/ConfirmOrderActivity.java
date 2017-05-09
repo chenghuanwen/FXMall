@@ -210,10 +210,10 @@ public class ConfirmOrderActivity extends BaseActivity {
 
     @OnClick(R.id.tv_submit_order)
     public void submitOrder() {
-
+        //TODO 如何确认订单ID
         //订单提交成功，进行付款
-     /*   PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,o);
-        dialog.show(getSupportFragmentManager(), "");*/
+        PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,1);
+        dialog.show(getSupportFragmentManager(), "");
     }
 
     /**

@@ -16,6 +16,7 @@ import com.dgkj.fxmall.adapter.HomePageFragmentAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.SomeProductClassifyBean;
+import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.fragment.SomeProductClassifyFragment;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SomeProductSuperClassifyActivity extends BaseActivity {
 
@@ -32,16 +34,18 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
     ViewPager vpProduct;
     @BindView(R.id.iv_back)
     ImageView ivBack;
-    @BindView(R.id.iv_mine)
-    ImageView ivMine;
+
     @BindView(R.id.iv_car)
     ImageView ivCar;
-    @BindView(R.id.iv_top)
-    ImageView ivTop;
+
     @BindView(R.id.tv_title_center)
     TextView tvTitleCenter;
     @BindView(R.id.activity_some_product_classify)
     LinearLayout activitySomeProductClassify;
+    @BindView(R.id.iv_screening)
+    ImageView ivScreening;
+    @BindView(R.id.iv_go_top)
+    ImageView ivGoTop;
 
 
     private String productType;
@@ -101,6 +105,18 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
                 productBean.setVipPrice(58);
                 productBean.setAddress("广东深圳");
                 productBean.setIntroduce("粉小萌，够猛，够萌，够亮，够酸，够辣，这酸辣爽");
+                StoreBean storeBean = new StoreBean();
+                storeBean.setStars(3);
+                storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+                storeBean.setName("粉小萌");
+                storeBean.setQualityScore(4.2);
+                storeBean.setDescribeScore(4.8);
+                storeBean.setPriceScore(4.0);
+                storeBean.setAdress("广东省深圳市龙岗区");
+                storeBean.setGoodsCount(1000);
+                storeBean.setTotalScals(300);
+                storeBean.setCreateTime("2017-5-2");
+                productBean.setStoreBean(storeBean);
                 list.add(productBean);
             }
             classifyBean.setSubList(list);
@@ -137,5 +153,27 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
     private void initTitle() {
         productType = getIntent().getStringExtra("type");
         tvTitleCenter.setText(productType);
+    }
+
+
+    @OnClick(R.id.iv_back)
+    public void back() {
+        finish();
+    }
+
+    @OnClick(R.id.iv_car)
+    public void goCar() {
+        jumpTo(ShoppingCarActivity.class, true);
+    }
+
+    @OnClick(R.id.iv_screening)
+    public void screening() {
+        jumpTo(ScreeningProductActivity.class, true);
+    }
+
+    @OnClick(R.id.iv_go_top)
+    public void goTop() {
+        SomeProductClassifyFragment fragment = (SomeProductClassifyFragment) fragments.get(vpProduct.getCurrentItem());
+        fragment.goTop();
     }
 }

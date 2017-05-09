@@ -147,6 +147,7 @@ public class SearchActivity extends BaseActivity {
                     Intent intent = new Intent(SearchActivity.this, SearchContentActivity.class);
                     intent.putExtra("type", tvSearchType.getText().toString());
                     intent.putExtra("key", etSearchContent.getText().toString());
+                    intent.putExtra("from","search");
                     jumpTo(intent, false);
                 }
                 return false;

@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -34,6 +35,7 @@ import com.dgkj.fxmall.fragment.DemandMallFragment;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.PermissionUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +83,7 @@ public class HomePageActivity extends BaseActivity {
     private OkHttpClient okHttpClient;
     private ClipboardManager clipboardManager;
     private String from="";
+    private long mExitTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +109,23 @@ public class HomePageActivity extends BaseActivity {
 
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-        if(from.equals("sp") || from.equals("yw")){
+        if("sp".equals(from) || "yw".equals(from)){
             vpFragment.setCurrentItem(3);
         }
 
+        if(MyApplication.shoppingCount == 0){
+            tvCarCount.setVisibility(View.GONE);
+        }else {
+            tvCarCount.setVisibility(View.VISIBLE);
+            tvCarCount.setText(MyApplication.shoppingCount+"");
+        }
+
+        if(MyApplication.msgCount == 0){
+            tvMsgCount.setVisibility(View.GONE);
+        }else {
+            tvMsgCount.setVisibility(View.VISIBLE);
+            tvMsgCount.setText(MyApplication.msgCount+"");
+        }
     }
 
     @Override
@@ -418,7 +434,25 @@ public class HomePageActivity extends BaseActivity {
         }
     }
 
-
+    /**
+     * 连按两次返回键退出程序
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {// 如果两次按键时间间隔大于2000毫秒，则不退出
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();// 更新mExitTime
+            } else {
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);// 否则退出程序
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
 
 }

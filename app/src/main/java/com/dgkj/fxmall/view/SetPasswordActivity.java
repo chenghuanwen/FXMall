@@ -33,8 +33,6 @@ import okhttp3.Response;
 public class SetPasswordActivity extends BaseActivity {
 
 
-    @BindView(R.id.ib_back)
-    ImageButton ibBack;
     @BindView(R.id.et_old_password)
     EditText etOldPassword;
     @BindView(R.id.iv_clean)
@@ -45,10 +43,11 @@ public class SetPasswordActivity extends BaseActivity {
     EditText etConfirmPassword;
     @BindView(R.id.btn_finish)
     Button btnFinish;
-
+    @BindView(R.id.ib_back)
+    ImageButton ibBack;
     private View headerview;
     private OkHttpClient client;
-    private SharedPreferencesUnit sp ;
+    private SharedPreferencesUnit sp;
     private Handler handler = new Handler();
 
     @Override
@@ -87,9 +86,9 @@ public class SetPasswordActivity extends BaseActivity {
         }
 
         FormBody body = new FormBody.Builder()
-                .add("token",sp.get("token"))
-                .add("password",old)
-                .add("newPassword",check)
+                .add("token", sp.get("token"))
+                .add("password", old)
+                .add("newPassword", check)
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.RESET_LOGIN_PASSWORD)
@@ -98,29 +97,29 @@ public class SetPasswordActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(SetPasswordActivity.this,"网络异常！");
+                toastInUI(SetPasswordActivity.this, "网络异常！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
+                if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         String token = object.getString("token");
-                        sp.put("token",token);
-                        toastInUI(SetPasswordActivity.this,"重置密码成功，即将去登录！");
+                        sp.put("token", token);
+                        toastInUI(SetPasswordActivity.this, "重置密码成功，即将去登录！");
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                jumpTo(LoginActivity.class,true);
+                                jumpTo(LoginActivity.class, true);
                             }
-                        },2000);
+                        }, 2000);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else if(result.contains("1003")){
-                    toastInUI(SetPasswordActivity.this,"旧密码输入错误，重置失败！");
+                } else if (result.contains("1003")) {
+                    toastInUI(SetPasswordActivity.this, "旧密码输入错误，重置失败！");
                 }
             }
         });

@@ -59,7 +59,6 @@ public class OkhttpUploadUtils {
         if(params != null){
             for (String key : params.keySet()) {
                 builder.addFormDataPart(key,params.get(key));
-                LogUtil.i("TAG","上传参数===key=="+key+"value=="+params.get(key));
             }
         }
 
@@ -88,7 +87,7 @@ public class OkhttpUploadUtils {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        FXMallModel.loadDialog.cancelProgressDialog();
+                        loadDialog.cancelProgressDialog();
                         Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
                     }
                 });

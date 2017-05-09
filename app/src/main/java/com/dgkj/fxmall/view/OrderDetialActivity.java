@@ -16,6 +16,7 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.bean.SuperOrderBean;
+import com.dgkj.fxmall.bean.TakeGoodsAddressBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.utils.LogUtil;
@@ -433,9 +434,37 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         piv.setInputCompletetListener(new InputCompletetListener() {
             @Override
             public void inputComplete() {
-                String password = piv.getEditContent();
-                //TODO 检测支付密码的正确性,进行提现
-                confirmTakeGoods(order.getId(),password);
+                final String password = piv.getEditContent();
+                //TODO 检测支付密码的正确性
+                FormBody body = new FormBody.Builder()
+                        .add("token",sp.get("token"))
+                        .add("payPassword",password)
+                        .build();
+                Request request = new Request.Builder()
+                        .post(body)
+                        .url(FXConst.CHECK_PAY_PASSWORD)
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String string = response.body().string();
+                        if(string.contains("1000")){
+                            confirmTakeGoods(order.getId(),password);
+                        }else if(string.contains("1003")){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(OrderDetialActivity.this,"密码错误！",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+
             }
 
             @Override
@@ -553,7 +582,43 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==171){}
+        if(requestCode==171 && resultCode==136){
+            TakeGoodsAddressBean address = (TakeGoodsAddressBean) data.getSerializableExtra("address");
+            tvOrderTakeMan.setText(address.getName());
+            tvOrderTakeAddress.setText(address.getAddress());
+            tvOrderTakePhone.setText(address.getPhone());
+            changetTakeAddress(address.getId());
+        }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 告知服务器修改该订单的收货地址
+     * @param id
+     */
+    private void changetTakeAddress(int addressId) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("shoppingAddress.id",addressId+"".trim())
+                .add("id",order.getId()+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.CHANGE_TAKE_ADDRESS_OF_ORDER)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    toastInUI(OrderDetialActivity.this,"已成功修改收货地址");
+                }else {
+                    toastInUI(OrderDetialActivity.this,"无法修改该收货地址");
+                }
+            }
+        });
     }
 }

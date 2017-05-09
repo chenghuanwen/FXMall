@@ -126,8 +126,8 @@ public class FXMallControl {
         FXMallModel.getMyRecommendStore(context,token,url,index,size,client,listener);
     }
 
-    public void getSearchProducts(final BaseActivity context, String key, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener){
-        FXMallModel.getSearchProducts(context,key,index,size,client,listener);
+    public void getSearchProducts(final BaseActivity context, String key, String orderBy,final int index, int size, int storeId,OkHttpClient client, final OnSearchProductsFinishedListener listener){
+        FXMallModel.getSearchProducts(context,key,orderBy,index,size,storeId,client,listener);
     }
 
     public void getSearchStores(final BaseActivity context, String key, final int index, int size, OkHttpClient client, final OnGetMyRecommendStoreFinishedListener listener){
@@ -160,4 +160,14 @@ public class FXMallControl {
     public void getProductCS(OkHttpClient client, int id, final OnGetProductCSFinishedListener listener){
         FXMallModel.getProductCS(client,id,listener);
     }
+
+
+    public void getProductMallAllSubclassify(OkHttpClient client, final OnGetSubclassifyFinishedListener listener){
+        FXMallModel.getProductMallAllSubclassify(client,listener);
+    }
+
+    public void getProductsOfSubclassify(int subId, String orderBy, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener){
+        FXMallModel.getProductsForSubclassify(subId,orderBy,index,size,client,listener);
+    }
+
 }

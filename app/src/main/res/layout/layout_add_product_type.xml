@@ -35,6 +35,7 @@
                 android:id="@+id/et_product_price"
                 android:hint="请填写商品价格"
                 style="@style/add_product_edittext"
+                android:inputType="number"
                 />
         </LinearLayout>
         <View
@@ -49,6 +50,7 @@
                 android:id="@+id/et_product_save_count"
                 android:hint="请填写商品库存量"
                 style="@style/add_product_edittext"
+                android:inputType="number"
                 />
         </LinearLayout>
         <View
@@ -63,6 +65,7 @@
                 android:id="@+id/et_demand_count"
                 android:hint="请填写商品佣金"
                 style="@style/add_product_edittext"
+                android:inputType="number"
                 />
         </LinearLayout>
         <View

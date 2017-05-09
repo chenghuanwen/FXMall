@@ -34,7 +34,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    tools:text="深圳"
+                    android:text="定位中..."
                     android:textSize="15sp"
                     android:gravity="center|left"
                     android:textColor="#fff"/>

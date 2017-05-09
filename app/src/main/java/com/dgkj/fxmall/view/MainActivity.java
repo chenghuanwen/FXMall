@@ -1,7 +1,10 @@
 package com.dgkj.fxmall.view;
 
+import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -42,6 +45,7 @@ public class MainActivity extends BaseActivity {
     private MineFragment mineFragment;
     private ClipboardManager clipboardManager;
     private String userId = "";
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,15 @@ public class MainActivity extends BaseActivity {
         initFooter();
 
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+        initReceiver();
+    }
+
+    private void initReceiver() {
+        receiver = new MyReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("toSP");
+        registerReceiver(receiver,filter);
     }
 
     @Override
@@ -176,5 +189,22 @@ public class MainActivity extends BaseActivity {
             fragmentTransaction.hide(mineFragment);
         }
 
+    }
+
+    private class MyReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if("toSP".equals(action)){
+                rbShangpu.setChecked(true);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

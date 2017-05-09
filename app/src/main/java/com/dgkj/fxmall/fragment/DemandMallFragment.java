@@ -63,7 +63,7 @@ public class DemandMallFragment extends Fragment {
     private void initview(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_demand_mall);
         classifyList = new ArrayList<>();
-        adapter = new ProductClassifyAdapter(getContext(),R.layout.item_product_classify,classifyList,"demand");
+        adapter = new ProductClassifyAdapter(getContext(),R.layout.item_productmall_classify,classifyList,"demand");
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);

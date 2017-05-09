@@ -1,5 +1,6 @@
 package com.dgkj.fxmall;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
@@ -21,7 +22,10 @@ public class MyApplication extends Application {
     public static  boolean isLogin;
     public static List<String> selectedPictures;
     public static String currentProvince = "";
-    public static int vipRate;
+    public static int vipRate,shoppingCount,msgCount;
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();

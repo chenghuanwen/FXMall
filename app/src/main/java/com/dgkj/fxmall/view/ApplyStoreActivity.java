@@ -88,14 +88,16 @@ public class ApplyStoreActivity extends BaseActivity {
     Button btnSubmitFinish;
     @BindView(R.id.activity_apply_store)
     LinearLayout activityApplyStore;
+    @BindView(R.id.tv_take_picture)
+    TextView tvTakePicture;
     private View headerview;
     private ArrayList<String> images;
     private String classify;
     private static final int FX_REQUEST_PERMISSION_CODE = 100;
-    private LocationClient mLocationClient;
-    private BDLocationListener mListener = new MyLocationListener();
-
     private static final int TM_REQUEST_PERMISSION_CODE = 110;
+    private LocationClient mLocationClient;
+
+    private BDLocationListener mListener = new MyLocationListener();
     private File file;
     private Handler handler = new Handler();
     private OkHttpClient client = new OkHttpClient.Builder().build();
@@ -148,7 +150,7 @@ public class ApplyStoreActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.iv_evidence)
+    @OnClick({R.id.iv_evidence,R.id.tv_take_picture})
     public void uploadEvidence() {
         selectPhoto();
     }
@@ -199,14 +201,6 @@ public class ApplyStoreActivity extends BaseActivity {
 
         OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.APPLY_STORE, params, "file", imageList, "url", licenses);
 
-       /* btnSubmitFinish.setVisibility(View.VISIBLE);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                DataCleanManager.clearAllCache(ApplyStoreActivity.this);
-                btnSubmitFinish.setVisibility(View.INVISIBLE);
-            }
-        }, 3000);*/
     }
 
 
@@ -526,7 +520,7 @@ public class ApplyStoreActivity extends BaseActivity {
             avfApplyStore.setAdapter(new ViewFlipperAdapter(images, this));
             avfApplyStore.setAutoStart(true);
             avfApplyStore.startFlipping();
-        } else if (requestCode==118 && resultCode==152) {
+        } else if (requestCode == 118 && resultCode == 152) {
             classifyId = data.getIntExtra("id", -1);
             classify = data.getStringExtra("classify");
             tvClassify.setText(classify);

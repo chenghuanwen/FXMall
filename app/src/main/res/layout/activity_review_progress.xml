@@ -71,7 +71,7 @@
                 android:gravity="center"
                 android:clickable="false"
                 android:paddingLeft="10dp"
-                android:background="@mipmap/ddxq_qxdd"
+                android:background="@mipmap/kuang"
                 android:layout_margin="10dp"
                 android:drawablePadding="10dp"/>
             <LinearLayout

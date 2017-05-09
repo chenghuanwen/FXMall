@@ -51,7 +51,7 @@ public class JoinUsFragment extends Fragment {
         View view = inflater.inflate(R.layout.layout_joinus_fragment, container, false);
         ButterKnife.bind(this, view);
         joinOption();
-        if (from.equals("sp")) {
+        if ("sp".equals(from)) {
             rbJoinStore.setChecked(true);
         } else {
             rbJoinYewuyuan.setChecked(true);
@@ -76,7 +76,7 @@ public class JoinUsFragment extends Fragment {
 
     @OnClick(R.id.btn_confirm)
     public void confirm(){
-        if(from.equals("sp")){
+        if("sp".equals(from) || rbJoinStore.isChecked()){
             startActivity(new Intent(getContext(), ApplyStoreActivity.class));
         }else {
             startActivity(new Intent(getContext(), RechargeActivity.class));

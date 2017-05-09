@@ -23,6 +23,8 @@ import com.dgkj.fxmall.adapter.ProductClassifyGridViewAdapter;
 import com.dgkj.fxmall.bean.DemandMallClassifyBean;
 import com.dgkj.fxmall.bean.NiceStoreBean;
 import com.dgkj.fxmall.bean.ProductClassifyBean;
+import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
 import com.dgkj.fxmall.view.myView.FullyLinearLayoutManager;
 
@@ -32,6 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 
 public class ProductsMallFragment extends Fragment {
 
@@ -55,6 +58,8 @@ public class ProductsMallFragment extends Fragment {
     private ProductClassifyAdapter classifyAdapter;
     private GridView gv;
     private ProductClassifyGridViewAdapter gridViewAdapter;
+    private FXMallControl control = new FXMallControl();
+    private OkHttpClient client = new OkHttpClient.Builder().build();
 
 
     @Nullable
@@ -81,9 +86,22 @@ public class ProductsMallFragment extends Fragment {
             classify.setUrl("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
             list.add(classify);
         }
-        gridViewAdapter = new ProductClassifyGridViewAdapter(getContext(),R.layout.item_product_classify,list,"product");
+        gridViewAdapter = new ProductClassifyGridViewAdapter(getContext(),R.layout.item_productmall_classify,list,"product");
         gv.setAdapter(gridViewAdapter);
-        //   gv.addAll(list,true);
+
+        control.getProductMallAllSubclassify(client, new OnGetSubclassifyFinishedListener() {
+            @Override
+            public void onGetSubclassifyFinished(final List<ProductClassifyBean> subList) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        gridViewAdapter.addAll(subList,true);
+                    }
+                });
+
+            }
+        });
+
     }
 
     private void initNiceStoreData() {

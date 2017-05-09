@@ -1,7 +1,12 @@
 package com.dgkj.fxmall.view;
 
+import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.ViewFlipperAdapter;
@@ -27,6 +34,7 @@ import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetAllPostageModelFinishedListener;
 import com.dgkj.fxmall.utils.OkhttpUploadUtils;
+import com.dgkj.fxmall.utils.PermissionUtil;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -79,6 +87,12 @@ public class PublishProductActivity extends BaseActivity {
     CheckBox cbDeliver;
     @BindView(R.id.activity_publish_product)
     LinearLayout activityPublishProduct;
+    @BindView(R.id.tv_product_banner)
+    TextView tvProductBanner;
+
+    private static final int FX_REQUEST_PERMISSION_CODE = 100;
+    private static final int TM_REQUEST_PERMISSION_CODE = 110;
+
     private View headerview;
     private String classify = "";
     private List<View> viewList = new ArrayList<>();
@@ -90,6 +104,7 @@ public class PublishProductActivity extends BaseActivity {
     private CommonAdapter<PostageModelSelectBean> selectAdapter;
     private FXMallControl control = new FXMallControl();
     private OkHttpClient client = new OkHttpClient.Builder().build();
+    private File file;//banner文件
 
 
     @Override
@@ -286,6 +301,19 @@ public class PublishProductActivity extends BaseActivity {
         startActivityForResult(new Intent(this, AllClassifyActivity.class), 118);
     }
 
+    @OnClick(R.id.tv_product_banner)
+    public void uploadBanner(){
+        if (PermissionUtil.isOverMarshmallow() && !PermissionUtil.isPermissionValid(PublishProductActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            Toast.makeText(PublishProductActivity.this, "请打开允许访问SD权限", Toast.LENGTH_SHORT).show();
+            List<String> permissions = new ArrayList<>();
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            PermissionUtil.requestPermissions(PublishProductActivity.this, TM_REQUEST_PERMISSION_CODE, permissions);
+            return;
+        }
+        selectPicture();
+    }
+
+
     @OnClick(R.id.tv_postage_model)
     public void selectPostage() {
         rvPostageSelect.setVisibility(View.VISIBLE);
@@ -329,6 +357,23 @@ public class PublishProductActivity extends BaseActivity {
             tvProductClassify.setText(classify);
             classifyId = data.getIntExtra("subId", -1);
         }
+
+        if (resultCode == RESULT_OK && requestCode == 101) {//从相册获取
+            Uri uri = data.getData();
+            //根据uri查找图片地址
+            ContentResolver resolver = getContentResolver();
+            String[] pojo = {MediaStore.Images.Media.DATA};
+            Cursor cursor = resolver.query(uri, pojo, null, null, null);
+            if (cursor != null) {
+                int columnIndex = cursor.getColumnIndexOrThrow(pojo[0]);
+                cursor.moveToFirst();
+                String path = cursor.getString(columnIndex);
+                file = new File(path);
+                cursor.close();
+            }
+         //   Glide.with(this).load(uri).into(ivUploadEvidence);
+
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -339,5 +384,14 @@ public class PublishProductActivity extends BaseActivity {
         finish();
     }
 
+
+    /**
+     * 从相册选择图片
+     */
+    public void selectPicture() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(intent, 101);
+    }
 
 }

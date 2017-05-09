@@ -74,8 +74,13 @@ public class MoreClassifyActivity extends BaseActivity {
     private void getSuperClassify() {
         control.getStoreSuperClassify(this, sp.get("token"), client, new OnGetStoreSuperClassifyFinishedListener() {
             @Override
-            public void onGetStoreSuperClassifyFinished(List<SuperClassifyBean> classifyList) {
-                subAdapter.addAll(classifyList, true);
+            public void onGetStoreSuperClassifyFinished(final List<SuperClassifyBean> classifyList) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        subAdapter.addAll(classifyList, true);
+                    }
+                });
             }
         });
     }
@@ -90,17 +95,7 @@ public class MoreClassifyActivity extends BaseActivity {
     private void initDatas() {
         allClassify = new ArrayList<>();
         subClassify = new ArrayList<>();
-       /* //TEST
-        for (int i = 0; i < 10; i++) {
-            allClassify.add("服装");
-        }
-*/
-       /* for (int i = 0; i < 20; i++) {
-            ProductClassifyBean classify = new ProductClassifyBean();
-            classify.setUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490778845608&di=59152ae78c6655e37565a97559ec5bd6&imgtype=0&src=http%3A%2F%2Fgb.cri.cn%2Fmmsource%2Fimages%2F2010%2F09%2F27%2Feo100927986.jpg");
-            classify.setTaxon("时尚套装");
-            subClassify.add(classify);
-        }*/
+
         subAdapter = new CommonAdapter<SuperClassifyBean>(this, R.layout.item_all_classify, allClassify) {
             @Override
             protected void convert(ViewHolder holder, final SuperClassifyBean o, int position) {
@@ -112,7 +107,7 @@ public class MoreClassifyActivity extends BaseActivity {
         rvAllClassify.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                baseClassify = subClassify.get(position).getTaxon();
+                baseClassify = allClassify.get(position).getType();
                 int superTypeId = allClassify.get(position).getId();
                 getSubclassify(superTypeId);
             }
@@ -121,7 +116,7 @@ public class MoreClassifyActivity extends BaseActivity {
 
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         rvSubClassify.setLayoutManager(linearLayoutManager);
-        adapter = new ProductClassifyAdapter(this, R.layout.item_all_subclassify, subClassify, "search");
+        adapter = new ProductClassifyAdapter(this, R.layout.item_all_subclassify, subClassify, "product");
         ItemOffsetDecoration decoration = new ItemOffsetDecoration(20);
         rvSubClassify.addItemDecoration(decoration);
         rvSubClassify.setAdapter(adapter);
@@ -135,8 +130,13 @@ public class MoreClassifyActivity extends BaseActivity {
     private void getSubclassify(int superTypeId) {
         control.getSubclassify(this, superTypeId, client, new OnGetSubclassifyFinishedListener() {
             @Override
-            public void onGetSubclassifyFinished(List<ProductClassifyBean> subList) {
-                adapter.addAll(subList, true);
+            public void onGetSubclassifyFinished(final List<ProductClassifyBean> subList) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(subList, true);
+                    }
+                });
             }
         });
     }

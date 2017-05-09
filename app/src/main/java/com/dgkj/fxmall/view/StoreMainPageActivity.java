@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -14,11 +16,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.StoreBean;
+import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
+import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.OkHttpClient;
 
 public class StoreMainPageActivity extends BaseActivity {
 
@@ -64,11 +71,16 @@ public class StoreMainPageActivity extends BaseActivity {
     TextView tvStoreMsg;
     @BindView(R.id.activity_store_main_page)
     LinearLayout activityStoreMainPage;
+    @BindView(R.id.et_search_content)
+    EditText etSearchContent;
 
     private StoreBean store;
     private List<MainProductBean> goods;
     private MainProductDisplayAdapter adapter;
-    private int carCount, msgCount;
+    private String orderBy="totalScore ";
+    private OkHttpClient client = new OkHttpClient.Builder().build();
+    private FXMallControl control = new FXMallControl();
+    private int index = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +92,22 @@ public class StoreMainPageActivity extends BaseActivity {
 
         initTablayout();
         setDatas();
+        search();
+        refresh();
+    }
+
+    private void refresh() {
+        control.getSearchProducts(this, null, orderBy, index, 20, store.getId(), client, new OnSearchProductsFinishedListener() {
+            @Override
+            public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(mainProducts,true);
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -96,14 +124,26 @@ public class StoreMainPageActivity extends BaseActivity {
     }
 
     private void setDatas() {
-        //TODO 全局获取购物车和消息数量
-        tvCarCount.setText(carCount + "");
-        tvMsgCount.setText(msgCount + "");
+        // 全局获取购物车和消息数量
+        if(MyApplication.shoppingCount == 0){
+            tvCarCount.setVisibility(View.GONE);
+        }else {
+            tvCarCount.setVisibility(View.VISIBLE);
+            tvCarCount.setText(MyApplication.shoppingCount+"");
+        }
+
+        if(MyApplication.msgCount == 0){
+            tvMsgCount.setVisibility(View.GONE);
+        }else {
+            tvMsgCount.setVisibility(View.VISIBLE);
+            tvMsgCount.setText(MyApplication.msgCount+"");
+        }
+
         store = (StoreBean) getIntent().getSerializableExtra("store");
         if (store == null) {
             return;
         }
-        Glide.with(this).load(store.getIconUrl()).placeholder(R.mipmap.android_quanzi).into(civShangpuItem);
+        Glide.with(this).load(store.getIconUrl()).error(R.mipmap.sz_tx).into(civShangpuItem);
         tvStoreName.setText(store.getName());
         tvStoreAddress.setText(store.getAdress());
 
@@ -111,23 +151,23 @@ public class StoreMainPageActivity extends BaseActivity {
         tvStoreGoods.setText("宝贝数" + store.getGoodsCount());
         //TODO 设置商品评分图片
         double stars = (store.getDescribeScore() + store.getQualityScore() + store.getPriceScore()) / 3;
-        if(stars<=1.0){
-           rbCommend.setImageResource(R.mipmap.dppj_dj1);
-        }else if(stars>1.0 && stars<1.9){
+        if (stars <= 1.0) {
+            rbCommend.setImageResource(R.mipmap.dppj_dj1);
+        } else if (stars > 1.0 && stars < 1.9) {
             rbCommend.setImageResource(R.mipmap.lan_yiban);
-        }else if(stars>=1.9 && stars<=2.4){
+        } else if (stars >= 1.9 && stars <= 2.4) {
             rbCommend.setImageResource(R.mipmap.dppj_dj2);
-        }else if(stars>2.4 && stars<2.9){
+        } else if (stars > 2.4 && stars < 2.9) {
             rbCommend.setImageResource(R.mipmap.lan_erban);
-        }else if(stars>=2.9 && stars<=3.4){
+        } else if (stars >= 2.9 && stars <= 3.4) {
             rbCommend.setImageResource(R.mipmap.dppj_dj3);
-        }else if(stars>3.4 && stars<=3.9){
+        } else if (stars > 3.4 && stars <= 3.9) {
             rbCommend.setImageResource(R.mipmap.lan_sanban);
-        }else if(stars>3.9 && stars<=4.4){
+        } else if (stars > 3.9 && stars <= 4.4) {
             rbCommend.setImageResource(R.mipmap.dppj_dj4);
-        }else if(stars>4.4 && stars<=4.9){
+        } else if (stars > 4.4 && stars <= 4.9) {
             rbCommend.setImageResource(R.mipmap.lan_siban);
-        }else if(stars>4.9){
+        } else if (stars > 4.9) {
             rbCommend.setImageResource(R.mipmap.dppj_dj5);
         }
 
@@ -142,10 +182,16 @@ public class StoreMainPageActivity extends BaseActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
+                        orderBy = "totalScore";
+                        refresh();
                         break;
                     case 1:
+                        orderBy = "sales";
+                        refresh();
                         break;
                     case 2:
+                        orderBy = "createTime";
+                        refresh();
                         break;
                 }
             }
@@ -170,6 +216,28 @@ public class StoreMainPageActivity extends BaseActivity {
     }
 
 
+    /**
+     * 点击键盘回车键进行搜索
+     */
+    public void search() {
+        etSearchContent.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == event.KEYCODE_ENTER && etSearchContent.getText().toString() != null) {
+                    Intent intent = new Intent(StoreMainPageActivity.this, SearchContentActivity.class);
+                    intent.putExtra("type","商品");
+                    intent.putExtra("key", etSearchContent.getText().toString());
+                    intent.putExtra("from","store");
+                    intent.putExtra("storeId",store.getId());
+                    jumpTo(intent, false);
+                }
+                return false;
+            }
+        });
+
+    }
+
+
     @OnClick(R.id.fl_car)
     public void toCar() {
         jumpTo(ShoppingCarActivity.class, false);
@@ -182,9 +250,9 @@ public class StoreMainPageActivity extends BaseActivity {
 
     @OnClick(R.id.tv_store_share)
     public void share() {
-        //TODO 淘口令分享
-      /*  ShareDialog dialog = new ShareDialog();
-        dialog.show(getSupportFragmentManager(),"");*/
+        //TODO 店铺分享
+        ShareInvitaCodeDialog dialog = new ShareInvitaCodeDialog("FENXIOAMENG1236213");
+        dialog.show(getSupportFragmentManager(), "");
     }
 
     @OnClick(R.id.tv_product_classify)

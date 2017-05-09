@@ -101,7 +101,7 @@
                     <Button
                         android:id="@+id/btn_refused_apply_logistics"
                         android:layout_width="match_parent"
-                        android:layout_height="44dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/circlebutton_shape"
                         android:layout_margin="10dp"
                         android:text="物流信息"

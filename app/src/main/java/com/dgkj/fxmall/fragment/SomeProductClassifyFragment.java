@@ -102,4 +102,11 @@ public class SomeProductClassifyFragment extends Fragment {
             }
         });
     }
+
+    /**
+     * 回到顶部
+     */
+    public void goTop(){
+        recyclerView.smoothScrollToPosition(0);
+    }
 }

@@ -51,6 +51,9 @@ public class SearchContentActivity extends BaseActivity {
     private SearchStoreAdapter storeAdapter;
     private String searchType = "", searchTitel = "";
     private int index = 1;
+    private String orderBy = "createTime ";
+    private String from = "";
+    private int storeId = 0;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
 
@@ -72,19 +75,28 @@ public class SearchContentActivity extends BaseActivity {
     }
 
     private void getSearchData() {
-        if ("商品".equals(searchType)) {
-            control.getSearchProducts(this, searchType, index, 15, client, new OnSearchProductsFinishedListener() {
+        if ("search".equals(from) && "商品".equals(searchType)) {
+            control.getSearchProducts(this, searchType,orderBy,index, 15, 0,client, new OnSearchProductsFinishedListener() {
                 @Override
                 public void onSearchProductsFinished(List<MainProductBean> products) {
                     //TODO 写一个通用的商品实体类
                     adapter.addAll(products,true);
                 }
             });
-        } else {
+        } else if("search".equals(from) && "商铺".equals(searchType)){
             control.getSearchStores(this, searchType, index, 20, client, new OnGetMyRecommendStoreFinishedListener() {
                 @Override
                 public void onGetMyRecommendStoreFinished(List<StoreBean> stores) {
                     storeAdapter.addAll(stores, true);
+                }
+            });
+        }else if("store".equals(from) && "商品".equals(searchType)){
+            storeId = getIntent().getIntExtra("storeId",0);
+            control.getSearchProducts(this, searchType,orderBy,index, 15, storeId,client, new OnSearchProductsFinishedListener() {
+                @Override
+                public void onSearchProductsFinished(List<MainProductBean> products) {
+                    //TODO 写一个通用的商品实体类
+                    adapter.addAll(products,true);
                 }
             });
         }
@@ -94,6 +106,7 @@ public class SearchContentActivity extends BaseActivity {
         Intent intent = getIntent();
         searchType = intent.getStringExtra("type");
         searchTitel = intent.getStringExtra("key");
+        from = getIntent().getStringExtra("from");
         tvSearchTitle.setText(searchTitel);
     }
 
@@ -128,13 +141,16 @@ public class SearchContentActivity extends BaseActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        getTotalData();
+                        orderBy = "totalScore ";
+                        getSearchData();
                         break;
                     case 1:
-                        getSalesData();
+                        orderBy = "sales ";
+                        getSearchData();
                         break;
                     case 2:
-                        getNewgoodsData();
+                        orderBy = "createTime  ";
+                        getSearchData();
                         break;
                 }
             }
@@ -151,42 +167,7 @@ public class SearchContentActivity extends BaseActivity {
         });
     }
 
-    /**
-     * 获取综合推荐数据
-     */
-    private void getTotalData() {
-        List<MainProductBean> list = new ArrayList<>();
-        //TODO 区分商品和商铺数据
 
-
-        adapter.addAll(list, true);
-
-    }
-
-    /**
-     * 获取销量推荐数据
-     */
-    private void getSalesData() {
-        List<MainProductBean> list = new ArrayList<>();
-        //TODO
-
-
-        adapter.addAll(list, true);
-
-
-    }
-
-    /**
-     * 获取新品推荐数据
-     */
-    private void getNewgoodsData() {
-        List<MainProductBean> list = new ArrayList<>();
-        //TODO
-
-
-        adapter.addAll(list, true);
-
-    }
 
     @OnClick(R.id.iv_back)
     public void back() {

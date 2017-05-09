@@ -731,7 +731,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         FormBody body = new FormBody.Builder()
                 .add("user.token",sp.get("token"))
                 .add("id",id+"")
-                .add("reason",cancleReason)//TODO 取消理由字段待确定
+                .add("closeReason",cancleReason)
                 .build();
         Request request = new Request.Builder()
                 .post(body)

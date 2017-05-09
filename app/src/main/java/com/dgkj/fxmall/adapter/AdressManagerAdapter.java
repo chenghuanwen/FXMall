@@ -104,6 +104,7 @@ public class AdressManagerAdapter extends CommonAdapter<TakeGoodsAddressBean> {
                 Intent intent = new Intent(context, ConfirmOrderActivity.class);
                 intent.putExtra("address",addressBean);
                     activity.setResult(136,intent);
+                activity.finish();
             }
         });
     }
@@ -112,6 +113,8 @@ public class AdressManagerAdapter extends CommonAdapter<TakeGoodsAddressBean> {
         View contentview = mInflater.inflate(R.layout.layout_delete_dialog, null);
         pw = new AlertDialog.Builder(context).create();
         pw.setView(contentview);
+        TextView tvTitel = (TextView) contentview.findViewById(R.id.tv_dialog_titel);
+        tvTitel.setText("确认删除该收货地址吗？");
         TextView tvGirl = (TextView) contentview.findViewById(R.id.tv_confirm);
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,8 +124,6 @@ public class AdressManagerAdapter extends CommonAdapter<TakeGoodsAddressBean> {
                 message.arg1 = position;
                 message.obj = mDatas.get(position);
                 handler.sendMessage(message);
-              /*  mDatas.remove(position);
-                notifyDataSetChanged();*/
                 pw.dismiss();
             }
         });

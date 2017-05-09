@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.ProductDetialImageAdapter;
 import com.dgkj.fxmall.adapter.SearchStoreAdapter;
@@ -46,7 +48,7 @@ public class DemandDetialActivity extends BaseActivity {
     @BindView(R.id.rv_recommend_store)
     RecyclerView rvRecommendStore;
     @BindView(R.id.iv_demand_back)
-    ImageView ivDemandBack;
+    FrameLayout ivDemandBack;
     @BindView(R.id.tv_demand_car)
     TextView tvDemandCar;
     @BindView(R.id.tv_car_count1)
@@ -74,6 +76,13 @@ public class DemandDetialActivity extends BaseActivity {
         initHeaderView();
 
         demandBean = (MainDemandBean) getIntent().getSerializableExtra("product");
+        if(MyApplication.shoppingCount == 0){
+            tvCarCount1.setVisibility(View.GONE);
+        }else {
+            tvCarCount1.setVisibility(View.VISIBLE);
+            tvCarCount1.setText(MyApplication.shoppingCount+"");
+        }
+
 
         setData();
     }
@@ -88,7 +97,7 @@ public class DemandDetialActivity extends BaseActivity {
             return;
         }
 
-        adapter = new ProductDetialImageAdapter(this, R.layout.item_product_detial_image, demandBean.getUrls());
+        adapter = new ProductDetialImageAdapter(this, R.layout.item_product_main_image, demandBean.getUrls());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         layoutManager.scrollToPositionWithOffset(1, 100);
@@ -106,10 +115,10 @@ public class DemandDetialActivity extends BaseActivity {
         tvTakeAddress.setText(address);
 
         storeList = new ArrayList<>();
-        storeAdapter = new SearchStoreAdapter(this, R.layout.item_shangpu_search_result, storeList, "recommend");
+        storeAdapter = new SearchStoreAdapter(this, R.layout.item_shangpu_search_result, storeList, "search");
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         rvRecommendStore.setLayoutManager(layoutManager1);
-        rvRecommendStore.setAdapter(adapter);
+        rvRecommendStore.setAdapter(storeAdapter);
 
         getRecommendStore();
     }

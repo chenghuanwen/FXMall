@@ -48,6 +48,7 @@ public class ProductClassifyGridViewAdapter extends CommonAdapter<ProductClassif
                     intent = new Intent(context, SomeDemandClassifyActivity.class);
                 }
                 intent.putExtra("type",item.getTaxon());
+                intent.putExtra("subId",item.getId());
                 context.startActivity(intent);
             }
         });

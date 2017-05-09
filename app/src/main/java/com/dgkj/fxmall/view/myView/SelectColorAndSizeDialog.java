@@ -72,7 +72,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                 ColorSizeBean bean = (ColorSizeBean) msg.obj;
                 tvColor.setText(bean.getColor());
                 tvInventory.setText(bean.getInventory());
-                Glide.with(activity).load(bean.getUrl());
+                Glide.with(activity).load(goods.getUrl());
                 selectColor = bean.getColor();
             }
             super.handleMessage(msg);

@@ -54,6 +54,8 @@ public class FXConst {
     public static final String CHANGE_USER_NAME = FXM_URL_PORT+"userAction_realname";
     public static final String CHANGE_USER_PHONE = FXM_URL_PORT+"userAction_phone";
     public static final String CHANGE_USER_ADDRESS = FXM_URL_PORT+"userAction_location";
+    public static final String USER_FORGOT_PASSWORD = FXM_URL_PORT+"MessageRecorderAction_fogetPass";
+
     public static final String ADD_TAKE_ADDRESS = FXM_URL_PORT+"shoppingAddressAction_addAddress";
     public static final String GET_INVITECODE_CONFIG = FXM_URL_PORT+"systemAction_getCodeConfig";
     public static final String GET_ALL_TAKE_ADDRESS = FXM_URL_PORT+"shoppingAddressAction_getAddress";
@@ -140,6 +142,11 @@ public class FXConst {
     public static final String GET_MY_STORE_REFUND_COUNT = FXM_URL_PORT+"refundOrderAction_refundSum";
     public static final String SEARCH_ONE_STORE_PRODUCT = FXM_URL_PORT+"commodityAction_fuzzStore";
     public static final String CHANGE_TAKE_ADDRESS_OF_ORDER = FXM_URL_PORT+"orderAction_upSAupSA";
+    public static final String GET_PRODUCTS_OF_SUBCALSSIFY = FXM_URL_PORT+"commodityAction_subCategory";
+    public static final String GET_SHOPPINGCAR_COUNT = FXM_URL_PORT+"shoppingCartAction_getCartCount";
+    public static final String GET_PRODUCT_DETIAL_BY_ID = FXM_URL_PORT+"commodityAction_detail";
+
+
 
 
 

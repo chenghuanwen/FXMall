@@ -14,6 +14,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
+import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 
 public class SomeProductSubClassifyActivity extends BaseActivity {
     @BindView(R.id.tabLayout)
@@ -40,8 +42,10 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     private View headerview;
     private List<MainProductBean> productList;
     private MainProductDisplayAdapter adapter;
-    private String type = "";
+    private String type = "totalScore",orderBy="";
+    private int subId,index;
     private FXMallControl control = new FXMallControl();
+    private OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     private List<MainProductBean> totalData;
 
     @Override
@@ -60,10 +64,19 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     }
 
     private void refresh() {
+        //TEST
         control.getSubClassifyProductData(new OnGetSubClassifyProductsFinishedListener() {
             @Override
             public void onGetDemandDatasFinished(List<MainProductBean> products) {
                 totalData = products;
+                adapter.addAll(totalData, true);
+            }
+        });
+
+        control.getProductsOfSubclassify(subId, orderBy, index, 20, okHttpClient, new OnSearchProductsFinishedListener() {
+            @Override
+            public void onSearchProductsFinished(List<MainProductBean> mainProducts) {
+                totalData = mainProducts;
                 adapter.addAll(totalData, true);
             }
         });
@@ -85,13 +98,19 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
+                        orderBy = "totalScore";
                         adapter.addAll(totalData, true);
+                        refresh();
                         break;
                     case 1:
+                        orderBy = "sales";
                         adapter.addAll(totalData.subList(0, 6), true);
+                        refresh();
                         break;
                     case 2:
+                        orderBy = "createTime";
                         adapter.addAll(totalData.subList(6, totalData.size()), true);
+                        refresh();
                         break;
                 }
             }
@@ -110,7 +129,7 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, getIntent().getStringExtra("type"));
-
+        subId = getIntent().getIntExtra("subId",0);
     }
 
 

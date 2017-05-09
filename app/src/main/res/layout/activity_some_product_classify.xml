@@ -36,34 +36,34 @@
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="wrap_content"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="center"
                 android:src="@mipmap/dplb_fh"/>
             <ImageView
-                android:id="@+id/iv_mine"
+                android:id="@+id/iv_car"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/sy_gwc"
+                android:layout_gravity="center"/>
+            <ImageView
+                android:id="@+id/iv_screening"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@mipmap/splb_fb"/>
+                android:src="@mipmap/splb_px"/>
             <ImageView
-            android:id="@+id/iv_car"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+                android:id="@+id/iv_go_top"
+                android:layout_width="wrap_content"
                 android:layout_gravity="center"
-            android:src="@mipmap/splb_px"/>
-            <ImageView
-            android:id="@+id/iv_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@mipmap/splb_fhdb"
-                android:layout_gravity="center"/>
-
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/splb_fhdb"/>
 
         </LinearLayout>
+
     </FrameLayout>
 
 </LinearLayout>

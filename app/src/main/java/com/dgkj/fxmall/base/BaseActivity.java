@@ -1,5 +1,6 @@
 package com.dgkj.fxmall.base;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -16,10 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.Position;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
+import com.dgkj.fxmall.utils.ToastUtil;
 import com.dgkj.fxmall.view.myView.ShareCommandDialog;
 
 /**我的模块activity基类
@@ -30,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public Toast toast;
     public SharedPreferencesUnit sp;
     private ClipboardManager clipboardManager;
+    public LoadProgressDialogUtil loadProgressDialogUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.parseColor("#62b1fe"));
         }
         sp = SharedPreferencesUnit.getInstance(this);
+        loadProgressDialogUtil = new LoadProgressDialogUtil(this);
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
 
     }
 
@@ -53,7 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         CharSequence pate = primaryClip.getItemAt(0).getText();
         if(pate==null){return;}
         String clip = pate.toString();
-        if(clip.contains("¥FXMall¥")){
+        if(clip.contains("FXMall")){
             ShareCommandDialog dialog = new ShareCommandDialog(this,clipboardManager);
             dialog.showPopupWindow(getContentView());
         }
@@ -181,7 +188,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+                ToastUtil.show(context,BaseActivity.this,msg);
             }
         });
     }

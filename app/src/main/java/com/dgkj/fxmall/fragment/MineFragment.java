@@ -21,11 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
+import com.dgkj.fxmall.utils.ToastUtil;
 import com.dgkj.fxmall.view.ApplyStoreActivity;
 import com.dgkj.fxmall.view.HomePageActivity;
 import com.dgkj.fxmall.view.MessageCenterActivity;
@@ -137,6 +139,13 @@ public class MineFragment extends Fragment {
 
        setData();
         refresh2Home();
+
+        if(MyApplication.msgCount == 0){
+            tvMsgCount.setVisibility(View.GONE);
+        }else {
+            tvMsgCount.setVisibility(View.VISIBLE);
+            tvMsgCount.setText(MyApplication.msgCount+"");
+        }
         return view;
     }
 
@@ -234,10 +243,12 @@ public class MineFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Glide.with(getContext()).load(iconUrl).into(civMyIcon);
+                Glide.with(getContext()).load(iconUrl).error(R.mipmap.wd_mrtx).into(civMyIcon);
                 try {
-                    String nick = URLDecoder.decode(nickname, "utf-8");
-                    tvUsername.setText(nick);
+                    if(!TextUtils.isEmpty(nickname)){
+                        String nick = URLDecoder.decode(nickname, "utf-8");
+                        tvUsername.setText(nick);
+                    }
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -367,10 +378,14 @@ public class MineFragment extends Fragment {
                         String logo = dataset.getString("logo");
                         String intro = dataset.getString("intro");
                         if(!TextUtils.isEmpty(logo) || !TextUtils.isEmpty(intro)){
-                            Intent intent1 = new Intent(getContext(), StoreMainPageActivity.class);
-                            storeBean.setIconUrl(logo);
-                            intent.putExtra("store",storeBean);
-                            getActivity().startActivity(intent1);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtil.show(getContext(),getActivity(),"您已创建过店铺");
+                                    getContext().sendBroadcast(new Intent("toSP"));
+                                }
+                            });
+
                             return;
                         }
                         JSONArray storePictrues = new JSONArray(pictrues);

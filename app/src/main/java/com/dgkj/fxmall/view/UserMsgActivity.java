@@ -98,7 +98,7 @@ public class UserMsgActivity extends BaseActivity {
     private byte[] imageData;
     private File iconFile;
     private View headerview;
-    private String gender = "",phone,nick,name,icon,address;
+    private String gender = "",phone= "",nick= "",name= "",icon= "",address= "";
     private String from = "";
     private OkHttpClient client;
     private SharedPreferencesUnit sp ;
@@ -115,13 +115,13 @@ public class UserMsgActivity extends BaseActivity {
         sp = SharedPreferencesUnit.getInstance(this);
         Intent intent = getIntent();
         try {
-            gender = intent.getStringExtra("gender").trim();
+            gender = intent.getStringExtra("gender");
             name = intent.getStringExtra("realname");
+            nick = intent.getStringExtra("nick");
             name = URLDecoder.decode(name,"utf-8");
             phone = intent.getStringExtra("phone");
             address = intent.getStringExtra("address");
             icon = intent.getStringExtra("icon");
-            nick = intent.getStringExtra("nick");
             nick = URLDecoder.decode(nick,"utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -136,7 +136,7 @@ public class UserMsgActivity extends BaseActivity {
 
     private void setData() {
         //TODO 获取个人信息填充
-        Glide.with(this).load(icon).into(civUsemsgIcon);
+        Glide.with(this).load(icon).error(R.mipmap.sz_tx).into(civUsemsgIcon);
         tvNickname.setText(nick);
         if("1".equals(gender)){
             tvGender.setText("男");

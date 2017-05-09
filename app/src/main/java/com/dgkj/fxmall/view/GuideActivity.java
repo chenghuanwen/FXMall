@@ -1,5 +1,7 @@
 package com.dgkj.fxmall.view;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
@@ -36,6 +38,7 @@ public class GuideActivity extends BaseActivity {
         }else {
             jumpTo(LoadingActivity.class,true);
         }
+
     }
 
 
@@ -91,7 +94,7 @@ public class GuideActivity extends BaseActivity {
 
 
     private void initevent(){
-
+        setStatuBarColor("#1194fe");
         //对滑动页面进行监听
         viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -102,14 +105,26 @@ public class GuideActivity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 //当滑动到最后一页把Button按钮设置到图片下面
-                if(position==(lists.size()-1)){
-                    sp.put("first","false");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            jumpTo(HomePageActivity.class,true);
-                        }
-                    },2000);
+                switch (position){
+                    case 0:
+                        setStatuBarColor("#1194fe");
+                        break;
+                    case 1:
+                        setStatuBarColor("#fd455d");
+                        break;
+                    case 2:
+                        setStatuBarColor("#6d62fc");
+                        break;
+                    case 3:
+                        setStatuBarColor("#6d44be");
+                        sp.put("first","false");
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                jumpTo(HomePageActivity.class,true);
+                            }
+                        },1000);
+                        break;
                 }
             }
             @Override
@@ -121,5 +136,11 @@ public class GuideActivity extends BaseActivity {
     @Override
     public View getContentView() {
         return null;
+    }
+
+    public void setStatuBarColor(String color){
+        if(Build.VERSION.SDK_INT >= 21 ){
+            getWindow().setStatusBarColor(Color.parseColor(color));
+        }
     }
 }

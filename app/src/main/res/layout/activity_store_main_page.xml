@@ -24,6 +24,7 @@
             android:layout_marginLeft="10dp">
 
             <EditText
+                android:id="@+id/et_search_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="搜索本店商品"
@@ -37,12 +38,13 @@
         <FrameLayout
             android:id="@+id/fl_car"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp">
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/sy_gwc"
-                android:layout_gravity="center"
+                android:layout_gravity="center|right"
                 android:id="@+id/imageView" />
             <TextView
                 android:id="@+id/tv_car_count"
@@ -61,8 +63,7 @@
         <FrameLayout
             android:id="@+id/fl_msg"
             android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp">
+            android:layout_height="match_parent">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,7 +95,7 @@
             android:id="@+id/civ_shangpu_item"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@mipmap/sy_wode"
+            android:src="@mipmap/sz_tx"
             android:layout_centerVertical="true"
             android:layout_marginTop="15dp"/>
         <TextView
@@ -166,6 +167,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="10dp"

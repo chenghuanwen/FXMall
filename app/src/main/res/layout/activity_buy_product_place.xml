@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_buy_product_place"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.dgkj.fxmall.view.BuyProductPlaceActivity">
+    <include layout="@layout/activityheader"
+        android:id="@+id/headerview"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#909090"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:drawablePadding="5dp"
+        android:text="您只能免费发布三个商品哦\n快去购买商品展位吧"
+        android:drawableTop="@mipmap/gwc"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circler_back_corner_shape"
+            android:src="@mipmap/title_return_icon"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"/>
+
+        <Button
+            android:id="@+id/btn_buy"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/ib_back"
+            android:background="@drawable/circlebutton_shape"
+            android:text="购买"
+            android:textColor="#fff"
+            android:textSize="15sp"/>
+    </RelativeLayout>
+</RelativeLayout>

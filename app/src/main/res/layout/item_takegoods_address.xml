@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:text="粉小萌"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:textColor="#333"
                 android:textSize="14sp"/>
@@ -39,11 +39,11 @@
         <TextView
             android:id="@+id/tv_takegoods_address"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#909090"
             tools:text="广东省深圳市龙岗区布吉街道上水径官坑北六巷八号一楼"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:layout_margin="10dp"/>
         <View
             android:layout_width="match_parent"

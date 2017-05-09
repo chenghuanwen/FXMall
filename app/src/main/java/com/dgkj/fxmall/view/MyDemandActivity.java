@@ -98,10 +98,12 @@ public class MyDemandActivity extends BaseActivity {
             demandList.add(demand);
         }
 
+        loadProgressDialogUtil.buildProgressDialog();
         control.getMyDemandData(this, sp.get("token"), demandIndex, 10, client, new OnGetMyDemandDataFinishedListener() {
             @Override
             public void onGetMyDemandDataFinished(List<MainDemandBean> demands) {
                 demandList.addAll(demands);
+                loadProgressDialogUtil.cancelProgressDialog();
             }
         });
 

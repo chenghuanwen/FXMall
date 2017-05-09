@@ -22,6 +22,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.CommentAdapter;
 import com.dgkj.fxmall.adapter.ProductDetialImageAdapter;
@@ -126,6 +127,14 @@ public class ProductDetialActivity extends BaseActivity {
         ButterKnife.bind(this);
         setDatas();
         getComments();
+
+        if(MyApplication.shoppingCount == 0){
+            tvCarCount1.setVisibility(View.GONE);
+        }else {
+            tvCarCount1.setVisibility(View.VISIBLE);
+            tvCarCount1.setText(MyApplication.shoppingCount+"");
+        }
+
     }
 
     @Override
@@ -248,7 +257,9 @@ public class ProductDetialActivity extends BaseActivity {
 
     @OnClick(R.id.tv_product_store)
     public void toStore() {//去商铺
-        jumpTo(StoreMainPageActivity.class, false);
+        Intent intent = new Intent(this,StoreMainPageActivity.class);
+        intent.putExtra("store",product.getStoreBean());
+        jumpTo(intent,false);
     }
 
     @OnClick(R.id.tv_product_addCar)
