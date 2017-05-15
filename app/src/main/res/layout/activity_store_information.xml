@@ -41,6 +41,29 @@
             android:id="@+id/iv_next"
             style="@style/usermsg_next"/>
     </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f3f3f3"/>
+    <TextView
+        android:id="@+id/tv_product_banner"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#fff"
+        android:textColor="#333"
+        android:textSize="14sp"
+        android:drawableRight="@mipmap/spxq_tj"
+        android:layout_marginRight="10dp"
+        android:text="广告图：(不超过5M)"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:gravity="center_vertical"/>
+    <com.dgkj.fxmall.view.myView.FullImageView
+        android:id="@+id/iv_banner"
+        android:layout_width="345dp"
+        android:layout_height="165dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"

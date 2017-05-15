@@ -1,20 +1,88 @@
 package com.dgkj.fxmall.bean;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Android004 on 2017/3/27.
  */
 
-public class StoreBean implements Serializable{
-    private String name,adress,iconUrl,createTime,recommender;
-    private boolean hasRealNameCheck;
+public class StoreBean implements Parcelable{
+    private String name,adress,iconUrl,createTime;
     private int stars,totalScals,goodsCount,id;
-    private Double describeScore,priceScore,qualityScore,totalScore;
+    private double describeScore,priceScore,qualityScore,totalScore;
     private String licence;
-    private List<String> mainUrls;
+    private List<String> mainUrls = new ArrayList<>();
     private String keeper,phone;
+    private String recommender;
+
+
+    public StoreBean (){}
+    public static final Parcelable.Creator<StoreBean> CREATOR = new Creator<StoreBean>() {
+        @Override
+        public StoreBean createFromParcel(Parcel source) {
+            return new StoreBean(source);
+        }
+
+        @Override
+        public StoreBean[] newArray(int size) {
+            return new StoreBean[size];
+        }
+    };
+
+    public StoreBean(Parcel source) {
+        name = source.readString();
+        adress = source.readString();
+        iconUrl = source.readString();
+        createTime = source.readString();
+        stars = source.readInt();
+        totalScals = source.readInt();
+        goodsCount = source.readInt();
+        id = source.readInt();
+        describeScore = source.readDouble();
+        priceScore = source.readDouble();
+        qualityScore = source.readDouble();
+        totalScore = source.readDouble();
+        licence = source.readString();
+        source.readStringList(mainUrls);
+        keeper = source.readString();
+        phone = source.readString();
+        recommender = source.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(adress);
+        dest.writeString(iconUrl);
+        dest.writeString(createTime);
+        dest.writeInt(stars);
+        dest.writeInt(totalScals);
+        dest.writeInt(goodsCount);
+        dest.writeInt(id);
+        dest.writeDouble(describeScore);
+        dest.writeDouble(priceScore);
+        dest.writeDouble(qualityScore);
+        dest.writeDouble(totalScore);
+        dest.writeString(licence);
+        dest.writeStringList(mainUrls);
+        dest.writeString(keeper);
+        dest.writeString(phone);
+        dest.writeString(recommender);
+    }
+
+
+    public static Parcelable.Creator<StoreBean> getCREATOR() {
+        return CREATOR;
+    }
 
     public Double getTotalScore() {
         return totalScore;
@@ -64,28 +132,12 @@ public class StoreBean implements Serializable{
         this.id = id;
     }
 
-    public String getRecommender() {
-        return recommender;
-    }
-
-    public void setRecommender(String recommender) {
-        this.recommender = recommender;
-    }
-
     public String getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    public boolean isHasRealNameCheck() {
-        return hasRealNameCheck;
-    }
-
-    public void setHasRealNameCheck(boolean hasRealNameCheck) {
-        this.hasRealNameCheck = hasRealNameCheck;
     }
 
     public String getName() {
@@ -136,27 +188,35 @@ public class StoreBean implements Serializable{
         this.goodsCount = goodsCount;
     }
 
-    public Double getDescribeScore() {
+    public double getDescribeScore() {
         return describeScore;
     }
 
-    public void setDescribeScore(Double describeScore) {
+    public void setDescribeScore(double describeScore) {
         this.describeScore = describeScore;
     }
 
-    public Double getPriceScore() {
+    public double getPriceScore() {
         return priceScore;
     }
 
-    public void setPriceScore(Double priceScore) {
+    public void setPriceScore(double priceScore) {
         this.priceScore = priceScore;
     }
 
-    public Double getQualityScore() {
+    public double getQualityScore() {
         return qualityScore;
     }
 
-    public void setQualityScore(Double qualityScore) {
+    public void setQualityScore(double qualityScore) {
         this.qualityScore = qualityScore;
+    }
+
+    public String getRecommender() {
+        return recommender;
+    }
+
+    public void setRecommender(String recommender) {
+        this.recommender = recommender;
     }
 }

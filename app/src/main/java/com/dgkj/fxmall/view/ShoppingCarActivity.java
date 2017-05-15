@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -37,7 +39,6 @@ import butterknife.OnClick;
 import okhttp3.OkHttpClient;
 
 public class ShoppingCarActivity extends BaseActivity {
-
     @BindView(R.id.rv_shopping_car)
     RecyclerView rvShoppingCar;
     @BindView(R.id.iv_car_back)
@@ -50,12 +51,17 @@ public class ShoppingCarActivity extends BaseActivity {
     Button btnPay;
     @BindView(R.id.activity_shopping_car)
     LinearLayout activityShoppingCar;
+    @BindView(R.id.tv_empty_view)
+    TextView tvEmptyView;
+    @BindView(R.id.ll_container)
+    LinearLayout llContainer;
 
     private FXMallControl control;
     private View headerview;
     private int goodsCount;//商品总数
     private ShoppingCarAdapter adapter;
     private List<ShoppingCarBean> carBeanList;
+    private List<ShoppingGoodsBean> selectGoods = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private int sumPrice = 0;
     private int index = 1;
@@ -64,12 +70,16 @@ public class ShoppingCarActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    sumPrice += msg.arg1 * msg.arg2;
+                    ShoppingGoodsBean goods = (ShoppingGoodsBean) msg.obj;
+                    selectGoods.add(goods);
+                    sumPrice += goods.getCount() * goods.getPrice();
                     tvTotalPrice.setText("¥" + sumPrice);
                     adapter.notifyDataSetChanged();
                     break;
                 case 2:
-                    sumPrice -= msg.arg1 * msg.arg2;
+                    ShoppingGoodsBean goods1 = (ShoppingGoodsBean) msg.obj;
+                    selectGoods.remove(goods1);
+                    sumPrice -= goods1.getCount() * goods1.getPrice();
                     tvTotalPrice.setText("¥" + sumPrice);
                     adapter.notifyDataSetChanged();
                     break;
@@ -80,6 +90,12 @@ public class ShoppingCarActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(TextUtils.isEmpty(sp.get("token"))){
+            jumpTo(LoginActivity.class,true);
+            return;
+        }
+
         setContentView(R.layout.activity_shopping_car);
         ButterKnife.bind(this);
         initHeaderview();
@@ -103,54 +119,77 @@ public class ShoppingCarActivity extends BaseActivity {
         });
         control.getShoppingcarProducts(this, sp.get("token"), index, 10, client, new OnGetShoppingcarProductsFinishedListener() {
             @Override
-            public void onGetShoppingcarProductsFinished(List<ShoppingGoodsBean> carBeanList) {
+            public void onGetShoppingcarProductsFinished(final List<ShoppingGoodsBean> carBeanList) {
                 goodsCount = carBeanList.size();
-                //将所有商品按照店名进行分类，相同的店名放入同一集合1
-                List<ShoppingCarBean> carList = new ArrayList<>();
-                Map<ShoppingGoodsBean, List<ShoppingGoodsBean>> map = new HashMap<>();
-                ShoppingGoodsBean product = new ShoppingGoodsBean();
-                if (carBeanList.size() == 0) {
-                    return;
-                } else {
-                    for (int i = 0; i < carBeanList.size(); i++) {
-                        String key = carBeanList.get(i).getStoreName();//获取当条数据的店名值
-                        if (product.getStoreId() >= 0) {
-                            boolean b = key.equals(product.getStoreName());//当该店名值与key值中的店名值不同时，则创建新的key,保证key值唯一
-                            if (b) {
-                                product = new ShoppingGoodsBean();
-                            }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(goodsCount==0){
+                            tvEmptyView.setVisibility(View.GONE);
+                            llContainer.setVisibility(View.GONE);
+                        }else {
+                            tvEmptyView.setVisibility(View.GONE);
+                            llContainer.setVisibility(View.GONE);
+                            adapter.addAll(getGoodsOfOneStore(carBeanList), true);
                         }
-                        product.setStoreName(key);//为key值设置店名
-
-                        //将相同店名 的key所有的数据都指向一个数据集合
-                        List<ShoppingGoodsBean> products = map.get(product);//key值变时，集合也会变
-                        //当第一次次集合没有初始化时，创建一个新集合，此后这相同的数据全部添加到此集合
-                        if (products == null) {
-                            products = new ArrayList<>();
-                        }
-                        products.add(carBeanList.get(i));//将相同数据添加到集合
-                        map.put(product, products);//将相同的数据放入map（不断覆盖，直至最后一次得到相同全部数据）
                     }
+                });
 
-                    //TODO 集成数据:遍历map，将数据添加到listView实体类集合
-                    Iterator iterator = map.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry entry = (Map.Entry) iterator.next();
-                        ShoppingGoodsBean goods = (ShoppingGoodsBean) entry.getKey();
-
-                        ShoppingCarBean carBean = new ShoppingCarBean();
-                        String name = goods.getStoreName();
-                        ArrayList<ShoppingGoodsBean> goodsList = (ArrayList<ShoppingGoodsBean>) entry.getValue();
-                        carBean.setStoreName(name);
-                        carBean.setGoods(goodsList);
-
-                        carList.add(carBean);
-                    }
-
-                    adapter.addAll(carList, true);//刷新购物车列表数据
-                }
             }
         });
+    }
+
+
+    /**
+     * 将所有商品按所属商店进行分类
+     *
+     * @param list
+     * @return
+     */
+    private List<ShoppingCarBean> getGoodsOfOneStore(List<ShoppingGoodsBean> list) {
+        //将所有商品按照店名进行分类，相同的店名放入同一集合1
+        List<ShoppingCarBean> carList = new ArrayList<>();
+        Map<ShoppingGoodsBean, List<ShoppingGoodsBean>> map = new HashMap<>();
+        ShoppingGoodsBean product = new ShoppingGoodsBean();
+        if (list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                String key = carBeanList.get(i).getStoreName();//获取当条数据的店名值
+                if (product.getStoreBean()!=null && product.getStoreBean().getId() >= 0) {
+                    boolean b = key.equals(product.getStoreName());//当该店名值与key值中的店名值不同时，则创建新的key,保证key值唯一
+                    if (b) {
+                        product = new ShoppingGoodsBean();
+                    }
+                }
+                product.setStoreName(key);//为key值设置店名
+
+                //将相同店名 的key所有的数据都指向一个数据集合
+                List<ShoppingGoodsBean> products = map.get(product);//key值变时，集合也会变
+                //当第一次次集合没有初始化时，创建一个新集合，此后这相同的数据全部添加到此集合
+                if (products == null) {
+                    products = new ArrayList<>();
+                }
+                products.add(list.get(i));//将相同数据添加到集合
+                map.put(product, products);//将相同的数据放入map（不断覆盖，直至最后一次得到相同全部数据）
+            }
+
+            //TODO 集成数据:遍历map，将数据添加到listView实体类集合
+            Iterator iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry entry = (Map.Entry) iterator.next();
+                ShoppingGoodsBean goods = (ShoppingGoodsBean) entry.getKey();
+
+                ShoppingCarBean carBean = new ShoppingCarBean();
+                String name = goods.getStoreName();
+                ArrayList<ShoppingGoodsBean> goodsList = (ArrayList<ShoppingGoodsBean>) entry.getValue();
+                carBean.setStoreName(name);
+                carBean.setGoods(goodsList);
+
+                carList.add(carBean);
+            }
+
+
+        }
+        return carList;
     }
 
 
@@ -196,7 +235,7 @@ public class ShoppingCarActivity extends BaseActivity {
             public void onClick(View v) {
                 //TODO 跳转到编辑界面
                 Intent intent = new Intent(ShoppingCarActivity.this, ShoppingCarEditActivity.class);
-                intent.putExtra("data", (Serializable) carBeanList);
+                intent.putParcelableArrayListExtra("data", (ArrayList<ShoppingCarBean>) carBeanList);
                 startActivityForResult(intent, 129);
             }
         });
@@ -212,13 +251,14 @@ public class ShoppingCarActivity extends BaseActivity {
     public void pay() {
         //TODO 计算总价格付账
         Intent intent = new Intent(this, ConfirmOrderActivity.class);
+        intent.putParcelableArrayListExtra("orders", (ArrayList<ShoppingCarBean>) getGoodsOfOneStore(selectGoods));
         startActivity(intent);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 129 && resultCode == 130) {
-            List<ShoppingCarBean> list = (List<ShoppingCarBean>) data.getSerializableExtra("data");
+            List<ShoppingCarBean> list = data.getParcelableArrayListExtra("data");
             adapter.addAll(list, true);
         }
     }

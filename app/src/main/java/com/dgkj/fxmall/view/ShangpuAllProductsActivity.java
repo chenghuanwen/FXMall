@@ -77,8 +77,13 @@ public class ShangpuAllProductsActivity extends BaseActivity {
         //TODO createTime(新品)、inventory（库存）、sales（销量），区分销售中和仓库中
         control.getStoreProducts(this, sp.get("token"), client, orderBy, index, size, statu, new OnGetStoreProductsFinishedListener() {
             @Override
-            public void OnGetStoreProductsFinished(List<StoreProductBean> products) {
-                adapter.addAll(products, true);
+            public void OnGetStoreProductsFinished(final List<StoreProductBean> products) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(products, true);
+                    }
+                });
             }
         });
     }

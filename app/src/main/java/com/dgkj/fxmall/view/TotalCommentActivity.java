@@ -74,8 +74,13 @@ public class TotalCommentActivity extends BaseActivity {
     private void refresh() {
         control.getProductComments(this, product.getId(), 1, 50, client, new OnGetProductCommentListFinishListener() {
             @Override
-            public void onGetProductCommentListFinished(List<CommentBean> comments) {
-                adapter.addAll(comments,true);
+            public void onGetProductCommentListFinished(final List<CommentBean> comments) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(comments,true);
+                    }
+                });
             }
         });
     }

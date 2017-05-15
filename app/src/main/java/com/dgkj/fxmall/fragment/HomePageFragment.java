@@ -16,10 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.adapter.ProductClassifyAdapter;
 import com.dgkj.fxmall.bean.BannerBean;
+import com.dgkj.fxmall.bean.ColorSizeBean;
+import com.dgkj.fxmall.bean.HomePageRecommendBean;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.MainRecommendStoreBean;
 import com.dgkj.fxmall.bean.ProductClassifyBean;
@@ -27,6 +30,7 @@ import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetBannerFinishedListener;
+import com.dgkj.fxmall.listener.OnGetHomeRecommendFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
 import com.dgkj.fxmall.utils.BannerImageLoader;
 import com.dgkj.fxmall.view.NewGoodsActivity;
@@ -37,6 +41,10 @@ import com.dgkj.fxmall.view.myView.MyGridLayoutManager;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +54,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -60,10 +69,6 @@ public class HomePageFragment extends Fragment {
     RelativeLayout store2;
     @BindView(R.id.store3)
     RelativeLayout store3;
-    @BindView(R.id.iv_recommend)
-    ImageView ivRecommend;
-    @BindView(R.id.tv_recommend_title)
-    TextView tvRecommendTitle;
     @BindView(R.id.tv_newgoods_all)
     TextView tvNewgoodsAll;
     @BindView(R.id.new_goods1)
@@ -84,8 +89,7 @@ public class HomePageFragment extends Fragment {
     LinearLayout contentHomePage;
     @BindView(R.id.rl_store)
     PercentRelativeLayout rlStore;
-    @BindView(R.id.ll_today_recommend)
-    LinearLayout llTodayRecommend;
+
     @BindView(R.id.ll_new_goods)
     RelativeLayout llNewGoods;
     @BindView(R.id.tv_store1_name)
@@ -116,6 +120,9 @@ public class HomePageFragment extends Fragment {
     private MainProductDisplayAdapter productDisplayAdapter;
     private ProductClassifyAdapter classifyAdapter;
     private FXMallControl control = new FXMallControl();
+    private List<HomePageRecommendBean> storeRecommends = new ArrayList<>();
+    private List<HomePageRecommendBean> newGoodsRecommends = new ArrayList<>();
+    private HomePageRecommendBean store, newGoods;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -125,9 +132,51 @@ public class HomePageFragment extends Fragment {
         initview(rootView);
         initBanner();
         testRecyclerview();
+        //获取所有推荐
+        getRecommendData();
         return rootView;
     }
 
+    private void getRecommendData() {
+        control.getHomePageAllRecommender(0, new OnGetHomeRecommendFinishedListener() {
+            @Override
+            public void onGetHomeRecommendFinishedListener(List<HomePageRecommendBean> recommendList) {
+                for (HomePageRecommendBean homePageRecommendBean : recommendList) {
+                    String position = homePageRecommendBean.getPosition();
+                    switch (position) {
+                        case "home_RStore_Left":
+                            store = homePageRecommendBean;
+                            break;
+                        case "home_RStore_Right":
+                            storeRecommends.add(homePageRecommendBean);
+                            break;
+                        case "home_NCommodity_Top":
+                            newGoods = homePageRecommendBean;
+                            break;
+                        case "home_NCommodity_Down":
+                            newGoodsRecommends.add(homePageRecommendBean);
+                            break;
+                    }
+                }
+                setData();
+            }
+        });
+    }
+
+    private void setData() {
+        Glide.with(getContext()).load(store.getUrl()).error(R.mipmap.android_quanzi).into(ivStore1);
+        Glide.with(getContext()).load(storeRecommends.get(0).getUrl()).error(R.mipmap.android_quanzi).into(ivStore2);
+        Glide.with(getContext()).load(storeRecommends.get(1).getUrl()).error(R.mipmap.android_quanzi).into(ivStore3);
+        Glide.with(getContext()).load(newGoods.getUrl()).error(R.mipmap.android_quanzi).into(newGoods1);
+        Glide.with(getContext()).load(newGoodsRecommends.get(0).getUrl()).error(R.mipmap.android_quanzi).into(newGoods2);
+        Glide.with(getContext()).load(newGoodsRecommends.get(1).getUrl()).error(R.mipmap.android_quanzi).into(newGoods3);
+        Glide.with(getContext()).load(newGoodsRecommends.get(2).getUrl()).error(R.mipmap.android_quanzi).into(newGoods4);
+        Glide.with(getContext()).load(newGoodsRecommends.get(3).getUrl()).error(R.mipmap.android_quanzi).into(newGoods5);
+
+    }
+
+
+    //TEST
     private void testRecyclerview() {
         List<MainProductBean> list = new ArrayList<>();
         List<ProductClassifyBean> list1 = new ArrayList<>();
@@ -140,27 +189,44 @@ public class HomePageFragment extends Fragment {
         url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
         for (int i = 0; i < 5; i++) {
             MainProductBean productBean = new MainProductBean();
-            productBean.setAddress("深圳");
-            productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-            productBean.setPrice(35);
-            productBean.setVipPrice(25);
-            productBean.setSales("10000");
             productBean.setUrls(url);
-            productBean.setUrl(url.get(0));
             productBean.setDetialUrls(url);
-            productBean.setExpress("韵达快递");
+            productBean.setPrice(35);
+            productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
+            productBean.setSales("10000");
+            productBean.setAddress("深圳");
+            productBean.setExpress("包邮");
+            productBean.setVipPrice(25);
+            productBean.setSkuId(i + 1);
+            productBean.setCount(3);
+            productBean.setId(i + 2);
+            productBean.setColor("绿色-M");
+            productBean.setInventory(100);
+            productBean.setBrokerage(20);
             StoreBean storeBean = new StoreBean();
-            storeBean.setStars(3);
-            storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
             storeBean.setName("粉小萌");
-            storeBean.setQualityScore(4.2);
+            storeBean.setAdress("广东省深圳市龙岗区");
+            storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+            storeBean.setCreateTime("2017-5-2");
+            storeBean.setStars(3);
+            storeBean.setTotalScals(300);
+            storeBean.setGoodsCount(1000);
+            storeBean.setId(i + 1);
             storeBean.setDescribeScore(4.8);
             storeBean.setPriceScore(4.0);
-            storeBean.setAdress("广东省深圳市龙岗区");
-            storeBean.setGoodsCount(1000);
-            storeBean.setTotalScals(300);
-            storeBean.setCreateTime("2017-5-2");
+            storeBean.setQualityScore(4.2);
+            storeBean.setTotalScore(4.5);
+            storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+            storeBean.setMainUrls(url);
+            storeBean.setKeeper("小成成");
+            storeBean.setPhone("15641651432");
+            storeBean.setRecommender("小成成");
             productBean.setStoreBean(storeBean);
+            productBean.setUrl(url.get(0));
+            productBean.setDescribeScore(4);
+            productBean.setPriceScore(4);
+            productBean.setQualityScore(4);
+            productBean.setTotalScore(4);
             list.add(productBean);
         }
         productDisplayAdapter.addAll(list, true);
@@ -199,147 +265,87 @@ public class HomePageFragment extends Fragment {
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689173&di=e3c6c0aac909543ffe89fb9b67f917d7&imgtype=0&src=http%3A%2F%2Fzkres2.myzaker.com%2F201703%2F58de50e11bc8e02d3400005c_640.jpg").into(ivStore1);
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689155&di=2a9cccc3be8dc8477b0a02cd825ab3c3&imgtype=0&src=http%3A%2F%2Fwww.hxw163.com%2Fuploadfile%2F2017%2F0325%2F20170325110600403.jpg").into(ivStore2);
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689152&di=2c76f93145aa678f6c8e10ba452fb0a8&imgtype=0&src=http%3A%2F%2Fzkres2.myzaker.com%2F201703%2F58de0c3ca07aec595d04543c_640.jpg").into(ivStore3);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974097848&di=e03d075d5270399abf3017d5f28ded3a&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170319%2F1572047f77034527ab1242ae292efc41_th.jpeg").into(ivRecommend);
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150352&di=50d4277e4cbbb74f24803b0cc967c70a&imgtype=0&src=http%3A%2F%2Fimg4.duitang.com%2Fuploads%2Fitem%2F201608%2F02%2F20160802172340_W528L.jpeg").into(newGoods1);
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150344&di=0ba39eb86045a759464936ad002dec0c&imgtype=0&src=http%3A%2F%2Fimg5.duitang.com%2Fuploads%2Fitem%2F201512%2F09%2F20151209225838_2G3Zc.thumb.700_0.jpeg").into(newGoods2);
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150340&di=6c86ce998672986123e8df590335555a&imgtype=0&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201604%2F26%2F20160426184930_ivKdF.jpeg").into(newGoods3);
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150336&di=48182bee774f3d62e89100a7f73fbea2&imgtype=0&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201607%2F23%2F20160723104550_hFtTn.thumb.700_0.jpeg").into(newGoods4);
         Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974260222&di=7e54dac3ff5cfff89438fa1da97c2242&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201510%2F27%2F20151027171037_3tiQZ.jpeg").into(newGoods5);
 
-       /* getBannerData();
-        getStoreRecommend();
-        getTodayRecommend();
-        getNewgoodsShelves();
-        getProductsRecommend();
-        getMainProductDisplay();*/
 
     }
 
 
-    /**
-     * 获取推荐商家数据
-     */
-    private void getStoreRecommend() {
-        okHttpClient.newCall(new Request.Builder().url(FXConst.RECOMMEND_STORE_URL).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
+    @OnClick(R.id.iv_store1)
+    public void toStore1() {
+        getStoreDetial(store.getLink());
     }
 
-    /**
-     * 获取今日推荐数据
-     */
-    private void getTodayRecommend() {
-
+    @OnClick(R.id.iv_store2)
+    public void toStore2() {
+        getStoreDetial(storeRecommends.get(0).getLink());
     }
 
-    /**
-     * 获取新品上架数据
-     */
-    private void getNewgoodsShelves() {
-        okHttpClient.newCall(new Request.Builder().url(FXConst.NEWGOODS_SHELVES_URL).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
+    @OnClick(R.id.iv_store3)
+    public void toStore3() {
+        getStoreDetial(storeRecommends.get(1).getLink());
     }
 
-    /**
-     * 获取商品推荐
-     */
-    private void getProductsRecommend() {
-        okHttpClient.newCall(new Request.Builder().url(FXConst.PRODUCTS_RECOMMEND_URL).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
+    @OnClick(R.id.new_goods1)
+    public void toNew1(){
+        getProductDetial(newGoods.getLink());
     }
 
-    /**
-     * 获取主页商品展示列表数据
-     */
-    private void getMainProductDisplay() {
-        okHttpClient.newCall(new Request.Builder().url(FXConst.HOMEPAGE_PRODUCTS_URL).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+    @OnClick(R.id.new_goods2)
+    public void toNew2(){
+        getProductDetial(newGoodsRecommends.get(0).getLink());
+    }
 
-            }
+    @OnClick(R.id.new_goods3)
+    public void toNew3(){
+        getProductDetial(newGoodsRecommends.get(1).getLink());
+    }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+    @OnClick(R.id.new_goods4)
+    public void toNew4(){
+        getProductDetial(newGoodsRecommends.get(2).getLink());
+    }
 
-            }
-        });
+    @OnClick(R.id.new_goods5)
+    public void toNew5(){
+        getProductDetial(newGoodsRecommends.get(3).getLink());
     }
 
 
+    //TEST
     @OnClick(R.id.rl_store)
-    public void storeRecommend() {//跳转到商铺推荐界面
-        control.getMainRecommendStores(okHttpClient, new OnGetMainRecommendStoreFinishedListener() {
-            @Override
-            public void onGetMainRecommendStoreFinishedListener(List<MainRecommendStoreBean> recommendList) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
-            }
-        });
-        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
-        //TODO 需将商铺推荐数据实体类集合传递下去
+    public void toStore(){
         StoreBean storeBean = new StoreBean();
-        storeBean.setTotalScals(100);
+        storeBean.setName("粉小萌");
+        storeBean.setAdress("广东省深圳市龙岗区");
+        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+        storeBean.setCreateTime("2017-5-2");
         storeBean.setStars(3);
-        storeBean.setQualityScore(3.5);
-        storeBean.setPriceScore(5.0);
-        storeBean.setDescribeScore(5.3);
-        storeBean.setAdress("广东深圳");
-        storeBean.setCreateTime("2017-05-01");
-        storeBean.setGoodsCount(23213);
-        storeBean.setIconUrl("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        intent.putExtra("store", storeBean);
-        jumpTo(intent, false);
+        storeBean.setTotalScals(300);
+        storeBean.setGoodsCount(1000);
+        storeBean.setId(5);
+        storeBean.setDescribeScore(4.8);
+        storeBean.setPriceScore(4.0);
+        storeBean.setQualityScore(4.2);
+        storeBean.setTotalScore(4.5);
+        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+        storeBean.setMainUrls(new ArrayList<String>());
+        storeBean.setKeeper("小成成");
+        storeBean.setPhone("15641651432");
+        storeBean.setRecommender("小成成");
 
+        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("store", storeBean);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
-    @OnClick(R.id.ll_today_recommend)
-    public void todayRecommend() {
-        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
-        //TODO 需将商铺推荐数据实体类集合传递下去,需要判断推荐的是商品还是店铺
-        StoreBean storeBean = new StoreBean();
-        storeBean.setTotalScals(100);
-        storeBean.setStars(3);
-        storeBean.setQualityScore(3.5);
-        storeBean.setPriceScore(5.0);
-        storeBean.setDescribeScore(5.3);
-        storeBean.setAdress("广东深圳");
-        storeBean.setCreateTime("2017-05-01");
-        storeBean.setGoodsCount(23213);
-        storeBean.setIconUrl("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        intent.putExtra("store", storeBean);
-        jumpTo(intent, false);
-    }
-
+    //TEST
     @OnClick({R.id.new_goods1, R.id.new_goods2, R.id.new_goods3, R.id.new_goods4, R.id.new_goods5})
     public void newGoods() {
         Intent intent = new Intent(getContext(), ProductDetialActivity.class);
@@ -351,43 +357,62 @@ public class HomePageFragment extends Fragment {
         url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
         url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
         url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        productBean.setIntroduce("粉小萌来啦，这酸爽，绝了，88一箱全国包邮");
-        productBean.setAddress("广东深圳");
-        productBean.setVipPrice(58);
-        productBean.setSales("1536");
-        productBean.setExpress("韵达快递");
-        productBean.setPrice(88);
         productBean.setUrls(url);
-        productBean.setUrl(url.get(0));
-        productBean.getStoreBean().setName("我是你的菜");
         productBean.setDetialUrls(url);
+        productBean.setPrice(35);
+        productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
+        productBean.setSales("10000");
+        productBean.setAddress("深圳");
+        productBean.setExpress("包邮");
+        productBean.setVipPrice(25);
+        productBean.setSkuId(1);
+        productBean.setCount(3);
+        productBean.setId( 2);
+        productBean.setColor("绿色-M");
+        productBean.setInventory(100);
+        productBean.setBrokerage(20);
         StoreBean storeBean = new StoreBean();
-        storeBean.setStars(3);
-        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
         storeBean.setName("粉小萌");
-        storeBean.setQualityScore(4.2);
+        storeBean.setAdress("广东省深圳市龙岗区");
+        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+        storeBean.setCreateTime("2017-5-2");
+        storeBean.setStars(3);
+        storeBean.setTotalScals(300);
+        storeBean.setGoodsCount(1000);
+        storeBean.setId(5);
         storeBean.setDescribeScore(4.8);
         storeBean.setPriceScore(4.0);
-        storeBean.setAdress("广东省深圳市龙岗区");
-        storeBean.setGoodsCount(1000);
-        storeBean.setTotalScals(300);
-        storeBean.setCreateTime("2017-5-2");
+        storeBean.setQualityScore(4.2);
+        storeBean.setTotalScore(4.5);
+        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+        storeBean.setMainUrls(url);
+        storeBean.setKeeper("小成成");
+        storeBean.setPhone("15641651432");
+        storeBean.setRecommender("小成成");
         productBean.setStoreBean(storeBean);
+        productBean.setUrl(url.get(0));
+        productBean.setDescribeScore(4);
+        productBean.setPriceScore(4);
+        productBean.setQualityScore(4);
+        productBean.setTotalScore(4);
         intent.putExtra("product", productBean);
         jumpTo(intent, false);
     }
 
+
+    //TODO 全部新品
     @OnClick({R.id.tv_newgoods_all, R.id.ll_new_goods})
     public void allProductRecommend() {
         jumpTo(NewGoodsActivity.class, false);
     }
 
 
+    //初始化banner图
     private void initBanner() {
         bannerDatas = new ArrayList<>();
         control.getBanners(okHttpClient, new OnGetBannerFinishedListener() {
             @Override
-            public void onGetBannerFinishedListener(List<BannerBean> banners) {
+            public void onGetBannerFinishedListener(final List<BannerBean> banners) {
                 for (BannerBean bannerBean : banners) {
                     bannerDatas.add(bannerBean.getUrl());
                 }
@@ -402,20 +427,19 @@ public class HomePageFragment extends Fragment {
                 banner.setOnBannerListener(new OnBannerListener() {//根据不同的推荐内容跳转到不同的详情界面
                     @Override
                     public void OnBannerClick(int position) {
-                        switch (position) {
-                            case 0:
-                                jumpTo(ProductDetialActivity.class, false);
-                                break;
-                            case 1:
-                                break;
-                            case 2:
-                                break;
+                        BannerBean bannerBean = banners.get(position);
+                        if (bannerBean.getType() == 0) {//商品
+                            getProductDetial(bannerBean.getProductId());
+                        } else {//商铺
+                            getStoreDetial(bannerBean.getProductId());
                         }
                     }
                 });
             }
         });
 
+
+        //TEST
         bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
         bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383291_6518.jpg");
         bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
@@ -427,15 +451,177 @@ public class HomePageFragment extends Fragment {
             public void OnBannerClick(int position) {
                 switch (position) {
                     case 0:
-                        jumpTo(ProductDetialActivity.class, false);
-                        break;
                     case 1:
-                        break;
                     case 2:
+                        Intent intent = new Intent(getContext(), ProductDetialActivity.class);
+                        //TODO 需将商铺推荐数据实体类集合传递下去
+                        MainProductBean productBean = new MainProductBean();
+                        List<String> url = new ArrayList<>();
+                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
+                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
+                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
+                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
+                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
+                        productBean.setUrls(url);
+                        productBean.setDetialUrls(url);
+                        productBean.setPrice(35);
+                        productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
+                        productBean.setSales("10000");
+                        productBean.setAddress("深圳");
+                        productBean.setExpress("包邮");
+                        productBean.setVipPrice(25);
+                        productBean.setSkuId(1);
+                        productBean.setCount(3);
+                        productBean.setId( 2);
+                        productBean.setColor("绿色-M");
+                        productBean.setInventory(100);
+                        productBean.setBrokerage(20);
+                        StoreBean storeBean = new StoreBean();
+                        storeBean.setName("粉小萌");
+                        storeBean.setAdress("广东省深圳市龙岗区");
+                        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+                        storeBean.setCreateTime("2017-5-2");
+                        storeBean.setStars(3);
+                        storeBean.setTotalScals(300);
+                        storeBean.setGoodsCount(1000);
+                        storeBean.setId(5);
+                        storeBean.setDescribeScore(4.8);
+                        storeBean.setPriceScore(4.0);
+                        storeBean.setQualityScore(4.2);
+                        storeBean.setTotalScore(4.5);
+                        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+                        storeBean.setMainUrls(url);
+                        storeBean.setKeeper("小成成");
+                        storeBean.setPhone("15641651432");
+                        storeBean.setRecommender("小成成");
+                        productBean.setStoreBean(storeBean);
+                        productBean.setUrl(url.get(0));
+                        productBean.setDescribeScore(4);
+                        productBean.setPriceScore(4);
+                        productBean.setQualityScore(4);
+                        productBean.setTotalScore(4);
+                        intent.putExtra("product", productBean);
+                        jumpTo(intent, false);
                         break;
                 }
             }
         });
+    }
+
+    /**
+     * 根据商铺id获取商品详情
+     *
+     * @param productId
+     */
+    private void getProductDetial(int productId) {
+        FormBody body = new FormBody.Builder()
+                .add("id", productId + "")
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.GET_PRODUCT_DETIAL_BY_ID)
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if (string.contains("1000")) {
+                    MainProductBean product = new MainProductBean();
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        JSONObject jsonObject = object.getJSONObject("data");
+                        product.setId(jsonObject.getInt("id"));
+                        product.setDescribeScore(jsonObject.getInt("describeScore"));
+                        product.setPriceScore(jsonObject.getInt("transportScore"));
+                        product.setQualityScore(jsonObject.getInt("qualityScore"));
+                        product.setTotalScore(jsonObject.getInt("totalScore"));
+                        product.setIntroduce(jsonObject.getString("detail"));
+                        product.setSales(jsonObject.getInt("sales") + "");
+                        String detailUrls = jsonObject.getString("detailUrl");
+                        JSONArray detailUrl = new JSONArray(detailUrls);
+                        List<String> mainImages = new ArrayList<>();
+                        for (int j = 0; j < detailUrl.length(); j++) {
+                            mainImages.add(detailUrl.getString(j));
+                        }
+                        product.setDetialUrls(mainImages);
+                        List<String> detialImages = new ArrayList<>();
+                        String pictrue = jsonObject.getString("pictrue");
+                        JSONArray pictrues = new JSONArray(pictrue);
+                        for (int k = 0; k < pictrues.length(); k++) {
+                            detialImages.add(pictrues.getString(k));
+                        }
+                        product.setUrls(detialImages);
+                        product.setUrl(product.getUrls().get(0));
+                        //TODO 商品对应店铺详情
+                        JSONObject store = jsonObject.getJSONObject("store");
+                        StoreBean storeBean = new StoreBean();
+                        storeBean.setName(store.getString("storeName"));
+                        String address = store.getString("address");
+                        storeBean.setAdress(address);
+                        storeBean.setGoodsCount(store.getInt("cnum"));
+                        storeBean.setTotalScals(store.getInt("sales"));
+                        storeBean.setCreateTime(store.getString("createTime"));
+                        storeBean.setQualityScore(store.getDouble("qualityScore"));
+                        storeBean.setDescribeScore(store.getDouble("describeScore"));
+                        storeBean.setPriceScore(store.getDouble("transportScore"));
+                        storeBean.setStars(store.getInt("totalScore"));
+                        storeBean.setIconUrl(store.getString("logo"));
+                        product.setStoreBean(storeBean);
+                        product.setAddress(address.substring(0, address.indexOf("市") + 1));
+
+                        JSONArray dataset = object.getJSONArray("dataset");
+                        List<ColorSizeBean> colors = new ArrayList<>();
+                        for (int i = 0; i < dataset.length(); i++) {
+                            ColorSizeBean color = new ColorSizeBean();
+                            JSONObject colorbean = dataset.getJSONObject(i);
+                            color.setColor(colorbean.getString("content"));
+                            color.setInventory(colorbean.getInt("inventory"));
+                            color.setBrokrage(colorbean.getInt("brokerage"));
+                            color.setPrice(colorbean.getInt("price"));
+                            color.setId(colorbean.getInt("id"));
+                            colors.add(color);
+                        }
+                        ColorSizeBean colorSizeBean = colors.get(0);
+                        product.setSkuId(colorSizeBean.getId());
+                        product.setColor(colorSizeBean.getColor());
+                        product.setInventory(colorSizeBean.getInventory());
+                        product.setBrokerage(colorSizeBean.getBrokrage());
+                        product.setPrice(colorSizeBean.getPrice());
+                        product.setCount(1);
+                        product.setVipPrice(colorSizeBean.getPrice() * (1 - MyApplication.vipRate));
+                        product.setExpress("包邮");//TODO 待定
+                        //跳转到商品详情
+                        Intent intent = new Intent(getContext(), ProductDetialActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("product", product);
+                        intent.putExtras(bundle);
+                        getContext().startActivity(intent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 根据商品id获取商pu详情
+     *
+     * @param productId
+     */
+    private void getStoreDetial(int productId) {
+        //TODO 跳转到商铺详情
+        StoreBean storeBean = new StoreBean();
+        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("store", storeBean);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
 

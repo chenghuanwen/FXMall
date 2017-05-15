@@ -180,8 +180,14 @@ public class ShangpuOrderActivity extends BaseActivity {
 
         control.getStoreOrderInfo(this, sp.get("token"), statu, isAll,index,20, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
-            public void onGetMyOrderInfoFinished(List<OrderBean> orders) {
-                allOrder.addAll(sortProductsOfOrder(orders));
+            public void onGetMyOrderInfoFinished(final List<OrderBean> orders) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        allOrder.addAll(sortProductsOfOrder(orders));
+                    }
+                });
+
                 for (OrderBean order : orders) {
                     switch (order.getStateNum()) {
                         //TODO 根据订单不同状态区分

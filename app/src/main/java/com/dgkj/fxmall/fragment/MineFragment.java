@@ -375,9 +375,9 @@ public class MineFragment extends Fragment {
                         storeBean.setKeeper(dataset.getString("storekeeper"));
                         storeBean.setPhone(dataset.getString("phone"));
                         String pictrues = dataset.getString("storePictrue");
-                        String logo = dataset.getString("logo");
-                        String intro = dataset.getString("intro");
-                        if(!TextUtils.isEmpty(logo) || !TextUtils.isEmpty(intro)){
+
+                        String banner = dataset.getString("banana");
+                        if(!TextUtils.isEmpty(banner) ){
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

@@ -144,22 +144,32 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
 
         TextView type = holder.getView(R.id.tv_money_type);
+        TextView tvIsDeliver = holder.getView(R.id.tv_order_isDeliver);
 
 
         holder.setOnClickListener(R.id.order_comment, new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//评论
                 Intent intent = new Intent(context, OrderDetialActivity.class);
                 intent.putExtra("order",superOrderBean);
                 intent.putExtra("from",from);
                 context.startActivity(intent);
             }
         });
+
+
+
         holder.setOnClickListener(R.id.ll_order_sub_container, new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, OrderDetialActivity.class);
-                intent.putExtra("order",superOrderBean);
+            public void onClick(View v) {//商品详情或退款详情
+                Intent intent;
+                if(order.getStateNum()==4){
+                    intent = new Intent(context, RefundDetialActivity.class);
+                    intent.putExtra("order",order);
+                }else {
+                    intent = new Intent(context, OrderDetialActivity.class);
+                    intent.putExtra("order",superOrderBean);
+                }
                 intent.putExtra("from",from);
                 context.startActivity(intent);
             }
@@ -168,6 +178,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
         switch (getItemViewType(position)){
             case WAIT_PAY:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_cancle_order, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//取消订单
@@ -183,7 +194,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case WAIT_DELIVER:
-
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提醒卖家发货
@@ -192,6 +203,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case WAIT_TAKE_GOODS:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
@@ -207,6 +219,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case WAIT_COMMENT:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
@@ -229,6 +242,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case ORDER_COMPLETE:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
@@ -249,6 +263,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case  AGREE_REFUND:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_submit_logistic, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提交物流信息
@@ -262,6 +277,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
             //商铺订单
             case SELLER_WAIT_DELIVER:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_deliver, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//商铺发货
@@ -272,6 +288,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case SELLER_HAS_DELIVER:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
@@ -280,6 +297,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
                 break;
             case SELLER_HAS_SOLD:
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
@@ -295,6 +313,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
             case BUYER_APPLAY_REFUND:
                 type.setText("退款金额：");
+                tvIsDeliver.setVisibility(View.VISIBLE);
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
@@ -313,9 +332,15 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                         agreeRefund(superOrderBean.getSubOrders().get(0));
                     }
                 });
+                if(superOrderBean.getSubOrders().get(0).isHasDeliver()){
+                    tvIsDeliver.setText("(商品已发出)");
+                }else {
+                    tvIsDeliver.setText("(商品未发出)");
+                }
                 break;
             case SELLER_WAIT_TAKE_GOODS:
                 type.setText("退款金额：");
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
@@ -337,6 +362,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
             case REFUND_COMPLETE:
                 type.setText("退款金额：");
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
@@ -358,6 +384,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
             case WAIT_BUYER_DELIVER:
                 type.setText("退款金额：");
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
@@ -374,6 +401,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
             case SELLER_REFUSED_REFUND:
                 type.setText("退款金额：");
+                tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息

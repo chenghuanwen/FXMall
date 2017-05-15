@@ -70,7 +70,7 @@ public class TransactionRecordActivity extends BaseActivity {
     private void refresh() {
         control.getTransactionRecord(this, sp.get("token"), index, 20, client, new OnGetTransactionRecorderFinishedListener() {
             @Override
-            public void onGetTransactionRecorderFinished(List<TransactionRecordBean> recordList) {
+            public void onGetTransactionRecorderFinished(final List<TransactionRecordBean> recordList) {
                 for (int i = 0; i < recordList.size(); i++) {
                     TransactionRecordBean recordBean = recordList.get(i);
                     if(recordBean.getType()==3){
@@ -79,7 +79,12 @@ public class TransactionRecordActivity extends BaseActivity {
                     }
                 }
                 transactionData.addAll(recordList);
-                adapter.addAll(recordList,true);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(recordList,true);
+                    }
+                });
             }
         });
     }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -142,7 +143,7 @@ public class ShoppingCarEditActivity extends BaseActivity {
 
                 //返回购物车
                 Intent intent = new Intent(ShoppingCarEditActivity.this, ShoppingCarActivity.class);
-                intent.putExtra("data", (Serializable) carBeanList);
+                intent.putParcelableArrayListExtra("data", (ArrayList<ShoppingCarBean>) carBeanList);
                 setResult(130, intent);
                 finish();
             }
@@ -176,7 +177,7 @@ public class ShoppingCarEditActivity extends BaseActivity {
 
 
     private void initDisplayData() {
-        carBeanList = (List<ShoppingCarBean>) getIntent().getSerializableExtra("data");
+        carBeanList = getIntent().getParcelableArrayListExtra("data");
 
         //TODO 获取购物车商品总数
         goodsCount = carBeanList.size();

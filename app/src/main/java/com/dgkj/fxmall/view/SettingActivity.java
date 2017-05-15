@@ -181,6 +181,7 @@ public class SettingActivity extends BaseActivity {
     @OnClick(R.id.btn_logout)
     public void logout() {
         sp.put("login", "false");
+        sp.put("token","");
         MyApplication.isLogin = false;
         jumpTo(HomePageActivity.class, true);
     }

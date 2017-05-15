@@ -2,6 +2,7 @@ package com.dgkj.fxmall.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -72,6 +73,10 @@ public class ConfirmOrderActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(TextUtils.isEmpty(sp.get("token"))){
+            jumpTo(LoginActivity.class,true);
+            return;
+        }
         setContentView(R.layout.activity_confirm_order);
         ButterKnife.bind(this);
         initHeaderView();
@@ -79,7 +84,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         //TODO 获取默认收货地址
         getDefaultAddress();
 
-        orderList = (ArrayList<ShoppingCarBean>) getIntent().getSerializableExtra("orders");
+        orderList = getIntent().getParcelableArrayListExtra("orders");
 
         initOrderLayout();
 

@@ -196,6 +196,12 @@
                 android:paddingLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical"/>
+            <com.dgkj.fxmall.view.myView.FullImageView
+                android:id="@+id/iv_banner"
+                android:layout_width="345dp"
+                android:layout_height="165dp"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

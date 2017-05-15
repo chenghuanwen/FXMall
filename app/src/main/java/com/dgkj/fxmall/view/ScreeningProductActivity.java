@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
@@ -29,6 +30,10 @@ public class ScreeningProductActivity extends BaseActivity {
     TextView tvReset;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
+    @BindView(R.id.tv_near)
+    TextView tvNear;
+    @BindView(R.id.activity_screening)
+    LinearLayout activityScreening;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,7 @@ public class ScreeningProductActivity extends BaseActivity {
     }
 
     @OnClick(R.id.tv_cancle)
-    public void cancel(){
+    public void cancel() {
         finish();
     }
 

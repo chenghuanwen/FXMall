@@ -1,14 +1,18 @@
 package com.dgkj.fxmall.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Android004 on 2017/3/23.
  */
 
-public class MainProductBean implements Serializable{
-    private List<String> urls,detialUrls;
+public class MainProductBean implements Parcelable{
+    private List<String> urls= new ArrayList<>(),detialUrls=new ArrayList<>();
     private String introduce;
     private double price;
     private String sales;
@@ -20,8 +24,77 @@ public class MainProductBean implements Serializable{
     private int inventory,brokerage;
     private StoreBean storeBean;
     private String url;
-
     private int describeScore,priceScore,qualityScore,totalScore;
+    public static final Parcelable.Creator<MainProductBean> CREATOR = new Creator<MainProductBean>() {
+        @Override
+        public MainProductBean createFromParcel(Parcel source) {
+            return new MainProductBean(source);
+        }
+
+        @Override
+        public MainProductBean[] newArray(int size) {
+            return new MainProductBean[size];
+        }
+    };
+
+    public MainProductBean(){}
+
+    public MainProductBean(Parcel source) {
+        source.readStringList(urls);
+        source.readStringList(detialUrls);
+        introduce = source.readString();
+        price = source.readDouble();
+        sales = source.readString();
+        address = source.readString();
+        express = source.readString();
+        vipPrice = source.readDouble();
+        skuId = source.readInt();
+        count = source.readInt();
+        id = source.readInt();
+        color = source.readString();
+        inventory = source.readInt();
+        brokerage = source.readInt();
+        storeBean = source.readParcelable(StoreBean.class.getClassLoader());
+        url = source.readString();
+        describeScore = source.readInt();
+        priceScore = source.readInt();
+        qualityScore = source.readInt();
+        totalScore = source.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(urls);
+        dest.writeStringList(detialUrls);
+        dest.writeString(introduce);
+        dest.writeDouble(price);
+        dest.writeString(sales);
+        dest.writeString(address);
+        dest.writeString(express);
+        dest.writeDouble(vipPrice);
+        dest.writeInt(skuId);
+        dest.writeInt(count);
+        dest.writeInt(id);
+        dest.writeString(color);
+        dest.writeInt(inventory);
+        dest.writeInt(brokerage);
+        dest.writeParcelable(storeBean,flags);
+        dest.writeString(url);
+        dest.writeInt(describeScore);
+        dest.writeInt(priceScore);
+        dest.writeInt(qualityScore);
+        dest.writeInt(totalScore);
+
+    }
+
+    public static Parcelable.Creator<MainProductBean> getCREATOR() {
+        return CREATOR;
+    }
 
     public int getDescribeScore() {
         return describeScore;
@@ -155,10 +228,10 @@ public class MainProductBean implements Serializable{
         return address;
     }
 
+
     public void setAddress(String address) {
         this.address = address;
     }
-
 
     public String getIntroduce() {
         return introduce;

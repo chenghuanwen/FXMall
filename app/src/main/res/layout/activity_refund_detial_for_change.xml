@@ -117,11 +117,13 @@
                 android:background="#fff"
                 android:layout_margin="10dp">
                 <TextView
+                    android:id="@+id/tv_user_type"
                     style="@style/demand_detial_texview2"
                     android:text="买家名称"
                     android:layout_gravity="center"
                     />
                 <TextView
+                    android:id="@+id/tv_user_name"
                     tools:text="粉小萌"
                     style="@style/demand_detial_texview1"
                     android:layout_gravity="center"/>

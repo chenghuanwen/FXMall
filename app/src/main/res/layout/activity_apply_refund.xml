@@ -51,6 +51,7 @@
         android:layout_marginRight="10dp"
         android:paddingLeft="10dp"
         android:background="#fff"
+        android:drawableRight="@mipmap/gwc_bj_xl"
         android:paddingRight="10dp"/>
 
     <LinearLayout

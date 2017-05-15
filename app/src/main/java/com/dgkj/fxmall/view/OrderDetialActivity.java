@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,12 +21,15 @@ import com.dgkj.fxmall.bean.TakeGoodsAddressBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.TimeFormatUtils;
 import com.dgkj.fxmall.view.myView.PasswordInputView;
 import com.dgkj.fxmall.view.myView.PayDialog;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -155,6 +159,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
 
         contentView = (LinearLayout) findViewById(R.id.activity_order_detial);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         ButterKnife.bind(this);
         initHeaderView();
         setData();
@@ -170,11 +176,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         tvOrderTakePhone.setText(order.getTakePhone());
         tvOrderTakeAddress.setText(order.getTakeAddress());
         tvOrderStoreName.setText(order.getStoreName());
-       /* Glide.with(this).load(order.getUrl()).into(ivCarGoods);
-        tvCarGoodsIntroduce.setText(order.getIntroduce());
-        tvCarGoodsColor.setText(order.getColor());
-        tvCarGoodsPrice.setText("¥"+order.getSinglePrice());
-        tvCarGoodsCount.setText("x"+order.getCount());*/
+
         int postage = order.getPostage();
         if(postage == 0){
             tvOrderGetMoney.setText("¥"+sumPrice+"(包邮)");
@@ -210,7 +212,16 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     tvApplyRefund.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showCancleDialog("申请退款",orderBean);//TODO 需获取当前所点击的商品
+                            if(orderBean.getStateNum()==1){//待发货
+                                showCancleDialog("申请退款",orderBean);//TODO 需获取当前所点击的商品
+                            }else {
+                                Intent intent = new Intent(OrderDetialActivity.this,ApplyRefundActivity.class);
+                               // intent.putExtra("reason",cancleReason);
+                                intent.putExtra("money",orderBean.getSinglePrice()*orderBean.getCount());
+                                intent.putExtra("orderId",orderBean.getId());
+                                intent.putExtra("skuId",orderBean.getSkuId());
+                                jumpTo(intent,false);
+                            }
                         }
                     });
                 }
@@ -327,6 +338,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     }
 
 
+    /**
+     * 弹出退款或取消原因选择框
+     */
     private TextView tvReason1,tvReason2,tvReason3,tvReason4;
     private ImageView iv1,iv2,iv3,iv4;
     private String cancleReason;
@@ -359,12 +373,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onClick(View view) {
                 if("申请退款".equals(type)){
-                    Intent intent = new Intent(OrderDetialActivity.this,ApplyRefundActivity.class);
-                    intent.putExtra("reason",cancleReason);
-                    intent.putExtra("money",order.getSinglePrice()*order.getCount());
-                    intent.putExtra("orderId",order.getId());
-                    intent.putExtra("skuId",order.getSkuId());
-                    jumpTo(intent,false);
+                    applyRefund(cancleReason,order);
+
                 }else {
                     //TODO 向服务器发送取消请求
                     cancelOrder(order.getId(),cancleReason);
@@ -385,6 +395,24 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(true);
         pw.show();
+    }
+
+
+    /**
+     * 申请退款
+     * @param cancleReason
+     * @param order
+     */
+    private void applyRefund(String cancleReason, OrderBean order) {
+        Map<String, String> paramas = new HashMap<>();
+        paramas.put("orderCommodity.orders.user.token", sp.get("token"));
+        paramas.put("type", 2 + "");
+        paramas.put("money", order.getSumPrice() + "");
+        paramas.put("reason", cancleReason);
+        paramas.put("orderCommodity.orders.id", order.getId() + "");
+        paramas.put("orderCommodity.sku.id", order.getSkuId() + "");
+
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.USER_APPLY_REFUND_URL, paramas, null, null, null, null,null,null);
     }
 
 
@@ -594,7 +622,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
 
     /**
      * 告知服务器修改该订单的收货地址
-     * @param id
+     * @param addressId
      */
     private void changetTakeAddress(int addressId) {
         FormBody body = new FormBody.Builder()

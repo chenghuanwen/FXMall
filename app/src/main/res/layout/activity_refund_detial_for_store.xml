@@ -130,11 +130,13 @@
                 android:background="#fff"
                 android:layout_margin="10dp">
                 <TextView
+                    android:id="@+id/tv_user_type"
                     style="@style/demand_detial_texview2"
                     android:text="买家名称"
                     android:layout_gravity="center"
                     />
                 <TextView
+                    android:id="@+id/tv_user_name"
                     tools:text="粉小萌"
                     style="@style/demand_detial_texview1"
                     android:layout_gravity="center"/>
@@ -292,6 +294,7 @@
                     android:background="#f3f3f3"
                     android:layout_gravity="center"/>
                 <TextView
+                    android:id="@+id/tv_evidence"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="资料凭证"
@@ -300,6 +303,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"/>
                 <LinearLayout
+                    android:id="@+id/ll_evidence_container"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_margin="10dp"

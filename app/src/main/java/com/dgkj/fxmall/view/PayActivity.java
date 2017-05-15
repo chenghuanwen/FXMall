@@ -23,6 +23,7 @@ import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -113,11 +114,11 @@ public class PayActivity extends AppCompatActivity {
                             if (buf != null && buf.length > 0) {
                                 String content = new String(buf);
                                 Log.e("get server pay params:",content);
-                                JSONObject json = new JSONObject(content);
+                                final JSONObject json = new JSONObject(content);
                                 if(null != json && !json.has("retcode") ){
                                     PayReq req = new PayReq();
-                                    //req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
-                                    req.appId			= json.getString("appid");
+                                    req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
+                                  //  req.appId			= json.getString("appid");
                                     req.partnerId		= json.getString("partnerid");
                                     req.prepayId		= json.getString("prepayid");
                                     req.nonceStr		= json.getString("noncestr");
@@ -125,21 +126,49 @@ public class PayActivity extends AppCompatActivity {
                                     req.packageValue	= json.getString("package");
                                     req.sign			= json.getString("sign");
                                     req.extData			= "app data"; // optional
-                                    Toast.makeText(PayActivity.this, "正常调起支付", Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(PayActivity.this, "正常调起支付", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                                     // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
                                     api.sendReq(req);
                                 }else{
                                     Log.d("PAY_GET", "返回错误"+json.getString("retmsg"));
-                                    Toast.makeText(PayActivity.this, "返回错误"+json.getString("retmsg"), Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                Toast.makeText(PayActivity.this, "返回错误"+json.getString("retmsg"), Toast.LENGTH_SHORT).show();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+
                                 }
                             }else{
                                 Log.d("PAY_GET", "服务器请求错误");
-                                Toast.makeText(PayActivity.this, "服务器请求错误", Toast.LENGTH_SHORT).show();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PayActivity.this, "服务器请求错误", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                             }
 
-                }catch(Exception e){
+                }catch(final Exception e){
                     Log.e("PAY_GET", "异常："+e.getMessage());
-                    Toast.makeText(PayActivity.this, "异常："+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(PayActivity.this, "异常："+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                 }
                         }
                     });

@@ -10,6 +10,7 @@
     tools:context="com.dgkj.fxmall.view.RefundDetialActivity">
     <include layout="@layout/activityheader"
         android:id="@+id/headerview"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -30,15 +31,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:textColor="#ff8194"
-                    android:text="等待商家确认收货"
+                    android:text="退款成功"
                     android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:drawableLeft="@mipmap/ddxq_dd"
                     android:drawablePadding="10dp"
                     android:paddingLeft="20dp"
-                    android:id="@+id/tv_refund_state"
                     android:drawableRight="@mipmap/ddxq_fh"
                     android:paddingRight="10dp"
+                    android:id="@+id/tv_refund_state"
                     android:background="@mipmap/ddxq_mjfkbj"/>
 
                 <LinearLayout
@@ -98,15 +99,9 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                    <Button
-                        android:id="@+id/btn_refused_apply_logistics"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="@drawable/circlebutton_shape"
-                        android:layout_margin="10dp"
-                        android:text="提交物流信息"
-                        android:textColor="#fff"
-                        android:textSize="15sp"/>
+                        android:layout_height="40dp" />
 
             </LinearLayout>
             <LinearLayout
@@ -118,7 +113,7 @@
                 <TextView
                     android:id="@+id/tv_user_type"
                     style="@style/demand_detial_texview2"
-                    android:text="店铺名称"
+                    android:text="买家名称"
                     android:layout_gravity="center"
                     />
                 <TextView
@@ -299,7 +294,8 @@
                         android:layout_weight="1"
                         android:src="@mipmap/android_quanzi"
                         android:scaleType="fitXY"
-                        android:layout_marginRight="20dp"/>
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/circler_main_corner_shape"/>
                     <ImageView
                         android:id="@+id/iv_evidence2"
                         android:layout_width="0dp"
@@ -307,7 +303,8 @@
                         android:layout_weight="1"
                         android:src="@mipmap/android_quanzi"
                         android:scaleType="fitXY"
-                        android:layout_marginRight="20dp"/>
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/circler_main_corner_shape"/>
                     <ImageView
                         android:id="@+id/iv_evidence3"
                         android:layout_width="0dp"
@@ -315,7 +312,8 @@
                         android:layout_weight="1"
                         android:src="@mipmap/android_quanzi"
                         android:scaleType="fitXY"
-                        android:layout_marginRight="10dp"/>
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/circler_main_corner_shape"/>
                 </LinearLayout>
             </LinearLayout>
 

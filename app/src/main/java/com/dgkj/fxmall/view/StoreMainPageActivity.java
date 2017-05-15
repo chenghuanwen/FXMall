@@ -139,7 +139,7 @@ public class StoreMainPageActivity extends BaseActivity {
             tvMsgCount.setText(MyApplication.msgCount+"");
         }
 
-        store = (StoreBean) getIntent().getSerializableExtra("store");
+        store = getIntent().getParcelableExtra("store");
         if (store == null) {
             return;
         }
@@ -150,7 +150,8 @@ public class StoreMainPageActivity extends BaseActivity {
         tvStoreSales.setText("销售总量" + store.getTotalScals());
         tvStoreGoods.setText("宝贝数" + store.getGoodsCount());
         //TODO 设置商品评分图片
-        double stars = (store.getDescribeScore() + store.getQualityScore() + store.getPriceScore()) / 3;
+       // double stars = (store.getDescribeScore() + store.getQualityScore() + store.getPriceScore()) / 3;
+        double stars = store.getTotalScore();
         if (stars <= 1.0) {
             rbCommend.setImageResource(R.mipmap.dppj_dj1);
         } else if (stars > 1.0 && stars < 1.9) {
@@ -209,7 +210,9 @@ public class StoreMainPageActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StoreMainPageActivity.this, StoreMsgActivity.class);
-                intent.putExtra("store", store);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("store", store);
+                intent.putExtras(bundle);
                 jumpTo(intent, false);
             }
         });

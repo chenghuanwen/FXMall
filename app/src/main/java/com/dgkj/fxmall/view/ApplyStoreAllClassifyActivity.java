@@ -68,7 +68,6 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
         initList();
-        // setListener();
         refresh();
     }
 

@@ -128,7 +128,6 @@ public class FXConst {
 
     public static final String CHECK_PAY_PASSWORD = FXM_URL_PORT+"userAction_checkPayPass";
     public static final String GET_BANNER_URL= FXM_URL_PORT+"slideShowAction_getSlide";
-    public static final String GET_MAIN_RECOMMEND_STORES_URLS = FXM_URL_PORT+"recommendStoreAction_getRS";
     public static final String GET_POSTAGE_OF_SOME_DISTRICT = FXM_URL_PORT+"commodityAction_freight";
     public static final String GET_COUNT_OF_STORE_ORDER = FXM_URL_PORT+"orderAction_getSToatal";
     public static final String DELETE_THE_RECOMMEND_STORE = FXM_URL_PORT+"recommendAction_delStore";
@@ -145,6 +144,12 @@ public class FXConst {
     public static final String GET_PRODUCTS_OF_SUBCALSSIFY = FXM_URL_PORT+"commodityAction_subCategory";
     public static final String GET_SHOPPINGCAR_COUNT = FXM_URL_PORT+"shoppingCartAction_getCartCount";
     public static final String GET_PRODUCT_DETIAL_BY_ID = FXM_URL_PORT+"commodityAction_detail";
+    public static final String UPLOAD_STORE_BANANER_URL = FXM_URL_PORT+"storeAction_banana";
+    public static final String GET_REFUND_DETIAL_URL = FXM_URL_PORT+"refundOrderAction_detail";
+
+    public static final String GET_HOME_RECOMMEND_URL = FXM_URL_PORT+"advertisingAction_Advertising";
+    public static final String GET_HOME_MainProducts_URL = FXM_URL_PORT+"commodityAction_search";
+    public static final String GET_SUPER_CLASSIFY_PRODUCTS = FXM_URL_PORT+"categoryAction_commodity";
 
 
 

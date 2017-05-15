@@ -56,18 +56,6 @@ public class ShoppingCarEditSubAdapter extends CommonAdapter<ShoppingGoodsBean> 
             checkBox.setChecked(false);
         }
 
-        //当父item中只有一条数据时，该子item被选中则父item应为全选状态，反正亦然
-        if(datas.size()==1 && checkBox.isChecked()){
-            Message msg = Message.obtain();
-            msg.arg1 = superPosition;
-            msg.what = 0;//父item全选
-            superHandler.sendMessage(msg);
-        }else if(datas.size()==1 && !checkBox.isChecked()){
-            Message msg = Message.obtain();
-            msg.arg1 = superPosition;
-            msg.what = 1;//父item全不选
-            superHandler.sendMessage(msg);
-        }
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -80,6 +68,17 @@ public class ShoppingCarEditSubAdapter extends CommonAdapter<ShoppingGoodsBean> 
                     msg.obj = goods;
                     msg.what = 1;//选中当前
                     handler.sendMessage(msg);
+
+                    //轮询当前店铺所有商品，若均已选中则通知父adapter将店铺设为全选状态
+                    for (ShoppingGoodsBean data : datas) {
+                        if(!data.isSelected()){
+                            return;
+                        }
+                    }
+                    Message msg1 = Message.obtain();
+                    msg1.arg1 = superPosition;
+                    msg1.what = 0;//父item全选
+                    superHandler.sendMessage(msg1);
                 }else {
                     goods.setSelected(false);
                     Message msg = Message.obtain();
@@ -88,9 +87,20 @@ public class ShoppingCarEditSubAdapter extends CommonAdapter<ShoppingGoodsBean> 
                     msg.obj = goods;
                     msg.what = 2;//取消选中
                     handler.sendMessage(msg);
+
+
+                    //轮询当前店铺所有商品，若均未选中则通知父adapter将店铺设为全选状态
+                    for (ShoppingGoodsBean data : datas) {
+                        if(data.isSelected()){
+                            return;
+                        }
+                    }
+                    Message msg1 = Message.obtain();
+                    msg1.arg1 = superPosition;
+                    msg1.what = 1;//父item全选
+                    superHandler.sendMessage(msg1);
                 }
-                //   notifyDataSetChanged();
-              //  notifyItemChanged(position);
+
             }
         });
 

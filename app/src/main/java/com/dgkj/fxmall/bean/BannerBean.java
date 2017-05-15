@@ -7,6 +7,15 @@ package com.dgkj.fxmall.bean;
 public class BannerBean {
     private String url;
     private int type;
+    private int productId;
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
     public String getUrl() {
         return url;

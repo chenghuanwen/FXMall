@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
+import com.dgkj.fxmall.view.myView.FullImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +43,9 @@ public class ViewFlipperAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        FullImageView imageView = new FullImageView(context);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        Glide.with(context).load(images.get(position)).placeholder(R.mipmap.android_quanzi).into(imageView);
+        Glide.with(context).load(images.get(position)).error(R.mipmap.android_quanzi).into(imageView);
         return imageView;
     }
 }

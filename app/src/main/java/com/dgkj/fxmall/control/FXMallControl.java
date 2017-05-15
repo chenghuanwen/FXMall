@@ -11,6 +11,7 @@ import com.dgkj.fxmall.listener.OnGetBannerFinishedListener;
 import com.dgkj.fxmall.listener.OnGetDemandClassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetDemandDatasFinishedListener;
 import com.dgkj.fxmall.listener.OnGetExpressCompanyFinishedListener;
+import com.dgkj.fxmall.listener.OnGetHomeRecommendFinishedListener;
 import com.dgkj.fxmall.listener.OnGetLogisticsDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetLogisticsMsgFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
@@ -154,9 +155,7 @@ public class FXMallControl {
         FXMallModel.getBanners(client,listener);
     }
 
-    public void getMainRecommendStores(OkHttpClient client, OnGetMainRecommendStoreFinishedListener listener){
-        FXMallModel.getMainRecommentStores(client,listener);
-    }
+
     public void getProductCS(OkHttpClient client, int id, final OnGetProductCSFinishedListener listener){
         FXMallModel.getProductCS(client,id,listener);
     }
@@ -170,4 +169,7 @@ public class FXMallControl {
         FXMallModel.getProductsForSubclassify(subId,orderBy,index,size,client,listener);
     }
 
+    public void getHomePageAllRecommender(int page, OnGetHomeRecommendFinishedListener listener){
+        FXMallModel.getHomepageAllRecommend(page,listener);
+    }
 }

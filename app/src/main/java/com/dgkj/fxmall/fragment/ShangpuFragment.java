@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
@@ -33,6 +32,7 @@ import com.dgkj.fxmall.view.PublishProductActivity;
 import com.dgkj.fxmall.view.SetPostageActivity;
 import com.dgkj.fxmall.view.ShangpuOrderActivity;
 import com.dgkj.fxmall.view.StoreInfoEditActivity;
+import com.dgkj.fxmall.view.StoreMainPageActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,6 +111,10 @@ public class ShangpuFragment extends Fragment {
     private OkHttpClient client ;
     private SharedPreferencesUnit sp;
     private Handler handler;
+    private int storeId;
+    private String describe="",logo="", banner ="",name="",address="";
+    private int stars,goodsCount,sales;
+    private double totalScore;
 
     @Nullable
     @Override
@@ -154,17 +158,23 @@ public class ShangpuFragment extends Fragment {
                 try {
                     JSONObject object = new JSONObject(result);
                     final JSONObject dataset = object.getJSONObject("dataset");
-                    final String name = dataset.getString("storeName");
-                    final String describe = dataset.getString("intro");
-                    final String icon = dataset.getString("logo");
-                    final int stars = dataset.getInt("storeGrade");
+                    name = dataset.getString("storeName");
+                    describe = dataset.getString("intro");
+                    address = dataset.getString("address");
+                    logo = dataset.getString("logo");
+                    banner = dataset.getString("banner");
+                    stars = dataset.getInt("storeGrade");
+                    storeId = dataset.getInt("id");
+                    goodsCount = dataset.getInt("cnum");
+                    sales = dataset.getInt("sales");
+                    totalScore = dataset.getDouble("totalScore");
 
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             tvStoreName.setText(name);
                             tvStoreIntroduce.setText(describe);
-                            Glide.with(getContext()).load(icon).into(civShangpu);
+                            Glide.with(getContext()).load(logo).into(civShangpu);
                             switch (stars){
                                 case 0:
                                 case 1:
@@ -391,6 +401,21 @@ public class ShangpuFragment extends Fragment {
         jumpto(intent);
     }
 
+
+    @OnClick(R.id.tv_store_name)
+    public void toMainPage(){
+        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
+        StoreBean storeBean = new StoreBean();
+        storeBean.setId(storeId);
+        storeBean.setTotalScore(totalScore);
+        storeBean.setGoodsCount(goodsCount);
+        storeBean.setTotalScals(sales);
+        storeBean.setIconUrl(logo);
+        storeBean.setName(name);
+        storeBean.setAdress(address);
+        jumpto(intent);
+    }
+
     @OnClick({R.id.rl_insale,R.id.tv_all_products})
     public void onSale() {
         Intent intent = new Intent(getContext(), InTheSaleActivity.class);
@@ -437,17 +462,9 @@ public class ShangpuFragment extends Fragment {
     @OnClick(R.id.civ_shangpu)
     public void storeDetial() {
         Intent intent = new Intent(getContext(), StoreInfoEditActivity.class);
-        StoreBean storeBean = new StoreBean();
-        storeBean.setTotalScals(100);
-        storeBean.setStars(3);
-        storeBean.setQualityScore(3.5);
-        storeBean.setPriceScore(5.0);
-        storeBean.setDescribeScore(5.3);
-        storeBean.setAdress("广东深圳");
-        storeBean.setCreateTime("2017-05-01");
-        storeBean.setGoodsCount(23213);
-        storeBean.setIconUrl("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        intent.putExtra("store", storeBean);
+        intent.putExtra("logo",logo);
+        intent.putExtra("banner", banner);
+        intent.putExtra("introduce",describe);
         jumpto(intent);
     }
 

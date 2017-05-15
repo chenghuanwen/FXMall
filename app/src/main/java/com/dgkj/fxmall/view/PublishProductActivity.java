@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterViewFlipper;
 import android.widget.Button;
@@ -92,12 +93,15 @@ public class PublishProductActivity extends BaseActivity {
 
     private static final int FX_REQUEST_PERMISSION_CODE = 100;
     private static final int TM_REQUEST_PERMISSION_CODE = 110;
+    @BindView(R.id.iv_banner)
+    ImageView ivBanner;
 
     private View headerview;
     private String classify = "";
     private List<View> viewList = new ArrayList<>();
     private List<File> mainImages = new ArrayList<>();
     private List<File> detialImages = new ArrayList<>();
+    private List<File> banners = new ArrayList<>();
     private int classifyId, postageId;
     private List<SuperPostageBean> superPostageList;
     private List<PostageModelSelectBean> postageModelSelectList;
@@ -111,6 +115,9 @@ public class PublishProductActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_product);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         ButterKnife.bind(this);
         initHeaderView();
         getPostage();
@@ -290,9 +297,8 @@ public class PublishProductActivity extends BaseActivity {
         params.put("commodity.freightModel.id", postageId + "");//TODO 区分：若没有运费模板
         params.put("jsonString", sbType.toString());
 
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_PRODUCT_URL, params, "file", mainImages, "commodity.url", detialImages);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_PRODUCT_URL, params, "file", mainImages, "commodity.url", detialImages,"commodity.bFile",banners);
         //TODO 添加上传进度提示
-
         MyApplication.selectedPictures = null;
     }
 
@@ -302,7 +308,7 @@ public class PublishProductActivity extends BaseActivity {
     }
 
     @OnClick(R.id.tv_product_banner)
-    public void uploadBanner(){
+    public void uploadBanner() {
         if (PermissionUtil.isOverMarshmallow() && !PermissionUtil.isPermissionValid(PublishProductActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             Toast.makeText(PublishProductActivity.this, "请打开允许访问SD权限", Toast.LENGTH_SHORT).show();
             List<String> permissions = new ArrayList<>();
@@ -358,7 +364,7 @@ public class PublishProductActivity extends BaseActivity {
             classifyId = data.getIntExtra("subId", -1);
         }
 
-        if (resultCode == RESULT_OK && requestCode == 101) {//从相册获取
+        if (resultCode == RESULT_OK && requestCode == 101) {//从相册获取banner
             Uri uri = data.getData();
             //根据uri查找图片地址
             ContentResolver resolver = getContentResolver();
@@ -369,9 +375,12 @@ public class PublishProductActivity extends BaseActivity {
                 cursor.moveToFirst();
                 String path = cursor.getString(columnIndex);
                 file = new File(path);
+                banners.add(file);
                 cursor.close();
             }
-         //   Glide.with(this).load(uri).into(ivUploadEvidence);
+
+            ivBanner.setVisibility(View.VISIBLE);
+            Glide.with(this).load(uri).into(ivBanner);
 
         }
         super.onActivityResult(requestCode, resultCode, data);

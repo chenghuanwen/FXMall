@@ -10,21 +10,34 @@
     android:background="#f3f3f3f3">
 <include layout="@layout/activityheader"
     android:id="@+id/headerview"/>
+    <TextView
+        android:id="@+id/tv_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp"
+        android:textColor="#909090"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:drawablePadding="5dp"
+        android:text="您还未购买任何商品哦\n快去挑选宝贝吧"
+        android:drawableTop="@mipmap/gwc"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_shopping_car"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"></android.support.v7.widget.RecyclerView>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e8e8e8"/>
     <LinearLayout
+        android:id="@+id/ll_container"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:orientation="horizontal"
-        android:background="#fff"
-        >
+        android:background="#fff">
         <ImageView
             android:id="@+id/iv_car_back"
             android:layout_width="wrap_content"
@@ -47,14 +60,16 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
+
         <TextView
             android:id="@+id/tv_total_price"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="$100"
+            android:text="¥0.00"
             android:gravity="center"
             android:textColor="#ff4a42"
             android:textSize="14sp"/>
+
         <Button
             android:id="@+id/btn_pay"
             android:layout_width="70dp"

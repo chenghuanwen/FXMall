@@ -55,13 +55,12 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_below="@+id/tv_store1_name"/>
-                    <ImageView
+                    <com.dgkj.fxmall.view.myView.FullImageView
                         android:id="@+id/iv_store1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@+id/tv_store1_describe"
-                        android:src="@mipmap/android_quanzi"
-                        android:scaleType="fitXY"/>
+                        android:background="@mipmap/android_quanzi" />
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/store2"
@@ -134,19 +133,18 @@
                 </RelativeLayout>
 
             </android.support.percent.PercentRelativeLayout>
-            <LinearLayout
+           <!-- <LinearLayout
                 android:id="@+id/ll_today_recommend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp">
-                <ImageView
+                <com.dgkj.fxmall.view.myView.FullImageView
                     android:id="@+id/iv_recommend"
                     android:layout_width="match_parent"
                     android:layout_height="192dp"
-                    android:src="@mipmap/android_quanzi"
-                    android:scaleType="fitXY"/>
+                    android:background="@mipmap/android_quanzi" />
                 <TextView
                     android:id="@+id/tv_recommend_title"
                     android:layout_width="match_parent"
@@ -154,7 +152,7 @@
                     android:textColor="#333"
                     android:textSize="14sp"
                     android:text="今日推荐：良品铺百万大奖等你来拿！"/>
-            </LinearLayout>
+            </LinearLayout>-->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
@@ -189,12 +187,11 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:paddingBottom="10dp">
-                <ImageView
+                <com.dgkj.fxmall.view.myView.FullImageView
                     android:id="@+id/new_goods1"
                     app:layout_widthPercent="100%"
                     android:layout_height="192dp"
-                    android:src="@mipmap/android_quanzi"
-                    android:scaleType="fitXY"/>
+                    android:background="@mipmap/android_quanzi" />
                 <ImageView
                     android:id="@+id/new_goods2"
                     android:layout_below="@+id/new_goods1"

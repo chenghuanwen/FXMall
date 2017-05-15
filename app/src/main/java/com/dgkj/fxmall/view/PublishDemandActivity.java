@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterViewFlipper;
 import android.widget.Button;
 import android.widget.EditText;
@@ -81,6 +82,10 @@ public class PublishDemandActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_demand);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
         ButterKnife.bind(this);
         initHeaderView();
 
@@ -145,7 +150,7 @@ public class PublishDemandActivity extends BaseActivity {
             File file = new File(image);
             files.add(file);
         }
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_DEMAND_URL, params, "file", files, null, null);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_DEMAND_URL, params, "file", files, null, null,null,null);
     }
 
     @OnClick(R.id.ll_demand_classify)

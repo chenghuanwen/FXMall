@@ -9,11 +9,13 @@
     android:background="#f3f3f3">
     <include layout="@layout/activityheader"
         android:id="@+id/headerview"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_shoppingCar_edit"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"></android.support.v7.widget.RecyclerView>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

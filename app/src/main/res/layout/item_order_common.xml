@@ -18,12 +18,24 @@
             android:textSize="15sp"
             android:textColor="#333"
             />
+        <TextView
+            android:id="@+id/tv_order_isDeliver"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:text="(商品已发出)"
+            android:layout_toRightOf="@+id/tv_order_storename"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:textSize="15sp"
+            android:textColor="#fe6262"
+            android:visibility="invisible"
+            />
 
         <TextView
             android:id="@+id/tv_order_state"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="等待买家付款"
+            tools:text="等待买家付款"
             android:gravity="center_vertical"
             android:textSize="15sp"
             android:textColor="#fe6262"

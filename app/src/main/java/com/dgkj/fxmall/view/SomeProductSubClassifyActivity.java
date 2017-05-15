@@ -77,10 +77,16 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
             @Override
             public void onSearchProductsFinished(List<MainProductBean> mainProducts) {
                 totalData = mainProducts;
-                adapter.addAll(totalData, true);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(totalData, true);
+                    }
+                });
             }
         });
     }
+
 
     private void initTabLayout() {
         tabLayout.addTab(tabLayout.newTab().setText("综合"), true);

@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +36,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
+import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.constans.Permission;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.PermissionUtil;
+import com.dgkj.fxmall.utils.ToastUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,13 +55,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ApplyRefundActivity extends BaseActivity {
+public class ApplyRefundActivity extends BaseActivity implements View.OnClickListener{
     private static final int TM_REQUEST_PERMISSION_CODE = 110;
     private static final int FX_REQUEST_PERMISSION_CODE = 100;
     @BindView(R.id.tv_select_refund_reason)
     TextView tvSelectRefundReason;
-   /* @BindView(R.id.tv_most_refund)
-    TextView tvMostRefund;*/
+
     @BindView(R.id.et_refund_money)
     EditText etRefundMoney;
     @BindView(R.id.et_refund_describe)
@@ -83,7 +85,6 @@ public class ApplyRefundActivity extends BaseActivity {
     private PopupWindow pw;
     private int refundType = 1, orderId, skuId;
     private double money;
-    private String refundReason = "";
     private FXMallControl control = new FXMallControl();
     private List<File> files = new ArrayList<>();
     private File file;
@@ -96,11 +97,9 @@ public class ApplyRefundActivity extends BaseActivity {
         initHeaderView();
 
         Intent intent = getIntent();
-        refundReason = intent.getStringExtra("reason");
         orderId = intent.getIntExtra("orderId", -1);
         skuId = intent.getIntExtra("skuId", -1);
         money = intent.getDoubleExtra("money", -1);
-        tvSelectRefundReason.setText(refundReason);
         etRefundMoney.setText("¥"+money);
     }
 
@@ -113,6 +112,12 @@ public class ApplyRefundActivity extends BaseActivity {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "申请退款");
     }
+
+    @OnClick(R.id.tv_select_refund_reason)
+    public void selectReason(){
+            showCancleDialog("申请退款");
+    }
+
 
     @OnClick(R.id.tv_refund_type)
     public void refundType() {
@@ -143,7 +148,6 @@ public class ApplyRefundActivity extends BaseActivity {
             }
         });
 
-
         //设置触摸对话框以外区域，对话框消失
         pw.setFocusable(true);
         ColorDrawable cd = new ColorDrawable(Color.parseColor("#00000000"));
@@ -162,22 +166,89 @@ public class ApplyRefundActivity extends BaseActivity {
 
     @OnClick(R.id.btn_submit)
     public void submit() {
+        if(TextUtils.isEmpty(cancleReason)){
+            toast("你还未选择退款原因");
+            return;
+        }
 
         Map<String, String> paramas = new HashMap<>();
         paramas.put("orderCommodity.orders.user.token", sp.get("token"));
         paramas.put("type", refundType + "");
         paramas.put("money", money + "");
-        paramas.put("reason", refundReason);
+        paramas.put("reason", cancleReason);
         paramas.put("orderCommodity.orders.id", orderId + "");
         paramas.put("orderCommodity.sku.id", skuId + "");
 
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.USER_APPLY_REFUND_URL, paramas, "file", files, null, null);
+        String describe = etRefundDescribe.getText().toString();
+        if(!TextUtils.isEmpty(describe)){
+            paramas.put("explain",describe);
+        }
+
+
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.USER_APPLY_REFUND_URL, paramas, "file", files, null, null,null,null);
     }
 
     @OnClick(R.id.ib_back)
     public void back() {
         finish();
     }
+
+
+
+
+
+    /**
+     * 弹出退款或取消原因选择框
+     */
+    private TextView tvReason1,tvReason2,tvReason3,tvReason4;
+    private ImageView iv1,iv2,iv3,iv4;
+    private String cancleReason;
+    private android.app.AlertDialog pw1;
+    private void showCancleDialog(final String type){
+        View contentview = getLayoutInflater().inflate(R.layout.layout_reason_of_cancel_order, null);
+        pw1 = new android.app.AlertDialog.Builder(this).create();
+        pw1.setView(contentview);
+        TextView tvType = (TextView) contentview.findViewById(R.id.tv_cancle_type);
+        tvType.setText("请选择"+type+"的原因");
+        tvReason1 = (TextView) contentview.findViewById(R.id.tv_reason1);
+        tvReason4 = (TextView) contentview.findViewById(R.id.tv_reason4);
+        tvReason3 = (TextView) contentview.findViewById(R.id.tv_reason3);
+        tvReason2 = (TextView) contentview.findViewById(R.id.tv_reason2);
+        iv1 = (ImageView) contentview.findViewById(R.id.iv_confirm1);
+        iv2 = (ImageView) contentview.findViewById(R.id.iv_confirm2);
+        iv3 = (ImageView) contentview.findViewById(R.id.iv_confirm3);
+        iv4 = (ImageView) contentview.findViewById(R.id.iv_confirm4);
+
+        tvReason1.setOnClickListener(this);
+        tvReason2.setOnClickListener(this);
+        tvReason3.setOnClickListener(this);
+        tvReason4.setOnClickListener(this);
+
+
+        TextView tvGirl = (TextView) contentview.findViewById(R.id.tv_confirm);
+        tvGirl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              tvSelectRefundReason.setText(cancleReason);
+
+                pw1.dismiss();
+            }
+        });
+        TextView tvBoy = (TextView) contentview.findViewById(R.id.tv_cancle);
+        tvBoy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw1.dismiss();
+            }
+        });
+
+
+        //设置触摸对话框以外区域，对话框消失
+        pw1.setCanceledOnTouchOutside(true);
+        pw1.show();
+    }
+
+
 
 
 
@@ -392,5 +463,44 @@ public class ApplyRefundActivity extends BaseActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            //弹窗点击处理
+            case R.id.tv_reason1:
+                cancleReason = tvReason1.getText().toString();
+                iv1.setVisibility(View.VISIBLE);
+                iv2.setVisibility(View.GONE);
+                iv3.setVisibility(View.GONE);
+                iv4.setVisibility(View.GONE);
+
+                break;
+            case R.id.tv_reason2:
+                cancleReason = tvReason2.getText().toString();
+                iv1.setVisibility(View.GONE);
+                iv2.setVisibility(View.VISIBLE);
+                iv3.setVisibility(View.GONE);
+                iv4.setVisibility(View.GONE);
+                break;
+            case R.id.tv_reason3:
+                cancleReason = tvReason3.getText().toString();
+                iv1.setVisibility(View.GONE);
+                iv2.setVisibility(View.GONE);
+                iv3.setVisibility(View.VISIBLE);
+                iv4.setVisibility(View.GONE);
+                break;
+            case R.id.tv_reason4:
+                cancleReason = tvReason4.getText().toString();
+                iv1.setVisibility(View.GONE);
+                iv2.setVisibility(View.GONE);
+                iv3.setVisibility(View.GONE);
+                iv4.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }

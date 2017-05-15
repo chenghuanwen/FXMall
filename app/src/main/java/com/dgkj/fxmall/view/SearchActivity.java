@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -45,9 +46,6 @@ public class SearchActivity extends BaseActivity {
     TextView tvSearchType;
     @BindView(R.id.et_search_content)
     EditText etSearchContent;
-    /* @BindView(R.id.iv_search)
-     ImageView ivSearch;*/
-
     @BindView(R.id.tv_change_batch)
     TextView tvChangeBatch;
     @BindView(R.id.rv_hot_search)
@@ -70,6 +68,9 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         initHotWords();
         search();
         getHotWords(index, searchType);

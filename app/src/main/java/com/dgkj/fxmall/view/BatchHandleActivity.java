@@ -12,18 +12,28 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.BatchHandleProductsAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.StoreProductBean;
+import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.LogUtil;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class BatchHandleActivity extends BaseActivity {
     @BindView(R.id.iv_back)
@@ -48,14 +58,20 @@ public class BatchHandleActivity extends BaseActivity {
     private int selectCount;
     private AlertDialog pw;
     private String from = "";
+    private List<StoreProductBean> selectProducts = new ArrayList<>();
+    private OkHttpClient client = new OkHttpClient.Builder().build();
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.arg1) {
                 case 1://选择
+                    StoreProductBean productBean = (StoreProductBean) msg.obj;
+                    selectProducts.add(productBean);
                     adapter.notifyDataSetChanged();
                     break;
                 case 2://取消选择
+                    StoreProductBean product = (StoreProductBean) msg.obj;
+                    selectProducts.remove(product);
                     adapter.notifyDataSetChanged();
                     break;
             }
@@ -92,7 +108,7 @@ public class BatchHandleActivity extends BaseActivity {
         setHeaderTitle(headerview, "批量管理");
 
         from = getIntent().getStringExtra("from");
-        LogUtil.i("TAG", "from===" + from);
+
         if ("sale".equals(from)) {
             llFromRest.setVisibility(View.GONE);
             tvProductOffline.setVisibility(View.VISIBLE);
@@ -105,17 +121,17 @@ public class BatchHandleActivity extends BaseActivity {
 
     @OnClick(R.id.tv_product_offline)
     public void offline() {//下架
-        showDeleteDialog();
+        showDeleteDialog("你确定要下架这"+selectProducts.size()+"件商品吗？");
     }
 
     @OnClick(R.id.tv_product_online)
     public void online() {//上架
-
+        showDeleteDialog("你确定要上架这"+selectProducts.size()+"件商品吗？");
     }
 
     @OnClick(R.id.tv_product_delete)
     public void delete() {//删除
-
+        showDeleteDialog("你确定要删除这"+selectProducts.size()+"件商品吗？");
     }
 
     /**
@@ -139,15 +155,23 @@ public class BatchHandleActivity extends BaseActivity {
         finish();
     }
 
-    private void showDeleteDialog() {
+    private void showDeleteDialog(final String type) {
         View contentview = getLayoutInflater().inflate(R.layout.layout_offline_dialog, null);
         pw = new AlertDialog.Builder(BatchHandleActivity.this).create();
         pw.setView(contentview);
+        TextView tvType = (TextView) contentview.findViewById(R.id.tv_delete_type);
+        tvType.setText(type);
         TextView tvGirl = (TextView) contentview.findViewById(R.id.tv_confirm);
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (type.contains("删除")) {
+                    //TODO 通知服务器删除
 
+                    pw.dismiss();
+                } else {
+                    online(selectProducts.get(0).getStatu());
+                }
                 pw.dismiss();
             }
         });
@@ -162,5 +186,41 @@ public class BatchHandleActivity extends BaseActivity {
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(true);
         pw.show();
+    }
+
+
+
+    /**
+     * 上架或下架商品
+     *
+     * @param statu 区分是出售中的还是仓库中的
+     */
+    private void online(int statu) {
+        FormBody.Builder builder = new FormBody.Builder()
+                .add("store.user.token", sp.get("token"))
+                .add("status", statu + "");
+        for (StoreProductBean selectProduct : selectProducts) {
+            builder.add("ids",selectProduct.getId()+"".trim());
+        }
+        FormBody body = builder.build();
+        final Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.PRODUCT_ONLINE_OFFLINE)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                toastInUI(BatchHandleActivity.this,"网络异常");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.body().string().contains("1000")) {
+                    toastInUI(BatchHandleActivity.this,"操作成功");
+                } else {
+                    toastInUI(BatchHandleActivity.this,"操作失败");
+                }
+            }
+        });
     }
 }

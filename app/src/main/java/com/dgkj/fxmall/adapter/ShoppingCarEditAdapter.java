@@ -51,7 +51,7 @@ public class ShoppingCarEditAdapter extends CommonAdapter<ShoppingCarBean> {
     }
 
     @Override
-    protected void convert(ViewHolder holder, final ShoppingCarBean shoppingCar, int position) {
+    protected void convert(ViewHolder holder, final ShoppingCarBean shoppingCar, final int position) {
         final CheckBox checkBox =  holder.getView(R.id.cb_store_all);
         checkBox.setText(shoppingCar.getStoreName());
         RecyclerView rv = holder.getView(R.id.rv_sub_shoppingcar);
@@ -85,7 +85,13 @@ public class ShoppingCarEditAdapter extends CommonAdapter<ShoppingCarBean> {
                         good.setSelected(false);
                     }
                 }
-                subAdapter.notifyDataSetChanged();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+
             }
         });
     }
@@ -96,6 +102,10 @@ public class ShoppingCarEditAdapter extends CommonAdapter<ShoppingCarBean> {
     public void selectAll(){
         for (ShoppingCarBean mData : mDatas) {
             mData.setSelected(true);
+            ArrayList<ShoppingGoodsBean> goods = mData.getGoods();
+            for (ShoppingGoodsBean good : goods) {
+                good.setSelected(true);
+            }
         }
         notifyDataSetChanged();
     }
@@ -103,6 +113,10 @@ public class ShoppingCarEditAdapter extends CommonAdapter<ShoppingCarBean> {
     public void cancleAll(){
         for (ShoppingCarBean mData : mDatas) {
             mData.setSelected(false);
+            ArrayList<ShoppingGoodsBean> goods = mData.getGoods();
+            for (ShoppingGoodsBean good : goods) {
+                good.setSelected(false);
+            }
         }
         notifyDataSetChanged();
     }

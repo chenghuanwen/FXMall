@@ -96,7 +96,7 @@ public class ShareCommandDialog extends PopupWindow {
     /**
      * 获取分享的商品详情
      */
-    private void getProductData(LoadFinishedListener listener) {
+    private void getProductData(final LoadFinishedListener listener) {
         final ClipData primaryClip = clipboardManager.getPrimaryClip();
         if(primaryClip==null){return;}
         CharSequence pate = primaryClip.getItemAt(0).getText();
@@ -165,8 +165,16 @@ public class ShareCommandDialog extends PopupWindow {
                             storeBean.setPriceScore(store.getDouble("transportScore"));
                             storeBean.setStars(store.getInt("totalScore"));
                             storeBean.setIconUrl(store.getString("logo"));
+                            storeBean.setLicence(store.getString("license"));
+                            storeBean.setKeeper(store.getString("storekeeper"));
+                            storeBean.setId(store.getInt("id"));
+                            storeBean.setRecommender("哎购商城");
+                            storeBean.setMainUrls(new ArrayList<String>());
+                            storeBean.setPhone(store.getString("phone"));
+                            storeBean.setStars(4);
+
                             product.setStoreBean(storeBean);
-                            product.setAddress(address.substring(0, address.indexOf("市")));
+                            product.setAddress(address.substring(0, address.indexOf("市")+1));
 
                             JSONArray dataset = object.getJSONArray("dataset");
                             for (int i = 0; i < dataset.length(); i++) {
@@ -184,7 +192,11 @@ public class ShareCommandDialog extends PopupWindow {
                             product.setColor(colorSizeBean.getColor());
                             product.setInventory(colorSizeBean.getInventory());
                             product.setBrokerage(colorSizeBean.getBrokrage());
-
+                            product.setPrice(colorSizeBean.getPrice());
+                            product.setCount(1);
+                            product.setVipPrice(colorSizeBean.getPrice()*(1-MyApplication.vipRate));
+                            product.setExpress("包邮");//TODO 待定
+                            listener.onLoadFinished();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

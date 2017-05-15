@@ -85,6 +85,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
         this.activity = activity;
         this.listener = listener;
         count = goods.getCount();
+        if(count==0){count=1;}
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(activity);
         control = new FXMallControl();
@@ -92,8 +93,6 @@ public class SelectColorAndSizeDialog extends PopupWindow {
         initColor();
         getColorAndSize();
         setData();
-
-
     }
 
     private void initColor() {
@@ -175,7 +174,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                     goods.setCount(count);
                     goods.setColor(selectColor);
                     list.add(goods);
-                    carBean.setStoreName(goods.getStoreName());
+                    carBean.setStoreName(goods.getStoreBean().getName());
                     carBean.setGoods(list);
                     orders.add(carBean);
                     Intent intent = new Intent(activity,ConfirmOrderActivity.class);
@@ -196,7 +195,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                         goods.setCount(count);
                         goods.setColor(selectColor);
                         list.add(goods);
-                        carBean.setStoreName(goods.getStoreName());
+                        carBean.setStoreName(goods.getStoreBean().getName());
                         carBean.setGoods(list);
                         orders.add(carBean);
                         Intent intent = new Intent(activity,ConfirmOrderActivity.class);

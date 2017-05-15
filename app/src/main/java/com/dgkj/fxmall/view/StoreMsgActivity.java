@@ -74,7 +74,7 @@ public class StoreMsgActivity extends BaseActivity {
 
 
     private void setData() {
-        store = (StoreBean) getIntent().getSerializableExtra("store");
+        store = getIntent().getParcelableExtra("store");
         if (store == null) {
             return;
         }
@@ -109,12 +109,7 @@ public class StoreMsgActivity extends BaseActivity {
         tvStorePriceOk.setText(store.getPriceScore()+"");
         tvStoreQualityOk.setText(store.getQualityScore()+"");
 
-        //TODO 判断是否已实名认证
-        if (store.isHasRealNameCheck()) {
-            tvHasChecked.setText("已通过分销商资格名认证");
-        } else {
-            tvHasChecked.setText("还未通过分销商城资格认证");
-        }
+
 
     }
 

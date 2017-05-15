@@ -52,7 +52,7 @@ public class OkhttpUploadUtils {
      * @param pic_key 文件对应参数名
      * @param files   要上传的文件集合
      */
-    public void sendMultipart(final String reqUrl, final Map<String, String> params, final String pic_key, final List<File> files,final String image_key ,final List<File> fileList) {
+    public void sendMultipart(final String reqUrl, final Map<String, String> params, final String pic_key, final List<File> files,final String image_key ,final List<File> fileList,String b_key,List<File> banners) {
         loadDialog.buildProgressDialog();
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
@@ -75,6 +75,14 @@ public class OkhttpUploadUtils {
              builder.addFormDataPart(image_key,file.getName(), RequestBody.create(MEDIA_TYPE_PNG,file));
             }
         }
+
+        if(banners != null){
+            for (File file : fileList) {
+                // builder.addPart(Headers.of("Content-Disposition", "form-data; name="+image_key+";filename="+file.getName()), RequestBody.create(MediaType.parse("image/png"),file));
+                builder.addFormDataPart(b_key,file.getName(), RequestBody.create(MEDIA_TYPE_PNG,file));
+            }
+        }
+
 
         RequestBody body = builder.build();
         Request request = new Request.Builder()

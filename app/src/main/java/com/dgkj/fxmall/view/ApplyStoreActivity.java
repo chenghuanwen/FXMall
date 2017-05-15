@@ -199,7 +199,7 @@ public class ApplyStoreActivity extends BaseActivity {
         List<File> licenses = new ArrayList<>();
         licenses.add(file);
 
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.APPLY_STORE, params, "file", imageList, "url", licenses);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.APPLY_STORE, params, "file", imageList, "url", licenses,null,null);
 
     }
 

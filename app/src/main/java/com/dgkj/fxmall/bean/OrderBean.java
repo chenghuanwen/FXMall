@@ -18,7 +18,8 @@ public class OrderBean implements Serializable{
     private long payTime;
     private int brokerage;
     private double sumPrice;
-    private boolean hasComment;
+    private boolean hasComment;//是否已评价
+    private boolean hasDeliver;//商品是否已发出
     private long createTime;
     private String takeMan,takePhone,takeAddress;
     private int stateNum;
@@ -29,7 +30,31 @@ public class OrderBean implements Serializable{
     private int expressCodeId;//快递编码id
     private int refundId;//退款id
     private String agreeRefundTime;
+    private int storeId;//商品所属店铺id
+    private String buyer;//买家用户名
 
+    public String getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(String buyer) {
+        this.buyer = buyer;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public boolean isHasDeliver() {
+        return hasDeliver;
+    }
+    public void setHasDeliver(boolean hasDeliver) {
+        this.hasDeliver = hasDeliver;
+    }
 
     public int getExpressCodeId() {
         return expressCodeId;

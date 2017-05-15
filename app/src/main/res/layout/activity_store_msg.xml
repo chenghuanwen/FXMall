@@ -69,9 +69,9 @@
     </LinearLayout>
         <TextView
             android:id="@+id/tv_has_checked"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="23dp"
-            android:text="已资格认证"
+            android:text="已通过资格认证"
             android:textColor="#56abfe"
             android:textSize="12sp"
             android:gravity="center"

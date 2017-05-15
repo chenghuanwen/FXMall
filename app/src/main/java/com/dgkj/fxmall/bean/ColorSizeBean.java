@@ -16,12 +16,12 @@ public class ColorSizeBean implements Parcelable{
     private static final Parcelable.Creator<ColorSizeBean> CREATOR = new Creator() {
         @Override
         public ColorSizeBean createFromParcel(Parcel source) {
-            return new ColorSizeBean();
+            return new ColorSizeBean(source);
         }
 
         @Override
         public ColorSizeBean[] newArray(int size) {
-            return new ColorSizeBean[0];
+            return new ColorSizeBean[size];
         }
     };
 
@@ -102,5 +102,11 @@ public class ColorSizeBean implements Parcelable{
             dest.writeInt(brokrage);
             dest.writeInt(inventory);
             dest.writeByte((byte) (isCheck?0:1));//写入布尔值时用可用数字进行替换，写出时将数字转为Boolean即可
+    }
+
+
+    //固定写法, 只用修改Creator的泛型
+    public static Creator<ColorSizeBean> getCREATOR() {
+        return CREATOR;
     }
 }

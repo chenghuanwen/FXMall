@@ -2,6 +2,7 @@ package com.dgkj.fxmall.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -53,7 +54,9 @@ public class MainProductDisplayAdapter extends CommonAdapter<MainProductBean> {
                 }else {
                     intent = new Intent(context, DemandDetialActivity.class);
                 }
-                intent.putExtra("product",product);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("product",product);
+                intent.putExtras(bundle);
                 context.startActivity(intent);
             }
         });

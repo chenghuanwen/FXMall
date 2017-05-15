@@ -56,6 +56,7 @@
                 android:layout_width="140dp"
                 android:layout_height="30dp"
                 android:textColor="#333"
+                android:inputType="number"
                 android:background="@drawable/circler_corner_shape_e8"
                 android:gravity="center"/>
             <TextView
@@ -69,6 +70,7 @@
                 android:id="@+id/et_span2"
                 android:layout_width="140dp"
                 android:layout_height="30dp"
+                android:inputType="number"
                 android:textColor="#333"
                 android:background="@drawable/circler_corner_shape_e8"
                 android:gravity="center"/>
@@ -90,6 +92,16 @@
         android:textColor="#fff"
         android:layout_margin="10dp"
         android:background="@drawable/circlebutton_shape"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/tv_near"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:text="附近"
+        android:layout_marginTop="20dp"
+        android:textColor="#333"
+        android:layout_margin="10dp"
+        android:background="@mipmap/ddxq_qxdd"
         android:gravity="center"/>
     <View
         android:layout_width="match_parent"

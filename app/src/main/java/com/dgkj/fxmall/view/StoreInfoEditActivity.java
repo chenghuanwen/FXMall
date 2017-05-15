@@ -21,19 +21,18 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.PermissionUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -72,13 +71,18 @@ public class StoreInfoEditActivity extends BaseActivity {
     RelativeLayout rlIcon;
     @BindView(R.id.activity_store_information)
     LinearLayout activityStoreInformation;
+    @BindView(R.id.tv_product_banner)
+    TextView tvProductBanner;
+    @BindView(R.id.iv_banner)
+    ImageView ivBanner;
     private View headerview;
     private static final int TM_REQUEST_PERMISSION_CODE = 110;
     private File file;
     private ByteArrayOutputStream baos;
     private byte[] imageData;
-    private File iconFile;
+    private File iconFile,bannerFile;
     private OkHttpClient client = new OkHttpClient.Builder().build();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,20 @@ public class StoreInfoEditActivity extends BaseActivity {
         setContentView(R.layout.activity_store_information);
         ButterKnife.bind(this);
         initHeaderView();
+        setData();
+    }
+
+    private void setData() {
+        Intent intent = getIntent();
+        String logo = intent.getStringExtra("logo");
+        String banner = intent.getStringExtra("banner");
+        String introduce = intent.getStringExtra("introduce");
+        Glide.with(this).load(logo).error(R.mipmap.android_quanzi).into(civUsemsgIcon);
+        etStoreIntroduce.setText(introduce);
+        if(!TextUtils.isEmpty(banner)){
+            ivBanner.setVisibility(View.VISIBLE);
+            Glide.with(this).load(banner).into(ivBanner);
+        }
     }
 
     @Override
@@ -98,10 +116,23 @@ public class StoreInfoEditActivity extends BaseActivity {
         setHeaderTitle(headerview, "店铺资料");
     }
 
-    @OnClick({R.id.tv_select_store_iocn,R.id.rl_icon})
+    @OnClick({R.id.tv_select_store_iocn, R.id.rl_icon})
     public void selectIcon() {
         selectPhoto();
     }
+
+    @OnClick(R.id.tv_product_banner)
+    public void addBanner(){
+        if (PermissionUtil.isOverMarshmallow() && !PermissionUtil.isPermissionValid(StoreInfoEditActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            Toast.makeText(StoreInfoEditActivity.this, "请打开允许访问SD权限", Toast.LENGTH_SHORT).show();
+            List<String> permissions = new ArrayList<>();
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            PermissionUtil.requestPermissions(StoreInfoEditActivity.this, TM_REQUEST_PERMISSION_CODE, permissions);
+            return;
+        }
+        selectPicture(104);
+    }
+
 
     @OnClick(R.id.btn_save)
     public void save() {
@@ -112,7 +143,7 @@ public class StoreInfoEditActivity extends BaseActivity {
         }
 
         FormBody body = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
+                .add("user.token", sp.get("token"))
                 .add("intro", introduce)
                 .build();
         Request request = new Request.Builder()
@@ -156,7 +187,7 @@ public class StoreInfoEditActivity extends BaseActivity {
                     PermissionUtil.requestPermissions(StoreInfoEditActivity.this, TM_REQUEST_PERMISSION_CODE, permissions);
                     return;
                 }
-                selectPicture();
+                selectPicture(101);
                 alertDialog.dismiss();
             }
         });
@@ -214,10 +245,11 @@ public class StoreInfoEditActivity extends BaseActivity {
         startActivityForResult(intent, 102);
     }
 
-    public void selectPicture() {
+
+    public void selectPicture(int requestCode) {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        startActivityForResult(intent, 101);
+        startActivityForResult(intent, requestCode);
     }
 
     /**
@@ -248,7 +280,8 @@ public class StoreInfoEditActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == 101) {//从相册获取
+        if (resultCode == RESULT_OK && requestCode == 101) {//从相册获取头像
+
             Uri uri = data.getData();
 
             //根据uri查找图片地址
@@ -263,6 +296,23 @@ public class StoreInfoEditActivity extends BaseActivity {
                 cursor.close();
             }
             crop(uri);//裁剪头像
+        }else if (resultCode == RESULT_OK && requestCode == 104) {//从相册获取banner
+            Uri uri = data.getData();
+
+            //根据uri查找图片地址
+            ContentResolver resolver = getContentResolver();
+            String[] pojo = {MediaStore.Images.Media.DATA};
+            Cursor cursor = resolver.query(uri, pojo, null, null, null);
+            if (cursor != null) {
+                int columnIndex = cursor.getColumnIndexOrThrow(pojo[0]);
+                cursor.moveToFirst();
+                String path = cursor.getString(columnIndex);
+                bannerFile = new File(path);
+                cursor.close();
+            }
+            uploadIcon(bannerFile,"bFile",FXConst.UPLOAD_STORE_BANANER_URL);
+            ivBanner.setVisibility(View.VISIBLE);
+            Glide.with(this).load(uri).into(ivBanner);
         } else if (resultCode == RESULT_OK && requestCode == 102) {//拍照
             Uri uri1 = null;
             if (Build.VERSION.SDK_INT >= 24) {
@@ -280,21 +330,18 @@ public class StoreInfoEditActivity extends BaseActivity {
                 civUsemsgIcon.setImageBitmap(bitmap);//设置头像
                 //将头像转为二进制数组写入临时文件传给服务器
                 baos = new ByteArrayOutputStream(bitmap.getWidth() * bitmap.getHeight() * 4);
-                //baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 imageData = baos.toByteArray();
                 try {
-                    //iconFile = iconFile.createTempFile("icon", ".jpg", null);
                     iconFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath(), System.currentTimeMillis() + "icon.png");
                     if (!iconFile.exists()) {
                         iconFile.createNewFile();
                     }
                     FileOutputStream out = new FileOutputStream(iconFile);
-                    LogUtil.i("TAG", "头像截取临时文件==" + iconFile.getAbsolutePath());
                     out.write(imageData);
                     out.flush();
                     out.close();
-                    uploadIcon(iconFile);
+                    uploadIcon(iconFile,"file",FXConst.UPLOAD_STORE_LOGO);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -326,14 +373,18 @@ public class StoreInfoEditActivity extends BaseActivity {
     }
 
 
-    private void uploadIcon(final File iconFile) {
+    /**
+     * 上传头像或banner
+     * @param iconFile
+     */
+    private void uploadIcon(final File iconFile,String key,String url) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         builder.addFormDataPart("user.token", sp.get("token"))
-                .addPart(Headers.of("Content-Disposition", "form-data; name=file;filename=" + iconFile.getName()), RequestBody.create(MediaType.parse("image/png"), iconFile));
+                .addPart(Headers.of("Content-Disposition", "form-data; name="+key+";filename=" + iconFile.getName()), RequestBody.create(MediaType.parse("image/png"), iconFile));
         MultipartBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
-                .url(FXConst.UPLOAD_STORE_LOGO)
+                .url(url)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -345,28 +396,18 @@ public class StoreInfoEditActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
                 if (result.contains("1000")) {
-                    toastInUI(StoreInfoEditActivity.this, "头像上传成功！");
+                    toastInUI(StoreInfoEditActivity.this, "上传成功！");
                     if (iconFile != null) {
                         iconFile.delete();
                     }
 
-
-                   /* try {
-                        JSONObject object = new JSONObject(result);
-                        String iconUrl = object.getString("dataset");
-                        if (iconFile != null) {
-                            iconFile.delete();
-                        }
-                        LogUtil.i("TAG", "头像网络地址===" + iconUrl);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }*/
                 } else {
-                    toastInUI(StoreInfoEditActivity.this, "头像上传失败！");
+                    toastInUI(StoreInfoEditActivity.this, "上传失败！");
                 }
             }
         });
     }
+
 
 
     @OnClick(R.id.ib_back)

@@ -148,24 +148,30 @@ public class ProductDetialActivity extends BaseActivity {
     private void getComments() {
         control.getProductComments(this, product.getId(), 1, 4, client, new OnGetProductCommentListFinishListener() {
             @Override
-            public void onGetProductCommentListFinished(List<CommentBean> comments) {
-                commentAdapter.addAll(comments, true);
+            public void onGetProductCommentListFinished(final List<CommentBean> comments) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        commentAdapter.addAll(comments, true);
+                    }
+                });
+
             }
         });
     }
 
     private void setDatas() {
-        product = (MainProductBean) getIntent().getSerializableExtra("product");
+        product = getIntent().getParcelableExtra("product");
         if (product == null) {
             return;
         }
         //产品信息
         tvProductDetial.setText(product.getIntroduce());
         tvProductPrice.setText("¥" + product.getPrice());
-        tvProductExpress.setText(product.getExpress());
+        tvProductExpress.setText("邮费:¥"+product.getExpress());
         tvProductScales.setText("销量：" + product.getSales() + "笔");
         tvProductAddress.setText(product.getAddress());
-        tvVipPrice.setText("会员价¥" + product.getVipPrice());
+        tvVipPrice.setText("会员价:¥" + product.getVipPrice());
 
         //店铺信息
         StoreBean storeBean = product.getStoreBean();
@@ -276,7 +282,6 @@ public class ProductDetialActivity extends BaseActivity {
         goodsBean.setUrl(product.getUrl());
         goodsBean.setPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
-        goodsBean.setStoreName(product.getStoreBean().getName());
         goodsBean.setInventory(product.getInventory());
         SelectColorAndSizeDialog dialog = new SelectColorAndSizeDialog(this, R.layout.layout_edit_select_color_size, goodsBean, "buy", new OnSelectColorSizeFinishedListener() {
             @Override
@@ -296,7 +301,6 @@ public class ProductDetialActivity extends BaseActivity {
         goodsBean.setUrl(product.getUrls().get(0));
         goodsBean.setPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
-        goodsBean.setStoreName(product.getStoreBean().getName());
         goodsBean.setInventory(product.getInventory());
          SelectColorAndSizeDialog dialog = new SelectColorAndSizeDialog(this, R.layout.layout_car_select_color_size, goodsBean, "edit", new OnSelectColorSizeFinishedListener() {
              @Override
