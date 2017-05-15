@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.DemandMallClassifyBean;
 import com.dgkj.fxmall.view.MoreClassifyActivity;
@@ -33,6 +34,7 @@ public class DemandClassifyAdapter extends CommonAdapter<DemandMallClassifyBean>
         holder.setText(R.id.tv_classify_title,classify.getTitle());
         CircleImageView view = holder.getView(R.id.civ_classify_item);
         view.setImageResource(classify.getResId());
+        Glide.with(context).load(classify.getUrl()).error(R.mipmap.android_quanzi).into(view);
 
         holder.setOnClickListener(R.id.civ_classify_item, new View.OnClickListener() {
             @Override
@@ -43,6 +45,7 @@ public class DemandClassifyAdapter extends CommonAdapter<DemandMallClassifyBean>
                 }else {
                     Intent intent = new Intent(context, SomeProductSuperClassifyActivity.class);
                     intent.putExtra("type",classify.getTitle());
+                    intent.putExtra("classifyId",classify.getSuperId());
                     context.startActivity(intent);
                 }
             }

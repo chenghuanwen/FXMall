@@ -42,6 +42,8 @@
             tools:text="中国风也优雅 玩转中国风"
             android:gravity="center"
             android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="3"
             android:textColor="#f6f6f6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

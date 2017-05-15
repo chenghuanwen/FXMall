@@ -138,6 +138,9 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                 product.setSales(goods.getSales()+"");
                 product.setStoreBean(goods.getStoreBean());
                 product.setVipPrice(goods.getVipPrice());
+                product.setTotalScore(goods.getTotalScore());
+                product.setSkuId(goods.getSkuId());
+                product.setPrice(goods.getPrice());
                 intent.putExtra("product",product);
                 context.startActivity(intent);
             }

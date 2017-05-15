@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnGetSearchHotWordsFinishedListener;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -62,6 +64,8 @@ public class SearchActivity extends BaseActivity {
     private int searchType;
     private int index = 1;
     private OkHttpClient client;
+    private FXMallControl control = new FXMallControl();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,44 +87,17 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void getHotWords(int index, int searchType) {
-        final List<String> words = new ArrayList<>();
-        FormBody body = new FormBody.Builder()
-                .add("type", searchType + "")
-                .add("index", index + "")
-                .add("size", 10 + "")
-                .build();
-        final Request request = new Request.Builder()
-                .post(body)
-                .url(FXConst.GET_HOT_SEARCH_KEY)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String result = response.body().string();
-                if (result.contains("1000")) {
-                    try {
-                        JSONObject object = new JSONObject(result);
-                        JSONArray dataset = object.getJSONArray("dataset");
-                        for (int i = 0; i < dataset.length(); i++) {
-                            JSONObject jsonObject = dataset.getJSONObject(i);
-                            words.add(jsonObject.getString("word"));
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.addAll(words, true);
-                            }
-                        });
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+      control.getSearchHotwords(index, searchType, new OnGetSearchHotWordsFinishedListener() {
+          @Override
+          public void onGetSearchHotWordsFinishedListener(final List<String> words) {
+              runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                      adapter.addAll(words,true);
+                  }
+              });
+          }
+      });
     }
 
 
@@ -130,8 +107,18 @@ public class SearchActivity extends BaseActivity {
         hotWords = new ArrayList<>();
         adapter = new CommonAdapter<String>(this, R.layout.item_search_hot_key, hotWords) {
             @Override
-            protected void convert(ViewHolder holder, String s, int position) {
+            protected void convert(ViewHolder holder, final String s, int position) {
                 holder.setText(R.id.tv_hotword, s);
+                holder.setOnClickListener(R.id.tv_hotword, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(SearchActivity.this, SearchContentActivity.class);
+                        intent.putExtra("type", tvSearchType.getText().toString());
+                        intent.putExtra("key", s);
+                        intent.putExtra("from","search");
+                        jumpTo(intent, false);
+                    }
+                });
             }
         };
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);

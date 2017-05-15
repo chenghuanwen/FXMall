@@ -86,7 +86,7 @@ public class TotalCommentActivity extends BaseActivity {
     }
 
     private void initData() {
-        product = (MainProductBean) getIntent().getSerializableExtra("product");
+        product = getIntent().getParcelableExtra("product");
 
         int describeScore = product.getDescribeScore();
         int priceScore = product.getPriceScore();

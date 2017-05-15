@@ -76,27 +76,43 @@ public class SearchContentActivity extends BaseActivity {
 
     private void getSearchData() {
         if ("search".equals(from) && "商品".equals(searchType)) {
-            control.getSearchProducts(this, searchType,orderBy,index, 15, 0,client, new OnSearchProductsFinishedListener() {
+            control.getSearchProducts(this, searchTitel,orderBy,index, 15, 0,client, new OnSearchProductsFinishedListener() {
                 @Override
-                public void onSearchProductsFinished(List<MainProductBean> products) {
-                    //TODO 写一个通用的商品实体类
-                    adapter.addAll(products,true);
+                public void onSearchProductsFinished(final List<MainProductBean> products) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //TODO 写一个通用的商品实体类
+                            adapter.addAll(products,true);
+                        }
+                    });
+
                 }
             });
         } else if("search".equals(from) && "商铺".equals(searchType)){
-            control.getSearchStores(this, searchType, index, 20, client, new OnGetMyRecommendStoreFinishedListener() {
+            control.getSearchStores(this, searchTitel, index, 20, client, new OnGetMyRecommendStoreFinishedListener() {
                 @Override
-                public void onGetMyRecommendStoreFinished(List<StoreBean> stores) {
-                    storeAdapter.addAll(stores, true);
+                public void onGetMyRecommendStoreFinished(final List<StoreBean> stores) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            storeAdapter.addAll(stores, true);
+                        }
+                    });
                 }
             });
-        }else if("store".equals(from) && "商品".equals(searchType)){
+        }else if("store".equals(from)){
             storeId = getIntent().getIntExtra("storeId",0);
-            control.getSearchProducts(this, searchType,orderBy,index, 15, storeId,client, new OnSearchProductsFinishedListener() {
+            control.getSearchProducts(this, searchTitel,orderBy,index, 15, storeId,client, new OnSearchProductsFinishedListener() {
                 @Override
-                public void onSearchProductsFinished(List<MainProductBean> products) {
-                    //TODO 写一个通用的商品实体类
-                    adapter.addAll(products,true);
+                public void onSearchProductsFinished(final List<MainProductBean> products) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //TODO 写一个通用的商品实体类
+                            adapter.addAll(products,true);
+                        }
+                    });
                 }
             });
         }

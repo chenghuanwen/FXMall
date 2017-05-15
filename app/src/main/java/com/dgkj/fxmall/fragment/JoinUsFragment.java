@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -36,6 +37,10 @@ public class JoinUsFragment extends Fragment {
     View underline2;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
+    @BindView(R.id.ll_joinSP)
+    LinearLayout llJoinSP;
+    @BindView(R.id.ll_joinYWY)
+    LinearLayout llJoinYWY;
     private String from = "";
 
     public JoinUsFragment() {
@@ -66,19 +71,23 @@ public class JoinUsFragment extends Fragment {
                 if (checkedId == R.id.rb_join_store) {
                     underline1.setVisibility(View.VISIBLE);
                     underline2.setVisibility(View.GONE);
+                    llJoinSP.setVisibility(View.VISIBLE);
+                    llJoinYWY.setVisibility(View.GONE);
                 } else {
                     underline1.setVisibility(View.GONE);
                     underline2.setVisibility(View.VISIBLE);
+                    llJoinSP.setVisibility(View.GONE);
+                    llJoinYWY.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
 
     @OnClick(R.id.btn_confirm)
-    public void confirm(){
-        if("sp".equals(from) || rbJoinStore.isChecked()){
+    public void confirm() {
+        if ("sp".equals(from) || rbJoinStore.isChecked()) {
             startActivity(new Intent(getContext(), ApplyStoreActivity.class));
-        }else {
+        } else {
             startActivity(new Intent(getContext(), RechargeActivity.class));
         }
     }

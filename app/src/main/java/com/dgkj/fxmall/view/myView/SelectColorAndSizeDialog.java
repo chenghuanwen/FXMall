@@ -71,7 +71,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                 adapter.notifyDataSetChanged();
                 ColorSizeBean bean = (ColorSizeBean) msg.obj;
                 tvColor.setText(bean.getColor());
-                tvInventory.setText(bean.getInventory());
+                tvInventory.setText("(库存:"+goods.getInventory()+"件)");
                 Glide.with(activity).load(goods.getUrl());
                 selectColor = bean.getColor();
             }
@@ -174,7 +174,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                     goods.setCount(count);
                     goods.setColor(selectColor);
                     list.add(goods);
-                    carBean.setStoreName(goods.getStoreBean().getName());
+                    carBean.setStoreName(goods.getStoreName());
                     carBean.setGoods(list);
                     orders.add(carBean);
                     Intent intent = new Intent(activity,ConfirmOrderActivity.class);

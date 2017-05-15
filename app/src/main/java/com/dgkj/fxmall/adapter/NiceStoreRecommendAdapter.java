@@ -2,6 +2,7 @@ package com.dgkj.fxmall.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,10 +10,12 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.NiceStoreBean;
+import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,7 +38,7 @@ public class NiceStoreRecommendAdapter extends CommonAdapter<NiceStoreBean> {
     }
 
     @Override
-    protected void convert(ViewHolder holder, NiceStoreBean storeBean, int position) {
+    protected void convert(ViewHolder holder, final NiceStoreBean storeBean, int position) {
         holder.setText(R.id.tv_nicestore_name,storeBean.getName());
         holder.setText(R.id.tv_nicestore_introduce,storeBean.getIntroduce());
         holder.setText(R.id.tv_nicestore_address,storeBean.getAddress());
@@ -44,7 +47,7 @@ public class NiceStoreRecommendAdapter extends CommonAdapter<NiceStoreBean> {
         holder.setOnClickListener(R.id.iv_nicestore, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, StoreMainPageActivity.class));
+               getStoreDetial(storeBean.getId());
             }
         });
 
@@ -97,5 +100,35 @@ public class NiceStoreRecommendAdapter extends CommonAdapter<NiceStoreBean> {
             }
         }
         return super.getItemViewType(position);
+    }
+
+
+
+    //TEST
+    private void getStoreDetial(int storeId){
+        StoreBean storeBean = new StoreBean();
+        storeBean.setName("粉小萌");
+        storeBean.setAdress("广东省深圳市龙岗区");
+        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+        storeBean.setCreateTime("2017-5-2");
+        storeBean.setStars(3);
+        storeBean.setTotalScals(300);
+        storeBean.setGoodsCount(1000);
+        storeBean.setId(5);
+        storeBean.setDescribeScore(4.8);
+        storeBean.setPriceScore(4.0);
+        storeBean.setQualityScore(4.2);
+        storeBean.setTotalScore(4.5);
+        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
+        storeBean.setMainUrls(new ArrayList<String>());
+        storeBean.setKeeper("小成成");
+        storeBean.setPhone("15641651432");
+        storeBean.setRecommender("小成成");
+
+        Intent intent = new Intent(context, StoreMainPageActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("store", storeBean);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }

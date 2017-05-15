@@ -20,8 +20,11 @@ import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetProductCSFinishedListener;
 import com.dgkj.fxmall.listener.OnGetProductCommentListFinishListener;
+import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
+import com.dgkj.fxmall.listener.OnGetSearchHotWordsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
 import com.dgkj.fxmall.listener.OnGetShoppingcarProductsFinishedListener;
+import com.dgkj.fxmall.listener.OnGetStoreDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductClassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreSuperClassifyFinishedListener;
@@ -63,7 +66,7 @@ public class FXMallControl {
         FXMallModel.getDemandClassify(handler,context,client,listener);
     }
 
-    public void getStoreProducts(final BaseActivity context, String token, OkHttpClient client, String orderby, int index, int size, int status, final OnGetStoreProductsFinishedListener listener){
+    public void getStoreProducts(final BaseActivity context, String token, OkHttpClient client, String orderby, int index, int size, int status, OnGetStoreProductsFinishedListener listener){
         FXMallModel.getStoreProducts(context,token,client,orderby,index,size,status,listener);
     }
 
@@ -83,6 +86,11 @@ public class FXMallControl {
         FXMallModel.getSubClassifyProductData(listener);
     }
 
+    public void getHomePageProductsDisplay(String token,int index, int size, OkHttpClient client,OnSearchProductsFinishedListener listener) {
+        FXMallModel.getHomePageProductsDisplay(token,index,size,client,listener);
+    }
+
+
     public void getAllTakeAddress(BaseActivity context, String token, OkHttpClient client,OnGetAllAddressFinishedListener listener){
         FXMallModel.getAllTakeAddress(context,token,client,listener);
     }
@@ -99,7 +107,7 @@ public class FXMallControl {
         FXMallModel.getAllPostage(context,token,client,listener);
     }
 
-    public void getStoreProductClassify(final BaseActivity context,String token,int statu,OkHttpClient client, final OnGetStoreProductClassifyFinishedListener listener){
+    public void getStoreProductClassify(final BaseActivity context,String token,int statu,OkHttpClient client, OnGetStoreProductClassifyFinishedListener listener){
         FXMallModel.getStoreProductClassify(context,token,statu,client,listener);
     }
 
@@ -107,69 +115,81 @@ public class FXMallControl {
         FXMallModel.add2shoppingcar(context,token,skuId,client);
     }
 
-    public  void getTransactionRecord(final BaseActivity context,String token,int index,int size,OkHttpClient client, final OnGetTransactionRecorderFinishedListener listener){
+    public  void getTransactionRecord(final BaseActivity context,String token,int index,int size,OkHttpClient client, OnGetTransactionRecorderFinishedListener listener){
         FXMallModel.getTransactionRecord(context,token,index,size,client,listener);
     }
 
-    public void getShoppingcarProducts(final BaseActivity context,String token,int index,int size,OkHttpClient client, final OnGetShoppingcarProductsFinishedListener listener){
+    public void getShoppingcarProducts(final BaseActivity context,String token,int index,int size,OkHttpClient client, OnGetShoppingcarProductsFinishedListener listener){
         FXMallModel.getShoppingcarProducts(context,token,index,size,client,listener);
     }
 
-    public void getMyDemandData(final BaseActivity context, String token, final int index, int size, OkHttpClient client, final OnGetMyDemandDataFinishedListener listener){
+    public void getMyDemandData(final BaseActivity context, String token, int index, int size, OkHttpClient client,OnGetMyDemandDataFinishedListener listener){
         FXMallModel.getMyDemandData(context,token,index,size,client,listener);
     }
 
-    public void getDemandByClassify(final BaseActivity context, int classifyId, final int index, int size, OkHttpClient client, final OnGetMyDemandDataFinishedListener listener){
+    public void getDemandByClassify(final BaseActivity context, int classifyId, int index, int size, OkHttpClient client, OnGetMyDemandDataFinishedListener listener){
         FXMallModel.getDemandByClassify(context,classifyId,index,size,client,listener);
     }
 
-    public void getMyRecommendStore(final BaseActivity context, String token, String url,final int index, int size, OkHttpClient client, final OnGetMyRecommendStoreFinishedListener listener){
+    public void getMyRecommendStore(final BaseActivity context, String token, String url,int index, int size, OkHttpClient client,OnGetMyRecommendStoreFinishedListener listener){
         FXMallModel.getMyRecommendStore(context,token,url,index,size,client,listener);
     }
 
-    public void getSearchProducts(final BaseActivity context, String key, String orderBy,final int index, int size, int storeId,OkHttpClient client, final OnSearchProductsFinishedListener listener){
+    public void getSearchProducts(Activity context, String key, String orderBy,int index, int size, int storeId,OkHttpClient client, OnSearchProductsFinishedListener listener){
         FXMallModel.getSearchProducts(context,key,orderBy,index,size,storeId,client,listener);
     }
 
-    public void getSearchStores(final BaseActivity context, String key, final int index, int size, OkHttpClient client, final OnGetMyRecommendStoreFinishedListener listener){
+    public void getSearchStores(final BaseActivity context, String key, int index, int size, OkHttpClient client, OnGetMyRecommendStoreFinishedListener listener){
         FXMallModel.getSearchStores(context,key,index,size,client,listener);
     }
 
-    public void getMyOrderInfo(final BaseActivity context, String token, final int statu, int isAll, OkHttpClient client, final OnGetMyOrderInfoFinishedListener listener){
+    public void getMyOrderInfo(final BaseActivity context, String token, int statu, int isAll, OkHttpClient client, OnGetMyOrderInfoFinishedListener listener){
         FXMallModel.getMyOrderInfo(context,token,statu,isAll,client,listener);
     }
 
-    public void getStoreOrderInfo(final BaseActivity context, String token, final int statu, int isAll,int index,int size, OkHttpClient client, final OnGetMyOrderInfoFinishedListener listener){
+    public void getStoreOrderInfo(final BaseActivity context, String token,int statu, int isAll,int index,int size, OkHttpClient client, OnGetMyOrderInfoFinishedListener listener){
         FXMallModel.getStoreOrderInfo(context,token,statu,isAll,index,size,client,listener);
     }
 
-    public void getExpressList(final BaseActivity context, OkHttpClient client, final OnGetExpressCompanyFinishedListener listener){
+    public void getExpressList(final BaseActivity context, OkHttpClient client, OnGetExpressCompanyFinishedListener listener){
         FXMallModel.getAllExpressCompany(context,client,listener);
     }
 
-    public void getProductComments(final BaseActivity context, int id, final int index, int size, OkHttpClient client, final OnGetProductCommentListFinishListener listener){
+    public void getProductComments(final BaseActivity context, int id, int index, int size, OkHttpClient client, OnGetProductCommentListFinishListener listener){
         FXMallModel.getProductComments(context,id,index,size,client,listener);
     }
 
-    public void getBanners(OkHttpClient client, final OnGetBannerFinishedListener listener){
+    public void getBanners(OkHttpClient client, OnGetBannerFinishedListener listener){
         FXMallModel.getBanners(client,listener);
     }
 
 
-    public void getProductCS(OkHttpClient client, int id, final OnGetProductCSFinishedListener listener){
+    public void getProductCS(OkHttpClient client, int id, OnGetProductCSFinishedListener listener){
         FXMallModel.getProductCS(client,id,listener);
     }
 
 
-    public void getProductMallAllSubclassify(OkHttpClient client, final OnGetSubclassifyFinishedListener listener){
+    public void getProductMallAllSubclassify(OkHttpClient client, OnGetSubclassifyFinishedListener listener){
         FXMallModel.getProductMallAllSubclassify(client,listener);
     }
 
-    public void getProductsOfSubclassify(int subId, String orderBy, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener){
+    public void getProductsOfSubclassify(int subId, String orderBy, int index, int size, OkHttpClient client,OnSearchProductsFinishedListener listener){
         FXMallModel.getProductsForSubclassify(subId,orderBy,index,size,client,listener);
     }
 
     public void getHomePageAllRecommender(int page, OnGetHomeRecommendFinishedListener listener){
         FXMallModel.getHomepageAllRecommend(page,listener);
+    }
+
+    public void getSearchHotwords(int index, int searchType, OnGetSearchHotWordsFinishedListener listener){
+        FXMallModel.getHotWords(index,searchType,listener);
+    }
+
+    public void getStoreDetialByid(int id, OnGetStoreDetialFinishedListener listener){
+        FXMallModel.getStoreDetailById(id,listener);
+    }
+
+    public void getProductDetialById(int id, OnGetProductDetialFinishedListener listener){
+        FXMallModel.getProductDetialById(id,listener);
     }
 }

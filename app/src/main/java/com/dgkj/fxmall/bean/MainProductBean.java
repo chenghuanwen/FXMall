@@ -24,7 +24,8 @@ public class MainProductBean implements Parcelable{
     private int inventory,brokerage;
     private StoreBean storeBean;
     private String url;
-    private int describeScore,priceScore,qualityScore,totalScore;
+    private int describeScore,priceScore,qualityScore;
+    private double totalScore;
     public static final Parcelable.Creator<MainProductBean> CREATOR = new Creator<MainProductBean>() {
         @Override
         public MainProductBean createFromParcel(Parcel source) {
@@ -59,7 +60,7 @@ public class MainProductBean implements Parcelable{
         describeScore = source.readInt();
         priceScore = source.readInt();
         qualityScore = source.readInt();
-        totalScore = source.readInt();
+        totalScore = source.readDouble();
     }
 
     @Override
@@ -88,7 +89,7 @@ public class MainProductBean implements Parcelable{
         dest.writeInt(describeScore);
         dest.writeInt(priceScore);
         dest.writeInt(qualityScore);
-        dest.writeInt(totalScore);
+        dest.writeDouble(totalScore);
 
     }
 
@@ -120,11 +121,11 @@ public class MainProductBean implements Parcelable{
         this.qualityScore = qualityScore;
     }
 
-    public int getTotalScore() {
+    public double getTotalScore() {
         return totalScore;
     }
 
-    public void setTotalScore(int totalScore) {
+    public void setTotalScore(double totalScore) {
         this.totalScore = totalScore;
     }
 

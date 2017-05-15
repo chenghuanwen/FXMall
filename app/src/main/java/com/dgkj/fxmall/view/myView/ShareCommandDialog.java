@@ -30,6 +30,7 @@ import com.dgkj.fxmall.bean.ShoppingGoodsBean;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnSelectColorSizeFinishedListener;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.ConfirmOrderActivity;
@@ -59,7 +60,7 @@ import okhttp3.Response;
 @SuppressLint("ValidFragment")
 public class ShareCommandDialog extends PopupWindow {
 
-    private TextView tvContent,tvPrice;
+    private TextView tvContent, tvPrice;
     private ImageView ivProduct;
     private OkHttpClient client;
     private SharedPreferencesUnit sp;
@@ -67,12 +68,12 @@ public class ShareCommandDialog extends PopupWindow {
     private BaseActivity activity;
     private View conentView;
     private ClipboardManager clipboardManager;
-    private Handler handler ;
+    private Handler handler;
     private String productId;
     private MainProductBean product;
     private ArrayList<ColorSizeBean> colors;
 
-    public ShareCommandDialog(BaseActivity activity, ClipboardManager clipboardManager){
+    public ShareCommandDialog(BaseActivity activity, ClipboardManager clipboardManager) {
         this.activity = activity;
         this.clipboardManager = clipboardManager;
         client = new OkHttpClient.Builder().build();
@@ -90,7 +91,6 @@ public class ShareCommandDialog extends PopupWindow {
         });
 
 
-
     }
 
     /**
@@ -98,109 +98,27 @@ public class ShareCommandDialog extends PopupWindow {
      */
     private void getProductData(final LoadFinishedListener listener) {
         final ClipData primaryClip = clipboardManager.getPrimaryClip();
-        if(primaryClip==null){return;}
+        if (primaryClip == null) {
+            return;
+        }
         CharSequence pate = primaryClip.getItemAt(0).getText();
-        if(pate==null){return;}
+        if (pate == null) {
+            return;
+        }
         String clip = pate.toString();
-        if(clip.contains("FXMall")){
+        if (clip.contains("FXMall")) {
             Pattern pattern = Pattern.compile("^\\d+$");
             Matcher matcher = pattern.matcher(clip);
-            while (matcher.find()){
+            while (matcher.find()) {
                 int start = matcher.start();
                 int end = matcher.end();
-                productId = clip.substring(start,end+1);
+                productId = clip.substring(start, end + 1);
             }
-            FormBody body = new FormBody.Builder()
-                    .add("id",productId)
-                    .build();
-            Request request = new Request.Builder()
-                    .post(body)
-                    .url(FXConst.GET_PRODUCT_DETIAL_BY_ID)
-                    .build();
-            client.newCall(request).enqueue(new Callback() {
+            control.getProductDetialById(Integer.parseInt(productId), new OnGetProductDetialFinishedListener() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String string = response.body().string();
-                    if(string.contains("1000")){
-                        try {
-                            JSONObject object = new JSONObject(string);
-                            JSONObject jsonObject = object.getJSONObject("data");
-                            product.setId(jsonObject.getInt("id"));
-                            product.setDescribeScore(jsonObject.getInt("describeScore"));
-                            product.setPriceScore(jsonObject.getInt("transportScore"));
-                            product.setQualityScore(jsonObject.getInt("qualityScore"));
-                            product.setTotalScore(jsonObject.getInt("totalScore"));
-                            product.setIntroduce(jsonObject.getString("detail"));
-                            product.setSales(jsonObject.getInt("sales") + "");
-                            String detailUrls = jsonObject.getString("detailUrl");
-                            JSONArray detailUrl = new JSONArray(detailUrls);
-                            List<String> mainImages = new ArrayList<>();
-                            for (int j = 0; j < detailUrl.length(); j++) {
-                                mainImages.add(detailUrl.getString(j));
-                            }
-                            product.setDetialUrls(mainImages);
-                            List<String> detialImages = new ArrayList<>();
-                            String pictrue = jsonObject.getString("pictrue");
-                            JSONArray pictrues = new JSONArray(pictrue);
-                            for (int k = 0; k < pictrues.length(); k++) {
-                                detialImages.add(pictrues.getString(k));
-                            }
-                            product.setUrls(detialImages);
-                            product.setUrl(product.getUrls().get(0));
-                            //TODO 商品对应店铺详情
-                            JSONObject store = jsonObject.getJSONObject("store");
-                            StoreBean storeBean = new StoreBean();
-                            storeBean.setName(store.getString("storeName"));
-                            String address = store.getString("address");
-                            storeBean.setAdress(address);
-                            storeBean.setGoodsCount(store.getInt("cnum"));
-                            storeBean.setTotalScals(store.getInt("sales"));
-                            storeBean.setCreateTime(store.getString("createTime"));
-                            storeBean.setQualityScore(store.getDouble("qualityScore"));
-                            storeBean.setDescribeScore(store.getDouble("describeScore"));
-                            storeBean.setPriceScore(store.getDouble("transportScore"));
-                            storeBean.setStars(store.getInt("totalScore"));
-                            storeBean.setIconUrl(store.getString("logo"));
-                            storeBean.setLicence(store.getString("license"));
-                            storeBean.setKeeper(store.getString("storekeeper"));
-                            storeBean.setId(store.getInt("id"));
-                            storeBean.setRecommender("哎购商城");
-                            storeBean.setMainUrls(new ArrayList<String>());
-                            storeBean.setPhone(store.getString("phone"));
-                            storeBean.setStars(4);
-
-                            product.setStoreBean(storeBean);
-                            product.setAddress(address.substring(0, address.indexOf("市")+1));
-
-                            JSONArray dataset = object.getJSONArray("dataset");
-                            for (int i = 0; i < dataset.length(); i++) {
-                                ColorSizeBean color = new ColorSizeBean();
-                                JSONObject colorbean = dataset.getJSONObject(i);
-                                color.setColor(colorbean.getString("content"));
-                                color.setInventory(colorbean.getInt("inventory"));
-                                color.setBrokrage(colorbean.getInt("brokerage"));
-                                color.setPrice(colorbean.getInt("price"));
-                                color.setId(colorbean.getInt("id"));
-                                colors.add(color);
-                            }
-                            ColorSizeBean colorSizeBean = colors.get(0);
-                            product.setSkuId(colorSizeBean.getId());
-                            product.setColor(colorSizeBean.getColor());
-                            product.setInventory(colorSizeBean.getInventory());
-                            product.setBrokerage(colorSizeBean.getBrokrage());
-                            product.setPrice(colorSizeBean.getPrice());
-                            product.setCount(1);
-                            product.setVipPrice(colorSizeBean.getPrice()*(1-MyApplication.vipRate));
-                            product.setExpress("包邮");//TODO 待定
-                            listener.onLoadFinished();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                public void onGetProductDetialFinishedListener(MainProductBean product1) {
+                    product = product1;
+                    listener.onLoadFinished();
                 }
             });
         }
@@ -211,20 +129,20 @@ public class ShareCommandDialog extends PopupWindow {
 
         TextView tvGirl = (TextView) conentView.findViewById(R.id.tv_confirm);
         tvContent.setText(product.getIntroduce());
-        tvPrice.setText("¥"+product.getPrice());
+        tvPrice.setText("¥" + product.getPrice());
         Glide.with(activity).load(product.getUrl()).into(ivProduct);
 
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO 获取商品数据
-                Intent intent = new Intent(activity,ProductDetialActivity.class);
-                intent.putExtra("product",product);
-                intent.putParcelableArrayListExtra("colors",colors);
+                Intent intent = new Intent(activity, ProductDetialActivity.class);
+                intent.putExtra("product", product);
+                intent.putParcelableArrayListExtra("colors", colors);
 
                 activity.startActivity(intent);
                 dismiss();
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null,""));
+                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, ""));
             }
         });
         TextView tvBoy = (TextView) conentView.findViewById(R.id.tv_cancle);
@@ -232,10 +150,9 @@ public class ShareCommandDialog extends PopupWindow {
             @Override
             public void onClick(View view) {
                 dismiss();
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(null,""));
+                clipboardManager.setPrimaryClip(ClipData.newPlainText(null, ""));
             }
         });
-
 
 
     }
@@ -273,22 +190,24 @@ public class ShareCommandDialog extends PopupWindow {
      * @param parent
      */
     public void showPopupWindow(final View parent) {
-        if(parent==null){return;}
+        if (parent == null) {
+            return;
+        }
         if (!this.isShowing()) {
             // 以下拉方式显示popupwindow
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    showAtLocation(parent,Gravity.CENTER,0,0);
+                    showAtLocation(parent, Gravity.CENTER, 0, 0);
                 }
-            },500);
+            }, 500);
         } else {
             this.dismiss();
         }
     }
 
 
-    private interface LoadFinishedListener{
+    private interface LoadFinishedListener {
         void onLoadFinished();
     }
 }

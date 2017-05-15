@@ -79,6 +79,9 @@ public class MoreClassifyActivity extends BaseActivity {
                     @Override
                     public void run() {
                         subAdapter.addAll(classifyList, true);
+                        //默认选择第一项
+                        rvAllClassify.setSelection(0);
+                        getSubclassify(classifyList.get(0).getId());
                     }
                 });
             }

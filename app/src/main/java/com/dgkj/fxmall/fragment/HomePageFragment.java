@@ -7,6 +7,7 @@ import android.support.percent.PercentRelativeLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,12 @@ import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetBannerFinishedListener;
 import com.dgkj.fxmall.listener.OnGetHomeRecommendFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
+import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
+import com.dgkj.fxmall.listener.OnGetSearchHotWordsFinishedListener;
+import com.dgkj.fxmall.listener.OnGetStoreDetialFinishedListener;
+import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.BannerImageLoader;
+import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.NewGoodsActivity;
 import com.dgkj.fxmall.view.ProductDetialActivity;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
@@ -123,6 +129,9 @@ public class HomePageFragment extends Fragment {
     private List<HomePageRecommendBean> storeRecommends = new ArrayList<>();
     private List<HomePageRecommendBean> newGoodsRecommends = new ArrayList<>();
     private HomePageRecommendBean store, newGoods;
+    private SharedPreferencesUnit sp ;
+    private int index = 1;
+    private  List<ProductClassifyBean> list = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,13 +139,60 @@ public class HomePageFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.layout_homepage_fragment, container, false);
         ButterKnife.bind(this, rootView);
         initview(rootView);
+
+        sp = SharedPreferencesUnit.getInstance(getContext());
+
         initBanner();
+        //TEST
         testRecyclerview();
         //获取所有推荐
         getRecommendData();
+        //获取首页展示商品
+        getDisplayProducts();
+
         return rootView;
     }
 
+
+
+    //获取首页展示商品
+    private void getDisplayProducts() {
+
+        if(TextUtils.isEmpty(sp.get("token"))){//未登录,展示热门搜索商品
+            control.getSearchHotwords(1, 0, new OnGetSearchHotWordsFinishedListener() {
+                @Override
+                public void onGetSearchHotWordsFinishedListener(List<String> words) {
+                    control.getSearchProducts(getActivity(), words.get(0),"createTime ",index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
+                        @Override
+                        public void onSearchProductsFinished(final List<MainProductBean> products) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //TODO 写一个通用的商品实体类
+                                    productDisplayAdapter.addAll(products,true);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }else {
+            control.getHomePageProductsDisplay(sp.get("token"), index, 20, okHttpClient, new OnSearchProductsFinishedListener() {
+                @Override
+                public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            productDisplayAdapter.addAll(mainProducts,true);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+
+    //获取所有推荐数据
     private void getRecommendData() {
         control.getHomePageAllRecommender(0, new OnGetHomeRecommendFinishedListener() {
             @Override
@@ -156,6 +212,13 @@ public class HomePageFragment extends Fragment {
                         case "home_NCommodity_Down":
                             newGoodsRecommends.add(homePageRecommendBean);
                             break;
+                        case "home_Category"://
+                            ProductClassifyBean classifyBean = new ProductClassifyBean();
+                            classifyBean.setTaxon(homePageRecommendBean.getTitel());
+                            classifyBean.setUrl(homePageRecommendBean.getUrl());
+                            classifyBean.setId(homePageRecommendBean.getLink());
+                            list.add(classifyBean);
+                            break;
                     }
                 }
                 setData();
@@ -173,13 +236,15 @@ public class HomePageFragment extends Fragment {
         Glide.with(getContext()).load(newGoodsRecommends.get(2).getUrl()).error(R.mipmap.android_quanzi).into(newGoods4);
         Glide.with(getContext()).load(newGoodsRecommends.get(3).getUrl()).error(R.mipmap.android_quanzi).into(newGoods5);
 
+        classifyAdapter.addAll(list, true);
+
     }
 
 
     //TEST
     private void testRecyclerview() {
-        List<MainProductBean> list = new ArrayList<>();
         List<ProductClassifyBean> list1 = new ArrayList<>();
+        List<MainProductBean> list = new ArrayList<>();
         List<String> url = new ArrayList<>();
         url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
         url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
@@ -274,6 +339,7 @@ public class HomePageFragment extends Fragment {
 
     }
 
+/*
 
     @OnClick(R.id.iv_store1)
     public void toStore1() {
@@ -315,6 +381,7 @@ public class HomePageFragment extends Fragment {
         getProductDetial(newGoodsRecommends.get(3).getLink());
     }
 
+*/
 
     //TEST
     @OnClick(R.id.rl_store)
@@ -410,7 +477,7 @@ public class HomePageFragment extends Fragment {
     //初始化banner图
     private void initBanner() {
         bannerDatas = new ArrayList<>();
-        control.getBanners(okHttpClient, new OnGetBannerFinishedListener() {
+      /*  control.getBanners(okHttpClient, new OnGetBannerFinishedListener() {
             @Override
             public void onGetBannerFinishedListener(final List<BannerBean> banners) {
                 for (BannerBean bannerBean : banners) {
@@ -436,7 +503,7 @@ public class HomePageFragment extends Fragment {
                     }
                 });
             }
-        });
+        });*/
 
 
         //TEST
@@ -514,98 +581,18 @@ public class HomePageFragment extends Fragment {
      * @param productId
      */
     private void getProductDetial(int productId) {
-        FormBody body = new FormBody.Builder()
-                .add("id", productId + "")
-                .build();
-        Request request = new Request.Builder()
-                .post(body)
-                .url(FXConst.GET_PRODUCT_DETIAL_BY_ID)
-                .build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
+        control.getProductDetialById(productId, new OnGetProductDetialFinishedListener() {
             @Override
-            public void onFailure(Call call, IOException e) {
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String string = response.body().string();
-                if (string.contains("1000")) {
-                    MainProductBean product = new MainProductBean();
-                    try {
-                        JSONObject object = new JSONObject(string);
-                        JSONObject jsonObject = object.getJSONObject("data");
-                        product.setId(jsonObject.getInt("id"));
-                        product.setDescribeScore(jsonObject.getInt("describeScore"));
-                        product.setPriceScore(jsonObject.getInt("transportScore"));
-                        product.setQualityScore(jsonObject.getInt("qualityScore"));
-                        product.setTotalScore(jsonObject.getInt("totalScore"));
-                        product.setIntroduce(jsonObject.getString("detail"));
-                        product.setSales(jsonObject.getInt("sales") + "");
-                        String detailUrls = jsonObject.getString("detailUrl");
-                        JSONArray detailUrl = new JSONArray(detailUrls);
-                        List<String> mainImages = new ArrayList<>();
-                        for (int j = 0; j < detailUrl.length(); j++) {
-                            mainImages.add(detailUrl.getString(j));
-                        }
-                        product.setDetialUrls(mainImages);
-                        List<String> detialImages = new ArrayList<>();
-                        String pictrue = jsonObject.getString("pictrue");
-                        JSONArray pictrues = new JSONArray(pictrue);
-                        for (int k = 0; k < pictrues.length(); k++) {
-                            detialImages.add(pictrues.getString(k));
-                        }
-                        product.setUrls(detialImages);
-                        product.setUrl(product.getUrls().get(0));
-                        //TODO 商品对应店铺详情
-                        JSONObject store = jsonObject.getJSONObject("store");
-                        StoreBean storeBean = new StoreBean();
-                        storeBean.setName(store.getString("storeName"));
-                        String address = store.getString("address");
-                        storeBean.setAdress(address);
-                        storeBean.setGoodsCount(store.getInt("cnum"));
-                        storeBean.setTotalScals(store.getInt("sales"));
-                        storeBean.setCreateTime(store.getString("createTime"));
-                        storeBean.setQualityScore(store.getDouble("qualityScore"));
-                        storeBean.setDescribeScore(store.getDouble("describeScore"));
-                        storeBean.setPriceScore(store.getDouble("transportScore"));
-                        storeBean.setStars(store.getInt("totalScore"));
-                        storeBean.setIconUrl(store.getString("logo"));
-                        product.setStoreBean(storeBean);
-                        product.setAddress(address.substring(0, address.indexOf("市") + 1));
-
-                        JSONArray dataset = object.getJSONArray("dataset");
-                        List<ColorSizeBean> colors = new ArrayList<>();
-                        for (int i = 0; i < dataset.length(); i++) {
-                            ColorSizeBean color = new ColorSizeBean();
-                            JSONObject colorbean = dataset.getJSONObject(i);
-                            color.setColor(colorbean.getString("content"));
-                            color.setInventory(colorbean.getInt("inventory"));
-                            color.setBrokrage(colorbean.getInt("brokerage"));
-                            color.setPrice(colorbean.getInt("price"));
-                            color.setId(colorbean.getInt("id"));
-                            colors.add(color);
-                        }
-                        ColorSizeBean colorSizeBean = colors.get(0);
-                        product.setSkuId(colorSizeBean.getId());
-                        product.setColor(colorSizeBean.getColor());
-                        product.setInventory(colorSizeBean.getInventory());
-                        product.setBrokerage(colorSizeBean.getBrokrage());
-                        product.setPrice(colorSizeBean.getPrice());
-                        product.setCount(1);
-                        product.setVipPrice(colorSizeBean.getPrice() * (1 - MyApplication.vipRate));
-                        product.setExpress("包邮");//TODO 待定
-                        //跳转到商品详情
-                        Intent intent = new Intent(getContext(), ProductDetialActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("product", product);
-                        intent.putExtras(bundle);
-                        getContext().startActivity(intent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+            public void onGetProductDetialFinishedListener(MainProductBean product) {
+                //跳转到商品详情
+                Intent intent = new Intent(getContext(), ProductDetialActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("product", product);
+                intent.putExtras(bundle);
+                getContext().startActivity(intent);
             }
         });
+
     }
 
 
@@ -615,13 +602,18 @@ public class HomePageFragment extends Fragment {
      * @param productId
      */
     private void getStoreDetial(int productId) {
-        //TODO 跳转到商铺详情
-        StoreBean storeBean = new StoreBean();
-        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("store", storeBean);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
+        control.getStoreDetialByid(productId, new OnGetStoreDetialFinishedListener() {
+            @Override
+            public void onGetStoreDetialFinishedListener(StoreBean store) {
+                //TODO 跳转到商铺详情
+                Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("store", store);
+                intent.putExtras(bundle);
+                getContext().startActivity(intent);
+            }
+        });
+
     }
 
 

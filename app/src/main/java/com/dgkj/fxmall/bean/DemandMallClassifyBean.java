@@ -5,13 +5,35 @@ package com.dgkj.fxmall.bean;
  */
 
 public class DemandMallClassifyBean {
-    private String title;
-    private int resId;
-public DemandMallClassifyBean(String title,int resId){
+    private String title,url;
+    private int resId,superId;
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public int getSuperId() {
+        return superId;
+    }
+
+    public void setSuperId(int superId) {
+        this.superId = superId;
+    }
+
+    public DemandMallClassifyBean(String title, int resId){
     this.title = title;
     this.resId = resId;
 
 }
+    public DemandMallClassifyBean(){}
     public String getTitle() {
         return title;
     }

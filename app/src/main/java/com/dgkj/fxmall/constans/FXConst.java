@@ -149,7 +149,7 @@ public class FXConst {
 
     public static final String GET_HOME_RECOMMEND_URL = FXM_URL_PORT+"advertisingAction_Advertising";
     public static final String GET_HOME_MainProducts_URL = FXM_URL_PORT+"commodityAction_search";
-    public static final String GET_SUPER_CLASSIFY_PRODUCTS = FXM_URL_PORT+"categoryAction_commodity";
+    public static final String GET_STORE_DETIAL_BY_ID = FXM_URL_PORT+"storeAction_detail";
 
 
 

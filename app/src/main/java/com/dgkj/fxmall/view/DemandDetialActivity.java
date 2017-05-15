@@ -75,7 +75,7 @@ public class DemandDetialActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
 
-        demandBean = getIntent().getParcelableExtra("product");
+        demandBean = (MainDemandBean) getIntent().getSerializableExtra("product");
         if(MyApplication.shoppingCount == 0){
             tvCarCount1.setVisibility(View.GONE);
         }else {

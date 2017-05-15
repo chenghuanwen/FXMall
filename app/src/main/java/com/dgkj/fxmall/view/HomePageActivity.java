@@ -82,7 +82,7 @@ public class HomePageActivity extends BaseActivity {
     private BDLocationListener mListener = new MyLocationListener();
     private OkHttpClient okHttpClient;
     private ClipboardManager clipboardManager;
-    private String from="";
+    private String from="sp";
     private long mExitTime;
 
     @Override
@@ -213,7 +213,6 @@ public class HomePageActivity extends BaseActivity {
 
     private void checkLocationPermission() {
         if (!PermissionUtil.isOverMarshmallow()) {
-            LogUtil.i("TAG", "6.0以下机型====");
             getCurrentLocation();
         } else if (PermissionUtil.isPermissionValid(this, Permission.PERMISSIONS_LOCATION)
                 && PermissionUtil.isPermissionValid(this, Permission.PERMISSIONS_COARSE_LOCATION)
