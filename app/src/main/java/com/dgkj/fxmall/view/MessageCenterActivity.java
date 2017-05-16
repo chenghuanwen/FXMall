@@ -50,6 +50,16 @@ public class MessageCenterActivity extends BaseActivity {
     ImageButton ibBack;
     @BindView(R.id.activity_message_center)
     LinearLayout activityMessageCenter;
+    @BindView(R.id.tv_msg_count4)
+    TextView tvMsgCount4;
+    @BindView(R.id.fl_civ4)
+    FrameLayout flCiv4;
+    @BindView(R.id.tv_msg_content4)
+    TextView tvMsgContent4;
+    @BindView(R.id.tv_msg_time4)
+    TextView tvMsgTime4;
+    @BindView(R.id.rl_publish_account)
+    RelativeLayout rlPublishAccount;
 
     private View headerview;
 

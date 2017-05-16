@@ -54,6 +54,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.FormBody;
 
 public class ApplyRefundActivity extends BaseActivity implements View.OnClickListener{
     private static final int TM_REQUEST_PERMISSION_CODE = 110;
@@ -88,6 +89,9 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
     private FXMallControl control = new FXMallControl();
     private List<File> files = new ArrayList<>();
     private File file;
+    private String from,money1,explain,number,reason,timeFormat,refundType1,storeName;//修改退款申请
+    private ArrayList<String> evidences;
+    private int refundId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +100,42 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
         ButterKnife.bind(this);
         initHeaderView();
 
+        initData();
+    }
+
+    private void initData() {
         Intent intent = getIntent();
-        orderId = intent.getIntExtra("orderId", -1);
-        skuId = intent.getIntExtra("skuId", -1);
-        money = intent.getDoubleExtra("money", -1);
-        etRefundMoney.setText("¥"+money);
+        from = intent.getStringExtra("from");
+        if("refund".equals(from)){
+            money1 = intent.getStringExtra("money");
+            explain = intent.getStringExtra("explain");
+            number = intent.getStringExtra("number");
+            reason = intent.getStringExtra("reason");
+            timeFormat = intent.getStringExtra("timeFormat");
+            refundType1 = intent.getStringExtra("refundType1");
+            storeName = intent.getStringExtra("storeName");
+            evidences = intent.getStringArrayListExtra("evidences");
+            refundId = intent.getIntExtra("refundId",-1);
+
+            tvSelectRefundReason.setText(reason);
+            tvRefundType.setText(refundType1);
+            etRefundMoney.setText(money1);
+            etRefundDescribe.setText(explain);
+            if(evidences.size()==1){
+                Glide.with(ApplyRefundActivity.this).load(evidences.get(0)).error(R.mipmap.android_quanzi).into(ivRefund1);
+                ivRefund2.setVisibility(View.INVISIBLE);
+                ivRefund3.setVisibility(View.INVISIBLE);
+            }else if (evidences.size()==3){
+                Glide.with(ApplyRefundActivity.this).load(evidences.get(0)).error(R.mipmap.android_quanzi).into(ivRefund1);
+                Glide.with(ApplyRefundActivity.this).load(evidences.get(1)).error(R.mipmap.android_quanzi).into(ivRefund2);
+                Glide.with(ApplyRefundActivity.this).load(evidences.get(2)).error(R.mipmap.android_quanzi).into(ivRefund3);
+            }
+        }else {
+            orderId = intent.getIntExtra("orderId", -1);
+            skuId = intent.getIntExtra("skuId", -1);
+            money = intent.getDoubleExtra("money", -1);
+            etRefundMoney.setText("¥"+money);
+        }
     }
 
     @Override
@@ -170,22 +205,25 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
             toast("你还未选择退款原因");
             return;
         }
-
+        String url;
         Map<String, String> paramas = new HashMap<>();
         paramas.put("orderCommodity.orders.user.token", sp.get("token"));
         paramas.put("type", refundType + "");
         paramas.put("money", money + "");
         paramas.put("reason", cancleReason);
-        paramas.put("orderCommodity.orders.id", orderId + "");
-        paramas.put("orderCommodity.sku.id", skuId + "");
-
         String describe = etRefundDescribe.getText().toString();
         if(!TextUtils.isEmpty(describe)){
             paramas.put("explain",describe);
         }
-
-
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.USER_APPLY_REFUND_URL, paramas, "file", files, null, null,null,null);
+        if("refund".equals(from)){//修改申请
+            paramas.put("id",refundId+"".trim());
+            url = FXConst.CHANGE_REFUND_MSG_URL;
+        }else {
+            paramas.put("orderCommodity.orders.id", orderId + "");
+            paramas.put("orderCommodity.sku.id", skuId + "");
+            url = FXConst.USER_APPLY_REFUND_URL;
+        }
+        OkhttpUploadUtils.getInstance(this).sendMultipart(url, paramas, "file", files, null, null,null,null);
     }
 
     @OnClick(R.id.ib_back)

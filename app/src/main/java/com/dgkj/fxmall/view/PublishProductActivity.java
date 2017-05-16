@@ -103,6 +103,7 @@ public class PublishProductActivity extends BaseActivity {
     private List<File> detialImages = new ArrayList<>();
     private List<File> banners = new ArrayList<>();
     private int classifyId, postageId;
+    private int sendType = 1;//0为支持线上发货，1为不支持
     private List<SuperPostageBean> superPostageList;
     private List<PostageModelSelectBean> postageModelSelectList;
     private CommonAdapter<PostageModelSelectBean> selectAdapter;
@@ -195,10 +196,12 @@ public class PublishProductActivity extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     tvPostageModel.setVisibility(View.VISIBLE);
+                    sendType = 0;
                     //rvPostageSelect.setVisibility(View.VISIBLE);
                 } else {
                     tvPostageModel.setVisibility(View.GONE);
                     rvPostageSelect.setVisibility(View.GONE);
+                    sendType = 1;
                 }
             }
         });
@@ -294,11 +297,14 @@ public class PublishProductActivity extends BaseActivity {
         params.put("commodity.name", titel);
         params.put("commodity.detail", describe);
         params.put("commodity.subCastegory.id", classifyId + "");
-        params.put("commodity.freightModel.id", postageId + "");//TODO 区分：若没有运费模板
+        params.put("commodity.send", sendType + "");
+        if(sendType==0){//支持线上发货
+            params.put("commodity.freightModel.id", postageId + "");//区分：若没有运费模板
+        }
         params.put("jsonString", sbType.toString());
 
         OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_PRODUCT_URL, params, "file", mainImages, "commodity.url", detialImages,"commodity.bFile",banners);
-        //TODO 添加上传进度提示
+
         MyApplication.selectedPictures = null;
     }
 

@@ -27,6 +27,7 @@ public class LoadingActivity extends BaseActivity {
         String token = sp.get("token");
         if(!TextUtils.isEmpty(token)){
             FXMallModel.getShoppingCarCount(token);
+            FXMallModel.getAllUnreadMsgCount(token);
         }
         handler.postDelayed(new Runnable() {
             @Override

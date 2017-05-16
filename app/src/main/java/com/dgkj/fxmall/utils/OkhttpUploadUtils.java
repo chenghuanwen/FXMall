@@ -121,6 +121,14 @@ public class OkhttpUploadUtils {
                             Toast.makeText(context,"您已申请过店铺",Toast.LENGTH_SHORT).show();
                         }
                     });
+                }else if(string.contains("1007")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadDialog.cancelProgressDialog();
+                            Toast.makeText(context,"商品信息中含有敏感词汇，请去除",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }else {
                     handler.post(new Runnable() {
                         @Override

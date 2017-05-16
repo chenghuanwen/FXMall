@@ -16,7 +16,7 @@ public class ShoppingCarBean implements Parcelable{
     private boolean isSelected;
 
     public ShoppingCarBean (){}
-    private static final Parcelable.Creator<ShoppingCarBean> CREATOR = new Creator<ShoppingCarBean>() {
+    public static final Parcelable.Creator<ShoppingCarBean> CREATOR = new Creator<ShoppingCarBean>() {
         @Override
         public ShoppingCarBean createFromParcel(Parcel source) {
             return new ShoppingCarBean(source);

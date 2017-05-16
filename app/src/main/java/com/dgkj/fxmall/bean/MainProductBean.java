@@ -26,6 +26,7 @@ public class MainProductBean implements Parcelable{
     private String url;
     private int describeScore,priceScore,qualityScore;
     private double totalScore;
+    private boolean isDeliverable;
     public static final Parcelable.Creator<MainProductBean> CREATOR = new Creator<MainProductBean>() {
         @Override
         public MainProductBean createFromParcel(Parcel source) {
@@ -61,6 +62,7 @@ public class MainProductBean implements Parcelable{
         priceScore = source.readInt();
         qualityScore = source.readInt();
         totalScore = source.readDouble();
+        isDeliverable = source.readInt()==0?true:false;
     }
 
     @Override
@@ -90,6 +92,7 @@ public class MainProductBean implements Parcelable{
         dest.writeInt(priceScore);
         dest.writeInt(qualityScore);
         dest.writeDouble(totalScore);
+        dest.writeInt(isDeliverable?0:1);
 
     }
 
@@ -256,5 +259,13 @@ public class MainProductBean implements Parcelable{
 
     public void setSales(String sales) {
         this.sales = sales;
+    }
+
+    public boolean isDeliverable() {
+        return isDeliverable;
+    }
+
+    public void setDeliverable(boolean deliverable) {
+        isDeliverable = deliverable;
     }
 }

@@ -4,14 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.AuthTask;
@@ -21,14 +18,12 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.BannerBean;
 import com.dgkj.fxmall.bean.ColorSizeBean;
 import com.dgkj.fxmall.bean.CommentBean;
-import com.dgkj.fxmall.bean.DemandMallClassifyBean;
 import com.dgkj.fxmall.bean.ExpressCompanyBean;
 import com.dgkj.fxmall.bean.HomePageRecommendBean;
 import com.dgkj.fxmall.bean.LogisticsBean;
 import com.dgkj.fxmall.bean.LogisticsMsgBean;
 import com.dgkj.fxmall.bean.MainDemandBean;
 import com.dgkj.fxmall.bean.MainProductBean;
-import com.dgkj.fxmall.bean.MainRecommendStoreBean;
 import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.bean.PostageBean;
 import com.dgkj.fxmall.bean.ProductClassifyBean;
@@ -50,7 +45,6 @@ import com.dgkj.fxmall.listener.OnGetExpressCompanyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetHomeRecommendFinishedListener;
 import com.dgkj.fxmall.listener.OnGetLogisticsDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetLogisticsMsgFinishedListener;
-import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
@@ -72,12 +66,9 @@ import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.ToastUtil;
 import com.dgkj.fxmall.view.LoginActivity;
-import com.dgkj.fxmall.view.ProductDetialActivity;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -423,6 +414,7 @@ public class FXMallModel {
                 goods.setProductId(j + 1);
                 goods.setSkuId(j + 1);
                 goods.setStatu(0);
+                goods.setDeliverable(true);
 
                 StoreBean storeBean = new StoreBean();
                 storeBean.setId(i);
@@ -484,8 +476,9 @@ public class FXMallModel {
      *
      * @param listener
      */
-    public static void getLogisticsDetial(OnGetLogisticsDetialFinishedListener listener) {
-        List<LogisticsBean> list = new ArrayList<>();
+    public static void getLogisticsDetial(int id, String expNo, final OnGetLogisticsDetialFinishedListener listener) {
+        final List<LogisticsBean> list = new ArrayList<>();
+        //TEST
         for (int i = 0; i < 10; i++) {
             LogisticsBean msg = new LogisticsBean();
             msg.setArriveTime("2017-4-6 16:16:16");
@@ -493,6 +486,45 @@ public class FXMallModel {
             list.add(msg);
         }
         listener.OnGetLogisticsDetialFinished(list);
+
+
+        FormBody body = new FormBody.Builder()
+                .add("id",id+"".trim())
+                .add("expNo",expNo)
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.QUERY_LOGISTICS_URL)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        String dataset = object.getString("dataset");
+                        JSONObject jsonObject = new JSONObject(dataset);
+                        JSONArray traces = jsonObject.getJSONArray("Traces");
+                        for (int i = 0; i < traces.length(); i++) {
+                            JSONObject trace = traces.getJSONObject(i);
+                            LogisticsBean logisticsBean = new LogisticsBean();
+                            logisticsBean.setArriveTime(trace.getString("AcceptTime"));
+                            logisticsBean.setCurrentAddress(trace.getString("AcceptStation"));
+                            list.add(logisticsBean);
+                        }
+                        listener.OnGetLogisticsDetialFinished(list);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
     }
 
     /**
@@ -542,11 +574,13 @@ public class FXMallModel {
             storeBean.setKeeper("小成成");
             storeBean.setPhone("15641651432");
             storeBean.setRecommender("小成成");
+            storeBean.setMainUrls(new ArrayList<String>());
             productBean.setStoreBean(storeBean);
             productBean.setUrl(url.get(0));
             productBean.setDescribeScore(4);
             productBean.setPriceScore(4);
             productBean.setQualityScore(4);
+            productBean.setDeliverable(true);
             productBean.setTotalScore(4);
             list.add(productBean);
         }
@@ -972,6 +1006,9 @@ public class FXMallModel {
                             goods.setPriceScore(commodity.getInt("transportScore"));
                             goods.setQualityScore(commodity.getInt("qualityScore"));
                             goods.setTotalScore(commodity.getInt("totalScore"));
+                            //TODO 添加是否支持线上发货字段
+                            int send = commodity.getInt("send");
+                            goods.setDeliverable(send==0?true:false);
 
                             String pictrue = commodity.getString("pictrue");
                             JSONArray pictrues = new JSONArray(pictrue);
@@ -1306,6 +1343,7 @@ public class FXMallModel {
             productBean.setPriceScore(4);
             productBean.setQualityScore(4);
             productBean.setTotalScore(4);
+            productBean.setDeliverable(true);
             list1.add(productBean);
         }
         listener.onSearchProductsFinished(list1);
@@ -1386,6 +1424,9 @@ public class FXMallModel {
                             }
                             product.setUrls(detialImages);
                             product.setUrl(product.getUrls().get(0));
+                            //TODO 增加是否支持线上发货字段
+                            int send = commodity.getInt("send");
+                            product.setDeliverable(send==0?true:false);
 
                             //TODO 商品对应店铺详情
                             JSONObject store = commodity.getJSONObject("store");
@@ -2070,6 +2111,11 @@ public class FXMallModel {
                             }
                             product.setUrls(detialImages);
                             product.setUrl(product.getUrls().get(0));
+                            //TODO 增加是否支持线上发货字段
+                            int send = commodity.getInt("send");
+                            product.setDeliverable(send==0?true:false);
+
+
                             //TODO 商品对应店铺详情
                             JSONObject store = commodity.getJSONObject("store");
                             StoreBean storeBean = new StoreBean();
@@ -2179,6 +2225,10 @@ public class FXMallModel {
                             }
                             product.setUrls(detialImages);
                             product.setUrl(product.getUrls().get(0));
+                            //TODO 增加是否支持线上发货字段
+                            int send = commodity.getInt("send");
+                            product.setDeliverable(send==0?true:false);
+
                             //TODO 商品对应店铺详情
                             JSONObject store = commodity.getJSONObject("store");
                             StoreBean storeBean = new StoreBean();
@@ -2476,6 +2526,10 @@ public class FXMallModel {
                         }
                         product.setUrls(detialImages);
                         product.setUrl(product.getUrls().get(0));
+                        //TODO 增加是否支持线上发货字段
+                        int send = jsonObject.getInt("send");
+                        product.setDeliverable(send==0?true:false);
+
                         //TODO 商品对应店铺详情
                         JSONObject store = jsonObject.getJSONObject("store");
                         StoreBean storeBean = new StoreBean();
@@ -2490,6 +2544,13 @@ public class FXMallModel {
                         storeBean.setPriceScore(store.getDouble("transportScore"));
                         storeBean.setStars(store.getInt("totalScore"));
                         storeBean.setIconUrl(store.getString("logo"));
+                        storeBean.setKeeper(store.getString("storekeeper"));
+                        storeBean.setPhone(store.getString("phone"));
+                        storeBean.setId(store.getInt("id"));
+                        storeBean.setRecommender("哎购商城");
+                        storeBean.setLicence(store.getString("license"));
+                        storeBean.setMainUrls(new ArrayList<String>());
+                        storeBean.setStars(store.getInt("totalScore"));
                         product.setStoreBean(storeBean);
                         product.setAddress(address.substring(0, address.indexOf("市") + 1));
 
@@ -2615,6 +2676,38 @@ public class FXMallModel {
                         MyApplication.shoppingCount = total;
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取未读消息总数
+     * @param token
+     */
+    public static void getAllUnreadMsgCount(String token){
+        FormBody body = new FormBody.Builder()
+                .add("toUser.token",token)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.GET_ALL_UNREAD_MSG_COUNT)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        int data = object.getInt("data");
+                        MyApplication.msgCount = data;
+                    } catch (JSONException e) {
                     }
                 }
             }

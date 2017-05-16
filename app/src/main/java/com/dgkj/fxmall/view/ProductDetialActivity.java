@@ -283,6 +283,9 @@ public class ProductDetialActivity extends BaseActivity {
         goodsBean.setPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
         goodsBean.setInventory(product.getInventory());
+        goodsBean.setStoreBean(product.getStoreBean());
+        goodsBean.setDeliverable(product.isDeliverable());
+
         SelectColorAndSizeDialog dialog = new SelectColorAndSizeDialog(this, R.layout.layout_edit_select_color_size, goodsBean, "buy", new OnSelectColorSizeFinishedListener() {
             @Override
             public void selectCompelete(String result) {
@@ -302,6 +305,8 @@ public class ProductDetialActivity extends BaseActivity {
         goodsBean.setPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
         goodsBean.setInventory(product.getInventory());
+        goodsBean.setStoreBean(product.getStoreBean());
+        goodsBean.setDeliverable(product.isDeliverable());
          SelectColorAndSizeDialog dialog = new SelectColorAndSizeDialog(this, R.layout.layout_car_select_color_size, goodsBean, "edit", new OnSelectColorSizeFinishedListener() {
              @Override
              public void selectCompelete(String result) {

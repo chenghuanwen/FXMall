@@ -97,6 +97,8 @@ public class ShangpuOrderActivity extends BaseActivity {
                 order.setPostage(20);
                 order.setSinglePrice(56);
                 order.setSumPrice(56);
+                order.setOrderNum("4215415635");
+                order.setId(i+1);
                 order.setState(states[i]);
                 order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
                 list.add(order);

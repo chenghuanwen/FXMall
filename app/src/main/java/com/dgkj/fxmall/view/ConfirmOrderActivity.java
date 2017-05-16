@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
@@ -225,6 +226,14 @@ public class ConfirmOrderActivity extends BaseActivity {
      * 提交某家店铺中的订单
      */
     public void submitOrderForOneStore(List<ShoppingGoodsBean> goods, int position) {
+        for (int i = 0; i < goods.size()-1; i++) {
+            if(goods.get(i).isDeliverable() && !goods.get(i+1).isDeliverable()){
+                Toast.makeText(this,"订单中存在支持发货与不支持发货商品，请区分下单",Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+
         int[] skuIds = new int[goods.size()];
         int[] nums = new int[goods.size()];
         for (int i = 0; i < goods.size(); i++) {

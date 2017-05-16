@@ -30,16 +30,6 @@ public class FXConst {
     public static final String FXM_URL_PORT = "http://192.168.3.170:9090/Distribution/";
 
 
-    public static final String RECOMMEND_STORE_URL = "";//推荐商家
-    public static final String TODAY_RECOMMEND_URL = "";//今日推荐
-    public static final String NEWGOODS_SHELVES_URL = "";//新品上架
-    public static final String PRODUCTS_RECOMMEND_URL = "";//商品推荐
-    public static final String HOMEPAGE_PRODUCTS_URL = "";//首页商品展示
-    public static final String SHOPPINGCAR_PRODUCTS_URL = "";//购物车商品展示
-    public static final String MESSAGE_NOTIFY_URL = "";//首页消息提醒
-    public static final String SEARCH_PRODUCTS_URL = "";//搜索商品展示
-
-
     public static final String CHECK_INVITE_CODE = FXM_URL_PORT+"userAction_checkCode";
     public static final String CHECK_PHONE_IS_REGISTED = FXM_URL_PORT+"userAction_checkPhone";
     public static final String GET_MESSAGE_CHECK_CODE = FXM_URL_PORT+"messageRecorderAction_sendMessage";
@@ -150,6 +140,14 @@ public class FXConst {
     public static final String GET_HOME_RECOMMEND_URL = FXM_URL_PORT+"advertisingAction_Advertising";
     public static final String GET_HOME_MainProducts_URL = FXM_URL_PORT+"commodityAction_search";
     public static final String GET_STORE_DETIAL_BY_ID = FXM_URL_PORT+"storeAction_detail";
+
+    public static final String GET_ALL_UNREAD_MSG_COUNT = FXM_URL_PORT+"messageAction_count";
+    public static final String QUERY_LOGISTICS_URL = FXM_URL_PORT+"expressCodeAction_info";
+    public static final String CHANGE_REFUND_MSG_URL = FXM_URL_PORT+"refundOrderAction_updateRefund";
+    public static final String BUY_PRODUCT_PLACE_URL = FXM_URL_PORT+"storeAction_buyUpper";
+    public static final String NOTIFY_STORER_DELIVER_URL = FXM_URL_PORT+"orderAction_promt";
+    public static final String CHANGE_MSG_READ_STATE = FXM_URL_PORT+"messageAction_status";
+    public static final String GET_CENTER_MSG_URL = FXM_URL_PORT+"messageAction_page";
 
 
 

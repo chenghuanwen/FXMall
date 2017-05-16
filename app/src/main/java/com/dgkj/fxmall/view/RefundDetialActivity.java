@@ -71,14 +71,15 @@ public class RefundDetialActivity extends BaseActivity {
     private String state = "", from = "",storeName="";
     private boolean hasDeliver;
     private OkHttpClient client = new OkHttpClient.Builder().build();
-    private List<String> evidences = new ArrayList<>();
+    private ArrayList<String> evidences = new ArrayList<>();
     private String money="",timeFormat="",reason="",number="",refundType="",explain="-";
+    private int refundId;
     private OrderBean orderBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO 根据退款不同状态显示不同的界面
+        //根据退款不同状态显示不同的界面
         Intent intent = getIntent();
         from = intent.getStringExtra("from");
         orderBean = (OrderBean) getIntent().getSerializableExtra("order");
@@ -121,7 +122,18 @@ public class RefundDetialActivity extends BaseActivity {
                 btnChange.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//修改退款申请
-
+                        Intent intent1 = new Intent(RefundDetialActivity.this,ApplyRefundActivity.class);
+                        intent1.putExtra("from","refund");
+                        intent1.putExtra("explain",explain);
+                        intent1.putExtra("money",money);
+                        intent1.putExtra("number",number);
+                        intent1.putExtra("reason",reason);
+                        intent1.putExtra("timeFormat",timeFormat);
+                        intent1.putExtra("refundType",refundType);
+                        intent1.putExtra("storeName",storeName);
+                        intent1.putExtra("refundId",refundId);
+                        intent1.putStringArrayListExtra("evidences",evidences);
+                        startActivity(intent1);
                     }
                 });
                 break;
@@ -156,7 +168,7 @@ public class RefundDetialActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {//物流信息
                         Intent intent = new Intent(RefundDetialActivity.this,LogisticsDetialActivity.class);
-                        intent.putExtra("orderId",orderId);
+                        intent.putExtra("order",orderBean);
                         jumpTo(intent,false);
                     }
                 });
@@ -243,6 +255,7 @@ public class RefundDetialActivity extends BaseActivity {
                         money = jsonObject.getString("money");
                          reason = jsonObject.getString("reason");
                          number = jsonObject.getString("number");
+                        refundId = jsonObject.getInt("id");
 
                         if(jsonObject.has("explain")){
                             explain = jsonObject.getString("explain");

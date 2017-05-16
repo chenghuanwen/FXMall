@@ -115,10 +115,7 @@ public class BindNewphoneActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
                 if(result.contains("1000")){
-                    Intent intent = new Intent(BindNewphoneActivity.this, UserMsgActivity.class);
-                    intent.putExtra("from", "newphone");
-                    intent.putExtra("phone", newPhone);
-                    jumpTo(intent, true);
+                    setNewPhone(newPhone);
                 }else if(result.contains("109")){
                     etCheckCode.setText("");
                     toastInUI(BindNewphoneActivity.this,"验证码错误，请重新输入！");
@@ -129,6 +126,39 @@ public class BindNewphoneActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 设置新手机号
+     * @param newPhone
+     */
+    private void setNewPhone(final String newPhone) {
+        FormBody body = new FormBody.Builder()
+                .add("token",sp.get("token"))
+                .add("phone",newPhone)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.CHANGE_USER_PHONE)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    toastInUI(BindNewphoneActivity.this,"已绑定新手机");
+                    Intent intent = new Intent(BindNewphoneActivity.this, UserMsgActivity.class);
+                    intent.putExtra("from", "newphone");
+                    intent.putExtra("phone", newPhone);
+                    jumpTo(intent, true);
+                }else if(string.contains("1002")){
+                    toastInUI(BindNewphoneActivity.this,"该手机号已被占用");
+                }
+            }
+        });
+    }
 
 
     /**

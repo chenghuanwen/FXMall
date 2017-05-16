@@ -137,10 +137,12 @@ public class MyOrdersActivity extends BaseActivity {
                 order.setHasComment(true);
                 order.setIntroduce("啊好多覅家乐福卡静安寺独立开发安静地离开房间阿萨德开了房");
                 order.setPostage(20);
+                order.setOrderNum("41313213213232");
                 order.setSinglePrice(56);
                 order.setSumPrice(56);
                 order.setState(states[i]);
                 order.setStateNum(i);
+                order.setId(i+2);
                 order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
                 list.add(order);
             }

@@ -207,7 +207,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                        gotoDetial("target",order);
                     }
                 });
 
@@ -223,7 +223,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                        gotoDetial("target",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
@@ -246,7 +246,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                        gotoDetial("target",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
@@ -267,9 +267,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_submit_logistic, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提交物流信息
-                        Intent intent = new Intent(context, SubmitLogisticsMsgActivity.class);
-                        intent.putExtra("order",superOrderBean.getSubOrders().get(0));
-                        context.startActivity(intent);
+                        gotoDetial("target",order);
                     }
                 });
                 break;
@@ -292,7 +290,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                        gotoDetial("target",order);
                     }
                 });
                 break;
@@ -301,7 +299,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                        gotoDetial("target",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {//删除订单
@@ -317,7 +315,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
-                        context.startActivity(new Intent(context, RefundDetialActivity.class));
+                        gotoDetial("refund",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_refused_apply, new View.OnClickListener() {
@@ -344,13 +342,13 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
-                        context.startActivity(new Intent(context, RefundDetialActivity.class));
+                        gotoDetial("refund",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                        gotoDetial("target",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_agree_refund, new View.OnClickListener() {
@@ -366,13 +364,13 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
-                        context.startActivity(new Intent(context, RefundDetialActivity.class));
+                        gotoDetial("refund",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        context.startActivity(new Intent(context, LogisticsDetialActivity.class));
+                        gotoDetial("target",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
@@ -388,7 +386,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
-                        context.startActivity(new Intent(context, RefundDetialActivity.class));
+                        gotoDetial("refund",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
@@ -405,7 +403,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_refund_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看退款信息
-                        context.startActivity(new Intent(context, RefundDetialActivity.class));
+                        gotoDetial("refund",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
@@ -418,6 +416,24 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
         }
     }
+
+
+    /**
+     * 查看物流详情或退款详情
+     * @param target
+     * @param order
+     */
+    private void gotoDetial(String target,OrderBean order){
+        Intent intent;
+        if("logist".equals(target)){
+            intent = new Intent(context, LogisticsDetialActivity.class);
+        }else {
+            intent = new Intent(context, RefundDetialActivity.class);
+        }
+        intent.putExtra("order",order);
+        context.startActivity(intent);
+    }
+
 
 
     /**

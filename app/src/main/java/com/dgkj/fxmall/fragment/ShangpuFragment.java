@@ -26,6 +26,7 @@ import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
+import com.dgkj.fxmall.view.BuyProductPlaceActivity;
 import com.dgkj.fxmall.view.HomePageActivity;
 import com.dgkj.fxmall.view.InTheSaleActivity;
 import com.dgkj.fxmall.view.PublishProductActivity;
@@ -115,6 +116,7 @@ public class ShangpuFragment extends Fragment {
     private String describe="",logo="", banner ="",name="",address="";
     private int stars,goodsCount,sales;
     private double totalScore;
+    private int upperlimit;//可发布商品数量上限
 
     @Nullable
     @Override
@@ -143,12 +145,7 @@ public class ShangpuFragment extends Fragment {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getContext(),"网络异常！",Toast.LENGTH_SHORT).show();
-                    }
-                });
+
             }
 
             @Override
@@ -168,6 +165,7 @@ public class ShangpuFragment extends Fragment {
                     goodsCount = dataset.getInt("cnum");
                     sales = dataset.getInt("sales");
                     totalScore = dataset.getDouble("totalScore");
+                    upperlimit = dataset.getInt("upperlimit");
 
                     handler.post(new Runnable() {
                         @Override
@@ -211,12 +209,6 @@ public class ShangpuFragment extends Fragment {
         client.newCall(request1).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getContext(),"网络异常！",Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
 
             @Override
@@ -372,7 +364,7 @@ public class ShangpuFragment extends Fragment {
                     JSONObject object = null;
                     try {
                         object = new JSONObject(string);
-                        final int count = object.getInt("dataset");
+                        final int count = object.getInt("total");
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -391,8 +383,13 @@ public class ShangpuFragment extends Fragment {
 
     @OnClick(R.id.tv_publish_product)
     public void publishProduct() {
-        Intent intent = new Intent(getContext(), PublishProductActivity.class);
-        jumpto(intent);
+        if(goodsCount >= upperlimit){
+            Toast.makeText(getContext(),"免费展位已用完！",Toast.LENGTH_SHORT).show();
+            jumpto(new Intent(getContext(),BuyProductPlaceActivity.class));
+        }else {
+            Intent intent = new Intent(getContext(), PublishProductActivity.class);
+            jumpto(intent);
+        }
     }
 
     @OnClick(R.id.tv_postage_setting)

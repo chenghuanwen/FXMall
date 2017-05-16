@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.LogisticsMsgDetialAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.LogisticsBean;
+import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetLogisticsDetialFinishedListener;
 import com.dgkj.fxmall.view.myView.TimeLineView;
@@ -47,6 +49,7 @@ public class LogisticsDetialActivity extends BaseActivity {
     private List<LogisticsBean> msgList = new ArrayList<>();
     private LogisticsMsgDetialAdapter adapter;
     private FXMallControl control = new FXMallControl();
+    private OrderBean orderBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,7 @@ public class LogisticsDetialActivity extends BaseActivity {
     }
 
     private void refresh() {
-        control.getLogisticsDetial(new OnGetLogisticsDetialFinishedListener() {
+        control.getLogisticsDetial(orderBean.getId(),orderBean.getOrderNum(),new OnGetLogisticsDetialFinishedListener() {
             @Override
             public void OnGetLogisticsDetialFinished(List<LogisticsBean> msgs) {
                 adapter.addAll(msgs, true);
@@ -75,6 +78,13 @@ public class LogisticsDetialActivity extends BaseActivity {
     }
 
     private void initData() {
+        orderBean = (OrderBean) getIntent().getSerializableExtra("order");
+        Glide.with(this).load(orderBean.getUrl()).error(R.mipmap.android_quanzi).into(ivLogistics);
+        tvLogisticsMan.setText("收件人："+orderBean.getTakeMan());
+        tvLogisticsAddress.setText("收货地址："+orderBean.getTakeAddress());
+        tvLogisticsExpress.setText(orderBean.getExpress());
+        tvLogisticsExpressNumber.setText(orderBean.getOrderNum());
+
         adapter = new LogisticsMsgDetialAdapter(this, R.layout.item_logistics_detial, msgList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvLogistics.setLayoutManager(layoutManager);

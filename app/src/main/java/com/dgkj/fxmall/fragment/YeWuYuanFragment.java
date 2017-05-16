@@ -142,7 +142,7 @@ public class YeWuYuanFragment extends Fragment {
                     JSONObject object = null;
                     try {
                         object = new JSONObject(string);
-                        final int count = object.getInt("dataset");
+                        final int count = object.getInt("total");
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -161,7 +161,8 @@ public class YeWuYuanFragment extends Fragment {
     @OnClick(R.id.tv_recharge)
     public void recharge() {
         Intent intent = new Intent(getContext(), RechargeActivity.class);
-        intent.putExtra("", "");//TODO 传入当前用户信息
+       // intent.putExtra("", "");//
+
         getContext().startActivity(intent);
     }
 

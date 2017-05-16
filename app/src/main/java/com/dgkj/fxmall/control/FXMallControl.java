@@ -78,8 +78,8 @@ public class FXMallControl {
         FXMallModel.getLogisticsMsg(listener);
     }
 
-    public void getLogisticsDetial(OnGetLogisticsDetialFinishedListener listener){
-        FXMallModel.getLogisticsDetial(listener);
+    public void getLogisticsDetial(int id ,String expNo,OnGetLogisticsDetialFinishedListener listener){
+        FXMallModel.getLogisticsDetial(id,expNo,listener);
     }
 
     public void getSubClassifyProductData(OnGetSubClassifyProductsFinishedListener listener){

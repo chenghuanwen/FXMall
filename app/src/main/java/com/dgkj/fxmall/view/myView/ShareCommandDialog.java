@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,11 +87,9 @@ public class ShareCommandDialog extends PopupWindow {
         getProductData(new LoadFinishedListener() {
             @Override
             public void onLoadFinished() {
-                setData();
+              //  setData();
             }
         });
-
-
     }
 
     /**
@@ -114,6 +113,7 @@ public class ShareCommandDialog extends PopupWindow {
                 int end = matcher.end();
                 productId = clip.substring(start, end + 1);
             }
+            if(TextUtils.isEmpty(productId)){productId=0+"".trim();}
             control.getProductDetialById(Integer.parseInt(productId), new OnGetProductDetialFinishedListener() {
                 @Override
                 public void onGetProductDetialFinishedListener(MainProductBean product1) {
@@ -130,7 +130,7 @@ public class ShareCommandDialog extends PopupWindow {
         TextView tvGirl = (TextView) conentView.findViewById(R.id.tv_confirm);
         tvContent.setText(product.getIntroduce());
         tvPrice.setText("¥" + product.getPrice());
-        Glide.with(activity).load(product.getUrl()).into(ivProduct);
+        Glide.with(activity).load(product.getUrl()).error(R.mipmap.android_quanzi).into(ivProduct);
 
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +182,7 @@ public class ShareCommandDialog extends PopupWindow {
         // 点back键和其他地方使其消失,设置了这个才能触发OnDismisslistener ，设置其他控件变化等操作
         this.setBackgroundDrawable(dw);
 
+        setData();
     }
 
     /**

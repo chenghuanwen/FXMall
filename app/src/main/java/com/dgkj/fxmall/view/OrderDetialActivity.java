@@ -217,6 +217,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                             }else {
                                 Intent intent = new Intent(OrderDetialActivity.this,ApplyRefundActivity.class);
                                // intent.putExtra("reason",cancleReason);
+                                intent.putExtra("from","order");
                                 intent.putExtra("money",orderBean.getSinglePrice()*orderBean.getCount());
                                 intent.putExtra("orderId",orderBean.getId());
                                 intent.putExtra("skuId",orderBean.getSkuId());
@@ -281,14 +282,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 dialog.show(getSupportFragmentManager(), "");
                 break;
             case R.id.btn_notify_deliver://提醒发货
-                Toast toast = new Toast(OrderDetialActivity.this);
-                View view = getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
-                TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
-                tvContent.setText("已提醒店家发货");
-                toast.setView(view);
-                toast.setDuration(Toast.LENGTH_SHORT);
-                toast.show();
-                //TODO 服务器提醒发货
+                //服务器提醒发货
+                notifyDeliver();
                 break;
             case R.id.btn_logistics_msg://查看物流信息
                 Intent intent1 = new Intent(OrderDetialActivity.this,LogisticsDetialActivity.class);
@@ -337,6 +332,57 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * 提醒店家发货
+     */
+    private void notifyDeliver() {
+        FormBody body = new FormBody.Builder()
+                .add("id",order.getId()+"".trim())
+                .add("user.token",sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.NOTIFY_STORER_DELIVER_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast toast = new Toast(OrderDetialActivity.this);
+                            View view = getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
+                            TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
+                            tvContent.setText("已提醒店家发货");
+                            toast.setView(view);
+                            toast.setDuration(Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    });
+                }else if(string.contains("1006")){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast toast = new Toast(OrderDetialActivity.this);
+                            View view = getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
+                            TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
+                            tvContent.setText("今天已经提醒过啦...");
+                            toast.setView(view);
+                            toast.setDuration(Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
 
     /**
      * 弹出退款或取消原因选择框
@@ -376,7 +422,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     applyRefund(cancleReason,order);
 
                 }else {
-                    //TODO 向服务器发送取消请求
+                    //T向服务器发送取消请求
                     cancelOrder(order.getId(),cancleReason);
                 }
 
@@ -425,7 +471,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         FormBody body = new FormBody.Builder()
                 .add("user.token",sp.get("token"))
                 .add("id",id+"")
-                .add("reason",cancleReason)//TODO 取消理由字段待确定
+                .add("closeReason",cancleReason)//TODO 取消理由字段待确定
                 .build();
         Request request = new Request.Builder()
                 .post(body)
@@ -463,7 +509,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void inputComplete() {
                 final String password = piv.getEditContent();
-                //TODO 检测支付密码的正确性
+                //检测支付密码的正确性
                 FormBody body = new FormBody.Builder()
                         .add("token",sp.get("token"))
                         .add("payPassword",password)
@@ -553,7 +599,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO 向服务器发送删除请求
+                //向服务器发送删除请求
                 postDeleteInfo2Server(superOrder.getId(),from);
                 pw.dismiss();
             }

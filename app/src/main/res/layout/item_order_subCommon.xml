@@ -105,7 +105,7 @@
             android:id="@+id/tv_sumPrice"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="30sp"
+            android:textSize="20sp"
             android:textColor="@color/main_color"
             tools:text="¥59.00"
             android:gravity="center"/>
