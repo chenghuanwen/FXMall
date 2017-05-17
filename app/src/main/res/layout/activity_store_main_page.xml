@@ -182,23 +182,28 @@
             app:tabSelectedTextColor="@color/main_color"
             app:tabTextColor="#333"
             app:tabIndicatorHeight="2dp"></android.support.design.widget.TabLayout>
-
-    <FrameLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_height="1dp"
+        android:background="#f3f3f3"
+        android:layout_gravity="bottom" />
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_store_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
             android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#e8e8e8"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="60dp"/>
+            android:layout_gravity="bottom" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/ib_back"
@@ -206,8 +211,7 @@
             android:layout_height="40dp"
             android:background="@null"
             android:src="@mipmap/dpsx_fh"
-            android:layout_margin="10dp"
-            android:layout_gravity="bottom"/>
+            android:layout_margin="10dp" />
         <TextView
             android:id="@+id/tv_product_classify"
             android:layout_width="wrap_content"
@@ -215,21 +219,23 @@
             android:text="商品分类"
             android:drawablePadding="5dp"
             android:drawableTop="@mipmap/dpzy_spfl"
-            android:layout_gravity="center_horizontal|bottom"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
-            />
+            android:layout_centerVertical="true"/>
         <TextView
             android:id="@+id/tv_store_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="店铺信息"
             android:drawablePadding="5dp"
+            android:layout_centerVertical="true"
             android:drawableTop="@mipmap/dpzy_dpxx"
-            android:layout_gravity="right|bottom"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             />
-    </FrameLayout>
+    </RelativeLayout>
+
 
 
 </LinearLayout>

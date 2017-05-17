@@ -20,17 +20,28 @@
         app:tabSelectedTextColor="@color/main_color"
         app:tabTextColor="#333"
         app:tabIndicatorHeight="2dp" />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_my_vip"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f7f7f7"/>
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"></android.support.v7.widget.RecyclerView>
-    <ImageButton
-        android:id="@+id/ib_back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/circler_back_corner_shape"
-        android:src="@mipmap/title_return_icon"
-        android:layout_margin="10dp"/>
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_my_vip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ></android.support.v7.widget.RecyclerView>
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circler_back_corner_shape"
+            android:src="@mipmap/title_return_icon"
+            android:layout_margin="10dp"
+            android:layout_gravity="bottom"/>
+    </FrameLayout>
 
 </LinearLayout>

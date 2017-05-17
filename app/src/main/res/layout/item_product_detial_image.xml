@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <ImageView
+    <com.dgkj.fxmall.view.myView.FullImageView
         android:id="@+id/iv_prouct_detial"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:src="@mipmap/android_quanzi"
-        android:scaleType="fitXY"
         android:background="@drawable/circler_main_corner_shape"
         android:layout_margin="10dp" />
 

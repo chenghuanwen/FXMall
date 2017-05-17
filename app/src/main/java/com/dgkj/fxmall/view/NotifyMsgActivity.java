@@ -1,13 +1,18 @@
 package com.dgkj.fxmall.view;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.dgkj.fxmall.R;
+import com.dgkj.fxmall.adapter.NotifyMsgAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
+import com.dgkj.fxmall.bean.NotifyMsgBean;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +25,8 @@ public class NotifyMsgActivity extends BaseActivity {
     private RecyclerView rvMsg;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
+    private NotifyMsgAdapter adapter;
+    private ArrayList<NotifyMsgBean> msgs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +35,16 @@ public class NotifyMsgActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initHeaderview();
+        init();
+        
+    }
+
+    private void init() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvMsg.setLayoutManager(layoutManager);
+        msgs = (ArrayList<NotifyMsgBean>) getIntent().getSerializableExtra("msg");
+        adapter = new NotifyMsgAdapter(this,msgs);
+        rvMsg.setAdapter(adapter);
     }
 
     @Override

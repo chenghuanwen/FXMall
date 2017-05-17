@@ -3,6 +3,7 @@ package com.dgkj.fxmall.listener;
 import com.dgkj.fxmall.bean.LogisticsMsgBean;
 import com.dgkj.fxmall.bean.NotifyMsgBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,5 +11,5 @@ import java.util.List;
  */
 
 public interface OnGetNotifyMsgFinishedListener {
-    void OnGetLogisticsMsgFinished(List<NotifyMsgBean> list);
+    void OnGetLogisticsMsgFinished(ArrayList<NotifyMsgBean> list);
 }

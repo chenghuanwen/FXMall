@@ -22,7 +22,7 @@ public class MyApplication extends Application {
     public static  boolean isLogin;
     public static List<String> selectedPictures;
     public static String currentProvince = "";
-    public static int vipRate,shoppingCount,msgCount;
+    public static int vipRate,shoppingCount,msgCount,systemMsgCount=5,orderMsgCount=5,warmMsgCount=5,accountMsgCount=5;
 
 
 

@@ -18,6 +18,8 @@ import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
+import com.dgkj.fxmall.listener.OnGetMyVipFinishedListener;
+import com.dgkj.fxmall.listener.OnGetNotifyMsgFinishedListener;
 import com.dgkj.fxmall.listener.OnGetProductCSFinishedListener;
 import com.dgkj.fxmall.listener.OnGetProductCommentListFinishListener;
 import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
@@ -191,5 +193,17 @@ public class FXMallControl {
 
     public void getProductDetialById(int id, OnGetProductDetialFinishedListener listener){
         FXMallModel.getProductDetialById(id,listener);
+    }
+
+    public void getMySubVipData(String url, String token, int index, int size, final OnGetMyVipFinishedListener listener){
+        FXMallModel.getMySubVipData(url,token,index,size,listener);
+    }
+
+    public void getMySuperVipInfo(String token, final OnGetMyVipFinishedListener listener){
+        FXMallModel.getMySuperVipInfo(token,listener);
+    }
+
+    public void getNotifyMsgData(String token, final OnGetNotifyMsgFinishedListener listener){
+        FXMallModel.getNotifyMsgData(token,listener);
     }
 }

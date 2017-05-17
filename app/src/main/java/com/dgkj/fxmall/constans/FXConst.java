@@ -140,14 +140,19 @@ public class FXConst {
     public static final String GET_HOME_RECOMMEND_URL = FXM_URL_PORT+"advertisingAction_Advertising";
     public static final String GET_HOME_MainProducts_URL = FXM_URL_PORT+"commodityAction_search";
     public static final String GET_STORE_DETIAL_BY_ID = FXM_URL_PORT+"storeAction_detail";
+    public static final String STORE_DELETE_PRODUCTS_URL = FXM_URL_PORT+"commodityAction_delete";
 
     public static final String GET_ALL_UNREAD_MSG_COUNT = FXM_URL_PORT+"messageAction_count";
     public static final String QUERY_LOGISTICS_URL = FXM_URL_PORT+"expressCodeAction_info";
     public static final String CHANGE_REFUND_MSG_URL = FXM_URL_PORT+"refundOrderAction_updateRefund";
     public static final String BUY_PRODUCT_PLACE_URL = FXM_URL_PORT+"storeAction_buyUpper";
     public static final String NOTIFY_STORER_DELIVER_URL = FXM_URL_PORT+"orderAction_promt";
+    public static final String NOTIFY_BUYER_DELIVER_URL = FXM_URL_PORT+"orderAction_buyPromt";
     public static final String CHANGE_MSG_READ_STATE = FXM_URL_PORT+"messageAction_status";
     public static final String GET_CENTER_MSG_URL = FXM_URL_PORT+"messageAction_page";
+    public static final String GET_MY_SUB_VIP_DATA_URL = FXM_URL_PORT+"userAction_sub";
+    public static final String GET_MY_SUB_AND_SUB_VIP_DATA_URL = FXM_URL_PORT+"userAction_subu";
+    public static final String GET_MY_SUPER_VIP_DATA_URL = FXM_URL_PORT+"userAction_up";
 
 
 

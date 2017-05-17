@@ -59,7 +59,7 @@ public class ShangpuAllProductsActivity extends BaseActivity {
         from = getIntent().getStringExtra("from");
         statu = getIntent().getIntExtra("statu", -1);
         initHeaderView();
-        refresh(orderBy, index, 10, statu);
+        refresh(orderBy, index, 20, statu);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ShangpuAllProductsActivity extends BaseActivity {
                         orderBy = "inventory";
                         break;
                 }
-                refresh(orderBy, index, 10, statu);
+                refresh(orderBy, index, 20, statu);
             }
 
             @Override
@@ -152,15 +152,6 @@ public class ShangpuAllProductsActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 161 && resultCode == 162) {
-            int position = data.getIntExtra("position", 1);
-            products.remove(position);
-            adapter.notifyDataSetChanged();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     @OnClick(R.id.iv_back)
     public void back() {

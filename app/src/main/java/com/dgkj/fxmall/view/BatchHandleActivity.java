@@ -1,6 +1,7 @@
 package com.dgkj.fxmall.view;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -58,7 +59,7 @@ public class BatchHandleActivity extends BaseActivity {
     private int selectCount;
     private AlertDialog pw;
     private String from = "";
-    private List<StoreProductBean> selectProducts = new ArrayList<>();
+    private ArrayList<StoreProductBean> selectProducts = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private Handler handler = new Handler() {
         @Override
@@ -166,9 +167,8 @@ public class BatchHandleActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (type.contains("删除")) {
-                    //TODO 通知服务器删除
-
-                    pw.dismiss();
+                    //通知服务器删除
+                    deleteRemote();
                 } else {
                     online(selectProducts.get(0).getStatu());
                 }
@@ -217,10 +217,62 @@ public class BatchHandleActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body().string().contains("1000")) {
                     toastInUI(BatchHandleActivity.this,"操作成功");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (StoreProductBean selectProduct : selectProducts) {
+                                products.remove(selectProduct);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
                 } else {
                     toastInUI(BatchHandleActivity.this,"操作失败");
                 }
             }
         });
     }
+
+
+    /**
+     * 删除商品
+     */
+    private void deleteRemote() {
+        FormBody.Builder builder = new FormBody.Builder()
+                .add("token", sp.get("token"));
+        for (int i = 0; i < selectProducts.size(); i++) {
+            StoreProductBean productBean = selectProducts.get(i);
+            builder .add("ids",productBean.getId()+"".trim());
+        }
+        FormBody body = builder.build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.STORE_DELETE_PRODUCTS_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(final Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    toastInUI(BatchHandleActivity.this,"删除成功");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (StoreProductBean selectProduct : selectProducts) {
+                                products.remove(selectProduct);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+
+                }else {
+                    toastInUI(BatchHandleActivity.this,"删除失败");
+                }
+            }
+        });
+
+    }
+
 }

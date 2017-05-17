@@ -126,14 +126,17 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
             @Override
             public void onClick(View view) {
                 if (titel.contains("删除")) {
-                    //TODO 通知服务器删除
-                    mDatas.remove(position);
-                    notifyDataSetChanged();
-                    pw.dismiss();
+                    //通知服务器删除
+                    deleteRemote(mDatas.get(position).getId());
+
+
                 } else {
                     StoreProductBean productBean = mDatas.get(position);
                     online(productBean.getId(), productBean.getStatu());
                 }
+                pw.dismiss();
+                mDatas.remove(position);
+                notifyDataSetChanged();
 
             }
         });
@@ -149,6 +152,45 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(true);
         pw.show();
+    }
+
+    /**
+     * 删除商品
+     * @param id
+     */
+    private void deleteRemote(int id) {
+        FormBody body = new FormBody.Builder()
+                .add("token",sp.get("token"))
+                .add("ids",id+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.STORE_DELETE_PRODUCTS_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(final Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"已删除",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"删除失败",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     /**

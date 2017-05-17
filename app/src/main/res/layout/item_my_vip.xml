@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:layout_marginBottom="2dp">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civ_vip"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@mipmap/android_quanzi"
-        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
         android:layout_margin="10dp"/>
     <TextView
         android:id="@+id/tv_vip_name"
@@ -30,7 +32,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/civ_vip"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@+id/tv_vip_name"/>
     <TextView
         android:id="@+id/tv_join_time"
@@ -42,7 +44,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/tv_time"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@+id/tv_vip_name"/>
 
 </RelativeLayout>

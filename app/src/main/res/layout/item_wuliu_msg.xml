@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#f3f3f3"
     android:orientation="vertical">
     <TextView
@@ -16,6 +17,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -36,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:textColor="#909090"
-            android:text="【韵达快递】"
+            tools:text="【韵达快递】"
             android:gravity="center"
             android:textSize="12sp"
             android:layout_marginLeft="10dp"
@@ -68,16 +70,11 @@
             android:textColor="#333"
             android:layout_toRightOf="@+id/iv_msg_goods"
             android:layout_below="@+id/tv_express"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="30dp"
             />
-        <TextView
-            android:id="@+id/tv_express_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="快递编号：2165464635463"
-            android:layout_toRightOf="@+id/iv_msg_goods"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"/>
+
     </RelativeLayout>
 
 </LinearLayout>

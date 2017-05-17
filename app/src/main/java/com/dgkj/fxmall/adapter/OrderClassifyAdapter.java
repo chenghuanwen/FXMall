@@ -198,7 +198,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提醒卖家发货
-
+                        notifyDeliver(order,FXConst.NOTIFY_STORER_DELIVER_URL);
                     }
                 });
                 break;
@@ -392,7 +392,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_notify_deliver, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提醒买家发货
-
+                        notifyDeliver(order,FXConst.NOTIFY_BUYER_DELIVER_URL);
                     }
                 });
 
@@ -1039,5 +1039,56 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 }
             }
         });
+    }
+
+
+    /**
+     * 提醒发货
+     */
+    private void notifyDeliver(OrderBean order,String url) {
+        FormBody body = new FormBody.Builder()
+                .add("id",order.getId()+"".trim())
+                .add("user.token",sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(url)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast toast = Toast.makeText(context,"",Toast.LENGTH_SHORT);
+                            View view = activity.getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
+                            TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
+                            tvContent.setText("已提醒发货");
+                            toast.setView(view);
+                            toast.show();
+                        }
+                    });
+                }else if(string.contains("1006")){
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast toast = Toast.makeText(context,"",Toast.LENGTH_SHORT);
+                            View view = activity.getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
+                            TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
+                            tvContent.setText("今天已经提醒过啦...");
+                            toast.setView(view);
+                            toast.setDuration(Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    });
+                }
+            }
+        });
+
     }
 }

@@ -219,7 +219,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         //TODO 如何确认订单ID
         //订单提交成功，进行付款
         PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,1);
-        dialog.show(getSupportFragmentManager(), "");
+        dialog.show(getSupportFragmentManager(),"");
     }
 
     /**

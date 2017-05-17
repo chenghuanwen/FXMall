@@ -283,7 +283,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.btn_notify_deliver://提醒发货
                 //服务器提醒发货
-                notifyDeliver();
+                notifyDeliver(FXConst.NOTIFY_STORER_DELIVER_URL);
                 break;
             case R.id.btn_logistics_msg://查看物流信息
                 Intent intent1 = new Intent(OrderDetialActivity.this,LogisticsDetialActivity.class);
@@ -333,16 +333,16 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     }
 
     /**
-     * 提醒店家发货
+     * 提醒发货
      */
-    private void notifyDeliver() {
+    private void notifyDeliver(String url) {
         FormBody body = new FormBody.Builder()
                 .add("id",order.getId()+"".trim())
                 .add("user.token",sp.get("token"))
                 .build();
         Request request = new Request.Builder()
                 .post(body)
-                .url(FXConst.NOTIFY_STORER_DELIVER_URL)
+                .url(url)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -355,10 +355,10 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast toast = new Toast(OrderDetialActivity.this);
+                            Toast toast = Toast.makeText(OrderDetialActivity.this,"",Toast.LENGTH_SHORT);
                             View view = getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
                             TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
-                            tvContent.setText("已提醒店家发货");
+                            tvContent.setText("已提醒发货");
                             toast.setView(view);
                             toast.setDuration(Toast.LENGTH_SHORT);
                             toast.show();
@@ -368,7 +368,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast toast = new Toast(OrderDetialActivity.this);
+                            Toast toast = Toast.makeText(OrderDetialActivity.this,"",Toast.LENGTH_SHORT);
                             View view = getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
                             TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
                             tvContent.setText("今天已经提醒过啦...");

@@ -19,6 +19,10 @@
         app:tabSelectedTextColor="@color/main_color"
         app:tabTextColor="#333"
         app:tabIndicatorHeight="2dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f7f7f7"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_product"
         android:layout_width="match_parent"

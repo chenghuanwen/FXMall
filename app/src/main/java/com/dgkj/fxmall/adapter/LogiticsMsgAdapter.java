@@ -42,6 +42,9 @@ public class LogiticsMsgAdapter extends CommonAdapter<LogisticsMsgBean> {
         });
     }
 
+
+
+
     private void showDeleteDialog(final int position){
         View contentview = mInflater.inflate(R.layout.layout_delete_dialog, null);
         pw = new AlertDialog.Builder(mContext).create();
