@@ -43,7 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >= 21 ){
             getWindow().setStatusBarColor(Color.parseColor("#62b1fe"));
         }
-        sp = SharedPreferencesUnit.getInstance(this);
+        sp = SharedPreferencesUnit.getInstance(MyApplication.getContext());
         loadProgressDialogUtil = new LoadProgressDialogUtil(this);
         clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 

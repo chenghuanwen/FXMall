@@ -34,6 +34,7 @@ import com.dgkj.fxmall.listener.OnGetHomeRecommendFinishedListener;
 import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.view.ProductDetialActivity;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
 import com.dgkj.fxmall.view.myView.FullyLinearLayoutManager;
@@ -82,6 +83,7 @@ public class ProductsMallFragment extends Fragment {
   //  private List<ProductClassifyBean> subClassifys = new ArrayList<>();
     private List<DemandMallClassifyBean> superClassifys = new ArrayList<>();
     private List<NiceStoreBean> recommendStores = new ArrayList<>();
+    private LoadProgressDialogUtil progressDialogUtil;
 
 
     @Nullable
@@ -89,6 +91,9 @@ public class ProductsMallFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_products_fragment, container, false);
         ButterKnife.bind(this, view);
+
+        progressDialogUtil = new LoadProgressDialogUtil(getContext());
+        progressDialogUtil.buildProgressDialog();
 
         initClassifyData();
         initNiceStoreData();
@@ -118,6 +123,7 @@ public class ProductsMallFragment extends Fragment {
                     @Override
                     public void run() {
                         gridViewAdapter.addAll(subList, true);
+                        progressDialogUtil.cancelProgressDialog();
                     }
                 });
 
@@ -344,7 +350,9 @@ public class ProductsMallFragment extends Fragment {
                             classify.setTitle(homePageRecommendBean.getTitel());
                             classify.setSuperId(homePageRecommendBean.getLink());
                             classify.setUrl(homePageRecommendBean.getUrl());
-                            superClassifys.add(classify);
+                            if(superClassifys.size()<10){
+                                superClassifys.add(classify);
+                            }
                             break;
                         case "product_RStore":
                             NiceStoreBean storeBean = new NiceStoreBean();
@@ -364,7 +372,13 @@ public class ProductsMallFragment extends Fragment {
                             break;*/
                     }
                 }
-                setData();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setData();
+                    }
+                });
+
             }
         });
     }
@@ -373,8 +387,9 @@ public class ProductsMallFragment extends Fragment {
      * 刷新各个列表
      */
     private void setData() {
-      //  gridViewAdapter.addAll(subClassifys,true);
         niceStoreRecommendAdapter.addAll(recommendStores,true);
+        //最后一条为“更多”
+        superClassifys.add(new DemandMallClassifyBean("更多", R.mipmap.cpdt_gd));
         classifyAdapter.addAll(superClassifys,true);
     }
 }

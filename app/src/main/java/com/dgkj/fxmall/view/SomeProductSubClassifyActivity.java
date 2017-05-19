@@ -15,6 +15,7 @@ import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     private FXMallControl control = new FXMallControl();
     private OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     private List<MainProductBean> totalData;
+    private LoadProgressDialogUtil progressDialogUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,9 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
         initTabLayout();
+
+        progressDialogUtil = new LoadProgressDialogUtil(this);
+
         refresh();
     }
 
@@ -64,12 +69,20 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     }
 
     private void refresh() {
+        progressDialogUtil.buildProgressDialog();
+
         //TEST
         control.getSubClassifyProductData(new OnGetSubClassifyProductsFinishedListener() {
             @Override
-            public void onGetDemandDatasFinished(List<MainProductBean> products) {
-                totalData = products;
-                adapter.addAll(totalData, true);
+            public void onGetDemandDatasFinished(final List<MainProductBean> products) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        totalData = products;
+                        adapter.addAll(totalData, true);
+                    }
+                });
+
             }
         });
 
@@ -81,6 +94,7 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
                     @Override
                     public void run() {
                         adapter.addAll(totalData, true);
+                        progressDialogUtil.cancelProgressDialog();
                     }
                 });
             }

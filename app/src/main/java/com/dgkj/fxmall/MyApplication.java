@@ -1,6 +1,5 @@
 package com.dgkj.fxmall;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
@@ -19,7 +18,6 @@ import cn.sharesdk.framework.ShareSDK;
 public class MyApplication extends Application {
     private static Context context;
     private static IWXAPI api;
-    public static  boolean isLogin;
     public static List<String> selectedPictures;
     public static String currentProvince = "";
     public static int vipRate,shoppingCount,msgCount,systemMsgCount=5,orderMsgCount=5,warmMsgCount=5,accountMsgCount=5;

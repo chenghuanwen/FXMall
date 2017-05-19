@@ -32,7 +32,7 @@ public class DemandClassifyAdapter extends CommonAdapter<DemandMallClassifyBean>
     @Override
     protected void convert(ViewHolder holder, final DemandMallClassifyBean classify, int position) {
         holder.setText(R.id.tv_classify_title,classify.getTitle());
-        CircleImageView view = holder.getView(R.id.civ_classify_item);
+        final CircleImageView view = holder.getView(R.id.civ_classify_item);
         view.setImageResource(classify.getResId());
         Glide.with(context).load(classify.getUrl()).error(R.mipmap.android_quanzi).into(view);
 
@@ -40,6 +40,7 @@ public class DemandClassifyAdapter extends CommonAdapter<DemandMallClassifyBean>
             @Override
             public void onClick(View v) {
                 if("更多".equals(classify.getTitle())){
+                    view.setImageResource(classify.getResId());
                     Intent intent = new Intent(context, MoreClassifyActivity.class);
                     context.startActivity(intent);
                 }else {

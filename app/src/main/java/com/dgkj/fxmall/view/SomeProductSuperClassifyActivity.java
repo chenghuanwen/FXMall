@@ -14,10 +14,18 @@ import android.widget.TextView;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.HomePageFragmentAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
+import com.dgkj.fxmall.bean.MainDemandBean;
 import com.dgkj.fxmall.bean.MainProductBean;
+import com.dgkj.fxmall.bean.ProductClassifyBean;
+import com.dgkj.fxmall.bean.SomeDemandClassifyBean;
 import com.dgkj.fxmall.bean.SomeProductClassifyBean;
 import com.dgkj.fxmall.bean.StoreBean;
+import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.fragment.SomeProductClassifyFragment;
+import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
+import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
+import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 
 public class SomeProductSuperClassifyActivity extends BaseActivity {
 
@@ -34,10 +43,8 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
     ViewPager vpProduct;
     @BindView(R.id.iv_back)
     ImageView ivBack;
-
     @BindView(R.id.iv_car)
     ImageView ivCar;
-
     @BindView(R.id.tv_title_center)
     TextView tvTitleCenter;
     @BindView(R.id.activity_some_product_classify)
@@ -49,9 +56,15 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
 
 
     private String productType;
+    private int superId;
+    private String[] subClassify;
+    private int[] subId;
+    private int index = 1;
     private List<SomeProductClassifyBean> mainList = new ArrayList<>();
     private List<MainProductBean> subList = new ArrayList<>();
     private ArrayList<Fragment> fragments;
+    private FXMallControl control = new FXMallControl() ;
+    private OkHttpClient client = new OkHttpClient.Builder().build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +93,43 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
      * @param productType
      */
     private void getData(String productType) {
-        //TODO 数据获取完成后
+        loadProgressDialogUtil.buildProgressDialog();
+
+        control.getSubclassify(this, superId, client, new OnGetSubclassifyFinishedListener() {
+            @Override
+            public void onGetSubclassifyFinished(List<ProductClassifyBean> subList) {
+                subClassify = new String[subList.size()];
+                subId = new int[subList.size()];
+                for (int i = 0; i < subList.size(); i++) {
+                    subClassify[i] = subList.get(i).getTaxon();
+                    subId[i] = subList.get(i).getId();
+                }
+                for (int j = 0; j < subClassify.length; j++) {
+                    final SomeProductClassifyBean classifyBean = new SomeProductClassifyBean();
+                    classifyBean.setType(subClassify[j]);
+                    control.getProductsOfSubclassify(subId[j], "createTime", index, 20, client, new OnSearchProductsFinishedListener() {
+                        @Override
+                        public void onSearchProductsFinished(List<MainProductBean> mainProducts) {
+                            classifyBean.setSubList(mainProducts);
+                        }
+                    });
+                    mainList.add(classifyBean);
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initTab(mainList);
+                    }
+                });
+
+            }
+        });
+
+
+
+
+
+        //  TEST TODO 数据获取完成后
         String[] type = new String[]{"上衣", "寸衫", "风衣", "T恤", "马甲", "丝巾", "披肩"};
         List<String> url = new ArrayList<>();
         url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
@@ -147,11 +196,12 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
             tabLayout.getTabAt(i).setText(list.get(i).getType());
         }
 
-
+        loadProgressDialogUtil.cancelProgressDialog();
     }
 
     private void initTitle() {
         productType = getIntent().getStringExtra("type");
+        superId = getIntent().getIntExtra("classifyId",0);
         tvTitleCenter.setText(productType);
     }
 

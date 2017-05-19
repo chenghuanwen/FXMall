@@ -20,6 +20,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.fragment.MineFragment;
 import com.dgkj.fxmall.fragment.ShangpuFragment;
 import com.dgkj.fxmall.fragment.YeWuYuanFragment;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,6 +81,7 @@ public class MainActivity extends BaseActivity {
     private void initDisplay() {
         String from = getIntent().getStringExtra("from");
         String login = sp.get("login");
+        LogUtil.i("TAG","是否登录=="+login+"身份识别码=="+userId+"from==="+from);
         if (!"true".equals(login)) {
             jumpTo(LoginActivity.class, true);
             return;
@@ -119,13 +121,25 @@ public class MainActivity extends BaseActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_shangpu:
-                        showSP();
+                        if(userId.equals("3")){
+                            showSP();
+                        }else {
+                            Intent intent = new Intent(MainActivity.this,HomePageActivity.class);
+                            intent.putExtra("from","sp");
+                            jumpTo(intent,true);
+                        }
                         break;
                     case R.id.rb_yewuyuan:
-                        showYW();
+                        if(userId.equals("2")){
+                            showYW();
+                        }else {
+                            Intent intent = new Intent(MainActivity.this,HomePageActivity.class);
+                            intent.putExtra("from","yw");
+                            jumpTo(intent,true);
+                        }
                         break;
                     case R.id.rb_mine:
-                        if (MyApplication.isLogin) {
+                        if ("true".equals(sp.get("login"))) {
                             showMine();
                         } else {
                             jumpTo(LoginActivity.class, false);

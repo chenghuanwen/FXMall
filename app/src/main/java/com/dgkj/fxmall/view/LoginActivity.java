@@ -146,9 +146,8 @@ public class LoginActivity extends BaseActivity {
                         int userId = object.getInt("dataset");
                         sp.put("token", token);
                         sp.put("login","true");
-                        sp.put("userId",userId+"");
+                        sp.put("userId",userId+"".trim());
                         LogUtil.i("TAG", "token====" + sp.get("token"));
-                        MyApplication.isLogin = true;
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("from", "mine");
                         jumpTo(intent, true);

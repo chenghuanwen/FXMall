@@ -21,6 +21,7 @@ import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.fragment.SomeDemandClassifyFragment;
 import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
     private String[] subClassify;
     private int[] subId;
     private int index = 1;
+    private LoadProgressDialogUtil progressDialogUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         superId = getIntent().getIntExtra("superId", -1);
+        progressDialogUtil = new LoadProgressDialogUtil(this);
 
         initTitle();
         getData();
@@ -86,6 +89,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
      */
     private void getData() {
         //根据一级分类获取对应的二级分类
+        progressDialogUtil.buildProgressDialog();
         control.getSubclassify(this, superId, client, new OnGetSubclassifyFinishedListener() {
             @Override
             public void onGetSubclassifyFinished(List<ProductClassifyBean> subList) {
@@ -106,11 +110,17 @@ public class SomeDemandClassifyActivity extends BaseActivity {
                     });
                     mainList.add(classifyBean);
                 }
-                initTab(mainList);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initTab(mainList);
+                    }
+                });
+
             }
         });
 
-        //本地测试数据
+        //TEST 本地测试数据
         String[] type = new String[]{"上衣", "寸衫", "风衣", "T恤", "马甲", "丝巾", "披肩"};
         List<String> url = new ArrayList<>();
         url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
@@ -137,7 +147,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
             classifyBean.setSubList(list);
             mainList.add(classifyBean);
         }
-        initTab(mainList);
+      //  initTab(mainList);
     }
 
     /**
@@ -163,7 +173,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
             tabLayout.getTabAt(i).setText(list.get(i).getType());
         }
 
-
+        progressDialogUtil.cancelProgressDialog();
     }
 
     private void initTitle() {

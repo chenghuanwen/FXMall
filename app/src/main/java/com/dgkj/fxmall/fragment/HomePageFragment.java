@@ -38,6 +38,7 @@ import com.dgkj.fxmall.listener.OnGetSearchHotWordsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.BannerImageLoader;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.NewGoodsActivity;
 import com.dgkj.fxmall.view.ProductDetialActivity;
@@ -132,6 +133,7 @@ public class HomePageFragment extends Fragment {
     private SharedPreferencesUnit sp ;
     private int index = 1;
     private  List<ProductClassifyBean> list = new ArrayList<>();
+    private LoadProgressDialogUtil progressDialogUtil;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -141,6 +143,8 @@ public class HomePageFragment extends Fragment {
         initview(rootView);
 
         sp = SharedPreferencesUnit.getInstance(getContext());
+        progressDialogUtil = new LoadProgressDialogUtil(getContext());
+        progressDialogUtil.buildProgressDialog();
 
         initBanner();
         //TEST
@@ -170,6 +174,7 @@ public class HomePageFragment extends Fragment {
                                 public void run() {
                                     //TODO 写一个通用的商品实体类
                                     productDisplayAdapter.addAll(products,true);
+                                    progressDialogUtil.cancelProgressDialog();
                                 }
                             });
                         }
@@ -221,7 +226,13 @@ public class HomePageFragment extends Fragment {
                             break;
                     }
                 }
-                setData();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setData();
+                    }
+                });
+
             }
         });
     }
@@ -235,6 +246,12 @@ public class HomePageFragment extends Fragment {
         Glide.with(getContext()).load(newGoodsRecommends.get(1).getUrl()).error(R.mipmap.android_quanzi).into(newGoods3);
         Glide.with(getContext()).load(newGoodsRecommends.get(2).getUrl()).error(R.mipmap.android_quanzi).into(newGoods4);
         Glide.with(getContext()).load(newGoodsRecommends.get(3).getUrl()).error(R.mipmap.android_quanzi).into(newGoods5);
+        tvStore1Name.setText(store.getTitel());
+        tvStore1Describe.setText(store.getIntroduce());
+        tvStore2Name.setText(storeRecommends.get(0).getTitel());
+        tvStore2Describe.setText(storeRecommends.get(0).getIntroduce());
+        tvStore3Name.setText(storeRecommends.get(1).getTitel());
+        tvStore3Describe.setText(storeRecommends.get(1).getIntroduce());
 
         classifyAdapter.addAll(list, true);
 

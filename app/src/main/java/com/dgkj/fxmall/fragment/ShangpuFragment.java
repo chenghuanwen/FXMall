@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.BuyProductPlaceActivity;
@@ -117,6 +118,7 @@ public class ShangpuFragment extends Fragment {
     private int stars,goodsCount,sales;
     private double totalScore;
     private int upperlimit;//可发布商品数量上限
+    private LoadProgressDialogUtil progressDialogUtil;
 
     @Nullable
     @Override
@@ -126,6 +128,9 @@ public class ShangpuFragment extends Fragment {
         sp = SharedPreferencesUnit.getInstance(getContext());
         handler = new Handler(Looper.getMainLooper());
         client = new OkHttpClient.Builder().build();
+        progressDialogUtil = new LoadProgressDialogUtil(getContext());
+        progressDialogUtil.buildProgressDialog();
+
         initData();
         refresh2Home();
         return view;
@@ -375,6 +380,8 @@ public class ShangpuFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
+
+                progressDialogUtil.cancelProgressDialog();
             }
         });
     }

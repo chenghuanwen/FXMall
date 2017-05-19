@@ -25,6 +25,7 @@ import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.utils.ToastUtil;
@@ -127,6 +128,7 @@ public class MineFragment extends Fragment {
     private String nickname;
     private String realname;
     private String location;
+    private LoadProgressDialogUtil progressDialogUtil;
 
 
     @Nullable
@@ -135,8 +137,10 @@ public class MineFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_mine, container, false);
         ButterKnife.bind(this, view);
 
-        getUserInfo();
+        progressDialogUtil = new LoadProgressDialogUtil(getContext());
+        progressDialogUtil.buildProgressDialog();
 
+        getUserInfo();
        setData();
         refresh2Home();
 
@@ -257,7 +261,7 @@ public class MineFragment extends Fragment {
                 tvAccountRest.setText(balance);
             }
         });
-
+        progressDialogUtil.cancelProgressDialog();
     }
 
     @OnClick(R.id.civ_my_icon)
