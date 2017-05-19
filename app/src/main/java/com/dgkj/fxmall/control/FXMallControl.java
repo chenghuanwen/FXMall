@@ -195,15 +195,19 @@ public class FXMallControl {
         FXMallModel.getProductDetialById(id,listener);
     }
 
-    public void getMySubVipData(String url, String token, int index, int size, final OnGetMyVipFinishedListener listener){
+    public void getMySubVipData(String url, String token, int index, int size,  OnGetMyVipFinishedListener listener){
         FXMallModel.getMySubVipData(url,token,index,size,listener);
     }
 
-    public void getMySuperVipInfo(String token, final OnGetMyVipFinishedListener listener){
+    public void getMySuperVipInfo(String token, OnGetMyVipFinishedListener listener){
         FXMallModel.getMySuperVipInfo(token,listener);
     }
 
-    public void getNotifyMsgData(String token, final OnGetNotifyMsgFinishedListener listener){
+    public void getNotifyMsgData(String token, OnGetNotifyMsgFinishedListener listener){
         FXMallModel.getNotifyMsgData(token,listener);
+    }
+
+    public void getAllNewProducts(Activity context,int index, int size, OkHttpClient client, OnSearchProductsFinishedListener listener) {
+        FXMallModel.getAllNewProducts(context,index,size,client,listener);
     }
 }

@@ -292,6 +292,11 @@ public class HomePageFragment extends Fragment {
             productBean.setPriceScore(4);
             productBean.setQualityScore(4);
             productBean.setTotalScore(4);
+            if(i<2){
+                productBean.setDeliverable(true);
+            }else {
+                productBean.setDeliverable(false);
+            }
             list.add(productBean);
         }
         productDisplayAdapter.addAll(list, true);

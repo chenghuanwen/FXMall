@@ -46,7 +46,7 @@ public class ShangpuOrderActivity extends BaseActivity {
     private List<SuperOrderBean> waitDeliver;
     private List<OrderBean> subHasDeliver,subSols,subRefund,subWaitDeliver;
     private HomePageFragmentAdapter adapter;
-    private String[] states = new String[]{"等待发货", "已发货", "已完成", "买家申请退货/退款", "等待收货", "等待买家发货", "退款已完成", "已拒绝申请"};
+    private String[] states = new String[]{"等待发货", "已发货", "已完成", "买家申请退货/退款", "等待收货", "等待买家发货", "退款已完成", "已拒绝申请","待接单","已接单"};
     private String from = "";
     private int statu, isAll,index=1;
     private OkHttpClient client = new OkHttpClient.Builder().build();
@@ -83,10 +83,10 @@ public class ShangpuOrderActivity extends BaseActivity {
         refund = new ArrayList<>();
 
         //TEST
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 10; i++) {
             List<OrderBean> list = new ArrayList<>();
             SuperOrderBean superOrderBean = new SuperOrderBean();
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < 5; j++) {
                 OrderBean order = new OrderBean();
                 order.setStoreName("粉小萌酸辣粉旗舰店");
                 order.setColor("蓝色");
@@ -100,7 +100,13 @@ public class ShangpuOrderActivity extends BaseActivity {
                 order.setOrderNum("4215415635");
                 order.setId(i+1);
                 order.setState(states[i]);
+                order.setStateNum(j);
                 order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
+                if(i>7){
+                    order.setDeliver(false);
+                }else {
+                    order.setDeliver(true);
+                }
                 list.add(order);
             }
             superOrderBean.setId(i);
@@ -109,7 +115,9 @@ public class ShangpuOrderActivity extends BaseActivity {
         }
 
         waitDeliver.add(allOrder.get(0));
+        waitDeliver.add(allOrder.get(8));
         hasDeliver.add(allOrder.get(1));
+        hasDeliver.add(allOrder.get(9));
         sold.add(allOrder.get(2));
         refund.add(allOrder.get(3));
         refund.add(allOrder.get(4));
@@ -233,8 +241,8 @@ public class ShangpuOrderActivity extends BaseActivity {
         if (orders.size() > 0) {
             for (int i = 0; i < orders.size(); i++) {
                 int key = orders.get(i).getId();//获取当条数据的id值
-                if (post.getId() >= 0) {
-                    boolean b = key == post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
+                if (post.getId() > 0) {
+                    boolean b = key != post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
                     if (b) {
                         post = new OrderBean();
                     }

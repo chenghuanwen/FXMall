@@ -11,10 +11,20 @@ import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.DemandMsgBean;
 import com.dgkj.fxmall.bean.NotifyMsgBean;
+import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Android004 on 2017/4/5.
@@ -24,9 +34,13 @@ public class NotifyMsgAdapter extends CommonAdapter<NotifyMsgBean> {
     private static final int PRODUCT_MSG = 1;
     private static final int NOTIFY_MSG = 2;
     private AlertDialog pw;
+    private SharedPreferencesUnit sp;
+    private OkHttpClient client;
 
     public NotifyMsgAdapter(Context context,List<NotifyMsgBean> datas) {
         super(context, -1, datas);
+        sp = SharedPreferencesUnit.getInstance(context);
+        client = new OkHttpClient.Builder().build();
     }
 
     @Override
@@ -86,6 +100,7 @@ public class NotifyMsgAdapter extends CommonAdapter<NotifyMsgBean> {
                 notifyDataSetChanged();
                 pw.dismiss();
                 //TODO 通知服务器删除
+                deleteMsgOfServe(mDatas.get(position).getId());
             }
         });
         TextView tvBoy = (TextView) contentview.findViewById(R.id.tv_cancle);
@@ -100,5 +115,29 @@ public class NotifyMsgAdapter extends CommonAdapter<NotifyMsgBean> {
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(true);
         pw.show();
+    }
+
+
+    /**
+     * 删除该条信息
+     * @param id
+     */
+    private void deleteMsgOfServe(int id) {
+        FormBody body = new FormBody.Builder()
+                .add("id",id+"".trim())
+                .add("toUser.token",sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.DELETE_NOTIFY_MSG_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+            }
+        });
     }
 }

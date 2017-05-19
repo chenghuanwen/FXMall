@@ -2,6 +2,7 @@ package com.dgkj.fxmall.view;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -80,11 +81,10 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private OrderBean order;
     private TextView tvChangeTakeAddress,tvCancelOrder,tvApplyRefund,tvLogistics,tvDeleteOrder;
     private TextView tvPayTime;
-    private Button btnPay,btnNotifyDeliver,btnConfirmTake,btnComment,btnCheckLogistics;
+    private Button btnPay,btnNotifyDeliver,btnConfirmTake,btnComment,btnCheckLogistics,btnDeliver,btnNotifyStock,btnNotifyTake;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private LinearLayout contentView;
     private String from = "";
-    private int sumPrice;
 
 
     @Override
@@ -94,6 +94,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         from = getIntent().getStringExtra("from");
         superOrder = (SuperOrderBean) getIntent().getSerializableExtra("order");
         order = superOrder.getSubOrders().get(0);
+
         int stateNum = order.getStateNum();
         switch (stateNum){
             case 0:
@@ -109,12 +110,28 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 addProductLayout(R.layout.item_order_detail_no_opration_common);
                 break;
             case 1:
-                setContentView(R.layout.activity_order_detial_for_user_wait_deliver);//待发货
-              //  setContentView(R.layout.activity_order_detial_for_store_wait_deliver);//待发货
+                if("user".equals(from)){//买家
+                    if(order.isDeliver()){
+                        setContentView(R.layout.activity_order_detial_for_user_wait_deliver);//待发货
+                        btnNotifyDeliver = (Button) findViewById(R.id.btn_notify_deliver);
+                        btnNotifyDeliver.setOnClickListener(this);
+                    }else {
+                        setContentView(R.layout.activity_order_detial_for_user_wait_deliver_for_undeliver);
+                        btnNotifyStock = (Button) findViewById(R.id.btn_notify_stock);//提醒备货（不支持发货）
+                        btnNotifyStock.setOnClickListener(this);
+                    }
+
+                }else {//卖家
+                    if(order.isDeliver()){
+                        setContentView(R.layout.activity_order_detial_for_store_wait_deliver);//待发货
+                    }else {
+                        setContentView(R.layout.activity_order_detial_for_store_wait_deliver_for_undeliver);//确认接单(不支持发货)
+                    }
+                    btnDeliver = (Button) findViewById(R.id.btn_deliver);//发货
+                    btnDeliver.setOnClickListener(this);
+                }
                 tvPayTime = (TextView) findViewById(R.id.tv_order_pay_time);
                 tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
-                btnNotifyDeliver = (Button) findViewById(R.id.btn_notify_deliver);
-                btnNotifyDeliver.setOnClickListener(this);
                 addProductLayout(R.layout.item_order_detail_apply_refund_common);
                 break;
             case 2:
@@ -150,9 +167,15 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 addProductLayout(R.layout.item_order_detail_no_opration_common);
                 break;
             case 5:
-                setContentView(R.layout.activity_order_detial_for_has_deliver);//已发货
-                btnCheckLogistics = (Button) findViewById(R.id.btn_logistics_msg);
-                btnCheckLogistics.setOnClickListener(this);
+                if(order.isDeliver()){
+                    setContentView(R.layout.activity_order_detial_for_has_deliver);//已发货
+                    btnCheckLogistics = (Button) findViewById(R.id.btn_logistics_msg);
+                    btnCheckLogistics.setOnClickListener(this);
+                }else {
+                    setContentView(R.layout.activity_order_detial_for_has_deliver_for_undeliver);//已发货
+                    btnNotifyTake = (Button) findViewById(R.id.btn_notify_take_goods);
+                    btnNotifyTake.setOnClickListener(this);
+                }
                 addProductLayout(R.layout.item_order_detail_no_opration_common);
                 break;
         }
@@ -172,17 +195,25 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void setData() {
-        tvOrderTakeMan.setText("收货人："+order.getTakeMan());
-        tvOrderTakePhone.setText(order.getTakePhone());
-        tvOrderTakeAddress.setText(order.getTakeAddress());
-        tvOrderStoreName.setText(order.getStoreName());
-
-        int postage = order.getPostage();
-        if(postage == 0){
-            tvOrderGetMoney.setText("¥"+sumPrice+"(包邮)");
+        if(order.isDeliver()){
+            tvOrderTakeMan.setText("收货人："+order.getTakeMan());
+            tvOrderTakePhone.setText(order.getTakePhone());
+            tvOrderTakeAddress.setText("收货地址:"+order.getTakeAddress());
+            int postage = order.getPostage();
+            if(postage == 0){
+                tvOrderExpress.setText("包邮");
+            }else {
+                tvOrderExpress.setText("快递(¥"+postage+")");
+            }
         }else {
-            tvOrderGetMoney.setText("¥"+sumPrice+"(含邮费¥"+ postage +")");
+            tvOrderTakeMan.setText("收货人："+order.getUnDeliverMan());
+            tvOrderTakePhone.setText(order.getUnDeliverPhone());
+            tvOrderTakeAddress.setText("提货地址:"+order.getStoreAddress());
+            tvOrderExpress.setText("自取件");
         }
+        tvOrderStoreName.setText(order.getStoreName());
+        tvOrderGetMoney.setText("¥"+order.getSumPrice());
+
         tvOrderNum.setText("订单编号:"+order.getOrderNum());
         tvCreateTime.setText("创建时间："+ TimeFormatUtils.long2String(order.getCreateTime()));
 
@@ -196,6 +227,10 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             for (int i = 0; i < subOrders.size(); i++) {
                 final OrderBean orderBean = subOrders.get(i);
                 View view = getLayoutInflater().inflate(resId, orderContainer, false);
+
+                if(!orderBean.isDeliver()){//不支持发货
+                    view.setBackgroundColor(Color.parseColor("#f0f7fd"));
+                }
 
                 TextView tvContent = (TextView) view.findViewById(R.id.tv_car_goods_introduce);
                 TextView tvColor = (TextView) view.findViewById(R.id.tv_car_goods_color);
@@ -227,19 +262,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     });
                 }
 
-                sumPrice += orderBean.getSinglePrice()*orderBean.getCount();
-
                 orderContainer.addView(view);
 
-                //  TextView tvSumPrice = (TextView) view.findViewById(R.id.tv_sumPrice);
-                //TextView tvPostage = (TextView) view.findViewById(R.id.tv_postage);
-                // tvSumPrice.setText("¥"+(orderBean.getSinglePrice()*orderBean.getCount()));
-               /* int postage = orderBean.getPostage();
-                if(postage == 0){
-                    tvPostage.setText("(包邮)");
-                }else {
-                    tvPostage.setText("(含邮费¥"+ postage +")");
-                }*/
             }
 
     }
@@ -297,6 +321,23 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 Intent intent2 = new Intent(OrderDetialActivity.this,PublishCommentActivity.class);
                 intent2.putExtra("order",superOrder);
                 jumpTo(intent2,false);
+
+                break;
+            case R.id.btn_deliver://发货
+                if(order.isDeliver()){
+                    Intent intent3 = new Intent(this, ShangpuDeliverActivity.class);
+                    intent3.putExtra("order",order);
+                    startActivity(intent3);
+                    finish();
+                }else {//接单（不支持发货）
+                    storeDeliverForUnDeliverabel(order.getId());
+                }
+                break;
+            case R.id.btn_notify_stock://提醒备货（不支持发货）
+                notifyDeliver(FXConst.NOTIFY_STORER_DELIVER_URL);
+                break;
+            case R.id.btn_notify_take_goods://提醒收货（不支持发货）
+                notifyTakeGoods(order.getId());
                 break;
 
             //弹窗点击处理
@@ -331,6 +372,70 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 break;
         }
     }
+
+
+    /**
+     * 提醒买家上门取件
+     * @param id 订单id
+     */
+    private void notifyTakeGoods(int id) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.NOTIFY_TAKE_GOODS_FOR_UNDELIVER)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    toastInUI(OrderDetialActivity.this,"已通知买家前来取件");
+                }else if(string.contains("1006")){
+                    toastInUI(OrderDetialActivity.this,"今天已经提醒过咯");
+                }else {
+                    toastInUI(OrderDetialActivity.this,"提醒失败，请稍后重试");
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 商铺接单（发货）
+     * @param id 订单id
+     */
+    private void storeDeliverForUnDeliverabel(int id) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.SHANGPU_DELIVER_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    toastInUI(OrderDetialActivity.this,"已接单");
+                }
+            }
+        });
+    }
+
+
+
 
     /**
      * 提醒发货

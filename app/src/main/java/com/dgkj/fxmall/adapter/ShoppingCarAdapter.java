@@ -76,11 +76,21 @@ public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
                     shoppingCar.setSelected(true);
                     for (ShoppingGoodsBean good : goods) {
                         good.setSelected(true);
+
+                        Message msg = Message.obtain();
+                        msg.obj = good;
+                        msg.what = 1;//统计价格增加
+                        handler.sendMessage(msg);
                     }
                 }else {
                     shoppingCar.setSelected(false);
                     for (ShoppingGoodsBean good : goods) {
                         good.setSelected(false);
+
+                        Message msg = Message.obtain();
+                        msg.obj = good;
+                        msg.what = 2;//统计价格减少
+                        handler.sendMessage(msg);
                     }
                 }
                 handler.post(new Runnable() {

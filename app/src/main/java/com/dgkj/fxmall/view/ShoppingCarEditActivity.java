@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.ShoppingCarEditAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
@@ -181,7 +182,7 @@ public class ShoppingCarEditActivity extends BaseActivity {
 
         //TODO 获取购物车商品总数
         goodsCount = carBeanList.size();
-        String title = String.format("购物车（%s", goodsCount + ")");
+        String title = String.format("购物车（%s", MyApplication.shoppingCount + ")");
         setHeaderTitle(headerview, title);
 
         changeList = new ArrayList<>();
@@ -241,14 +242,18 @@ public class ShoppingCarEditActivity extends BaseActivity {
         //删除本地数据
         if (size > 0) {
             LogUtil.i("TAG", selectPositions.toString());
-            for (EditCarSelectedBean selectPosition : selectPositions) {
+            for (int i = 0; i < selectPositions.size(); i++) {
+
+                EditCarSelectedBean selectPosition = selectPositions.get(i);
                 ArrayList<ShoppingGoodsBean> currentItemGoods = carBeanList.get(selectPosition.getSuperPosition()).getGoods();
-                currentItemGoods.remove(selectPosition.getSubPosition());
+                currentItemGoods.remove(currentItemGoods.get(selectPosition.getSubPosition()));
                 carBeanList.get(selectPosition.getSuperPosition()).setGoods(currentItemGoods);
                 if (carBeanList.get(selectPosition.getSuperPosition()).getGoods().size() == 0) {
-                    carBeanList.remove(selectPosition.getSuperPosition());
+                    carBeanList.remove(carBeanList.get(selectPosition.getSuperPosition()));
                 }
+            //    i--;//当前项已删除，i要递减，否则会混乱
             }
+
         }
         adapter.notifyDataSetChanged();
         // adapter.addAll(carBeanList,true);

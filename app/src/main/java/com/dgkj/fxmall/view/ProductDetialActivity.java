@@ -281,7 +281,7 @@ public class ProductDetialActivity extends BaseActivity {
         goodsBean.setIntroduce(product.getIntroduce());
         goodsBean.setSkuId(product.getSkuId());
         goodsBean.setUrl(product.getUrl());
-        goodsBean.setPrice(product.getVipPrice());
+        goodsBean.setVipPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
         goodsBean.setInventory(product.getInventory());
         goodsBean.setStoreBean(product.getStoreBean());

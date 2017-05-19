@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:background="#f3f3f3"
+    android:background="#f7f7f7"
     tools:context="com.dgkj.fxmall.view.OrderDetialActivity">
     <include layout="@layout/activityheader"
         android:id="@+id/headerview"></include>
@@ -23,16 +23,16 @@
         android:id="@+id/tv_order_state"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="等待发货"
-        android:textColor="#ff8194"
+        android:text="等待买家取货"
+        android:textColor="#ee8194"
         android:textSize="15sp"
         android:background="@mipmap/ddxq_mjfkbj"
+        android:gravity="center_vertical"
         android:drawableLeft="@mipmap/ddxq_dd"
-        android:paddingLeft="25dp"
-        android:drawablePadding="10dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
         android:drawableRight="@mipmap/ddxq_fh"
-        android:gravity="center_vertical"/>
+        android:paddingRight="10dp"
+        android:drawablePadding="10dp"/>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,42 +86,112 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:gravity="center_vertical"
-                        android:text="收货地址：广东省深圳市龙岗区布吉街道官坑北六巷八号一楼"/>
+                        android:text="提货地址：广东省深圳市龙岗区布吉街道官坑北六巷八号一楼"/>
                 </LinearLayout>
 
             </RelativeLayout>
 
             <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/whitecircler_corner_shape3"
-        android:orientation="vertical"
-        android:layout_margin="10dp">
-     <TextView
-         android:id="@+id/tv_order_store_name"
-         android:layout_width="match_parent"
-         android:layout_height="40dp"
-         android:text="粉小萌酸辣粉"
-         android:textColor="#333"
-         android:layout_marginLeft="10dp"
-         android:gravity="center_vertical"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#f3f3f3"/>
-        <LinearLayout
-            android:id="@+id/ll_order_detial_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/whitecircler_corner_shape3"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:id="@+id/tv_order_store_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="粉小萌酸辣粉"
+                    android:textColor="#333"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#e8e8e8"/>
+                <LinearLayout
+                    android:id="@+id/ll_order_detial_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"></LinearLayout>
+              <!--  <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
 
+                    <ImageView
+                        android:id="@+id/iv_car_goods"
+                        android:layout_width="72dp"
+                        android:layout_height="96dp"
+                        android:src="@mipmap/android_quanzi"
+                        android:scaleType="fitXY"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/circler_main_corner_shape"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tv_car_goods_introduce"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣裙连衣"
+                            android:textSize="13sp"
+                            android:lines="2"
+                            android:textColor="#333"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/tv_car_goods_color"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:text="颜色：黑色-M码"
+                                android:gravity="center_vertical"
+                                android:textColor="#999"
+                                android:layout_marginTop="10dp"
+                                android:textSize="13sp"/>
+
+                        </LinearLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp">
+                            <TextView
+                                android:id="@+id/tv_car_goods_price"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="¥35"
+                                android:textColor="#333"
+                                android:textSize="18sp" />
+                            <TextView
+                                android:id="@+id/tv_car_goods_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="x1"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="10dp"
+                                android:textColor="#999"
+                                android:textSize="13sp" />
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>-->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#f3f3f3"/>
+            android:background="#e8e8e8"
+            android:layout_marginTop="10dp"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
             android:layout_margin="10dp"
             android:orientation="horizontal">
             <TextView
@@ -146,13 +216,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:background="#fff"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="10dp">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
             android:text="买家留言："
             android:textColor="#333"
             android:layout_marginLeft="10dp"
@@ -162,19 +233,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="粉小萌味道绝对正宗，而且颜值很高，吃货的福利来啦，你还在等什么"
-            android:textColor="#f00"
+            android:textColor="#999"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"/>
     </LinearLayout>
-            <LinearLayout
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/whitecircler_corner_shape3"
-                android:orientation="vertical">
+                android:layout_height="1dp"
+                android:background="#e8e8e8"
+                android:layout_marginTop="10dp"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="44dp"
         android:layout_marginTop="1dp"
         android:background="#fff"
         android:orientation="horizontal">
@@ -192,7 +262,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="顺丰快递"
+            android:text="自取件"
             android:gravity="center|right"
             android:textSize="14sp"
             android:textColor="#333"
@@ -200,57 +270,18 @@
     </LinearLayout>
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e8e8e8"/>
-            <LinearLayout
+                android:layout_height="50dp"
+                android:background="#f7f7f7"/>
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#fff">
-                <TextView
-                    android:id="@+id/tv_order_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="订单编号：6456546468666"
-                    android:textColor="#333"
-                    android:textSize="14sp"
-                    android:layout_margin="10dp"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#e8e8e8"/>
-                <TextView
-                    android:id="@+id/tv_order_create_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="创建时间：2017-04-01 13:38:01"
-                    android:textColor="#333"
-                    android:textSize="14sp"
-                    android:layout_margin="10dp"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#e8e8e8"/>
-                <TextView
-                    android:id="@+id/tv_order_pay_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="付款时间：2017-04-01 13:38:01"
-                    android:textColor="#333"
-                    android:textSize="14sp"
-                    android:layout_margin="10dp"/>
-            </LinearLayout>
-            </LinearLayout>
+                android:layout_height="1dp"
+                android:background="#e8e8e8"
+                android:layout_marginTop="10dp"/>
         </LinearLayout>
     </ScrollView>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e8e8e8"/>
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="49dp"
-        android:layout_marginTop="1dp"
         android:background="#fff"
         android:orientation="horizontal">
         <FrameLayout
@@ -267,19 +298,24 @@
                 android:layout_marginLeft="10dp"
                 />
         </FrameLayout>
-
+        <View
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
         <Button
-            android:id="@+id/btn_notify_deliver"
-            android:layout_width="220dp"
+            android:id="@+id/btn_notify_take_goods"
+            android:layout_width="200dp"
             android:background="@drawable/circlebutton_shape"
-            android:layout_height="40dp"
-            android:text="提醒发货"
-            android:layout_centerInParent="true"
+            android:layout_height="30dp"
+            android:text="提醒收货"
+            android:layout_gravity="center"
             android:gravity="center"
             android:textSize="14sp"
             android:textColor="#fff"
             android:layout_marginRight="10dp"/>
-    </RelativeLayout>
-
-
+        <View
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 </LinearLayout>

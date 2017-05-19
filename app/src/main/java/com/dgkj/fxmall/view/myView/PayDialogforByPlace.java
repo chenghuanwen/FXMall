@@ -16,7 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
-import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.utils.LogUtil;
@@ -36,18 +35,18 @@ import okhttp3.Response;
  * Created by Android004 on 2017/4/5.
  */
 @SuppressLint("ValidFragment")
-public class PayDialog extends DialogFragment {
+public class PayDialogforByPlace extends DialogFragment {
     private Context context;
     private OkHttpClient client;
     private SharedPreferencesUnit sp;
     private int payMode = 3;
-    private int orderId;
+    private int count = 1;
 
-    public PayDialog(Context context,int orderId) {
+    public PayDialogforByPlace(Context context, int count) {
         this.context = context;
-        this.orderId = orderId;
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
+        this.count = count;
     }
 
     @NonNull
@@ -111,7 +110,7 @@ public class PayDialog extends DialogFragment {
     private void toPay(String password) {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("user.token",sp.get("token"))
-                .add("id",orderId+"".trim())
+                .add("upperLimit",count+"".trim())
                 .add("payMode",payMode+"".trim());
         if(password != null){
             builder.add("user.payPassword",password);
@@ -119,7 +118,7 @@ public class PayDialog extends DialogFragment {
         FormBody formBody = builder.build();
         Request request = new Request.Builder()
                 .post(formBody)
-                .url(FXConst.PAY_ORDER_URL)
+                .url(FXConst.BUY_PRODUCT_PLACE_URL)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override

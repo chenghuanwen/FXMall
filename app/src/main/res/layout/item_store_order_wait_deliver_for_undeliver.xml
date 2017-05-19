@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#fff"
+    android:layout_margin="10dp">
+    <include layout="@layout/item_order_common_for_undeliver"
+        android:id="@+id/order_common"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp">
+        <Button
+            android:id="@+id/btn_deliver"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:textColor="#fff"
+            android:text="接单"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/circlebutton_shape"/>
+    </LinearLayout>
+
+</LinearLayout>

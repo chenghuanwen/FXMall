@@ -56,7 +56,7 @@ public class MyOrdersActivity extends BaseActivity {
     private List<SuperOrderBean> waitComment;
     private List<OrderBean> waitPayOrders,waitDeliverOrders,waitTakeOrders,waitCommentOrders;
     private HomePageFragmentAdapter adapter;
-    private String[] states = new String[]{"等待买家付款", "等待卖家发货", "等待买家收货", "等待买家评价", "交易完成"};
+    private String[] states = new String[]{"等待买家付款", "等待卖家发货", "等待买家收货", "等待买家评价", "交易完成","待确认","商家已接单","待付款(不支持发货)"};
     private String from = "";
     private int statu, isAll;
     private OkHttpClient client = new OkHttpClient.Builder().build();
@@ -69,7 +69,7 @@ public class MyOrdersActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initHeaderView();
-        refresh(statu, 0);
+    //    refresh(statu, 0);
         initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
         initTab();
     }
@@ -110,8 +110,14 @@ public class MyOrdersActivity extends BaseActivity {
                 waitTakeGoods.addAll(sortProductsOfOrder(waitTakeOrders));
                 waitComment.addAll(sortProductsOfOrder(waitCommentOrders));
 
-                initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
-                initTab();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
+                        initTab();
+                    }
+                });
+
             }
         });
     }
@@ -125,7 +131,7 @@ public class MyOrdersActivity extends BaseActivity {
         waitComment = new ArrayList<>();
 
         //TEST
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 8; i++) {
             List<OrderBean> list = new ArrayList<>();
             SuperOrderBean superOrderBean = new SuperOrderBean();
             for (int j = 0; j <5; j++) {
@@ -141,9 +147,14 @@ public class MyOrdersActivity extends BaseActivity {
                 order.setSinglePrice(56);
                 order.setSumPrice(56);
                 order.setState(states[i]);
-                order.setStateNum(i);
+                order.setStateNum(j);
                 order.setId(i+2);
                 order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
+                if(i>4){
+                    order.setDeliver(false);
+                }else {
+                    order.setDeliver(true);
+                }
                 list.add(order);
             }
             superOrderBean.setId(i);
@@ -152,9 +163,15 @@ public class MyOrdersActivity extends BaseActivity {
         }
 
         waitPay.add(allOrder.get(0));
+        waitPay.add(allOrder.get(7));
         waitDeliver.add(allOrder.get(1));
+        waitDeliver.add(allOrder.get(5));
         waitTakeGoods.add(allOrder.get(2));
+        waitTakeGoods.add(allOrder.get(4));
         waitComment.add(allOrder.get(3));
+
+
+
 
         fragments.add(new MyOrderClassifyFragment(allOrder));
         fragments.add(new MyOrderClassifyFragment(waitPay));
@@ -237,8 +254,8 @@ public class MyOrdersActivity extends BaseActivity {
         if (orders.size() > 0) {
             for (int i = 0; i < orders.size(); i++) {
                 int key = orders.get(i).getId();//获取当条数据的id值
-                if (post.getId() >= 0) {
-                    boolean b = key == post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
+                if (post.getId() > 0) {
+                    boolean b = key != post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
                     if (b) {
                         post = new OrderBean();
                     }

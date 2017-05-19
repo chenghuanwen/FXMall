@@ -14,6 +14,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
+import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
 
 public class NewGoodsActivity extends BaseActivity {
     @BindView(R.id.tabLayout)
@@ -42,6 +44,8 @@ public class NewGoodsActivity extends BaseActivity {
     private MainProductDisplayAdapter adapter;
     private FXMallControl control = new FXMallControl();
     private List<MainProductBean> totalData;
+    private int index = 1;
+    private OkHttpClient client = new OkHttpClient.Builder().build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,7 @@ public class NewGoodsActivity extends BaseActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvSearchContent.setLayoutManager(layoutManager);
         rvSearchContent.setAdapter(adapter);
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+       /* tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
@@ -95,7 +99,7 @@ public class NewGoodsActivity extends BaseActivity {
 
             }
         });
-
+*/
     }
 
     private void initHeaderView() {
@@ -106,13 +110,20 @@ public class NewGoodsActivity extends BaseActivity {
 
 
     private void refresh() {
-        control.getSubClassifyProductData(new OnGetSubClassifyProductsFinishedListener() {
+        control.getAllNewProducts(this, index, 20, client, new OnSearchProductsFinishedListener() {
             @Override
-            public void onGetDemandDatasFinished(List<MainProductBean> products) {
-                totalData = products;
-                adapter.addAll(products, true);
+            public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        totalData = mainProducts;
+                        adapter.addAll(mainProducts, true);
+                    }
+                });
+
             }
         });
+
     }
 
     @OnClick(R.id.iv_back)

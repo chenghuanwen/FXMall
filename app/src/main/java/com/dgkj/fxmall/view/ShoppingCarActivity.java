@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.ShoppingCarAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
@@ -72,14 +73,14 @@ public class ShoppingCarActivity extends BaseActivity {
                 case 1:
                     ShoppingGoodsBean goods = (ShoppingGoodsBean) msg.obj;
                     selectGoods.add(goods);
-                    sumPrice += goods.getCount() * goods.getPrice();
+                    sumPrice += goods.getCount() * goods.getVipPrice();
                     tvTotalPrice.setText("¥" + sumPrice);
                     adapter.notifyDataSetChanged();
                     break;
                 case 2:
                     ShoppingGoodsBean goods1 = (ShoppingGoodsBean) msg.obj;
                     selectGoods.remove(goods1);
-                    sumPrice -= goods1.getCount() * goods1.getPrice();
+                    sumPrice -= goods1.getCount() * goods1.getVipPrice();
                     tvTotalPrice.setText("¥" + sumPrice);
                     adapter.notifyDataSetChanged();
                     break;
@@ -117,7 +118,7 @@ public class ShoppingCarActivity extends BaseActivity {
                 adapter.addAll(carBeanList, true);
             }
         });
-        control.getShoppingcarProducts(this, sp.get("token"), index, 10, client, new OnGetShoppingcarProductsFinishedListener() {
+        control.getShoppingcarProducts(this, sp.get("token"), index, 15, client, new OnGetShoppingcarProductsFinishedListener() {
             @Override
             public void onGetShoppingcarProductsFinished(final List<ShoppingGoodsBean> carBeanList) {
                 goodsCount = carBeanList.size();
@@ -153,9 +154,9 @@ public class ShoppingCarActivity extends BaseActivity {
         ShoppingGoodsBean product = new ShoppingGoodsBean();
         if (list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
-                String key = carBeanList.get(i).getStoreName();//获取当条数据的店名值
-                if (product.getStoreBean()!=null && product.getStoreBean().getId() >= 0) {
-                    boolean b = key.equals(product.getStoreName());//当该店名值与key值中的店名值不同时，则创建新的key,保证key值唯一
+                String key = list.get(i).getStoreName();//获取当条数据的店名值
+                if (product.getStoreName()!=null && product.getStoreName().length() >= 0) {
+                    boolean b = !key.equals(product.getStoreName());//当该店名值与key值中的店名值不同时，则创建新的key,保证key值唯一
                     if (b) {
                         product = new ShoppingGoodsBean();
                     }
@@ -227,7 +228,7 @@ public class ShoppingCarActivity extends BaseActivity {
     private void initHeaderview() {
         control = new FXMallControl();
         //TODO 获取购物车商品总数
-        String title = String.format("购物车（%s", goodsCount + ")");
+        String title = String.format("购物车（%s", MyApplication.shoppingCount + ")");
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, title);
         setHeaderImage(headerview, -1, "编辑", Position.RIGHT, new View.OnClickListener() {
@@ -253,6 +254,7 @@ public class ShoppingCarActivity extends BaseActivity {
         Intent intent = new Intent(this, ConfirmOrderActivity.class);
         intent.putParcelableArrayListExtra("orders", (ArrayList<ShoppingCarBean>) getGoodsOfOneStore(selectGoods));
         startActivity(intent);
+        finish();
     }
 
     @Override

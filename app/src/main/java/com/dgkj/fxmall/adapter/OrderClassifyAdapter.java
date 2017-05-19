@@ -3,6 +3,7 @@ package com.dgkj.fxmall.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
@@ -60,6 +61,9 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
     private static final int APPLAY_REFUND = 5;//申请退款
     private static final int AGREE_REFUND = 6;//同意退款
     private static final int REDUND_SUCCESSED = 7;//退款成功
+    private static final int UNDELIVERABLE_WAIT_COMFIRM = 16;//不支持发货订单等待商家确认（待发货）
+    private static final int UNDELIVERABLE_HAS_COMFIRM = 17;//不支持发货订单已被商家确认（待收货）
+    private static final int UNDELIVERABLE_WAIT_PAY = 20;//不支持发货订单待付款（待付款）
     /**
      * 店铺订单中心
      */
@@ -71,6 +75,10 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
     private static final int REFUND_COMPLETE = 13;//退款完成
     private static final int WAIT_BUYER_DELIVER = 14;//卖家待买家退货发货
     private static final int SELLER_REFUSED_REFUND = 15;//卖家拒绝退款
+
+    private static final int SELLER_UNDELIVERABLE_WAIT_COMFIRM = 18;//卖家对不支持发货订单待接单（待发货）
+    private static final int SELLER_UNDELIVERABLE_HAS_COMFIRM = 19;//卖家对不支持发货订单已接单（已发货）
+
     private AlertDialog pw;
     private String cancleReason="";
     private FragmentActivity activity;
@@ -118,7 +126,9 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 OrderBean orderBean = subOrders.get(i);
                 View view = mInflater.inflate(R.layout.item_order_subcommon, subContainer, false);
                 subContainer.addView(view);
-
+                if(!order.isDeliver()){
+                    view.setBackgroundColor(Color.parseColor("#f0f7fd"));
+                }
                 TextView tvContent = (TextView) view.findViewById(R.id.tv_car_goods_introduce);
                 TextView tvColor = (TextView) view.findViewById(R.id.tv_car_goods_color);
                 TextView tvPrice = (TextView) view.findViewById(R.id.tv_car_goods_price);
@@ -178,6 +188,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
         switch (getItemViewType(position)){
             case WAIT_PAY:
+            case UNDELIVERABLE_WAIT_PAY:
                 tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_cancle_order, new View.OnClickListener() {
                     @Override
@@ -271,6 +282,23 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     }
                 });
                 break;
+            case UNDELIVERABLE_WAIT_COMFIRM:
+                holder.setOnClickListener(R.id.btn_notify_stock, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {//提醒备货
+                        notifyDeliver(order,FXConst.NOTIFY_STORER_DELIVER_URL);
+                    }
+                });
+                break;
+            case UNDELIVERABLE_HAS_COMFIRM:
+                holder.setOnClickListener(R.id.btn_confirm_takegoods, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {//确认收货
+                        showDeleteDialog(superOrderBean);
+                    }
+                });
+                break;
+
 
 
             //商铺订单
@@ -414,7 +442,108 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 });
 
                 break;
+            case SELLER_UNDELIVERABLE_WAIT_COMFIRM:
+                holder.setOnClickListener(R.id.btn_deliver, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {//商铺接单（不支持发货）
+                       storeDeliverForUnDeliverabel(order.getId());
+                    }
+                });
+                break;
+            case SELLER_UNDELIVERABLE_HAS_COMFIRM:
+                holder.setOnClickListener(R.id.btn_notify_take_goods, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {//提醒收货（不支持发货）
+                        notifyTakeGoods(order.getId());
+                    }
+                });
+                break;
         }
+    }
+
+
+
+    /**
+     * 提醒买家上门取件
+     * @param id 订单id
+     */
+    private void notifyTakeGoods(int id) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.NOTIFY_TAKE_GOODS_FOR_UNDELIVER)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"已通知买家前来取件",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else if(string.contains("1006")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"今天已经提醒过咯",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"提醒失败，请稍后重试",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+
+
+
+    /**
+     * 商铺接单（发货）
+     * @param id 订单id
+     */
+    private void storeDeliverForUnDeliverabel(int id) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("id",id+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.SHANGPU_DELIVER_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"已接单",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
 
@@ -582,13 +711,13 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         String state = mDatas.get(position).getSubOrders().get(0).getState();
         switch (state){
             //个人订单
-            case "等待买家付款":
+            case "等待付款":
                 return WAIT_PAY;
             case "等待卖家发货":
                 return WAIT_DELIVER;
-            case "等待买家收货":
+            case "待收货":
                 return WAIT_TAKE_GOODS;
-            case "等待买家评价":
+            case "等待评价":
                 return WAIT_COMMENT;
             case "交易完成":
                 return ORDER_COMPLETE;
@@ -600,6 +729,13 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 return REDUND_SUCCESSED;
             case "商家拒绝退款":
                 return APPLAY_REFUND;
+            //（不支持发货）
+            case "待确认":
+                return UNDELIVERABLE_WAIT_COMFIRM;
+            case "商家已接单":
+                return UNDELIVERABLE_HAS_COMFIRM;
+            case "待付款(不支持发货)":
+                return UNDELIVERABLE_WAIT_PAY;
             //店铺订单
             case "等待发货":
                 return SELLER_WAIT_DELIVER;
@@ -617,6 +753,11 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 return WAIT_BUYER_DELIVER;
             case "已拒绝申请":
                 return SELLER_REFUSED_REFUND;
+            //（不支持发货）
+            case "待接单":
+                return SELLER_UNDELIVERABLE_WAIT_COMFIRM;
+            case "已接单":
+                return SELLER_UNDELIVERABLE_HAS_COMFIRM;
 
 
         }
@@ -630,6 +771,11 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         switch (viewType){
             case WAIT_PAY:
               view = mInflater.inflate(R.layout.item_order_waitpay,parent,false);
+                viewHolder = new ViewHolder(context,view);
+                from = "user";
+                break;
+            case UNDELIVERABLE_WAIT_PAY:
+                view = mInflater.inflate(R.layout.item_order_waitpay_for_undeliver,parent,false);
                 viewHolder = new ViewHolder(context,view);
                 from = "user";
                 break;
@@ -665,6 +811,17 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
             case REDUND_SUCCESSED:
                 view = mInflater.inflate(R.layout.item_order_refund_successed,parent,false);
+                viewHolder = new ViewHolder(context,view);
+                from = "user";
+                break;
+            //不支持发货
+            case UNDELIVERABLE_WAIT_COMFIRM:
+                view = mInflater.inflate(R.layout.item_order_waitdeliver_for_undeliver,parent,false);
+                viewHolder = new ViewHolder(context,view);
+                from = "user";
+                break;
+            case UNDELIVERABLE_HAS_COMFIRM:
+                view = mInflater.inflate(R.layout.item_order_wait_takegoods_for_undeliver,parent,false);
                 viewHolder = new ViewHolder(context,view);
                 from = "user";
                 break;
@@ -706,6 +863,17 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 break;
             case SELLER_REFUSED_REFUND:
                 view = mInflater.inflate(R.layout.item_store_refused_apply,parent,false);
+                viewHolder = new ViewHolder(context,view);
+                from = "store";
+                break;
+            //不支持发货
+            case SELLER_UNDELIVERABLE_WAIT_COMFIRM:
+                view = mInflater.inflate(R.layout.item_store_order_wait_deliver_for_undeliver,parent,false);
+                viewHolder = new ViewHolder(context,view);
+                from = "store";
+                break;
+            case SELLER_UNDELIVERABLE_HAS_COMFIRM:
+                view = mInflater.inflate(R.layout.item_store_order_has_deliver_for_undeliver,parent,false);
                 viewHolder = new ViewHolder(context,view);
                 from = "store";
                 break;

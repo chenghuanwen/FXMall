@@ -89,12 +89,7 @@
         <activity
             android:name=".view.PictrueChooserActivity"
             android:theme="@style/transparentTheme" />
-        <activity android:name=".view.PayActivity" >
-
-        </activity>
-
-
-
+        <activity android:name=".view.PayActivity"></activity>
         <activity
             android:name=".view.HomePageActivity"
             android:label="@string/app_name"
@@ -424,10 +419,14 @@
         <activity
             android:name=".view.LoadingActivity"
             android:theme="@style/transparentTheme" />
-        <activity android:name=".view.BuyProductPlaceActivity"
-            android:theme="@style/transparentTheme"/>
-        <activity android:name=".view.ConfirmBuyProductPlaceActivity"
-            android:theme="@style/transparentTheme"></activity>
+        <activity
+            android:name=".view.BuyProductPlaceActivity"
+            android:theme="@style/transparentTheme" />
+        <activity
+            android:name=".view.ConfirmBuyProductPlaceActivity"
+            android:theme="@style/transparentTheme" />
+        <activity android:name=".view.WriteAddressOfTakeBySelfActivity"
+            android:theme="@style/transparentTheme" ></activity>
     </application>
 
 </manifest>

@@ -26,7 +26,7 @@
             android:layout_toRightOf="@+id/tv_order_storename"
             android:gravity="center_vertical"
             android:layout_marginLeft="10dp"
-            android:textSize="10sp"
+            android:textSize="15sp"
             android:textColor="#fe6262"
             android:visibility="invisible"
             />
@@ -48,7 +48,8 @@
     <LinearLayout
         android:id="@+id/order_comment"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="120dp"
+        android:background="#f0f7fd">
         <ImageView
             android:id="@+id/iv_car_goods"
             android:layout_width="72dp"

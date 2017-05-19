@@ -96,7 +96,7 @@ public class MessageCenterActivity extends BaseActivity {
                         case "order":
                             orderMsg.add(msgBean);
                             break;
-                        case "warm":
+                        case "warn":
                             warmMsg.add(msgBean);
                             break;
                         case "account":
@@ -191,27 +191,28 @@ public class MessageCenterActivity extends BaseActivity {
 
     @OnClick(R.id.rl_logistics)
     public void notifyMsg() {
-       gotoMsgDetial(orderMsg);
+       gotoMsgDetial("order",orderMsg);
     }
 
     @OnClick(R.id.rl_notify)
     public void notifyMsg2() {
-        gotoMsgDetial(systemMsg);
+        gotoMsgDetial("system",systemMsg);
     }
 
     @OnClick(R.id.rl_publish_demand)
     public void notifyMsg3() {
-        gotoMsgDetial(warmMsg);
+        gotoMsgDetial("warn",warmMsg);
     }
 
     @OnClick(R.id.rl_publish_account)
     public void notifyMsg4() {
-        gotoMsgDetial(accountMsg);
+        gotoMsgDetial("account",accountMsg);
     }
 
-    public void gotoMsgDetial(ArrayList<NotifyMsgBean> msgList){
+    public void gotoMsgDetial(String from,ArrayList<NotifyMsgBean> msgList){
         Intent intent = new Intent(this, NotifyMsgActivity.class);
         intent.putExtra("msg",msgList);
+        intent.putExtra("from",from);
         startActivity(intent);
     }
 }

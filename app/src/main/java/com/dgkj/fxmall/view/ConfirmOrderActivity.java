@@ -1,9 +1,11 @@
 package com.dgkj.fxmall.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,6 +72,8 @@ public class ConfirmOrderActivity extends BaseActivity {
     private List<View> addViews = new ArrayList<>();
     private double totalPrice;//所有订单总价
     private int totalCount;//所有订单总数量
+    private double postageSum;//邮费
+    private String phone,man;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +83,9 @@ public class ConfirmOrderActivity extends BaseActivity {
             return;
         }
         setContentView(R.layout.activity_confirm_order);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         ButterKnife.bind(this);
         initHeaderView();
 
@@ -86,6 +93,7 @@ public class ConfirmOrderActivity extends BaseActivity {
         getDefaultAddress();
 
         orderList = getIntent().getParcelableArrayListExtra("orders");
+        LogUtil.i("TAG","订单数==="+orderList.size());
 
         initOrderLayout();
 
@@ -108,14 +116,37 @@ public class ConfirmOrderActivity extends BaseActivity {
             LinearLayout subContainer = (LinearLayout) view.findViewById(R.id.ll_store_product_container);
             TextView tvStoreName = (TextView) view.findViewById(R.id.tv_order_store_name);
             TextView tvSumPay = (TextView) view.findViewById(R.id.tv_order_sumMoney);
+            TextView postage = (TextView) view.findViewById(R.id.tv_order_express);
             tvStoreName.setText(carBean.getStoreName());
 
             double storeSumPrice = 0;//当前店铺价格小计
             double sum = 0;//当前同种商品总价小计
 
+
             for (int j = 0; j < goods.size(); j++) {
                 View subView = getLayoutInflater().inflate(R.layout.layout_add_product_for_store_in_order, subContainer, false);//当前店铺中商品动态版面
                 ShoppingGoodsBean orderBean = goods.get(j);
+                //计算某件商品邮费（根据发货地址）
+                postageSum += orderBean.getPostage();
+
+                if(orderBean.isDeliverable()){//支持线上发货
+                    subView.setBackgroundColor(Color.parseColor("#f7f7f7"));
+                    if(postageSum==0){
+                        postage.setText("包邮");
+                    }else {
+                        postage.setText("¥"+postageSum);
+                    }
+                }else {//不支持线上发货
+                    subView.setBackgroundColor(Color.parseColor("#f0f7fd"));
+                    tvSelectAddress.setText("请填写个人信息");
+                    postage.setText("自取件");
+                    tvSelectAddress.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivityForResult(new Intent(ConfirmOrderActivity.this,WriteAddressOfTakeBySelfActivity.class),186);
+                        }
+                    });
+                }
                 ImageView ivPhoto = (ImageView) subView.findViewById(R.id.iv_car_goods);
                 TextView tvDescribe = (TextView) subView.findViewById(R.id.tv_car_goods_introduce);
                 TextView tvColorSize = (TextView) subView.findViewById(R.id.tv_car_goods_color);
@@ -125,12 +156,12 @@ public class ConfirmOrderActivity extends BaseActivity {
                 tvDescribe.setText(orderBean.getIntroduce());
                 tvColorSize.setText("颜色：" + orderBean.getColor());
                 tvCount.setText("x" + orderBean.getCount());
-                tvSinglePrice.setText("¥" + orderBean.getPrice());
-                sum = orderBean.getPrice() * orderBean.getCount();
+                tvSinglePrice.setText("¥" + orderBean.getVipPrice());
+                sum = orderBean.getVipPrice() * orderBean.getCount();
 
                 totalCount += orderBean.getCount();
                 storeSumPrice += sum;
-
+                LogUtil.i("TAG","商品数量=="+orderBean.getCount()+"单价=="+orderBean.getVipPrice());
                 subContainer.addView(subView);
             }
 
@@ -141,6 +172,7 @@ public class ConfirmOrderActivity extends BaseActivity {
             addViews.add(view);
             //提交当前店铺订单
             submitOrderForOneStore(goods, i);
+
         }
 
         tvGoodsCount.setText("总共" + totalCount + "件商品");
@@ -182,9 +214,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                             public void run() {
                                 tvSelectAddress.setVisibility(View.GONE);
                                 llOrderAddress.setVisibility(View.VISIBLE);
-                                tvOrderTakeMan.setText(consignee);
+                                tvOrderTakeMan.setText("收件人:"+consignee);
                                 tvOrderTakePhone.setText(phone);
-                                tvOrderTakeAddress.setText(detial);
+                                tvOrderTakeAddress.setText("收货地址:"+detial);
                             }
                         });
                     } catch (JSONException e) {
@@ -226,11 +258,17 @@ public class ConfirmOrderActivity extends BaseActivity {
      * 提交某家店铺中的订单
      */
     public void submitOrderForOneStore(List<ShoppingGoodsBean> goods, int position) {
+        boolean isDeliver = true;
         for (int i = 0; i < goods.size()-1; i++) {
             if(goods.get(i).isDeliverable() && !goods.get(i+1).isDeliverable()){
                 Toast.makeText(this,"订单中存在支持发货与不支持发货商品，请区分下单",Toast.LENGTH_LONG).show();
                 return;
+            }else {
+                isDeliver = goods.get(i).isDeliverable();
+                LogUtil.i("TAG","是否支持发货=="+isDeliver);
             }
+
+
         }
 
 
@@ -244,8 +282,17 @@ public class ConfirmOrderActivity extends BaseActivity {
 
         //先向服务器提交订单
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("orders.user.token", sp.get("token"))
-                .add("orders.shoppingAddress.id", defaultAddressId + "");
+        builder.add("orders.user.token", sp.get("token"));
+        if(isDeliver){
+            builder.add("orders.shoppingAddress.id", defaultAddressId + "");
+        }else {
+            if(TextUtils.isEmpty(phone) || TextUtils.isEmpty(man)){
+                Toast.makeText(ConfirmOrderActivity.this,"还没填写个人信息",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            builder.add("orders.name",man)
+            .add("orders.phone",phone);
+        }
         for (int skuId : skuIds) {
             builder.add("ids", skuId + "");
         }
@@ -291,6 +338,14 @@ public class ConfirmOrderActivity extends BaseActivity {
             tvOrderTakeMan.setText(address.getName());
             tvOrderTakeAddress.setText(address.getAddress());
             tvOrderTakePhone.setText(address.getPhone());
+        }else if(requestCode==186 && resultCode==187){
+            tvSelectAddress.setVisibility(View.GONE);
+            llOrderAddress.setVisibility(View.VISIBLE);
+            tvOrderTakeAddress.setVisibility(View.GONE);
+            man = data.getStringExtra("man");
+            phone = data.getStringExtra("phone");
+            tvOrderTakeMan.setText("提货人:"+man);
+            tvOrderTakePhone.setText(phone);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

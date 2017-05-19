@@ -76,14 +76,33 @@ public class ShoppingCarEditAdapter extends CommonAdapter<ShoppingCarBean> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     shoppingCar.setSelected(true);
-                    for (ShoppingGoodsBean good : goods) {
+                    for (int i = 0; i < goods.size(); i++) {
+                        ShoppingGoodsBean good = goods.get(i);
                         good.setSelected(true);
+
+                        Message msg = Message.obtain();
+                        msg.arg1 = position;
+                        msg.arg2 = i;
+                        msg.obj = good;
+                        msg.what = 1;//选中当前
+                        handler.sendMessage(msg);
                     }
+
                 }else {
                     shoppingCar.setSelected(false);
-                    for (ShoppingGoodsBean good : goods) {
+
+                    for (int i = 0; i < goods.size(); i++) {
+                        ShoppingGoodsBean good = goods.get(i);
                         good.setSelected(false);
+
+                        Message msg = Message.obtain();
+                        msg.arg1 = position;
+                        msg.arg2 = i;
+                        msg.obj = good;
+                        msg.what = 2;//取消选中
+                        handler.sendMessage(msg);
                     }
+
                 }
                 handler.post(new Runnable() {
                     @Override

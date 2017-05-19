@@ -71,8 +71,8 @@ public class SetPostageActivity extends BaseActivity {
                 } else {
                     for (int i = 0; i < postageList.size(); i++) {
                         int key = postageList.get(i).getId();//获取当条数据的id值
-                        if (post.getId() >= 0) {
-                            boolean b = key == post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
+                        if (post.getId() > 0) {
+                            boolean b = key != post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
                             if (b) {
                                 post = new PostageBean();
                             }

@@ -32,6 +32,33 @@ public class OrderBean implements Serializable{
     private String agreeRefundTime;
     private int storeId;//商品所属店铺id
     private String buyer;//买家用户名
+    private boolean isDeliver;//是否支持发货
+    private String unDeliverMan,unDeliverPhone;
+
+
+    public String getUnDeliverMan() {
+        return unDeliverMan;
+    }
+
+    public void setUnDeliverMan(String unDeliverMan) {
+        this.unDeliverMan = unDeliverMan;
+    }
+
+    public String getUnDeliverPhone() {
+        return unDeliverPhone;
+    }
+
+    public void setUnDeliverPhone(String unDeliverPhone) {
+        this.unDeliverPhone = unDeliverPhone;
+    }
+
+    public boolean isDeliver() {
+        return isDeliver;
+    }
+
+    public void setDeliver(boolean deliver) {
+        isDeliver = deliver;
+    }
 
     public String getBuyer() {
         return buyer;

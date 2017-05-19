@@ -67,8 +67,6 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                    goods.setSelected(true);
                     Message msg = Message.obtain();
                     msg.obj = goods;
-                   /* msg.arg1 = (int) goods.getPrice();
-                    msg.arg2 = goods.getCount();*/
                     msg.what = 1;//统计价格增加
                     handler.sendMessage(msg);
 
@@ -87,8 +85,6 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                     goods.setSelected(false);
                     Message msg = Message.obtain();
                     msg.obj = goods;
-                   /* msg.arg1 = (int) goods.getPrice();
-                    msg.arg2 = goods.getCount();*/
                     msg.what = 2;//统计价格减少
                     handler.sendMessage(msg);
 
@@ -111,7 +107,7 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
         holder.setText(R.id.tv_car_goods_introduce,goods.getIntroduce());
         holder.setText(R.id.tv_car_goods_color,"颜色："+goods.getColor());
       //  holder.setText(R.id.tv_car_goods_size,"尺寸："+goods.getSize());
-        holder.setText(R.id.tv_car_goods_price,"¥"+goods.getPrice()+"");
+        holder.setText(R.id.tv_car_goods_price,"¥"+goods.getVipPrice()+"");
         holder.setText(R.id.tv_car_goods_count,"x"+goods.getCount());
 
         holder.setOnClickListener(R.id.ll_content, new View.OnClickListener() {
