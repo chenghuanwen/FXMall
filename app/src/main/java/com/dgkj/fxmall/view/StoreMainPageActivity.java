@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -97,17 +98,17 @@ public class StoreMainPageActivity extends BaseActivity {
     }
 
     private void refresh() {
-        control.getSearchProducts(this, null, orderBy, index, 20, store.getId(), client, new OnSearchProductsFinishedListener() {
-            @Override
-            public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.addAll(mainProducts,true);
-                    }
-                });
-            }
-        });
+            control.getSearchProducts(this, null, orderBy,null,null,null,null,index, 20, store.getId(), client, new OnSearchProductsFinishedListener() {
+                @Override
+                public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.addAll(mainProducts,true);
+                        }
+                    });
+                }
+            });
     }
 
     @Override

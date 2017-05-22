@@ -792,7 +792,8 @@ public class FXMallModel {
                             }
                             if (postage.getIsDefault() == 0) {
                                 List<String> provinces = new ArrayList<>();
-                                JSONArray district = jsonObject.getJSONArray("provinces");
+                                String provincesString = jsonObject.getString("provinces");
+                                JSONArray district = new JSONArray(provincesString);
                                 for (int j = 0; j < district.length(); j++) {
                                     provinces.add(district.getString(j));
                                 }
@@ -1301,7 +1302,7 @@ public class FXMallModel {
      * @param client
      * @param listener
      */
-    public static void getSearchProducts(final Activity context, String key, String orderBy, final int index, int size, int storeId, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
+    public static void getSearchProducts(final Activity context, String key, String orderBy, String token,String startPrice,String endPice,String address,final int index, int size, int storeId, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
         //TEST
         List<MainProductBean> list1 = new ArrayList<>();
         List<String> url = new ArrayList<>();
@@ -1369,6 +1370,20 @@ public class FXMallModel {
         if (storeId != 0) {
             builder.add("store.id", storeId + "");
         }
+
+        if(!TextUtils.isEmpty(token)){
+            builder.add("token",token);
+        }
+        if(!TextUtils.isEmpty(startPrice)){
+            builder.add("start",startPrice);
+        }
+        if(!TextUtils.isEmpty(endPice)){
+            builder.add("end",endPice);
+        }
+        if(!TextUtils.isEmpty(address)){
+            builder.add("address",address);
+        }
+
         FormBody body = builder.build();
         Request.Builder post = new Request.Builder()
                 .post(body);
@@ -2607,13 +2622,15 @@ public class FXMallModel {
                             recommend.setPage(object.getInt("page"));
                             recommend.setPosition(object.getString("position"));
                             recommend.setType(object.getInt("type"));
-                            JSONObject detail = object.getJSONObject("detail");
-                            recommend.setTitel(detail.getString("name"));
-                            if (recommend.getType() == 1) {//商铺
-                                recommend.setStoreName(detail.getString("storeName"));
-                                recommend.setLogo(detail.getString("logo"));
-                                recommend.setIntroduce(detail.getString("intro"));
-                                recommend.setAddress(detail.getString("address"));
+                            if(object.has("detail")){
+                                JSONObject detail = object.getJSONObject("detail");
+                                recommend.setTitel(detail.getString("name"));
+                                if (recommend.getType() == 1) {//商铺
+                                    recommend.setStoreName(detail.getString("storeName"));
+                                    recommend.setLogo(detail.getString("logo"));
+                                    recommend.setIntroduce(detail.getString("intro"));
+                                    recommend.setAddress(detail.getString("address"));
+                                }
                             }
                             list.add(recommend);
                         }
@@ -2984,7 +3001,7 @@ public class FXMallModel {
                 msgBean.setTime("2017-5-17");
             }else if(i>9 && i<15){
                 msgBean.setState(1);
-                msgBean.setType("warm");
+                msgBean.setType("warn");
                 msgBean.setCotent("了肯定卡见风使舵类库加");
                 msgBean.setTime("2017-5-17");
             }else if(i>14){

@@ -7,10 +7,7 @@
     android:id="@+id/srl_refresh"
     android:background="#fff"
     >
-<!--<android.support.v4.widget.SwipeRefreshLayout
-    android:id="@+id/srl_refresh"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">-->
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -75,7 +72,7 @@
                     android:id="@+id/tv_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="粉小萌"
+                    tools:text="粉小萌"
                     android:textColor="#fff"
                     android:textSize="15sp"
                     android:gravity="center"
@@ -87,7 +84,7 @@
                 android:id="@+id/tv_invite_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="邀请码：FENXIOAMENG2017"
+                tools:text="邀请码：FENXIOAMENG2017"
                 android:textSize="14sp"
                 android:textColor="#333"
                 android:gravity="center"
@@ -197,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#ff534c"
                     android:textSize="15sp"
-                    android:text="200.00"
+                    android:text="0.00"
                     android:drawableRight="@mipmap/yhj_jt"
                     android:drawablePadding="10dp"
                     android:layout_centerVertical="true"
@@ -258,7 +255,7 @@
 
                     <TextView
                         android:id="@+id/tv_withdrawal"
-                        android:text="提现"
+                        android:text="加入业务员"
                         android:layout_marginTop="20dp"
                         style="@style/usercenter_textview2"
                         android:layout_toRightOf="@+id/iv2"

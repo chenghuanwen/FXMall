@@ -166,7 +166,7 @@ public class HomePageFragment extends Fragment {
             control.getSearchHotwords(1, 0, new OnGetSearchHotWordsFinishedListener() {
                 @Override
                 public void onGetSearchHotWordsFinishedListener(List<String> words) {
-                    control.getSearchProducts(getActivity(), words.get(0),"createTime ",index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
+                    control.getSearchProducts(getActivity(), words.get(0),"createTime",null,null,null,null,index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
                         @Override
                         public void onSearchProductsFinished(final List<MainProductBean> products) {
                             getActivity().runOnUiThread(new Runnable() {

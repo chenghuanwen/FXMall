@@ -51,7 +51,7 @@
                 android:id="@+id/tv_store_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="粉小萌酸辣粉旗舰店"
+                tools:text="粉小萌酸辣粉旗舰店"
                 android:textColor="#fff"
                 android:textSize="15sp"
                 android:layout_gravity="center_horizontal"
@@ -61,7 +61,7 @@
                 android:id="@+id/tv_store_introduce"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="如果想找到比粉小萌更好吃的酸辣粉就只能自己做了, 而这就是我为你做的"
+                tools:text="如果想找到比粉小萌更好吃的酸辣粉就只能自己做了, 而这就是我为你做的"
                 android:lines="2"
                 android:gravity="center"
                 android:layout_margin="10dp"
@@ -83,7 +83,7 @@
                 style="@style/shangpu_linearlayout">
                 <TextView
                     android:id="@+id/tv_wait_deliver_count"
-                    android:text="1"
+                    android:text="0"
                     style="@style/shangpu_texview1"/>
                 <TextView
                     android:text="待发货"
@@ -96,7 +96,7 @@
                 style="@style/shangpu_linearlayout">
                 <TextView
                     android:id="@+id/tv_has_deliver_count"
-                    android:text="1"
+                    android:text="0"
                     style="@style/shangpu_texview1"/>
                 <TextView
                     android:text="已发货"
@@ -109,7 +109,7 @@
                 style="@style/shangpu_linearlayout">
                 <TextView
                     android:id="@+id/tv_sold_count"
-                    android:text="10"
+                    android:text="0"
                     style="@style/shangpu_texview1"/>
                 <TextView
                     android:text="已售出"
@@ -122,7 +122,7 @@
                 style="@style/shangpu_linearlayout">
                 <TextView
                     android:id="@+id/tv_refund_count"
-                    android:text="1"
+                    android:text="0"
                     style="@style/shangpu_texview1"/>
                 <TextView
                     android:text="退货/退款"
@@ -204,7 +204,7 @@
                         android:layout_marginLeft="10dp"/>
                     <TextView
                         android:id="@+id/tv_on_sacle_count"
-                        android:text="562件商品"
+                        android:text="0件商品"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -246,9 +246,10 @@
                         android:textColor="#333"
                         android:layout_marginTop="15dp"
                         android:layout_marginLeft="15dp"/>
+
                     <TextView
                         android:id="@+id/tv_store_rest_count"
-                        android:text="562件商品"
+                        android:text="0件商品"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -338,7 +339,7 @@
                         style="@style/shangpu_texview1" />
                     <TextView
                         android:id="@+id/tv_order_count"
-                        android:text="11"
+                        android:text="0"
                         android:textSize="12sp"
                         android:textColor="#999"
                         android:layout_marginBottom="20dp"
@@ -379,7 +380,7 @@
                         android:layout_height="wrap_content"/>
                     <TextView
                         android:id="@+id/tv_incom"
-                        android:text="¥566566"
+                        android:text="¥0"
                         android:textColor="#999"
                         android:textSize="12sp"
                         android:layout_width="wrap_content"
@@ -416,7 +417,7 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
-                        android:text="¥5455"
+                        android:text="¥0"
                         android:textColor="#999"
                         android:textSize="12sp"
                         android:layout_width="wrap_content"

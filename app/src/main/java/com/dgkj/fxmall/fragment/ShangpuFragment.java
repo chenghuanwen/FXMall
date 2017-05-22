@@ -35,6 +35,7 @@ import com.dgkj.fxmall.view.SetPostageActivity;
 import com.dgkj.fxmall.view.ShangpuOrderActivity;
 import com.dgkj.fxmall.view.StoreInfoEditActivity;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
+import com.dgkj.fxmall.view.WithdrawalActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -222,10 +223,16 @@ public class ShangpuFragment extends Fragment {
                 if(result.contains("1000")){
                     try {
                         JSONObject object = new JSONObject(result);
-                        int restCount = object.getInt("toatl");
-                        int inSale = object.getInt("dataset");
-                        tvOnSacleCount.setText(inSale+"件商品");
-                        tvStoreRestCount.setText(restCount+"件商品");
+                        final int restCount = object.getInt("total");
+                        final int inSale = object.getInt("dataset");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvOnSacleCount.setText(inSale+"件商品");
+                                tvStoreRestCount.setText(restCount+"件商品");
+                            }
+                        });
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -462,6 +469,13 @@ public class ShangpuFragment extends Fragment {
         intent.putExtra("from", "refund");
         jumpto(intent);
     }
+
+
+    @OnClick(R.id.tv_incom)
+    public void withDrawable(){
+        getContext().startActivity(new Intent(getContext(), WithdrawalActivity.class));
+    }
+
 
     @OnClick(R.id.civ_shangpu)
     public void storeDetial() {

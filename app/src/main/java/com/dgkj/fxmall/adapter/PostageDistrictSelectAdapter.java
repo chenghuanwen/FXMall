@@ -99,10 +99,10 @@ public class PostageDistrictSelectAdapter extends BaseExpandableListAdapter {
         final DistrictSelectBean districtSelectBean = parentList.get(groupPosition);
         vh.tvDistrict.setText(districtSelectBean.getDistrict());
         if(isExpanded){
-            vh.ivRight.setImageResource(R.mipmap.yixuan);
+            vh.ivRight.setImageResource(R.mipmap.dpsp_fhj);
             vh.tvDistrict.setTextColor(Color.parseColor("#62b1fe"));
         }else {
-            vh.ivRight.setImageResource(R.mipmap.weixuan);
+            vh.ivRight.setImageResource(R.mipmap.dpsp_xlj);
             vh.tvDistrict.setTextColor(Color.parseColor("#333333"));
         }
 

@@ -20,6 +20,7 @@ import com.dgkj.fxmall.bean.DistrictSelectBean;
 import com.dgkj.fxmall.bean.PostageBean;
 import com.dgkj.fxmall.bean.SuperPostageBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.ProvinceManagerUtil;
 
 import java.io.IOException;
@@ -340,7 +341,7 @@ public class PostageSettingEditActivity extends BaseActivity {
                     .add("freightProvinces[" + (i + 1) + "].cost", pay)
                     .add("freightProvinces[" + (i + 1) + "].increaseNum", addPost)
                     .add("freightProvinces[" + (i + 1) + "].increaseCost", addPostPay)
-                    .add("freightProvinces[" + (i + 1) + "].provinces", provinces.get(i));
+                    .add("freightProvinces[" + (i + 1) + "].provinces", "\""+provinces.get(i)+"\"");
             if ("edit".equals(from)) {
                 builder.add("freightProvinces[" + (i + 1) + "].id", editSuperPost.getPosts().get(i + 1).getId() + "")
                         .add("id", editSuperPost.getId() + "");
@@ -358,6 +359,8 @@ public class PostageSettingEditActivity extends BaseActivity {
             requestBuild.url(FXConst.ADD_POSTAGE_MODEL);
         }
         Request request = requestBuild.build();
+        LogUtil.i("TAG","添加模板请求体==="+request.body().toString());
+
 
         client.newCall(request).enqueue(new Callback() {
             @Override

@@ -53,7 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="总销售量：2.5万"
+            android:text="总销售量：0"
             android:textSize="15sp"
             android:textColor="#fff"
             android:gravity="center"/>
@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="宝贝数：2.5万"
+            android:text="宝贝数：0"
             android:textSize="15sp"
             android:textColor="#fff"
             android:gravity="center"/>
@@ -111,7 +111,7 @@
         android:textColor="#333"
         android:background="#fff"
         android:padding="10dp"
-        android:text="安居客天妃宫额外加送大礼解放啦圣诞节快放假撒的咖啡机欧萨就卡了剪短发了可视对讲发牢骚快递费骄傲是短发是考虑到放假啊扫地机发"/>
+        tools:text="安居客天妃宫额外加送大礼解放啦圣诞节快放假撒的咖啡机欧萨就卡了剪短发了可视对讲发牢骚快递费骄傲是短发是考虑到放假啊扫地机发"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

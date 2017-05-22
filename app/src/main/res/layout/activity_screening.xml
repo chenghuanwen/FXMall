@@ -83,26 +83,37 @@
         android:layout_marginTop="30dp"
         android:textColor="#909090"
         android:layout_marginLeft="10dp"/>
-    <TextView
-        android:id="@+id/tv_rank"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:text="时间"
-        android:layout_marginTop="20dp"
-        android:textColor="#fff"
-        android:layout_margin="10dp"
-        android:background="@drawable/circlebutton_shape"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/tv_near"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:text="附近"
-        android:layout_marginTop="20dp"
-        android:textColor="#333"
-        android:layout_margin="10dp"
-        android:background="@mipmap/ddxq_qxdd"
-        android:gravity="center"/>
+    <RadioGroup
+        android:id="@+id/rg_rank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_time"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:text="时间"
+            android:layout_marginTop="20dp"
+            android:textColor="@drawable/classify_textcolor_selector"
+            android:checked="true"
+            android:button="@null"
+            android:layout_margin="10dp"
+            android:background="@drawable/classify_checkbox_selector"
+            android:gravity="center"/>
+        <RadioButton
+            android:id="@+id/rb_near"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:text="附近"
+            android:button="@null"
+            android:layout_marginTop="20dp"
+            android:textColor="@drawable/classify_textcolor_selector"
+            android:layout_margin="10dp"
+            android:background="@drawable/classify_checkbox_selector"
+            android:gravity="center"
+            android:layout_alignParentRight="true"/>
+    </RadioGroup>
     <View
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

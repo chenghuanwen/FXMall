@@ -56,6 +56,8 @@ public class SearchContentActivity extends BaseActivity {
     private int storeId = 0;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
+    private String rank,startPrice,endPrice;
+    private String token="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +65,13 @@ public class SearchContentActivity extends BaseActivity {
         setContentView(R.layout.activity_search_content);
         ButterKnife.bind(this);
 
+
+        token = sp.get("token");
+
         initSearchCondition();
         initTabLayout();
+
+        loadProgressDialogUtil.buildProgressDialog();
 
         getSearchData();
     }
@@ -76,7 +83,7 @@ public class SearchContentActivity extends BaseActivity {
 
     private void getSearchData() {
         if ("search".equals(from) && "商品".equals(searchType)) {
-            control.getSearchProducts(this, searchTitel,orderBy,index, 15, 0,client, new OnSearchProductsFinishedListener() {
+            control.getSearchProducts(this, searchTitel,orderBy,null,null,null,null,index, 15, 0,client, new OnSearchProductsFinishedListener() {
                 @Override
                 public void onSearchProductsFinished(final List<MainProductBean> products) {
                     runOnUiThread(new Runnable() {
@@ -84,6 +91,7 @@ public class SearchContentActivity extends BaseActivity {
                         public void run() {
                             //TODO 写一个通用的商品实体类
                             adapter.addAll(products,true);
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
 
@@ -97,24 +105,54 @@ public class SearchContentActivity extends BaseActivity {
                         @Override
                         public void run() {
                             storeAdapter.addAll(stores, true);
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 }
             });
         }else if("store".equals(from)){
             storeId = getIntent().getIntExtra("storeId",0);
-            control.getSearchProducts(this, searchTitel,orderBy,index, 15, storeId,client, new OnSearchProductsFinishedListener() {
+            control.getSearchProducts(this, searchTitel,orderBy,null,null,null,null,index, 20, storeId,client, new OnSearchProductsFinishedListener() {
                 @Override
                 public void onSearchProductsFinished(final List<MainProductBean> products) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //TODO 写一个通用的商品实体类
                             adapter.addAll(products,true);
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 }
             });
+        }else if("screening".equals(from)){//筛选
+            if("createTime".equals(rank)){//按时间和价格排序
+                orderBy = "createTime";
+                control.getSearchProducts(this, searchTitel,orderBy,null,startPrice,endPrice,null,index, 20, storeId,client, new OnSearchProductsFinishedListener() {
+                    @Override
+                    public void onSearchProductsFinished(final List<MainProductBean> products) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.addAll(products,true);
+                                loadProgressDialogUtil.cancelProgressDialog();
+                            }
+                        });
+                    }
+                });
+            }else {//按附件筛选
+                control.getSearchProducts(this, searchTitel,orderBy,null,startPrice,endPrice,rank,index, 20, storeId,client, new OnSearchProductsFinishedListener() {
+                    @Override
+                    public void onSearchProductsFinished(final List<MainProductBean> products) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.addAll(products,true);
+                                loadProgressDialogUtil.cancelProgressDialog();
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 
@@ -122,7 +160,12 @@ public class SearchContentActivity extends BaseActivity {
         Intent intent = getIntent();
         searchType = intent.getStringExtra("type");
         searchTitel = intent.getStringExtra("key");
-        from = getIntent().getStringExtra("from");
+        from = intent.getStringExtra("from");
+        if("screening".equals(from)){
+            rank = intent.getStringExtra("orderBy");
+            startPrice = intent.getStringExtra("start");
+            endPrice = intent.getStringExtra("end");
+        }
         tvSearchTitle.setText(searchTitel);
     }
 

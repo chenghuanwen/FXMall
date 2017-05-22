@@ -115,6 +115,7 @@ public class SetNicknameActivity extends BaseActivity {
                         toastInUI(SetNicknameActivity.this,"昵称修改成功！");
                         intent.putExtra("nick", nick);
                         setResult(112, intent);
+                        finish();
                     }else {
                         toastInUI(SetNicknameActivity.this,"昵称修改失败！");
                     }
@@ -141,16 +142,16 @@ public class SetNicknameActivity extends BaseActivity {
                     String result = response.body().string();
                     if(result.contains("1000")){
                         toastInUI(SetNicknameActivity.this,"姓名修改成功！");
-                        intent.putExtra("nick", nick);
-                        setResult(112, intent);
+                        intent.putExtra("name", nick);
+                        setResult(114, intent);
+                        finish();
                     }else {
                         toastInUI(SetNicknameActivity.this,"姓名修改失败！");
                     }
                 }
             });
-            setResult(114, intent);
         }
-        finish();
+
     }
 
     @OnClick(R.id.ib_back)

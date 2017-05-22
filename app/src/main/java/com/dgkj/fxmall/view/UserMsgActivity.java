@@ -427,9 +427,11 @@ public class UserMsgActivity extends BaseActivity {
 
         if (requestCode == 111 && resultCode == 112) {
             tvNickname.setText(data.getStringExtra("nick"));
+            LogUtil.i("TAG","设置昵称返回==="+data.getStringExtra("nick"));
         }
         if (requestCode == 113 && resultCode == 114) {
             tvRaalname.setText(data.getStringExtra("name"));
+            LogUtil.i("TAG","设置真名返回==="+data.getStringExtra("name"));
         }
 
 

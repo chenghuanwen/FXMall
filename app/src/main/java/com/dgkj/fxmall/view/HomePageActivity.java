@@ -283,6 +283,7 @@ public class HomePageActivity extends BaseActivity {
                 sb.append(location.getAddrStr());    //获取地址信息
                 final String city = location.getAddress().city;
                 MyApplication.currentProvince = location.getProvince();
+                MyApplication.currentCity = city;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -297,14 +298,13 @@ public class HomePageActivity extends BaseActivity {
                 sb.append(location.getAddrStr());    //获取地址信息
                 MyApplication.currentProvince = location.getProvince();
                 final String city = location.getAddress().city;
+                MyApplication.currentCity = city;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         tvCity.setText(city);
                     }
                 });
-
-
 
             } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
 
@@ -313,6 +313,7 @@ public class HomePageActivity extends BaseActivity {
                 sb.append("离线定位成功，离线定位结果也是有效的" + location.getAddrStr());
                 MyApplication.currentProvince = location.getProvince();
                 final String city = location.getAddress().city;
+                MyApplication.currentCity = city;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

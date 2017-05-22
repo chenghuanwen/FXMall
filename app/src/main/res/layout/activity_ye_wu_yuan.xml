@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="30sp"
-            android:text="200"
+            android:text="0"
             android:layout_marginTop="30dp"
             android:gravity="center"/>
         <TextView
@@ -78,12 +78,13 @@
                 android:id="@+id/tv_today_commission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="285.00"
+                android:text="0.00"
                 android:layout_marginTop="20dp"
                 android:textSize="18sp"
                 android:textColor="#ff4a4e"
                 android:gravity="center"
                 />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,7 +110,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1565.00"
+                android:text="0.00"
                 android:layout_marginTop="20dp"
                 android:textSize="18sp"
                 android:textColor="#ff4a4e"

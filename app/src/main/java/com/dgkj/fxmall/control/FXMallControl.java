@@ -137,8 +137,8 @@ public class FXMallControl {
         FXMallModel.getMyRecommendStore(context,token,url,index,size,client,listener);
     }
 
-    public void getSearchProducts(Activity context, String key, String orderBy,int index, int size, int storeId,OkHttpClient client, OnSearchProductsFinishedListener listener){
-        FXMallModel.getSearchProducts(context,key,orderBy,index,size,storeId,client,listener);
+    public void getSearchProducts(Activity context, String key, String orderBy, String token,String startPrice,String endPice,String address,int index, int size, int storeId,OkHttpClient client, OnSearchProductsFinishedListener listener){
+        FXMallModel.getSearchProducts(context,key,orderBy,token,startPrice,endPice,address,index,size,storeId,client,listener);
     }
 
     public void getSearchStores(final BaseActivity context, String key, int index, int size, OkHttpClient client, OnGetMyRecommendStoreFinishedListener listener){

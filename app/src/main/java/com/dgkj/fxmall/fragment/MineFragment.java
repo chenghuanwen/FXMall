@@ -31,6 +31,7 @@ import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.utils.ToastUtil;
 import com.dgkj.fxmall.view.ApplyStoreActivity;
 import com.dgkj.fxmall.view.HomePageActivity;
+import com.dgkj.fxmall.view.MainActivity;
 import com.dgkj.fxmall.view.MessageCenterActivity;
 import com.dgkj.fxmall.view.MyDemandActivity;
 import com.dgkj.fxmall.view.MyOrdersActivity;
@@ -120,7 +121,7 @@ public class MineFragment extends Fragment {
     private float downX, downY = 300;
     private SharedPreferencesUnit sp;
     private OkHttpClient client;
-    private String balance;
+    private double balance;
     private String iconUrl;
     private String invitationCode;
     private String phone;
@@ -141,23 +142,30 @@ public class MineFragment extends Fragment {
         progressDialogUtil.buildProgressDialog();
 
         getUserInfo();
-       setData();
+        //setData();
         refresh2Home();
 
-        if(MyApplication.msgCount == 0){
+        if (MyApplication.msgCount == 0) {
             tvMsgCount.setVisibility(View.GONE);
-        }else {
+        } else {
             tvMsgCount.setVisibility(View.VISIBLE);
-            tvMsgCount.setText(MyApplication.msgCount+"");
+            tvMsgCount.setText(MyApplication.msgCount + "");
         }
         return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getUserInfo();
     }
 
     private void getUserInfo() {
         sp = SharedPreferencesUnit.getInstance(getContext());
         client = new OkHttpClient.Builder().build();
         FormBody body = new FormBody.Builder()
-                .add("token",sp.get("token"))
+                .add("token", sp.get("token"))
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.GET_USER_INFO)
@@ -167,17 +175,20 @@ public class MineFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
                 try {
                     JSONObject object = new JSONObject(result);
                     JSONObject info = object.getJSONObject("dataset");
-                    balance = info.getString("balance");
+                    balance = info.getDouble("balance");
+                    MyApplication.balance = balance;
+                    LogUtil.i("TAG", "用户信息===" + result + "账户余额==" + balance);
                     iconUrl = info.getString("headPortrait");
                     invitationCode = info.getString("invitationCode");
                     phone = info.getString("phone");
-                    gender = info.getInt("sex")+"";
+                    gender = info.getInt("sex") + "";
                     nickname = info.getString("nickname");
                     realname = info.getString("realname");
                     location = info.getString("location");
@@ -199,20 +210,20 @@ public class MineFragment extends Fragment {
                 float x = event.getX();
                 float y = event.getY();
                 int top = scrollView.getTop();
-               // LogUtil.i("TAG","scrollview距离顶部距离=="+top);
+                // LogUtil.i("TAG","scrollview距离顶部距离=="+top);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         downX = x;
                         downY = y;
-                      //  LogUtil.i("TAG", "按下时坐标== x=" + downX + "==y==" + downY);
+                        //  LogUtil.i("TAG", "按下时坐标== x=" + downX + "==y==" + downY);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float dx = x - downX;
                         float dy = y - downY;
-                      //  LogUtil.i("TAG", "滑动距离 x==" + dx + "y===" + dy);
+                        //  LogUtil.i("TAG", "滑动距离 x==" + dx + "y===" + dy);
                         if (dy > 0 && Math.abs(dy) > Math.abs(dx) && dy > 300) {
-                         //   LogUtil.i("TAG", "向下滑动======");
+                            //   LogUtil.i("TAG", "向下滑动======");
                           /*  layoutParams.height = 200;
                             tvJumpTip.setLayoutParams(layoutParams);*/
                             tvJumpTip.setVisibility(View.VISIBLE);
@@ -222,7 +233,7 @@ public class MineFragment extends Fragment {
                             layoutParams.height = 100;
                             tvJumpTip.setLayoutParams(layoutParams);
                             tvJumpTip.setVisibility(View.VISIBLE);
-                        }*/else {
+                        }*/ else {
                             tvJumpTip.setVisibility(View.GONE);
                         }
                         break;
@@ -236,7 +247,7 @@ public class MineFragment extends Fragment {
                 srlRefresh.setRefreshing(false);
                 tvJumpTip.setVisibility(View.GONE);
                 Intent intent = new Intent(getContext(), HomePageActivity.class);
-                intent.putExtra("from","");
+                intent.putExtra("from", "");
                 startActivity(intent);
             }
         });
@@ -249,7 +260,7 @@ public class MineFragment extends Fragment {
             public void run() {
                 Glide.with(getContext()).load(iconUrl).error(R.mipmap.wd_mrtx).into(civMyIcon);
                 try {
-                    if(!TextUtils.isEmpty(nickname)){
+                    if (!TextUtils.isEmpty(nickname)) {
                         String nick = URLDecoder.decode(nickname, "utf-8");
                         tvUsername.setText(nick);
                     }
@@ -257,8 +268,8 @@ public class MineFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                tvInviteCode.setText(invitationCode);
-                tvAccountRest.setText(balance);
+                tvInviteCode.setText("邀请码:"+invitationCode);
+                tvAccountRest.setText(balance + "");
             }
         });
         progressDialogUtil.cancelProgressDialog();
@@ -267,26 +278,26 @@ public class MineFragment extends Fragment {
     @OnClick(R.id.civ_my_icon)
     public void selectIcon() {
         Intent intent = new Intent(getContext(), UserMsgActivity.class);
-        intent.putExtra("icon",iconUrl);
-        intent.putExtra("nick",nickname);
-        intent.putExtra("gender",gender);
-        intent.putExtra("realname",realname);
-        intent.putExtra("phone",phone);
-        intent.putExtra("address",location);
+        intent.putExtra("icon", iconUrl);
+        intent.putExtra("nick", nickname);
+        intent.putExtra("gender", gender);
+        intent.putExtra("realname", realname);
+        intent.putExtra("phone", phone);
+        intent.putExtra("address", location);
         getContext().startActivity(intent);
     }
 
     @OnClick(R.id.iv_setting)
     public void setting() {
         Intent intent = new Intent(getContext(), SettingActivity.class);
-            intent.putExtra("icon",iconUrl);
-            intent.putExtra("nick",nickname);
-            intent.putExtra("code",invitationCode);
-            intent.putExtra("gender",gender);
-            intent.putExtra("realname",realname);
-            intent.putExtra("phone",phone);
-            intent.putExtra("address",location);
-            getContext().startActivity(intent);
+        intent.putExtra("icon", iconUrl);
+        intent.putExtra("nick", nickname);
+        intent.putExtra("code", invitationCode);
+        intent.putExtra("gender", gender);
+        intent.putExtra("realname", realname);
+        intent.putExtra("phone", phone);
+        intent.putExtra("address", location);
+        getContext().startActivity(intent);
 
     }
 
@@ -339,7 +350,10 @@ public class MineFragment extends Fragment {
 
     @OnClick(R.id.rl_withdrawal)
     public void withdawal() {
-        getContext().startActivity(new Intent(getContext(), WithdrawalActivity.class));
+        Intent intent = new Intent(getContext(),HomePageActivity.class);
+        intent.putExtra("from","yw");
+        getContext().startActivity(intent);
+       // getContext().startActivity(new Intent(getContext(), WithdrawalActivity.class));
     }
 
     @OnClick(R.id.rl_apply_store)
@@ -352,7 +366,7 @@ public class MineFragment extends Fragment {
      */
     private void getMyStoreInfo() {
         FormBody body = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
+                .add("user.token", sp.get("token"))
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.GET_STORE_DETIAL_INFO)
@@ -366,9 +380,9 @@ public class MineFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                LogUtil.i("TAG","店铺信息==="+string);
+                LogUtil.i("TAG", "店铺信息===" + string);
                 Intent intent = new Intent(getContext(), ReviewProgressActivity.class);
-                if(string.contains("1000")){
+                if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         JSONObject dataset = object.getJSONObject("dataset");
@@ -379,13 +393,12 @@ public class MineFragment extends Fragment {
                         storeBean.setKeeper(dataset.getString("storekeeper"));
                         storeBean.setPhone(dataset.getString("phone"));
                         String pictrues = dataset.getString("storePictrue");
-
                         String banner = dataset.getString("banana");
-                        if(!TextUtils.isEmpty(banner) ){
+                        if (!TextUtils.isEmpty(banner)) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ToastUtil.show(getContext(),getActivity(),"您已创建过店铺");
+                                    ToastUtil.show(getContext(), getActivity(), "您已创建过店铺");
                                     getContext().sendBroadcast(new Intent("toSP"));
                                 }
                             });
@@ -400,26 +413,26 @@ public class MineFragment extends Fragment {
                         storeBean.setMainUrls(urls);
 
                         int status = dataset.getInt("status");
-                        if(status==0){//待审核
-                            intent.putExtra("statu","wait");
-                            intent.putExtra("store",storeBean);
+                        if (status == 0) {//待审核
+                            intent.putExtra("statu", "wait");
+                            intent.putExtra("store", storeBean);
                             getContext().startActivity(intent);
-                        }else if(status==1){//审核通过
-                            intent.putExtra("statu","ok");
-                            intent.putExtra("store",storeBean);
+                        } else if (status == 1) {//审核通过
+                            intent.putExtra("statu", "ok");
+                            intent.putExtra("store", storeBean);
                             getContext().startActivity(intent);
-                        }else if(status==2){
+                        } else if (status == 2) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getContext(),"你的店铺已被禁用，如有疑问请想平台反馈！",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "你的店铺已被禁用，如有疑问请想平台反馈！", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else if(string.contains("1008")){
+                } else if (string.contains("1008")) {
                     getContext().startActivity(new Intent(getContext(), ApplyStoreActivity.class));
                 }
             }
@@ -445,13 +458,12 @@ public class MineFragment extends Fragment {
     @OnClick(R.id.rl_balance)
     public void balance() {
         Intent intent = new Intent(getContext(), TheBalanceOfUserActivity.class);
-        intent.putExtra("balance",balance);
+        intent.putExtra("balance", balance);
         getContext().startActivity(intent);
     }
 
     /**
      * 跳转到订单界面
-     *
      * @param from
      */
     public void jump2Orders(String from) {

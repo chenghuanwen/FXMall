@@ -19,6 +19,8 @@ import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetAllPostageModelFinishedListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +65,7 @@ public class SetPostageActivity extends BaseActivity {
             @Override
             public void onGetAllPostageModelFinished(List<PostageBean> postageList) {
                 //将所有运费模板按照id进行分类，相同的id属于同一个大模板
-                List<SuperPostageBean> superPostageList = new ArrayList<>();
+                final List<SuperPostageBean> superPostageList = new ArrayList<>();
                 Map<PostageBean, List<PostageBean>> map = new HashMap<>();
                 PostageBean post = new PostageBean();
                 if (postageList.size() == 0) {
@@ -102,9 +104,20 @@ public class SetPostageActivity extends BaseActivity {
                         superPost.setPosts(posts);
 
                         superPostageList.add(superPost);
+                        Collections.sort(superPostageList, new Comparator<SuperPostageBean>() {
+                            @Override
+                            public int compare(SuperPostageBean o1, SuperPostageBean o2) {
+                                return o1.getId()-o2.getId();
+                            }
+                        });
                     }
 
-                    adapter.addAll(superPostageList, true);//刷新模板列表数据
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.addAll(superPostageList, true);//刷新模板列表数据
+                        }
+                    });
                 }
             }
         });

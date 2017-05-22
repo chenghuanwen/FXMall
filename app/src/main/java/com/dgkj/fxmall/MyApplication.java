@@ -19,10 +19,9 @@ public class MyApplication extends Application {
     private static Context context;
     private static IWXAPI api;
     public static List<String> selectedPictures;
-    public static String currentProvince = "";
+    public static String currentProvince = "",currentCity="";
     public static int vipRate,shoppingCount,msgCount,systemMsgCount=5,orderMsgCount=5,warmMsgCount=5,accountMsgCount=5;
-
-
+    public static double balance;//账户余额
 
     @Override
     public void onCreate() {
