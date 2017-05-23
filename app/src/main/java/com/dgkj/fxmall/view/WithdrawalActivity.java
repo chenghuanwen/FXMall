@@ -55,7 +55,7 @@ public class WithdrawalActivity extends BaseActivity {
     private View headerview;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private SharedPreferencesUnit sp = SharedPreferencesUnit.getInstance(this);
-    private int restCount;
+    private double restCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class WithdrawalActivity extends BaseActivity {
 
     @OnClick(R.id.tv_select_account)
     public void selectAccount() {
-        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式");
+        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式",R.layout.layout_withdrawal_selector_dialog);
         dialog.show(getSupportFragmentManager(), "");
         dialog.setSelectListener(new OnSelectAccountFinishedListener() {
             @Override

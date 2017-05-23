@@ -123,7 +123,7 @@
                 android:layout_weight="1"
                 android:textSize="12sp"
                 android:textColor="#909090"
-                android:text="可提现金额额：50.00元"
+                android:text="可提现金额额：0.00元"
                 android:gravity="center"/>
             <TextView
                 android:id="@+id/tv_withdrawal_all"

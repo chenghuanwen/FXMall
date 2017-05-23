@@ -82,6 +82,7 @@ public class SetPayPasswordActivity extends BaseActivity implements InputComplet
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.body().string().contains("1000")){
                     toastInUI(SetPayPasswordActivity.this,"支付密码设置成功！");
+                    finish();
                 }else {
                     toastInUI(SetPayPasswordActivity.this,"支付密码设置失败，请稍后重试！");
                 }

@@ -160,6 +160,7 @@ public class FXConst {
     public static final String GET_PRODUCT_PLACE_PRICE_URL = FXM_URL_PORT+"systemAction_showPrice";
 
     public static final String GET_STORE_SUBCLASSIFY_PRODUCTS = FXM_URL_PORT+"commodityAction_storeSub";
+    public static final String RECHARGE_YEWUYUAN_CASHPLEDGE = FXM_URL_PORT+"userAction_cashPledge";
 
 
 

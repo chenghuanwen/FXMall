@@ -164,7 +164,7 @@ public class MineFragment extends Fragment {
     private void getUserInfo() {
         sp = SharedPreferencesUnit.getInstance(getContext());
         client = new OkHttpClient.Builder().build();
-        FormBody body = new FormBody.Builder()
+        final FormBody body = new FormBody.Builder()
                 .add("token", sp.get("token"))
                 .build();
         Request request = new Request.Builder()
@@ -179,6 +179,7 @@ public class MineFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","用户信息=="+result);
                 try {
                     JSONObject object = new JSONObject(result);
                     JSONObject info = object.getJSONObject("dataset");
@@ -192,6 +193,10 @@ public class MineFragment extends Fragment {
                     nickname = info.getString("nickname");
                     realname = info.getString("realname");
                     location = info.getString("location");
+                    double cashPledge = info.getDouble("cashPledge");
+                    if(cashPledge > 0){
+                        sp.put("ywy","true");//已成为业务员
+                    }
                     setData();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -345,7 +350,9 @@ public class MineFragment extends Fragment {
 
     @OnClick(R.id.rl_recharge)
     public void recharge() {
-        getContext().startActivity(new Intent(getContext(), RechargeActivity.class));
+        Intent intent = new Intent(getContext(), RechargeActivity.class);
+        intent.putExtra("from","mine");
+        getContext().startActivity(intent);
     }
 
     @OnClick(R.id.rl_withdrawal)

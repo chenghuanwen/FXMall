@@ -56,7 +56,7 @@ public class CancelYeWuYuanActivity extends BaseActivity {
 
     @OnClick(R.id.tv_account_type)
     public void selectAccountType() {
-        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式");
+        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式",R.layout.layout_withdrawal_selector_dialog);
         dialog.show(getSupportFragmentManager(), "");
         dialog.setSelectListener(new OnSelectAccountFinishedListener() {
             @Override

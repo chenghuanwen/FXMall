@@ -82,12 +82,12 @@ public class SetNicknameActivity extends BaseActivity {
     public void save() {
         //TODO 保存昵称或真实名字到服务器
         final String nick = etNickname.getText().toString();
-        String encode = "";
+      /*  String encode = "";
         try {
             encode = URLEncoder.encode(nick,"utf-8").toString();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+        }*/
         if (TextUtils.isEmpty(nick)) {
             toast("还未输入任何内容！");
             return;
@@ -96,7 +96,7 @@ public class SetNicknameActivity extends BaseActivity {
         if ("nick".equals(from)) {
             FormBody body = new FormBody.Builder()
                     .add("token",sp.get("token"))
-                    .add("nickname", encode)
+                    .add("nickname", nick)
                     .build();
             Request request = new Request.Builder()
                     .url(FXConst.CHANGE_USER_NICK)
@@ -125,7 +125,7 @@ public class SetNicknameActivity extends BaseActivity {
             intent.putExtra("name", nick);
             FormBody formBody = new FormBody.Builder()
                     .add("token",sp.get("token"))
-                    .add("realname",encode)
+                    .add("realname",nick)
                     .build();
             Request request1 = new  Request.Builder()
                     .post(formBody)

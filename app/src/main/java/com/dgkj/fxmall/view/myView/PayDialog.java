@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.SuperOrderBean;
@@ -141,11 +142,11 @@ public class PayDialog extends DialogFragment {
      * @param
      */
     private void showPayDialog(){
-        View contentview = getActivity().getLayoutInflater().inflate(R.layout.layout_input_password_dialog, null);
+        View contentview = getActivity().getLayoutInflater().inflate(R.layout.layout_input_password_dialog2, null);
         final AlertDialog pw = new AlertDialog.Builder(context).create();
         pw.setView(contentview);
         TextView tvCancel = (TextView) contentview.findViewById(R.id.tv_colse);
-        final PasswordInputView piv = (PasswordInputView) contentview.findViewById(R.id.piv_set);
+        final PasswordInputView2 piv = (PasswordInputView2) contentview.findViewById(R.id.piv_set);
         tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +159,8 @@ public class PayDialog extends DialogFragment {
             public void inputComplete() {
                 String password = piv.getEditContent();
                 //TODO 检测支付密码的正确性,进行支付
-                toPay(password);
+                checkPayword(password);
+
             }
 
             @Override
@@ -170,5 +172,37 @@ public class PayDialog extends DialogFragment {
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(false);
         pw.show();
+    }
+
+
+    public void checkPayword(final String password){
+        FormBody body = new FormBody.Builder()
+                .add("token", sp.get("token"))
+                .add("payPassword", password)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.CHECK_PAY_PASSWORD)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if (string.contains("1000")) {
+                    toPay(password);
+                } else if (string.contains("1003")) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(),"密码错误",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 }

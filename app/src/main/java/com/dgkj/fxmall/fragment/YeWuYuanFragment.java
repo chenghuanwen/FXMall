@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
@@ -82,7 +83,7 @@ public class YeWuYuanFragment extends Fragment {
      */
     private void initData() {
         FormBody body = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
+                .add("user.token", sp.get("token"))
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.GET_MY_VIP_COUNT_URL)
@@ -92,17 +93,18 @@ public class YeWuYuanFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000")){
+                if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         final int count = object.getInt("dataset");
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvMyVipCount.setText(count+"");
+                                tvMyVipCount.setText(count + "");
                             }
                         });
                     } catch (JSONException e) {
@@ -112,20 +114,21 @@ public class YeWuYuanFragment extends Fragment {
             }
         });
 
-        getSomeCount(1,tvTodayCommission);
-        getSomeCount(2,tvMonthCommission);
+        getSomeCount(1, tvTodayCommission);
+        getSomeCount(2, tvMonthCommission);
     }
 
 
     /**
      * 获取佣金数
+     *
      * @param time
      * @param tv
      */
-    public void getSomeCount(int time, final TextView tv){
+    public void getSomeCount(int time, final TextView tv) {
         FormBody body1 = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
-                .add("time",time+"")
+                .add("user.token", sp.get("token"))
+                .add("time", time + "")
                 .build();
         Request request1 = new Request.Builder()
                 .post(body1)
@@ -135,10 +138,11 @@ public class YeWuYuanFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000")){
+                if (string.contains("1000")) {
                     JSONObject object = null;
                     try {
                         object = new JSONObject(string);
@@ -146,7 +150,7 @@ public class YeWuYuanFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tv.setText(count+"");
+                                tv.setText(count + "");
                             }
                         });
                     } catch (JSONException e) {
@@ -161,15 +165,14 @@ public class YeWuYuanFragment extends Fragment {
     @OnClick(R.id.tv_recharge)
     public void recharge() {
         Intent intent = new Intent(getContext(), RechargeActivity.class);
-       // intent.putExtra("", "");//
-
+        intent.putExtra("from", "ywy");//
         getContext().startActivity(intent);
     }
 
     @OnClick(R.id.tv_withDrawal)
     public void withdrawal() {
         Intent intent = new Intent(getContext(), WithdrawalActivity.class);
-        intent.putExtra("rest", "100");//TODO 传入当前用户信息
+        intent.putExtra("rest", MyApplication.balance);//TODO 传入当前用户信息
         getContext().startActivity(intent);
     }
 
@@ -179,8 +182,8 @@ public class YeWuYuanFragment extends Fragment {
         dialog.show(getFragmentManager(), "");
     }
 
-    @OnClick({R.id.tv_vip,R.id.tv_my_vip_count})
-    public void toVipDetial(){
+    @OnClick({R.id.tv_vip, R.id.tv_my_vip_count})
+    public void toVipDetial() {
         getActivity().startActivity(new Intent(getContext(), MyVIPActivity.class));
     }
 
@@ -227,7 +230,7 @@ public class YeWuYuanFragment extends Fragment {
                 srlRefresh.setRefreshing(false);
                 tvJumpTip.setVisibility(View.GONE);
                 Intent intent = new Intent(getContext(), HomePageActivity.class);
-                intent.putExtra("from","");
+                intent.putExtra("from", "");
                 startActivity(intent);
             }
         });

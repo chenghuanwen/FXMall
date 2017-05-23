@@ -2267,6 +2267,7 @@ public class FXMallModel {
             public void onResponse(Call call, Response response) throws IOException {
 
                 String result = response.body().string();
+                LogUtil.i("TAG","首页商品展示信息=="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -2610,6 +2611,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","首页所有推荐信息==="+string);
                 if (string.contains("1000")) {
                     try {
                         JSONObject jsonObject = new JSONObject(string);
@@ -2623,7 +2625,8 @@ public class FXMallModel {
                             recommend.setPosition(object.getString("position"));
                             recommend.setType(object.getInt("type"));
                             if(object.has("detail")){
-                                JSONObject detail = object.getJSONObject("detail");
+                                String detailString = object.getString("detail");
+                                JSONObject detail = new JSONObject(detailString);
                                 recommend.setTitel(detail.getString("name"));
                                 if (recommend.getType() == 1) {//商铺
                                     recommend.setStoreName(detail.getString("storeName"));

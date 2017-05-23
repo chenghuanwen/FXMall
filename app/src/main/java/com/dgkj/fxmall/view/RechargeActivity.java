@@ -1,5 +1,6 @@
 package com.dgkj.fxmall.view;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,11 +10,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.listener.OnSelectAccountFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.view.myView.PasswordInputView;
+import com.dgkj.fxmall.view.myView.PasswordInputView2;
 import com.dgkj.fxmall.view.myView.WithdrawalAccountSelectDialog;
 
 import java.io.IOException;
@@ -45,6 +51,9 @@ public class RechargeActivity extends BaseActivity {
     @BindView(R.id.iv_type)
     ImageView ivType;
     private View headerview;
+    private String from = "";
+    private int payMode ;
+    private AlertDialog pw;
     private OkHttpClient client = new OkHttpClient.Builder().build();
 
     @Override
@@ -63,20 +72,38 @@ public class RechargeActivity extends BaseActivity {
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "账户充值");
+        from = getIntent().getStringExtra("from");
+        if("ywy".equals(from)){
+            etChargeSum.setText("¥"+200.00);
+        }
     }
 
 
     @OnClick(R.id.ll_select_recharge_type)
     public void selectType() {
-        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("付款方式");
+        WithdrawalAccountSelectDialog dialog;
+        if("mine".equals(from)){
+           dialog = new WithdrawalAccountSelectDialog("付款方式",R.layout.layout_withdrawal_selector_dialog);
+        }else {
+          dialog = new WithdrawalAccountSelectDialog("付款方式",R.layout.layout_withdrawal_selector_dialog2);
+        }
         dialog.show(getSupportFragmentManager(), "");
         dialog.setSelectListener(new OnSelectAccountFinishedListener() {
             @Override
             public void OnSelectAccountFinished(String result) {
                 if(result.contains("微信")){
                     ivType.setImageResource(R.mipmap.weixin);
-                }else {
+                    payMode = 2;
+                }else if(result.contains("支付宝")){
                     ivType.setImageResource(R.mipmap.zhifubao);
+                    payMode = 1;
+                }else {
+                    ivType.setImageResource(R.mipmap.yezf);
+                    payMode = 3;
+                    //余额充值押金
+                    showPayDialog();
+
+
                 }
                 tvSelectAccount.setText(result);
             }
@@ -90,37 +117,154 @@ public class RechargeActivity extends BaseActivity {
             toast("请输入充值金额");
             return;
         }
-        FormBody body = new FormBody.Builder()
-                .add("token", sp.get("token"))
-                .add("balance", money)
-                .build();
+
+
+        if("mine".equals(from)){
+            FormBody body = new FormBody.Builder()
+                    .add("token", sp.get("token"))
+                    .add("balance", money)
+                    .build();
+            Request request = new Request.Builder()
+                    .url(FXConst.USER_RECHARGE_URL)
+                    .post(body)
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    toastInUI(RechargeActivity.this, "网络异常！");
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.body().string().contains("1000")) {
+                        toastInUI(RechargeActivity.this, "充值成功");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                etChargeSum.setText("");
+                                finish();
+                            }
+                        });
+
+                    }
+                }
+            });
+        }else {
+           //TODO 支付宝、微信充值押金
+
+        }
+
+    }
+
+
+
+    /**
+     * 输入平台支付密码
+     * @param
+     */
+    private void showPayDialog(){
+        View contentview = getLayoutInflater().inflate(R.layout.layout_input_password_dialog2, null);
+        pw = new AlertDialog.Builder(this).create();
+        pw.setView(contentview);
+        TextView tvCancel = (TextView) contentview.findViewById(R.id.tv_colse);
+        final PasswordInputView2 piv = (PasswordInputView2) contentview.findViewById(R.id.piv_set);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+            }
+        });
+
+        piv.setInputCompletetListener(new InputCompletetListener() {
+            @Override
+            public void inputComplete() {
+                String password = piv.getEditContent();
+                //TODO 检测支付密码的正确性,进行支付
+                checkPayword(password);
+            }
+
+            @Override
+            public void deleteContent(boolean isDelete) {
+
+            }
+        });
+
+        //设置触摸对话框以外区域，对话框消失
+        pw.setCanceledOnTouchOutside(false);
+        pw.show();
+    }
+
+
+    /**
+     * 支付订单
+     */
+    private void toPay(String password) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadProgressDialogUtil.buildProgressDialog();
+            }
+        });
+
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("token",sp.get("token"))
+                .add("status",payMode+"".trim())
+                .add("payPassword",password);
+        FormBody formBody = builder.build();
         Request request = new Request.Builder()
-                .url(FXConst.USER_RECHARGE_URL)
-                .post(body)
+                .post(formBody)
+                .url(FXConst.RECHARGE_YEWUYUAN_CASHPLEDGE)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(RechargeActivity.this, "网络异常！");
+
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.body().string().contains("1000")) {
-                    toastInUI(RechargeActivity.this, "充值成功");
+                String string = response.body().string();
+                LogUtil.i("TAG","支付结果==="+ string);
+                if(string.contains("1000")){
+                    toastInUI(RechargeActivity.this,"押金充值成功！");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            etChargeSum.setText("");
-                            finish();
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
+                }
+            }
+        });
 
+    }
+
+    public void checkPayword(final String password){
+        FormBody body = new FormBody.Builder()
+                .add("token", sp.get("token"))
+                .add("payPassword", password)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.CHECK_PAY_PASSWORD)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if (string.contains("1000")) {
+                    toPay(password);
+                    pw.dismiss();
+                } else if (string.contains("1003")) {
+                    toastInUI(RechargeActivity.this, "密码错误！");
                 }
             }
         });
     }
-
 
     @OnClick(R.id.ib_back)
     public void back() {

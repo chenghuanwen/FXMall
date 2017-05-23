@@ -88,7 +88,9 @@ public class JoinUsFragment extends Fragment {
         if ("sp".equals(from) || rbJoinStore.isChecked()) {
             startActivity(new Intent(getContext(), ApplyStoreActivity.class));
         } else {
-            startActivity(new Intent(getContext(), RechargeActivity.class));
+            Intent intent = new Intent(getContext(), RechargeActivity.class);
+            intent.putExtra("from","ywy");
+            startActivity(intent);
         }
     }
 }

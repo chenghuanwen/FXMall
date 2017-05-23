@@ -6,6 +6,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ public class PasswordInputView2 extends RelativeLayout {
 
     public PasswordInputView2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        View.inflate(context, R.layout.layout_password_input,this);
+        View.inflate(context, R.layout.layout_password_input2,this);
         editText = (EditText) findViewById(R.id.et_setpassword);
         textViews[0] = (TextView) findViewById(R.id.tv_set_number1);
         textViews[1] = (TextView) findViewById(R.id.tv_set_number2);
@@ -42,6 +43,12 @@ public class PasswordInputView2 extends RelativeLayout {
         textViews[3] = (TextView) findViewById(R.id.tv_set_number4);
         textViews[4] = (TextView) findViewById(R.id.tv_set_number5);
         textViews[5] = (TextView) findViewById(R.id.tv_set_number6);
+        //自动弹出软键盘
+        editText.requestFocus();
+        editText.setFocusable(true);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInputFromInputMethod(editText.getWindowToken(),0);
+
         setListener();
     }
 

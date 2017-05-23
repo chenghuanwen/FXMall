@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -68,6 +67,7 @@ public class PostageSettingEditActivity extends BaseActivity {
     private List<View> viewList = new ArrayList<>();
     private List<String> provinces = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient.Builder().build();
+   // private OkHttpClient client;
     private SuperPostageBean newSuperPost = new SuperPostageBean();
     private Map<Integer, List<String>> provinceMap = new HashMap<>();
     private int mapKey = 0;
@@ -114,10 +114,22 @@ public class PostageSettingEditActivity extends BaseActivity {
                     EditText etAddCount = (EditText) view.findViewById(R.id.tv_paost_add_count_district);
                     EditText etAddPay = (EditText) view.findViewById(R.id.tv_paost_add_pay_district);
                     PostageBean postageBean = posts.get(i + 1);
-                    List<String> provinces = postageBean.getProvinces();
+                    List<String> provincess = postageBean.getProvinces();
+
+                    //将需要编辑的地区拼接成json供服务器使用
+                    StringBuffer province = new StringBuffer();
+                    province.append("[");
+                    for (String selectDistrict : provincess) {
+                        province.append("\""+selectDistrict+"\"").append(",");
+                    }
+                    province.deleteCharAt(province.length() - 1);
+                    province.append("]");
+                    provinces.add(province.toString());
+
+                    //供本地显示使用
                     StringBuffer sb = new StringBuffer();
-                    for (String province : provinces) {
-                        sb.append(province).append("、");
+                    for (String province1 : provincess) {
+                        sb.append(province1).append("、");
                     }
                     sb.deleteCharAt(sb.length() - 1);
                     tvDistrict.setText(sb.toString());
@@ -246,7 +258,7 @@ public class PostageSettingEditActivity extends BaseActivity {
                 StringBuffer province = new StringBuffer();
                 province.append("[");
                 for (String selectDistrict : selectDistricts) {
-                    province.append(selectDistrict).append(",");
+                    province.append("\""+selectDistrict+"\"").append(",");
                 }
                 province.deleteCharAt(province.length() - 1);
                 province.append("]");
@@ -265,7 +277,6 @@ public class PostageSettingEditActivity extends BaseActivity {
                 pw.dismiss();
             }
         });
-
 
         //设置触摸对话框以外区域，对话框消失
         pw.setCanceledOnTouchOutside(true);
@@ -309,8 +320,9 @@ public class PostageSettingEditActivity extends BaseActivity {
                 .add("freightProvinces[0].increaseCost", addPay)
                 .add("freightProvinces[0].provinces", "[]");
         if ("edit".equals(from)) {
-            builder.add("freightProvinces[0].id", editSuperPost.getPosts().get(0).getId() + "")
-                    .add("id", editSuperPost.getId() + "");
+            builder.add("freightProvinces[0].id", editSuperPost.getPosts().get(0).getDistrictId() + "".trim())
+                    .add("id", editSuperPost.getId() + "".trim());
+            LogUtil.i("TAG","编辑运费模板==="+editSuperPost.getPosts().get(0).getId()+"=="+editSuperPost.getId());
         }
 
         for (int i = 0; i < viewList.size(); i++) {
@@ -341,10 +353,11 @@ public class PostageSettingEditActivity extends BaseActivity {
                     .add("freightProvinces[" + (i + 1) + "].cost", pay)
                     .add("freightProvinces[" + (i + 1) + "].increaseNum", addPost)
                     .add("freightProvinces[" + (i + 1) + "].increaseCost", addPostPay)
-                    .add("freightProvinces[" + (i + 1) + "].provinces", "\""+provinces.get(i)+"\"");
+                    .add("freightProvinces[" + (i + 1) + "].provinces", provinces.get(i));
+            LogUtil.i("TAG","选择省份JSON=="+provinces.get(i));
             if ("edit".equals(from)) {
-                builder.add("freightProvinces[" + (i + 1) + "].id", editSuperPost.getPosts().get(i + 1).getId() + "")
-                        .add("id", editSuperPost.getId() + "");
+                builder.add("freightProvinces[" + (i + 1) + "].id", editSuperPost.getPosts().get(i + 1).getDistrictId() + "".trim())
+                        .add("id", editSuperPost.getId() + "".trim());
             }
         }
         //用于返回上个界面显示
@@ -400,4 +413,23 @@ public class PostageSettingEditActivity extends BaseActivity {
     public void back() {
         finish();
     }
+
+
+
+    /**
+     * 初始化okhttpclient.
+     *
+     * @return okhttpClient
+     *//*
+    private OkHttpClient okhttpclient() {
+        if (client == null) {
+            HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+            logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            client = new OkHttpClient.Builder()
+                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .addNetworkInterceptor(logInterceptor)
+                    .build();
+        }
+        return client;
+    }*/
 }

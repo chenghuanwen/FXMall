@@ -98,10 +98,10 @@ public class UserMsgActivity extends BaseActivity {
     private byte[] imageData;
     private File iconFile;
     private View headerview;
-    private String gender = "",phone= "",nick= "",name= "",icon= "",address= "";
+    private String gender = "", phone = "", nick = "", name = "", icon = "", address = "";
     private String from = "";
     private OkHttpClient client;
-    private SharedPreferencesUnit sp ;
+    private SharedPreferencesUnit sp;
     private int genderCode;
 
     @Override
@@ -114,18 +114,15 @@ public class UserMsgActivity extends BaseActivity {
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(this);
         Intent intent = getIntent();
-        try {
-            gender = intent.getStringExtra("gender");
-            name = intent.getStringExtra("realname");
-            nick = intent.getStringExtra("nick");
-            name = URLDecoder.decode(name,"utf-8");
-            phone = intent.getStringExtra("phone");
-            address = intent.getStringExtra("address");
-            icon = intent.getStringExtra("icon");
-            nick = URLDecoder.decode(nick,"utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        gender = intent.getStringExtra("gender");
+        name = intent.getStringExtra("realname");
+        nick = intent.getStringExtra("nick");
+        //  name = URLDecoder.decode(name,"utf-8");
+        phone = intent.getStringExtra("phone");
+        address = intent.getStringExtra("address");
+        icon = intent.getStringExtra("icon");
+        //  nick = URLDecoder.decode(nick,"utf-8");
+
         setData();
     }
 
@@ -138,9 +135,9 @@ public class UserMsgActivity extends BaseActivity {
         //TODO 获取个人信息填充
         Glide.with(this).load(icon).error(R.mipmap.sz_tx).into(civUsemsgIcon);
         tvNickname.setText(nick);
-        if("1".equals(gender)){
+        if ("1".equals(gender)) {
             tvGender.setText("男");
-        }else {
+        } else {
             tvGender.setText("女");
         }
         tvRaalname.setText(name);
@@ -170,32 +167,29 @@ public class UserMsgActivity extends BaseActivity {
 
     @OnClick(R.id.rl_phonenumber)
     public void changePhone() {
-        Intent intent = new Intent(this,ChangePhoneActivity.class);
-        intent.putExtra("phone",phone);
+        Intent intent = new Intent(this, ChangePhoneActivity.class);
+        intent.putExtra("phone", phone);
         jumpTo(intent, false);
     }
 
 
     @OnClick(R.id.ib_back)
-    public void back(){
+    public void back() {
         finish();
     }
 
     @OnClick(R.id.rl_current_address)
-    public void address(){
-        Intent intent = new Intent(this,LocationCurrenterCityActivity.class);
+    public void address() {
+        Intent intent = new Intent(this, LocationCurrenterCityActivity.class);
         //TODO 将个人信息中的所在地传递下去
-        intent.putExtra("location",address);
-        jumpTo(intent,false);
+        intent.putExtra("location", address);
+        jumpTo(intent, false);
     }
 
     @OnClick(R.id.rl_takegoods_address)
-    public void takegoods(){
-        jumpTo(TakeGoodsAdressActivity.class,false);
+    public void takegoods() {
+        jumpTo(TakeGoodsAdressActivity.class, false);
     }
-
-
-
 
 
     private void initHeaderview() {
@@ -217,8 +211,8 @@ public class UserMsgActivity extends BaseActivity {
      * 头像选择
      */
     private void selectIcon() {
-       // final TransparentDialog alertDialog = new TransparentDialog.Builder(this).create();
-        final Dialog alertDialog = new Dialog(this,R.style.transparentDialog);
+        // final TransparentDialog alertDialog = new TransparentDialog.Builder(this).create();
+        final Dialog alertDialog = new Dialog(this, R.style.transparentDialog);
         final View iconSelect = getLayoutInflater().inflate(R.layout.layout_iconselect_dialog, null);
         TextView tvPicture = (TextView) iconSelect.findViewById(R.id.tv_icon_fromPictures);
         TextView tvCamera = (TextView) iconSelect.findViewById(R.id.tv_icon_fromCarema);
@@ -236,7 +230,7 @@ public class UserMsgActivity extends BaseActivity {
                     PermissionUtil.requestPermissions(UserMsgActivity.this, TM_REQUEST_PERMISSION_CODE, permissions);
                     return;
                 }
-               selectPicture();
+                selectPicture();
                 alertDialog.dismiss();
             }
         });
@@ -259,7 +253,7 @@ public class UserMsgActivity extends BaseActivity {
                     return;
                 }
 
-               takePicture();
+                takePicture();
                 alertDialog.dismiss();
             }
         });
@@ -277,21 +271,21 @@ public class UserMsgActivity extends BaseActivity {
     }
 
 
-    public void takePicture(){
+    public void takePicture() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //将拍照的图片保存到本地
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), System.currentTimeMillis() + ".jpg");
         Uri iconUri = null;
-        if(Build.VERSION.SDK_INT >= 24){
-            iconUri = FileProvider.getUriForFile(this,"com.dgkj.fxmall.fileprovider",file);
-        }else {
-           iconUri = Uri.fromFile(file);
+        if (Build.VERSION.SDK_INT >= 24) {
+            iconUri = FileProvider.getUriForFile(this, "com.dgkj.fxmall.fileprovider", file);
+        } else {
+            iconUri = Uri.fromFile(file);
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, iconUri);
         startActivityForResult(intent, 102);
     }
 
-    public void selectPicture(){
+    public void selectPicture() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, 101);
@@ -340,8 +334,8 @@ public class UserMsgActivity extends BaseActivity {
             public void onClick(View v) {
                 //TODO 将性别上传到服务器
                 FormBody body = new FormBody.Builder()
-                        .add("token",sp.get("token"))
-                        .add("sex",genderCode+"")
+                        .add("token", sp.get("token"))
+                        .add("sex", genderCode + "")
                         .build();
                 Request request = new Request.Builder()
                         .post(body)
@@ -350,16 +344,16 @@ public class UserMsgActivity extends BaseActivity {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        toastInUI(UserMsgActivity.this,"网络异常！");
+                        toastInUI(UserMsgActivity.this, "网络异常！");
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String result = response.body().string();
-                        if(result.contains("1000")){
-                            toastInUI(UserMsgActivity.this,"性别修改成功！");
-                        }else {
-                            toastInUI(UserMsgActivity.this,"性别修改失败！");
+                        if (result.contains("1000")) {
+                            toastInUI(UserMsgActivity.this, "性别修改成功！");
+                        } else {
+                            toastInUI(UserMsgActivity.this, "性别修改失败！");
                         }
                     }
                 });
@@ -390,9 +384,9 @@ public class UserMsgActivity extends BaseActivity {
             crop(uri);//裁剪头像
         } else if (resultCode == RESULT_OK && requestCode == 102) {//拍照
             Uri uri1 = null;
-            if(Build.VERSION.SDK_INT >= 24){
-                uri1 = getImageContentUri(this,file);
-            }else {
+            if (Build.VERSION.SDK_INT >= 24) {
+                uri1 = getImageContentUri(this, file);
+            } else {
                 uri1 = Uri.fromFile(file);
             }
             crop(uri1);//裁剪头像
@@ -427,11 +421,11 @@ public class UserMsgActivity extends BaseActivity {
 
         if (requestCode == 111 && resultCode == 112) {
             tvNickname.setText(data.getStringExtra("nick"));
-            LogUtil.i("TAG","设置昵称返回==="+data.getStringExtra("nick"));
+            LogUtil.i("TAG", "设置昵称返回===" + data.getStringExtra("nick"));
         }
         if (requestCode == 113 && resultCode == 114) {
             tvRaalname.setText(data.getStringExtra("name"));
-            LogUtil.i("TAG","设置真名返回==="+data.getStringExtra("name"));
+            LogUtil.i("TAG", "设置真名返回===" + data.getStringExtra("name"));
         }
 
 
@@ -439,7 +433,8 @@ public class UserMsgActivity extends BaseActivity {
     }
 
     /**
-     *  7.0 获取图片文件uri
+     * 7.0 获取图片文件uri
+     *
      * @param context
      * @param file
      * @return
@@ -447,16 +442,16 @@ public class UserMsgActivity extends BaseActivity {
     private Uri getImageContentUri(Context context, File file) {
         String filePath = file.getAbsolutePath();
         Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Images.Media._ID},MediaStore.Images.Media.DATA+"=?",new String[]{filePath},null);
-        if(cursor!=null && cursor.moveToFirst()){
+                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=?", new String[]{filePath}, null);
+        if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
             Uri baseUri = Uri.parse("content://media/external/images/media");
-            return Uri.withAppendedPath(baseUri,""+id);
-        }else {
-            if(file.exists()){
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (file.exists()) {
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(MediaStore.Images.Media.DATA,filePath);
-                return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
+                contentValues.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
             }
         }
         return null;
@@ -464,9 +459,9 @@ public class UserMsgActivity extends BaseActivity {
 
     private void uploadIcon(final File iconFile) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("token",sp.get("token"))
-                .addPart(Headers.of("Content-Disposition", "form-data; name=file;filename="+iconFile.getName()), RequestBody.create(MediaType.parse("image/png"),iconFile));
-      MultipartBody body = builder.build();
+        builder.addFormDataPart("token", sp.get("token"))
+                .addPart(Headers.of("Content-Disposition", "form-data; name=file;filename=" + iconFile.getName()), RequestBody.create(MediaType.parse("image/png"), iconFile));
+        MultipartBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
                 .url(FXConst.CHANGE_USER_ICON)
@@ -474,23 +469,25 @@ public class UserMsgActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(UserMsgActivity.this,"网络繁忙！");
+                toastInUI(UserMsgActivity.this, "网络繁忙！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
-                    toastInUI(UserMsgActivity.this,"头像上传成功！");
+                if (result.contains("1000")) {
+                    toastInUI(UserMsgActivity.this, "头像上传成功！");
                     try {
                         JSONObject object = new JSONObject(result);
                         String iconUrl = object.getString("dataset");
-                        if(iconFile != null){iconFile.delete();}
+                        if (iconFile != null) {
+                            iconFile.delete();
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else {
-                    toastInUI(UserMsgActivity.this,"头像上传失败！");
+                } else {
+                    toastInUI(UserMsgActivity.this, "头像上传失败！");
                 }
             }
         });
@@ -538,11 +535,11 @@ public class UserMsgActivity extends BaseActivity {
                     needPermission.add(permissions[i]);
                 }
 
-                if(permissions[i].equals(Manifest.permission.CAMERA) && grantResults[i]==PackageManager.PERMISSION_GRANTED){
+                if (permissions[i].equals(Manifest.permission.CAMERA) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     takePicture();
                 }
-                if(permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE) && grantResults[i]==PackageManager.PERMISSION_GRANTED){
-                    if(permissions[i].equals(Manifest.permission.CAMERA) && grantResults[i]==PackageManager.PERMISSION_GRANTED){
+                if (permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    if (permissions[i].equals(Manifest.permission.CAMERA) && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                         takePicture();
                     }
                 }

@@ -77,7 +77,7 @@ public class OkhttpUploadUtils {
         }
 
         if(banners != null){
-            for (File file : fileList) {
+            for (File file : banners) {
                 // builder.addPart(Headers.of("Content-Disposition", "form-data; name="+image_key+";filename="+file.getName()), RequestBody.create(MediaType.parse("image/png"),file));
                 builder.addFormDataPart(b_key,file.getName(), RequestBody.create(MEDIA_TYPE_PNG,file));
             }

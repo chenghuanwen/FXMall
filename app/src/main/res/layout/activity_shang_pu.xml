@@ -356,6 +356,7 @@
                 android:layout_height="60dp"
                 android:orientation="horizontal">
                 <RelativeLayout
+                    android:id="@+id/rl_income"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">

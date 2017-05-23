@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.LoggerUtil;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -21,7 +22,7 @@ public class MyApplication extends Application {
     public static List<String> selectedPictures;
     public static String currentProvince = "",currentCity="";
     public static int vipRate,shoppingCount,msgCount,systemMsgCount=5,orderMsgCount=5,warmMsgCount=5,accountMsgCount=5;
-    public static double balance;//账户余额
+    public static double balance;
 
     @Override
     public void onCreate() {
@@ -32,6 +33,9 @@ public class MyApplication extends Application {
         // 将该app注册到微信
         api = WXAPIFactory.createWXAPI(context, null);
         api.registerApp(FXConst.APP_ID);
+
+        // 初始化Looger工具
+      //  LoggerUtil.init(true);
     }
 
     public static Context getContext() {

@@ -33,7 +33,7 @@ public class ResetPayPasswordActivity extends BaseActivity implements InputCompl
     PasswordInputView pivConfirm;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
-    @BindView(R.id.btn_save)
+    @BindView(R.id.btn_submit)
     Button btnSave;
     private View headerview;
     private String oldPass,newPass,confirmPass;
@@ -60,7 +60,7 @@ public class ResetPayPasswordActivity extends BaseActivity implements InputCompl
     }
 
 
-    @OnClick(R.id.btn_save)
+    @OnClick(R.id.btn_submit)
     public void save(){
         FormBody body = new FormBody.Builder()
                 .add("token",sp.get("token"))
@@ -82,6 +82,7 @@ public class ResetPayPasswordActivity extends BaseActivity implements InputCompl
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.body().string().contains("1000")){
                     toastInUI(ResetPayPasswordActivity.this,"支付密码重置成功！");
+                    finish();
                 }else {
                     toastInUI(ResetPayPasswordActivity.this,"支付密码重置失败，请稍后重试！");
                 }

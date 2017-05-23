@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
@@ -110,13 +111,26 @@ public class ShangpuFragment extends Fragment {
     RelativeLayout rlInsale;
     @BindView(R.id.rl_warehouse)
     RelativeLayout rlWarehouse;
+    @BindView(R.id.iv_1)
+    ImageView iv1;
+    @BindView(R.id.iv_2)
+    ImageView iv2;
+    @BindView(R.id.iv_3)
+    ImageView iv3;
+    @BindView(R.id.iv_4)
+    ImageView iv4;
+    @BindView(R.id.rl_income)
+    RelativeLayout rlIncome;
+    @BindView(R.id.iv_5)
+    ImageView iv5;
+
     private float downX, downY = 300;
-    private OkHttpClient client ;
+    private OkHttpClient client;
     private SharedPreferencesUnit sp;
     private Handler handler;
     private int storeId;
-    private String describe="",logo="", banner ="",name="",address="";
-    private int stars,goodsCount,sales;
+    private String describe = "", logo = "", banner = "", name = "", address = "";
+    private int stars, goodsCount, sales;
     private double totalScore;
     private int upperlimit;//可发布商品数量上限
     private LoadProgressDialogUtil progressDialogUtil;
@@ -142,7 +156,7 @@ public class ShangpuFragment extends Fragment {
      */
     private void initData() {
         FormBody body = new FormBody.Builder()
-                .add("store.token",sp.get("token"))
+                .add("user.token", sp.get("token"))
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.GET_STORE_DETIAL_INFO)
@@ -157,7 +171,10 @@ public class ShangpuFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(!result.contains("1000")){return;}
+                LogUtil.i("TAG","店铺详细信息=="+result);
+                if (!result.contains("1000")) {
+                    return;
+                }
                 try {
                     JSONObject object = new JSONObject(result);
                     final JSONObject dataset = object.getJSONObject("dataset");
@@ -165,13 +182,13 @@ public class ShangpuFragment extends Fragment {
                     describe = dataset.getString("intro");
                     address = dataset.getString("address");
                     logo = dataset.getString("logo");
-                    banner = dataset.getString("banner");
+                    banner = dataset.getString("banana");
                     stars = dataset.getInt("storeGrade");
                     storeId = dataset.getInt("id");
                     goodsCount = dataset.getInt("cnum");
                     sales = dataset.getInt("sales");
                     totalScore = dataset.getDouble("totalScore");
-                    upperlimit = dataset.getInt("upperlimit");
+                    upperlimit = dataset.getInt("upperLimit");
 
                     handler.post(new Runnable() {
                         @Override
@@ -179,7 +196,7 @@ public class ShangpuFragment extends Fragment {
                             tvStoreName.setText(name);
                             tvStoreIntroduce.setText(describe);
                             Glide.with(getContext()).load(logo).into(civShangpu);
-                            switch (stars){
+                            switch (stars) {
                                 case 0:
                                 case 1:
                                     ivShangpuStars.setImageResource(R.mipmap.dpzy_dj1);
@@ -206,7 +223,7 @@ public class ShangpuFragment extends Fragment {
         });
 
         FormBody formBody = new FormBody.Builder()
-                .add("store.user.token",sp.get("token"))
+                .add("store.user.token", sp.get("token"))
                 .build();
         Request request1 = new Request.Builder()
                 .url(FXConst.GET_STORE_SALE_COUNT)
@@ -220,7 +237,7 @@ public class ShangpuFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
+                if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         final int restCount = object.getInt("total");
@@ -228,8 +245,8 @@ public class ShangpuFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvOnSacleCount.setText(inSale+"件商品");
-                                tvStoreRestCount.setText(restCount+"件商品");
+                                tvOnSacleCount.setText(inSale + "件商品");
+                                tvStoreRestCount.setText(restCount + "件商品");
                             }
                         });
 
@@ -241,7 +258,7 @@ public class ShangpuFragment extends Fragment {
         });
 
         FormBody body1 = new FormBody.Builder()
-                .add("store.user.token",sp.get("token"))
+                .add("store.user.token", sp.get("token"))
                 .build();
         Request request2 = new Request.Builder()
                 .post(body1)
@@ -255,7 +272,7 @@ public class ShangpuFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000")){
+                if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         JSONArray dataset = object.getJSONArray("dataset");
@@ -267,23 +284,23 @@ public class ShangpuFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvWaitDeliverCount.setText(waitdeliver +"");
-                                tvHasDeliverCount.setText(hasdeliver +"");
-                                tvSoldCount.setText(sold +"");
-                                tvRefundCount.setText(refund +"");
+                                tvWaitDeliverCount.setText(waitdeliver + "");
+                                tvHasDeliverCount.setText(hasdeliver + "");
+                                tvSoldCount.setText(sold + "");
+                                tvRefundCount.setText(refund + "");
                             }
                         });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
 
                 }
             }
         });
 
         FormBody body2 = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
+                .add("user.token", sp.get("token"))
                 .build();
         Request request3 = new Request.Builder()
                 .post(body2)
@@ -297,14 +314,14 @@ public class ShangpuFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000")){
+                if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         final int dataset = object.getInt("dataset");
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvOrderCount.setText(dataset+"");
+                                tvOrderCount.setText(dataset + "");
                             }
                         });
                     } catch (JSONException e) {
@@ -315,7 +332,7 @@ public class ShangpuFragment extends Fragment {
         });
 
         FormBody body3 = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
+                .add("user.token", sp.get("token"))
                 .build();
         Request request4 = new Request.Builder()
                 .post(body3)
@@ -329,14 +346,14 @@ public class ShangpuFragment extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000")){
+                if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         final int dataset = object.getInt("dataset");
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvRefund.setText(dataset+"");
+                                tvRefund.setText(dataset + "");
                             }
                         });
                     } catch (JSONException e) {
@@ -346,20 +363,21 @@ public class ShangpuFragment extends Fragment {
             }
         });
 
-        getSomeCount(3,tvIncom);
+        getSomeCount(3, tvIncom);
 
     }
 
 
     /**
      * 获取佣金数
+     *
      * @param time
      * @param tv
      */
-    public void getSomeCount(int time, final TextView tv){
+    public void getSomeCount(int time, final TextView tv) {
         FormBody body1 = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
-                .add("time",time+"")
+                .add("user.token", sp.get("token"))
+                .add("time", time + "".trim())
                 .build();
         Request request1 = new Request.Builder()
                 .post(body1)
@@ -369,10 +387,12 @@ public class ShangpuFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
             }
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000")){
+                LogUtil.i("TAG","店铺收入金额=="+string);
+                if (string.contains("1000")) {
                     JSONObject object = null;
                     try {
                         object = new JSONObject(string);
@@ -380,7 +400,7 @@ public class ShangpuFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tv.setText(count+"");
+                                tv.setText(count + "");
                             }
                         });
                     } catch (JSONException e) {
@@ -394,13 +414,12 @@ public class ShangpuFragment extends Fragment {
     }
 
 
-
     @OnClick(R.id.tv_publish_product)
     public void publishProduct() {
-        if(goodsCount >= upperlimit){
-            Toast.makeText(getContext(),"免费展位已用完！",Toast.LENGTH_SHORT).show();
-            jumpto(new Intent(getContext(),BuyProductPlaceActivity.class));
-        }else {
+        if (goodsCount >= upperlimit) {
+            Toast.makeText(getContext(), "免费展位已用完！", Toast.LENGTH_SHORT).show();
+            jumpto(new Intent(getContext(), BuyProductPlaceActivity.class));
+        } else {
             Intent intent = new Intent(getContext(), PublishProductActivity.class);
             jumpto(intent);
         }
@@ -414,7 +433,7 @@ public class ShangpuFragment extends Fragment {
 
 
     @OnClick(R.id.tv_store_name)
-    public void toMainPage(){
+    public void toMainPage() {
         Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
         StoreBean storeBean = new StoreBean();
         storeBean.setId(storeId);
@@ -427,7 +446,7 @@ public class ShangpuFragment extends Fragment {
         jumpto(intent);
     }
 
-    @OnClick({R.id.rl_insale,R.id.tv_all_products})
+    @OnClick({R.id.rl_insale, R.id.tv_all_products})
     public void onSale() {
         Intent intent = new Intent(getContext(), InTheSaleActivity.class);
         intent.putExtra("from", "sale");
@@ -471,18 +490,20 @@ public class ShangpuFragment extends Fragment {
     }
 
 
-    @OnClick(R.id.tv_incom)
-    public void withDrawable(){
-        getContext().startActivity(new Intent(getContext(), WithdrawalActivity.class));
+    @OnClick(R.id.rl_income)
+    public void withDrawable() {
+        Intent intent = new Intent(getContext(), WithdrawalActivity.class);
+        intent.putExtra("rest", MyApplication.balance);//TODO 传入当前用户信息
+        getContext().startActivity(intent);
     }
 
 
     @OnClick(R.id.civ_shangpu)
     public void storeDetial() {
         Intent intent = new Intent(getContext(), StoreInfoEditActivity.class);
-        intent.putExtra("logo",logo);
+        intent.putExtra("logo", logo);
         intent.putExtra("banner", banner);
-        intent.putExtra("introduce",describe);
+        intent.putExtra("introduce", describe);
         jumpto(intent);
     }
 
@@ -537,7 +558,7 @@ public class ShangpuFragment extends Fragment {
                 srlRefresh.setRefreshing(false);
                 tvJumpTip.setVisibility(View.GONE);
                 Intent intent = new Intent(getContext(), HomePageActivity.class);
-                intent.putExtra("from","");
+                intent.putExtra("from", "");
                 startActivity(intent);
             }
         });

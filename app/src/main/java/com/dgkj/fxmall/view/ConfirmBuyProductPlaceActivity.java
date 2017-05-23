@@ -43,7 +43,7 @@ public class ConfirmBuyProductPlaceActivity extends BaseActivity {
     TextView tvSinglePrice;
     private View headerview;
     private double singlePrice;
-    private int count;
+    private int count = 1;
     private OkHttpClient client = new OkHttpClient.Builder().build();
 
     @Override
@@ -77,6 +77,7 @@ public class ConfirmBuyProductPlaceActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 tvSinglePrice.setText("单价:¥"+singlePrice);
+                                tvSumPrice.setText("¥" + singlePrice * count);
                             }
                         });
                     } catch (JSONException e) {

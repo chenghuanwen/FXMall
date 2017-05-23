@@ -15,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.listener.OnSelectAccountFinishedListener;
 
@@ -26,9 +28,11 @@ import com.dgkj.fxmall.listener.OnSelectAccountFinishedListener;
 public class WithdrawalAccountSelectDialog extends DialogFragment {
     private OnSelectAccountFinishedListener listener;
     private String title;
+    private int resId;
 
-    public WithdrawalAccountSelectDialog(String title) {
+    public WithdrawalAccountSelectDialog(String title,int resId) {
         this.title = title;
+        this.resId = resId;
     }
 
     @NonNull
@@ -41,7 +45,7 @@ public class WithdrawalAccountSelectDialog extends DialogFragment {
 
         final Dialog dialog = new Dialog(getActivity(), R.style.ColorAndSizeSelectDialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // 必须在设置布局之前调用
-        dialog.setContentView(R.layout.layout_withdrawal_selector_dialog);
+        dialog.setContentView(resId);
         dialog.setCanceledOnTouchOutside(true);
 
         // 设置宽度为屏宽、靠近屏幕底部。
@@ -68,6 +72,15 @@ public class WithdrawalAccountSelectDialog extends DialogFragment {
                         listener.OnSelectAccountFinished("微信");
                         dialog.dismiss();
                         break;
+                    case R.id.tv_balance_pay:
+                        if(MyApplication.balance<200.0){
+                            Toast.makeText(getContext(),"余额不足,请选择其他支付方式",Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        listener.OnSelectAccountFinished("余额");
+                        dialog.dismiss();
+                        break;
+
                 }
             }
         });

@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity {
                         }
                         break;
                     case R.id.rb_yewuyuan:
-                        if(userId.equals("2")){
+                        if(userId.equals("2") || "true".equals(sp.get("ywy"))){
                             showYW();
                         }else {
                             Intent intent = new Intent(MainActivity.this,HomePageActivity.class);
