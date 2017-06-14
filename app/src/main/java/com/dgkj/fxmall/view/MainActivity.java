@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_shangpu:
-                        if(userId.equals("3")){
+                        if(userId.equals("3") || "true".equals(sp.get("sp"))){
                             showSP();
                         }else {
                             Intent intent = new Intent(MainActivity.this,HomePageActivity.class);

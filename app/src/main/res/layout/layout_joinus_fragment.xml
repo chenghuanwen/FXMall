@@ -40,7 +40,7 @@
                 android:layout_weight="1"
                 android:button="@null"
                 android:gravity="center|right"
-                android:text="加入会员"
+                android:text="加入业务员"
                 android:textColor="@drawable/join_textcolor_selector"
                 android:textSize="14sp" />
         </RadioGroup>

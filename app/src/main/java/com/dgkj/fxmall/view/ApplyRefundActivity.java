@@ -40,6 +40,7 @@ import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.constans.Permission;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.PermissionUtil;
@@ -223,7 +224,17 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
             paramas.put("orderCommodity.sku.id", skuId + "");
             url = FXConst.USER_APPLY_REFUND_URL;
         }
-        OkhttpUploadUtils.getInstance(this).sendMultipart(url, paramas, "file", files, null, null,null,null);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(url, paramas, "file", files, null, null, null, null, new OnUploadPicturesFinishedListener() {
+            @Override
+            public void onUploadPicturesFinishedListener() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                });
+            }
+        });
     }
 
     @OnClick(R.id.ib_back)

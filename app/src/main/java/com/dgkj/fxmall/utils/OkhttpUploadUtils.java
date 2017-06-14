@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.model.FXMallModel;
 
 import java.io.File;
@@ -52,7 +53,7 @@ public class OkhttpUploadUtils {
      * @param pic_key 文件对应参数名
      * @param files   要上传的文件集合
      */
-    public void sendMultipart(final String reqUrl, final Map<String, String> params, final String pic_key, final List<File> files,final String image_key ,final List<File> fileList,String b_key,List<File> banners) {
+    public void sendMultipart(final String reqUrl, final Map<String, String> params, final String pic_key, final List<File> files, final String image_key , final List<File> fileList, String b_key, List<File> banners, final OnUploadPicturesFinishedListener listener) {
         loadDialog.buildProgressDialog();
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
@@ -111,6 +112,7 @@ public class OkhttpUploadUtils {
                         public void run() {
                             loadDialog.cancelProgressDialog();
                             Toast.makeText(context,"提交成功！",Toast.LENGTH_SHORT).show();
+                            listener.onUploadPicturesFinishedListener();
                         }
                     });
                 }else if(string.contains("1008")){
@@ -119,6 +121,7 @@ public class OkhttpUploadUtils {
                         public void run() {
                             loadDialog.cancelProgressDialog();
                             Toast.makeText(context,"您已申请过店铺",Toast.LENGTH_SHORT).show();
+                            listener.onUploadPicturesFinishedListener();
                         }
                     });
                 }else if(string.contains("1007")){

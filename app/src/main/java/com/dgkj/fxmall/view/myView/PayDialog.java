@@ -55,8 +55,9 @@ public class PayDialog extends DialogFragment {
     private OkHttpClient client;
     private SharedPreferencesUnit sp;
     private int payMode = 3;
-    private int orderId;
+    private boolean isSettPayword;
 
+    private int orderId;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @SuppressWarnings("unused")
@@ -140,7 +141,11 @@ public class PayDialog extends DialogFragment {
                     case R.id.tv_balance_pay:
                         payMode = 3;
                         dialog.dismiss();
-                       showPayDialog();
+                        if(isSettPayword){
+                            showPayDialog();
+                        }else {
+                            Toast.makeText(context,"您还未设置支付密码，请到“设置”中进行设置",Toast.LENGTH_SHORT).show();
+                        }
                         break;
                 }
             }
@@ -315,5 +320,34 @@ public class PayDialog extends DialogFragment {
         Thread payThread = new Thread(payRunnable);
         payThread.start();
 
+    }
+
+
+    /**
+     * 检测是否已设置过支付密码
+     */
+    private void whetherHasSetPayWord() {
+        FormBody body = new FormBody.Builder()
+                .add("token", sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.WHETHER_IS_FIRST_SET_PAYWORD)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                if (result.contains("1000")) {
+                    isSettPayword = true;
+                } else if (result.contains("109")) {
+                    isSettPayword = false;
+                }
+            }
+        });
     }
 }

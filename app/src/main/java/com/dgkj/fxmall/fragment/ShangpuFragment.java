@@ -179,10 +179,16 @@ public class ShangpuFragment extends Fragment {
                     JSONObject object = new JSONObject(result);
                     final JSONObject dataset = object.getJSONObject("dataset");
                     name = dataset.getString("storeName");
-                    describe = dataset.getString("intro");
+                    if(dataset.has("intro")){
+                        describe = dataset.getString("intro");
+                    }
                     address = dataset.getString("address");
-                    logo = dataset.getString("logo");
-                    banner = dataset.getString("banana");
+                    if(dataset.has("logo")){
+                        logo = dataset.getString("logo");
+                    }
+                    if(dataset.has("banana")){
+                        banner = dataset.getString("banana");
+                    }
                     stars = dataset.getInt("storeGrade");
                     storeId = dataset.getInt("id");
                     goodsCount = dataset.getInt("cnum");
@@ -400,7 +406,7 @@ public class ShangpuFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tv.setText(count + "");
+                                tv.setText("¥"+count);
                             }
                         });
                     } catch (JSONException e) {
@@ -416,6 +422,7 @@ public class ShangpuFragment extends Fragment {
 
     @OnClick(R.id.tv_publish_product)
     public void publishProduct() {
+        LogUtil.i("TAG","商品数量=="+goodsCount+"展位数量==="+upperlimit);
         if (goodsCount >= upperlimit) {
             Toast.makeText(getContext(), "免费展位已用完！", Toast.LENGTH_SHORT).show();
             jumpto(new Intent(getContext(), BuyProductPlaceActivity.class));

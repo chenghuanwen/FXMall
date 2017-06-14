@@ -403,8 +403,11 @@ public class MineFragment extends Fragment {
                         storeBean.setKeeper(dataset.getString("storekeeper"));
                         storeBean.setPhone(dataset.getString("phone"));
                         String pictrues = dataset.getString("storePictrue");
-                        String banner = dataset.getString("banana");
-                        if (!TextUtils.isEmpty(banner)) {
+                        if(dataset.has("logo")){
+                            storeBean.setIconUrl(dataset.getString("logo"));
+                        }
+                        if(dataset.has("banana")){
+                            sp.put("sp","true");
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -415,6 +418,7 @@ public class MineFragment extends Fragment {
 
                             return;
                         }
+
                         JSONArray storePictrues = new JSONArray(pictrues);
                         List<String> urls = new ArrayList<>();
                         for (int i = 0; i < storePictrues.length(); i++) {

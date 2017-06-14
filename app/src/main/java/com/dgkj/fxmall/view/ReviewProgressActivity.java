@@ -51,7 +51,7 @@ public class ReviewProgressActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         statu = getIntent().getStringExtra("statu");
-        storeBean = (StoreBean) getIntent().getSerializableExtra("store");
+        storeBean = getIntent().getParcelableExtra("store");
 
         //TODO 区分审核状态(等待审核、正在审核、审核通过)
         if ("wait".equals(statu)) {

@@ -21,6 +21,7 @@ import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.bean.TakeGoodsAddressBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.TimeFormatUtils;
@@ -563,7 +564,11 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         paramas.put("orderCommodity.orders.id", order.getId() + "");
         paramas.put("orderCommodity.sku.id", order.getSkuId() + "");
 
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.USER_APPLY_REFUND_URL, paramas, null, null, null, null,null,null);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.USER_APPLY_REFUND_URL, paramas, null, null, null, null, null, null, new OnUploadPicturesFinishedListener() {
+            @Override
+            public void onUploadPicturesFinishedListener() {
+            }
+        });
     }
 
 

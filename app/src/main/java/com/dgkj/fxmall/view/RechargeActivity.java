@@ -68,6 +68,7 @@ public class RechargeActivity extends BaseActivity {
     private int payMode ;
     private AlertDialog pw;
     private OkHttpClient client = new OkHttpClient.Builder().build();
+    private boolean isSettPayword;
 
 
 
@@ -108,6 +109,7 @@ public class RechargeActivity extends BaseActivity {
         setContentView(R.layout.activity_recharge);
         ButterKnife.bind(this);
         initHeaderView();
+        whetherHasSetPayWord();
     }
 
     @Override
@@ -148,7 +150,11 @@ public class RechargeActivity extends BaseActivity {
                     ivType.setImageResource(R.mipmap.yezf);
                     payMode = 3;
                     //余额充值押金
-                    showPayDialog();
+                    if(isSettPayword){
+                        showPayDialog();
+                    }else {
+                        Toast.makeText(RechargeActivity.this,"您还未设置支付密码,请前往“设置”中进行设置！",Toast.LENGTH_SHORT).show();
+                    }
 
 
                 }
@@ -394,6 +400,37 @@ public class RechargeActivity extends BaseActivity {
         payThread.start();
 
     }
+
+
+    /**
+     * 检测是否已设置过支付密码
+     */
+    private void whetherHasSetPayWord() {
+        FormBody body = new FormBody.Builder()
+                .add("token", sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.WHETHER_IS_FIRST_SET_PAYWORD)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                if (result.contains("1000")) {
+                    isSettPayword = true;
+                } else if (result.contains("109")) {
+                    isSettPayword = false;
+                }
+            }
+        });
+    }
+
+
 
     @OnClick(R.id.ib_back)
     public void back() {

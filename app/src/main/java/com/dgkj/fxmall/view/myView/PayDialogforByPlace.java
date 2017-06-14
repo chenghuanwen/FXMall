@@ -25,6 +25,7 @@ import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.PayResult;
@@ -60,7 +61,9 @@ public class PayDialogforByPlace extends DialogFragment {
     private int count = 1;
     private LoadProgressDialogUtil progressDialogUtil;
     private Handler handler;
+    private OnUploadPicturesFinishedListener listener;
 
+    private boolean isSettPayword;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @SuppressWarnings("unused")
@@ -91,8 +94,9 @@ public class PayDialogforByPlace extends DialogFragment {
         };
     };
 
-    public PayDialogforByPlace(Context context, int count) {
+    public PayDialogforByPlace(Context context, int count,OnUploadPicturesFinishedListener listener) {
         this.context = context;
+        this.listener = listener;
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
         progressDialogUtil = new LoadProgressDialogUtil(context);
@@ -145,7 +149,11 @@ public class PayDialogforByPlace extends DialogFragment {
                     case R.id.tv_balance_pay:
                         payMode = 3;
                         dialog.dismiss();
-                       showPayDialog();
+                        if(isSettPayword){
+                            showPayDialog();
+                        }else {
+                            Toast.makeText(context,"您还未设置支付密码,请前往“设置”中进行设置！",Toast.LENGTH_SHORT).show();
+                        }
                         break;
                 }
             }
@@ -187,6 +195,7 @@ public class PayDialogforByPlace extends DialogFragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                progressDialogUtil.cancelProgressDialog();
                 LogUtil.i("TAG","支付结果==="+ string);
                /* if(string.contains("1000")){
                     handler.post(new Runnable() {
@@ -212,7 +221,7 @@ public class PayDialogforByPlace extends DialogFragment {
                             String orderInfo = object.getString("orderInfo");
                             aliPay(orderInfo);
                         }else if(payMode==3){//TODO 余额支付返回信息
-
+                            listener.onUploadPicturesFinishedListener();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -335,4 +344,35 @@ public class PayDialogforByPlace extends DialogFragment {
         payThread.start();
 
     }
+
+
+    /**
+     * 检测是否已设置过支付密码
+     */
+    private void whetherHasSetPayWord() {
+        FormBody body = new FormBody.Builder()
+                .add("token", sp.get("token"))
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.WHETHER_IS_FIRST_SET_PAYWORD)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result = response.body().string();
+                if (result.contains("1000")) {
+                    isSettPayword = true;
+                } else if (result.contains("109")) {
+                    isSettPayword = false;
+                }
+            }
+        });
+    }
+
+
 }

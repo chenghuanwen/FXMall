@@ -285,6 +285,7 @@ public class PostageSettingEditActivity extends BaseActivity {
 
     @OnClick(R.id.btn_confirm)
     public void addFinish() {
+        loadProgressDialogUtil.buildProgressDialog();
         List<PostageBean> postlist = new ArrayList<>();
         String name = etModeName.getText().toString();
         String postCount = tvPaostCount.getText().toString();
@@ -372,7 +373,7 @@ public class PostageSettingEditActivity extends BaseActivity {
             requestBuild.url(FXConst.ADD_POSTAGE_MODEL);
         }
         Request request = requestBuild.build();
-        LogUtil.i("TAG","添加模板请求体==="+request.body().toString());
+      //  LogUtil.i("TAG","添加模板请求体==="+request.body().toString());
 
 
         client.newCall(request).enqueue(new Callback() {
@@ -386,8 +387,20 @@ public class PostageSettingEditActivity extends BaseActivity {
                 if (response.body().string().contains("1000")) {
                     toastInUI(PostageSettingEditActivity.this, "已成功新增运费模板");
                     uploadPostageFinish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadProgressDialogUtil.cancelProgressDialog();
+                        }
+                    });
                 } else {
                     toastInUI(PostageSettingEditActivity.this, "新增运费模板失败");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadProgressDialogUtil.cancelProgressDialog();
+                        }
+                    });
                 }
             }
         });

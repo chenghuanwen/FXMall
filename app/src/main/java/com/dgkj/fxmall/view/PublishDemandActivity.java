@@ -27,6 +27,7 @@ import com.dgkj.fxmall.adapter.ViewFlipperAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.constans.Permission;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.PermissionUtil;
@@ -145,12 +146,22 @@ public class PublishDemandActivity extends BaseActivity {
         params.put("address", address);
         params.put("phone", phone);
         params.put("subCategory.id", subClassifyId+ "".trim());
-        List<File> files = new ArrayList<>();
+        final List<File> files = new ArrayList<>();
         for (String image : images) {
             File file = new File(image);
             files.add(file);
         }
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_DEMAND_URL, params, "file", files, null, null,null,null);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_DEMAND_URL, params, "file", files, null, null, null, null, new OnUploadPicturesFinishedListener() {
+            @Override
+            public void onUploadPicturesFinishedListener() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                });
+            }
+        });
     }
 
     @OnClick(R.id.ll_demand_classify)

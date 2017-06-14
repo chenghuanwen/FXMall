@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -133,7 +134,9 @@ public class UserMsgActivity extends BaseActivity {
 
     private void setData() {
         //TODO 获取个人信息填充
-        Glide.with(this).load(icon).error(R.mipmap.sz_tx).into(civUsemsgIcon);
+        if(!TextUtils.isEmpty(icon)){
+            Glide.with(this).load(icon).error(R.mipmap.sz_tx).into(civUsemsgIcon);
+        }
         tvNickname.setText(nick);
         if ("1".equals(gender)) {
             tvGender.setText("男");

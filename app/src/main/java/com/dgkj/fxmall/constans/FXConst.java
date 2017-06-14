@@ -27,7 +27,8 @@ public class FXConst {
     public static final String APP_ID = "";
 
 
-    public static final String FXM_URL_PORT = "http://123.206.17.177/Distribution/";
+   // public static final String FXM_URL_PORT = "http://123.206.17.177/Distribution/";
+    public static final String FXM_URL_PORT = "http://192.168.3.126:9090/Distribution/";
 
 
     public static final String CHECK_INVITE_CODE = FXM_URL_PORT+"userAction_checkCode";
@@ -156,7 +157,7 @@ public class FXConst {
     public static final String NOTIFY_TAKE_GOODS_FOR_UNDELIVER = FXM_URL_PORT+"orderAction_delivery";
     public static final String BUY_PRODUCT_PLACE_URL = FXM_URL_PORT+"storeAction_buyUpper";
     public static final String DELETE_NOTIFY_MSG_URL = FXM_URL_PORT+"messageAction_delete";
-    public static final String GET_HOME_PAGE_ALL_NEWGOODS = FXM_URL_PORT+"commdotyAction_news";
+    public static final String GET_HOME_PAGE_ALL_NEWGOODS = FXM_URL_PORT+"commodityAction_news";
     public static final String GET_PRODUCT_PLACE_PRICE_URL = FXM_URL_PORT+"systemAction_showPrice";
 
     public static final String GET_STORE_SUBCLASSIFY_PRODUCTS = FXM_URL_PORT+"commodityAction_storeSub";

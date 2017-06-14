@@ -42,6 +42,7 @@ import com.dgkj.fxmall.adapter.ViewFlipperAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.constans.Permission;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.PermissionUtil;
@@ -199,7 +200,17 @@ public class ApplyStoreActivity extends BaseActivity {
         List<File> licenses = new ArrayList<>();
         licenses.add(file);
 
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.APPLY_STORE, params, "file", imageList, "url", licenses,null,null);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.APPLY_STORE, params, "file", imageList, "url", licenses, null, null, new OnUploadPicturesFinishedListener() {
+            @Override
+            public void onUploadPicturesFinishedListener() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                });
+            }
+        });
 
     }
 

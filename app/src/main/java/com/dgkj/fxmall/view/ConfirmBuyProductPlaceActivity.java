@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.view.myView.PayDialogforByPlace;
 
 import org.json.JSONException;
@@ -112,7 +113,12 @@ public class ConfirmBuyProductPlaceActivity extends BaseActivity {
     @OnClick(R.id.btn_submit)
     public void goBuy() {
         //TODO 确定支付id
-        PayDialogforByPlace dialog = new PayDialogforByPlace(this, count);
+        PayDialogforByPlace dialog = new PayDialogforByPlace(this, count, new OnUploadPicturesFinishedListener() {
+            @Override
+            public void onUploadPicturesFinishedListener() {
+                finish();
+            }
+        });
         dialog.show(getSupportFragmentManager(), "");
     }
 

@@ -74,6 +74,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     private int totalCount;//所有订单总数量
     private double postageSum;//邮费
     private String phone,man;
+    private int[] orderIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,7 @@ public class ConfirmOrderActivity extends BaseActivity {
 
         orderList = getIntent().getParcelableArrayListExtra("orders");
         LogUtil.i("TAG","订单数==="+orderList.size());
+        orderIds = new int[orderList.size()];
 
         initOrderLayout();
 
@@ -250,14 +252,14 @@ public class ConfirmOrderActivity extends BaseActivity {
     public void submitOrder() {
         //TODO 如何确认订单ID
         //订单提交成功，进行付款
-        PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,1);
+        PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,orderIds[0]);
         dialog.show(getSupportFragmentManager(),"");
     }
 
     /**
      * 提交某家店铺中的订单
      */
-    public void submitOrderForOneStore(List<ShoppingGoodsBean> goods, int position) {
+    public void submitOrderForOneStore(List<ShoppingGoodsBean> goods, final int position) {
         boolean isDeliver = true;
         for (int i = 0; i < goods.size()-1; i++) {
             if(goods.get(i).isDeliverable() && !goods.get(i+1).isDeliverable()){
@@ -321,7 +323,13 @@ public class ConfirmOrderActivity extends BaseActivity {
                 String result = response.body().string();
                 LogUtil.i("TAG", "订单提交结果===" + result);
                 if (result.contains("1000")) {
-
+                    try {
+                        JSONObject object = new JSONObject(result);
+                        int id = object.getInt("data");
+                        orderIds[position] = id;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

@@ -34,6 +34,8 @@ import com.dgkj.fxmall.bean.SuperPostageBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetAllPostageModelFinishedListener;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.PermissionUtil;
 import com.zhy.adapter.abslistview.CommonAdapter;
@@ -123,7 +125,6 @@ public class PublishProductActivity extends BaseActivity {
         initHeaderView();
         getPostage();
         setListener();
-
     }
 
     @Override
@@ -139,6 +140,7 @@ public class PublishProductActivity extends BaseActivity {
             @Override
             public void onGetAllPostageModelFinished(List<PostageBean> postageList) {
                 //将所有运费模板按照id进行分类，相同的id属于同一个大模板
+                LogUtil.i("TAG","运费模板个数==="+postageList.size());
                 superPostageList = new ArrayList<>();
                 Map<PostageBean, List<PostageBean>> map = new HashMap<>();
                 PostageBean post = new PostageBean();
@@ -148,7 +150,7 @@ public class PublishProductActivity extends BaseActivity {
                     for (int i = 0; i < postageList.size(); i++) {
                         int key = postageList.get(i).getId();//获取当条数据的id值
                         if (post.getId() >= 0) {
-                            boolean b = key == post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
+                            boolean b = key!=post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
                             if (b) {
                                 post = new PostageBean();
                             }
@@ -196,8 +198,8 @@ public class PublishProductActivity extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     tvPostageModel.setVisibility(View.VISIBLE);
+                  //  rvPostageSelect.setVisibility(View.VISIBLE);
                     sendType = 0;
-                    //rvPostageSelect.setVisibility(View.VISIBLE);
                 } else {
                     tvPostageModel.setVisibility(View.GONE);
                     rvPostageSelect.setVisibility(View.GONE);
@@ -296,14 +298,24 @@ public class PublishProductActivity extends BaseActivity {
         params.put("commodity.store.user.token", sp.get("token"));
         params.put("commodity.name", titel);
         params.put("commodity.detail", describe);
-        params.put("commodity.subCastegory.id", classifyId + "");
+        params.put("commodity.subCastegory.id", classifyId +"".trim());
         params.put("commodity.send", sendType + "");
         if(sendType==0){//支持线上发货
-            params.put("commodity.freightModel.id", postageId + "");//区分：若没有运费模板
+            params.put("commodity.freightModel.id", postageId +"".trim());//区分：若没有运费模板
         }
         params.put("jsonString", sbType.toString());
 
-        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_PRODUCT_URL, params, "file", mainImages, "commodity.url", detialImages,"commodity.bFile",banners);
+        OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.PUBLISH_PRODUCT_URL, params, "file", mainImages, "commodity.url", detialImages, "commodity.banaFile", banners, new OnUploadPicturesFinishedListener() {
+            @Override
+            public void onUploadPicturesFinishedListener() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                });
+            }
+        });
 
         MyApplication.selectedPictures = null;
     }
@@ -329,6 +341,7 @@ public class PublishProductActivity extends BaseActivity {
     @OnClick(R.id.tv_postage_model)
     public void selectPostage() {
         rvPostageSelect.setVisibility(View.VISIBLE);
+        LogUtil.i("TAG","运费模板======="+postageModelSelectList.size());
         selectAdapter = new CommonAdapter<PostageModelSelectBean>(this, R.layout.item_all_classify, postageModelSelectList) {
             @Override
             protected void convert(ViewHolder viewHolder, PostageModelSelectBean item, int position) {

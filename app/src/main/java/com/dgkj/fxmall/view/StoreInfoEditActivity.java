@@ -31,7 +31,9 @@ import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.OnUploadPicturesFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.utils.OkhttpUploadUtils;
 import com.dgkj.fxmall.utils.PermissionUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -39,7 +41,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,6 +95,7 @@ public class StoreInfoEditActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
         setData();
+        etStoreIntroduce.setSelection(etStoreIntroduce.getText().toString().length());
     }
 
     private void setData() {
@@ -98,7 +103,9 @@ public class StoreInfoEditActivity extends BaseActivity {
         String logo = intent.getStringExtra("logo");
         String banner = intent.getStringExtra("banner");
         String introduce = intent.getStringExtra("introduce");
-        Glide.with(this).load(logo).error(R.mipmap.android_quanzi).into(civUsemsgIcon);
+        if(!TextUtils.isEmpty(logo)){
+            Glide.with(this).load(logo).error(R.mipmap.android_quanzi).into(civUsemsgIcon);
+        }
         etStoreIntroduce.setText(introduce);
         if(!TextUtils.isEmpty(banner)){
             ivBanner.setVisibility(View.VISIBLE);
@@ -160,6 +167,12 @@ public class StoreInfoEditActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body().string().contains("1000")) {
                     toastInUI(StoreInfoEditActivity.this, "店铺信息更新成功！");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
                 }
             }
         });
@@ -232,15 +245,12 @@ public class StoreInfoEditActivity extends BaseActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         //将拍照的图片保存到本地
         file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), System.currentTimeMillis() + ".jpg");
-        LogUtil.i("TAG", "准备拍照==========");
         Uri iconUri = null;
         if (Build.VERSION.SDK_INT >= 24) {
             iconUri = FileProvider.getUriForFile(this, "com.dgkj.fxmall.fileprovider", file);
-            LogUtil.i("TAG", "7.0uri====" + iconUri);
         } else {
             iconUri = Uri.fromFile(file);
         }
-        LogUtil.i("TAG", "准备拍照URI==========");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, iconUri);
         startActivityForResult(intent, 102);
     }
@@ -310,7 +320,8 @@ public class StoreInfoEditActivity extends BaseActivity {
                 bannerFile = new File(path);
                 cursor.close();
             }
-            uploadIcon(bannerFile,"bFile",FXConst.UPLOAD_STORE_BANANER_URL);
+          uploadIcon(bannerFile,"url",FXConst.UPLOAD_STORE_BANANER_URL);
+
             ivBanner.setVisibility(View.VISIBLE);
             Glide.with(this).load(uri).into(ivBanner);
         } else if (resultCode == RESULT_OK && requestCode == 102) {//拍照
@@ -378,6 +389,7 @@ public class StoreInfoEditActivity extends BaseActivity {
      * @param iconFile
      */
     private void uploadIcon(final File iconFile,String key,String url) {
+        LogUtil.i("TAG","banner==="+iconFile+"========"+iconFile.getAbsolutePath());
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         builder.addFormDataPart("user.token", sp.get("token"))
                 .addPart(Headers.of("Content-Disposition", "form-data; name="+key+";filename=" + iconFile.getName()), RequestBody.create(MediaType.parse("image/png"), iconFile));
@@ -395,10 +407,14 @@ public class StoreInfoEditActivity extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","上传banner==="+result);
                 if (result.contains("1000")) {
                     toastInUI(StoreInfoEditActivity.this, "上传成功！");
                     if (iconFile != null) {
                         iconFile.delete();
+                    }
+                    if(bannerFile != null){
+                        bannerFile.delete();
                     }
 
                 } else {

@@ -330,8 +330,8 @@ public class FXMallModel {
                             StoreProductBean product = new StoreProductBean();
                             product.setId(jsonObject.getInt("id"));
                             product.setBrokerage(jsonObject.getInt("brokerage"));
+                            product.setPrice(jsonObject.getDouble("price"));
                             JSONObject commodity = jsonObject.getJSONObject("commodity");
-                            product.setPrice(commodity.getDouble("price"));
                             //TODO 根据佣金计算会员价
                             product.setVipPrice(product.getPrice() - product.getBrokerage() *(1-MyApplication.vipRate/100));
                             product.setColor(jsonObject.getString("content"));
@@ -368,17 +368,6 @@ public class FXMallModel {
         });
 
 
-        for (int i = 0; i < 20; i++) {
-            StoreProductBean productBean = new StoreProductBean();
-            productBean.setUrl("http://www.edu-hb.com/UpLoad/NewsImg/news/201644/2016031919442230.jpg");
-            productBean.setDescribe("粉小萌，高颜值，绝佳味道，美味持久，久到离谱");
-            productBean.setInventory("库存" + 23525);
-            productBean.setPrice(25);
-            productBean.setSales("销量" + 566665465);
-            productBean.setBrokerage(20);
-            list.add(productBean);
-            listener.OnGetStoreProductsFinished(list);
-        }
     }
 
 
@@ -769,6 +758,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","我的运费模板==="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -2268,7 +2258,7 @@ public class FXMallModel {
 
                 String result = response.body().string();
                 LogUtil.i("TAG","首页商品展示信息=="+result);
-                if (result.contains("1000")) {
+                if (result.contains("1000") && result.contains("dataset")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         JSONArray dataset = object.getJSONArray("dataset");

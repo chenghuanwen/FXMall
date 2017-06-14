@@ -48,6 +48,7 @@ public class InTheSaleActivity extends BaseActivity {
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
     private int statu;
+    private int sumCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class InTheSaleActivity extends BaseActivity {
                             TextView tvCount = (TextView) view.findViewById(R.id.tv_classify_count);
                             tvName.setText(classify.getName());
                             tvCount.setText("(" + classify.getCount() + "件)");
+                            sumCount += classify.getCount();
                             tvCount.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -99,6 +101,7 @@ public class InTheSaleActivity extends BaseActivity {
                                 }
                             });
                         }
+                        tvCountAll.setText("(" + sumCount + "件)");
                     }
                 });
 

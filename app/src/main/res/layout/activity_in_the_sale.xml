@@ -77,7 +77,7 @@
             />
         <TextView
             android:id="@+id/tv_count_all"
-            android:text="（共100件商品）"
+            android:text="（共0件商品）"
             style="@style/insale_texview2"
             />
     </LinearLayout>

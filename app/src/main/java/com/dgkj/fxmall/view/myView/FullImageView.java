@@ -91,24 +91,24 @@ public class FullImageView extends ImageView implements OnGlobalLayoutListener{
             if (dw > width && dh < height) {// 如果要铺满控件，且等比缩放，则
                 /** // scale = width * 1.0f / dw;// <1,缩小的*/
                 scale = height * 1.0f / dh;// >1,放大
-                LogUtil.i("TAGcase 1:" ,""+ scale);
+              //  LogUtil.i("TAGcase 1:" ,""+ scale);
             }
             // case 2:图片宽度<控件宽度，高度>控件高度
             if (dw < width && dh > height) {// 如果要完全显示图片，且等比缩放，则
                 /**  // scale = height / dh;// <1,缩小的*/
                 scale = width * 1.0f / dw;// >1,放大
-                LogUtil.i("TAGcase 2:" ,""+ scale);
+            //    LogUtil.i("TAGcase 2:" ,""+ scale);
             }
 
             // case 3:图片宽度>控件宽度，高度>控件高度
             if (dw > width && dh > height) {// 如果要铺满控件，且等比缩放，则
                 scale = Math.max(width * 1.0f / dw, height* 1.0f / dh);// <1,缩小的
-                LogUtil.i("TAGcase 3:" ,""+ scale);
+               // LogUtil.i("TAGcase 3:" ,""+ scale);
             }
             // case 4:图片宽度<控件宽度，高度<控件高度
             if (dw < width && dh < height) {// 如果要完全显示图片，且等比缩放，则
                 scale = Math.max(width * 1.0f / dw, height* 1.0f / dh);// >1,放大的
-                LogUtil.i("TAGcase 4:" ,""+ scale);
+              //  LogUtil.i("TAGcase 4:" ,""+ scale);
             }
             // ------图片与控件的尺寸比较，只有以上4种情况
             // 4. 根据缩放比例进行缩放

@@ -200,11 +200,15 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
      * @param id    商品ID
      */
     private void online(int id, int statu) {
-        FormBody body = new FormBody.Builder()
+        FormBody.Builder builder = new FormBody.Builder()
                 .add("store.user.token", sp.get("token"))
-                .add("ids", id + "")//TODO 此处为数组id
-                .add("status", statu + "")
-                .build();
+                .add("ids", id + "");//TODO 此处为数组id
+        if(statu==0){
+           builder.add("status", 1 + "".trim());
+        }else {
+            builder.add("status", 0 + "".trim());
+        }
+        FormBody body = builder.build();
         final Request request = new Request.Builder()
                 .post(body)
                 .url(FXConst.PRODUCT_ONLINE_OFFLINE)

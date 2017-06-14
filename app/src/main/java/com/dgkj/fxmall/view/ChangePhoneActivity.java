@@ -1,6 +1,5 @@
 package com.dgkj.fxmall.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -42,6 +41,8 @@ public class ChangePhoneActivity extends BaseActivity {
     TextView tvChangeByPaypass;
     @BindView(R.id.activity_change_phone)
     LinearLayout activityChangePhone;
+    @BindView(R.id.tv_no_paypass)
+    TextView tvNoPaypass;
     private View headerview;
     private String bindPhone = "";
     private OkHttpClient client = new OkHttpClient.Builder().build();
@@ -53,7 +54,7 @@ public class ChangePhoneActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
         bindPhone = getIntent().getStringExtra("phone");
-        tvBindPhone.setText("已绑定手机号:"+ bindPhone);
+        tvBindPhone.setText("已绑定手机号:" + bindPhone);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class ChangePhoneActivity extends BaseActivity {
     }
 
     @OnClick(R.id.tv_get_code)
-    public void getCode(){
+    public void getCode() {
         sendCheckCode(bindPhone);
     }
 
@@ -81,7 +82,7 @@ public class ChangePhoneActivity extends BaseActivity {
     public void confirm() {
         //TODO 检测验证码是否正确
         String code = etCheckCode.getText().toString();
-        if(TextUtils.isEmpty(code)){
+        if (TextUtils.isEmpty(code)) {
             toast("请先输入验证码");
             return;
         }
@@ -90,8 +91,8 @@ public class ChangePhoneActivity extends BaseActivity {
 
     private void checkMsgCode(String code) {
         FormBody body = new FormBody.Builder()
-                .add("phone",bindPhone)
-                .add("code",code)
+                .add("phone", bindPhone)
+                .add("code", code)
                 .build();
         Request request = new Request.Builder()
                 .post(body)
@@ -100,19 +101,19 @@ public class ChangePhoneActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(ChangePhoneActivity.this,"网络错误");
+                toastInUI(ChangePhoneActivity.this, "网络错误");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
+                if (result.contains("1000")) {
                     jumpTo(BindNewphoneActivity.class, true);
-                }else if(result.contains("109")){
+                } else if (result.contains("109")) {
                     etCheckCode.setText("");
-                    toastInUI(ChangePhoneActivity.this,"验证码错误，请重新输入！");
-                }else if (result.contains("1005")){
-                    toastInUI(ChangePhoneActivity.this,"今日验证码获取次数已用完，请明天重试！");
+                    toastInUI(ChangePhoneActivity.this, "验证码错误，请重新输入！");
+                } else if (result.contains("1005")) {
+                    toastInUI(ChangePhoneActivity.this, "今日验证码获取次数已用完，请明天重试！");
                 }
             }
         });
@@ -127,11 +128,12 @@ public class ChangePhoneActivity extends BaseActivity {
 
     /**
      * 获取短信验证码
+     *
      * @param phone
      */
     private void sendCheckCode(String phone) {
         FormBody body = new FormBody.Builder()
-                .add("phone",phone)
+                .add("phone", phone)
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.GET_MESSAGE_CHECK_CODE)
@@ -140,22 +142,27 @@ public class ChangePhoneActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(ChangePhoneActivity.this,"网络错误，请稍后重试！");
+                toastInUI(ChangePhoneActivity.this, "网络错误，请稍后重试！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if(result.contains("1000")){
-                    toastInUI(ChangePhoneActivity.this,"验证码已发送至你的手机，请注意查收！");
+                if (result.contains("1000")) {
+                    toastInUI(ChangePhoneActivity.this, "验证码已发送至你的手机，请注意查收！");
                     tvGetCode.setClickable(false);
-                }else if(result.contains("109")){
-                    toastInUI(ChangePhoneActivity.this,"验证码发送失败，请稍后重试！");
+                } else if (result.contains("109")) {
+                    toastInUI(ChangePhoneActivity.this, "验证码发送失败，请稍后重试！");
                     tvGetCode.setClickable(true);
-                }else {
-                    toastInUI(ChangePhoneActivity.this,"今日验证码获取次数已用完，请明天重试！");
+                } else {
+                    toastInUI(ChangePhoneActivity.this, "今日验证码获取次数已用完，请明天重试！");
                 }
             }
         });
+    }
+
+    @OnClick(R.id.tv_no_paypass)
+    public void setPayPassword(){
+        jumpTo(SetPayPasswordActivity.class,false);
     }
 }
