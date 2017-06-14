@@ -44,10 +44,15 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 		LogUtil.d(TAG, "onPayFinish, errCode = " + resp.errCode);
 
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.app_tip);
-			builder.setMessage(getString(R.string.pay_result_callback_msg, String.valueOf(resp.errCode)));
-			builder.show();
+			if(resp.errCode==0){//TODO 成功，向后台查询实际的支付结果，再向用户展示
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle(R.string.app_tip);
+				builder.setMessage(getString(R.string.pay_result_callback_msg, String.valueOf(resp.errCode)));
+				builder.show();
+			}else if(resp.errCode == -1){//支付异常
+
+			}
+
 		}
 	}
 

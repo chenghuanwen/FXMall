@@ -475,6 +475,7 @@ public class UserMsgActivity extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","头像上传结果==="+result);
                 if (result.contains("1000")) {
                     toastInUI(UserMsgActivity.this, "头像上传成功！");
                     try {

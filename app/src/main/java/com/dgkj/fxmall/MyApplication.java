@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.LoggerUtil;
+import com.dgkj.fxmall.utils.SDUtils;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -23,6 +24,7 @@ public class MyApplication extends Application {
     public static String currentProvince = "",currentCity="";
     public static int vipRate,shoppingCount,msgCount,systemMsgCount=5,orderMsgCount=5,warmMsgCount=5,accountMsgCount=5;
     public static double balance;
+    public static String root;//本APP文件夹路径
 
     @Override
     public void onCreate() {
@@ -30,9 +32,11 @@ public class MyApplication extends Application {
         context = getApplicationContext();
         ShareSDK.initSDK(this);
 
-        // 将该app注册到微信
+        // 将该app注册到微信,用于微信支付
         api = WXAPIFactory.createWXAPI(context, null);
         api.registerApp(FXConst.APP_ID);
+
+        createAiGouFolder();
 
         // 初始化Looger工具
       //  LoggerUtil.init(true);
@@ -44,5 +48,15 @@ public class MyApplication extends Application {
 
     public static IWXAPI getApi() {
         return api;
+    }
+
+    /**
+     * 创建哎购文件夹，将本APP所产生的文件全部放在该文件夹下
+     */
+    private void createAiGouFolder() {
+        if(SDUtils.isSDCardEnable()){
+            root = SDUtils.getSDCardPath() + "Doupai";
+            SDUtils.isFolderExists(root);
+        }
     }
 }

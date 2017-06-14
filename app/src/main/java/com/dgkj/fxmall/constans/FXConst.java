@@ -27,7 +27,7 @@ public class FXConst {
     public static final String APP_ID = "";
 
 
-    public static final String FXM_URL_PORT = "http://192.168.3.170:9090/Distribution/";
+    public static final String FXM_URL_PORT = "http://123.206.17.177/Distribution/";
 
 
     public static final String CHECK_INVITE_CODE = FXM_URL_PORT+"userAction_checkCode";

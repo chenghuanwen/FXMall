@@ -229,7 +229,7 @@ public class HomePageFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setData();
+                      //  setData();
                     }
                 });
 

@@ -178,7 +178,8 @@ public class YeWuYuanFragment extends Fragment {
 
     @OnClick(R.id.tv_invite)
     public void invita() {
-        ShareInvitaCodeDialog dialog = new ShareInvitaCodeDialog("FENXIOAMENG1236213");
+        String inviteCode = sp.get("invite");
+        ShareInvitaCodeDialog dialog = new ShareInvitaCodeDialog(inviteCode);
         dialog.show(getFragmentManager(), "");
     }
 

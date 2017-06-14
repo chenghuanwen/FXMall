@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -18,16 +20,24 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alipay.sdk.app.PayTask;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.utils.PayResult;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.OrderDetialActivity;
 import com.dgkj.fxmall.view.RechargeActivity;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,6 +45,8 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static com.dgkj.fxmall.constans.FXConst.SDK_PAY_FLAG;
 
 /**
  * Created by Android004 on 2017/4/5.
@@ -48,6 +60,36 @@ public class PayDialogforByPlace extends DialogFragment {
     private int count = 1;
     private LoadProgressDialogUtil progressDialogUtil;
     private Handler handler;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @SuppressWarnings("unused")
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SDK_PAY_FLAG: {
+                    @SuppressWarnings("unchecked")
+                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                    /**
+                     对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
+                     */
+                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+                    String resultStatus = payResult.getResultStatus();
+                    // 判断resultStatus 为9000则代表支付成功
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
+                        Toast.makeText(context, "支付成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+                        Toast.makeText(context, "支付失败", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        };
+    };
 
     public PayDialogforByPlace(Context context, int count) {
         this.context = context;
@@ -146,7 +188,7 @@ public class PayDialogforByPlace extends DialogFragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
                 LogUtil.i("TAG","支付结果==="+ string);
-                if(string.contains("1000")){
+               /* if(string.contains("1000")){
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -155,7 +197,28 @@ public class PayDialogforByPlace extends DialogFragment {
                             getActivity().finish();
                         }
                     });
+                }*/
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        if(payMode==2){//微信预付订单信息
+                            JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
+                            String mch_id = dataset.getString("mch_id");//商户号
+                            String nonce_str = dataset.getString("nonce_str");//随机字符串
+                            String sign = dataset.getString("sign");//签名
+                            String prepay_id = dataset.getString("prepay_id");//预付订单id
+                            weixinPay(mch_id,prepay_id,nonce_str,sign);//调起微信支付
+                        }else if(payMode==1){//TODO 支付宝支付返回信息
+                            String orderInfo = object.getString("orderInfo");
+                            aliPay(orderInfo);
+                        }else if(payMode==3){//TODO 余额支付返回信息
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+
             }
         });
 
@@ -229,5 +292,47 @@ public class PayDialogforByPlace extends DialogFragment {
                 }
             }
         });
+    }
+
+
+    /**
+     * 调起微信支付
+     */
+    private void weixinPay(String storeId,String prePayId,String random,String sign){
+        PayReq request = new PayReq();
+        request.appId = FXConst.APP_ID;//微信开放平台审核通过的应用APPID
+        request.partnerId = storeId;//微信支付分配的商户号
+        request.prepayId= prePayId;//微信返回的支付交易会话ID
+        request.packageValue = "Sign=WXPay";//暂填写固定值Sign=WXPay
+        request.nonceStr= random;//随机字符串，不长于32位。推荐随机数生成算法
+        request.timeStamp= System.currentTimeMillis()/1000+"".trim();//时间戳(秒)
+        request.sign= sign;//签名
+        MyApplication.getApi().sendReq(request);
+    }
+
+
+    /**
+     * 调起支付宝支付
+     * @param orderInfo
+     */
+    private void aliPay(final String orderInfo) {
+        Runnable payRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask(getActivity());
+                Map<String, String> result = alipay.payV2(orderInfo, true);
+                LogUtil.i("TAG", "支付宝支付结果==="+result.toString());
+
+                Message msg = new Message();
+                msg.what = SDK_PAY_FLAG;
+                msg.obj = result;
+                mHandler.sendMessage(msg);
+            }
+        };
+
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
+
     }
 }

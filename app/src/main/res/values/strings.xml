@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">哎购</string>
+    <string name="app_name">哎购商城</string>
     <string name="title_activity_demand_the_hall">DemandTheHallActivity</string>
     <!-- PayActivity -->
     <string name="pay_by_wx">客户端签名微信支付</string>

@@ -77,8 +77,8 @@
     <QZone
         Id="3"
         SortId="3"
-        AppId="100371282"
-        AppKey="aed9b0303e3ed1e27bae87c33761161d"
+        AppId="1105848355"
+        AppKey="bPYGqyiJ2OEZc2xT"
         Enable="true" />
     
     <!-- 
@@ -120,9 +120,9 @@
 	<QQ
         Id="7"
         SortId="7"
-        AppId="100371282"
-        AppKey="aed9b0303e3ed1e27bae87c33761161d"
-        ShareByAppClient="true"
+        AppId="1105848355"
+        AppKey="bPYGqyiJ2OEZc2xT"
+        ShareByAppClient = "true"
         Enable="true" />
     
     <Facebook

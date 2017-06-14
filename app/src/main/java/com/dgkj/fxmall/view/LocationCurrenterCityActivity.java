@@ -246,10 +246,10 @@ public class LocationCurrenterCityActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
                 if (result.contains("1000")) {
-                    toastInUI(LocationCurrenterCityActivity.this, "昵称修改成功！");
+                    toastInUI(LocationCurrenterCityActivity.this, "当前位置修改成功！");
                     finish();
                 } else {
-                    toastInUI(LocationCurrenterCityActivity.this, "昵称修改失败！");
+                    toastInUI(LocationCurrenterCityActivity.this, "当前位置修改失败！");
                 }
             }
         });

@@ -613,7 +613,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-               // LogUtil.i("TAG", "收货地址==" + result);
+                // LogUtil.i("TAG", "收货地址==" + result);
                 if (result.contains("1000")) {
                     List<TakeGoodsAddressBean> list = new ArrayList<>();
                     try {
@@ -2213,17 +2213,17 @@ public class FXMallModel {
 
                             product.setAddress(address.substring(0, address.indexOf("市")));
 
-                           getPostage(product.getId(), new OnGetPostageFinishedListener() {
-                               @Override
-                               public void onGetPostageFinishedListener(double postage) {
-                                   if(postage==0){
-                                       product.setExpress("包邮");
-                                   }else {
-                                       product.setExpress("邮费:¥"+postage);
-                                   }
-                                   list.add(product);
-                               }
-                           });
+                            getPostage(product.getId(), new OnGetPostageFinishedListener() {
+                                @Override
+                                public void onGetPostageFinishedListener(double postage) {
+                                    if(postage==0){
+                                        product.setExpress("包邮");
+                                    }else {
+                                        product.setExpress("邮费:¥"+postage);
+                                    }
+                                    list.add(product);
+                                }
+                            });
 
                         }
 
@@ -2435,7 +2435,7 @@ public class FXMallModel {
         FormBody body = builder.build();
         Request.Builder post = new Request.Builder()
                 .post(body);
-       post.url(FXConst.GET_HOME_PAGE_ALL_NEWGOODS);
+        post.url(FXConst.GET_HOME_PAGE_ALL_NEWGOODS);
         Request request = post.build();
         client.newCall(request).enqueue(new Callback() {
             @Override

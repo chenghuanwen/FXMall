@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity {
 
         fragmentManager = getSupportFragmentManager();
         userId = sp.get("userId");
-
+        LogUtil.i("TAG","userId==="+userId);
         initDisplay();
         initFooter();
 

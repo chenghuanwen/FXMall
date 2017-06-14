@@ -1,7 +1,10 @@
 package com.dgkj.fxmall.view;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,17 +15,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alipay.sdk.app.PayTask;
+import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.listener.OnSelectAccountFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.utils.PayResult;
 import com.dgkj.fxmall.view.myView.PasswordInputView;
 import com.dgkj.fxmall.view.myView.PasswordInputView2;
 import com.dgkj.fxmall.view.myView.WithdrawalAccountSelectDialog;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +44,8 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static com.dgkj.fxmall.constans.FXConst.SDK_PAY_FLAG;
 
 public class RechargeActivity extends BaseActivity {
 
@@ -56,6 +69,39 @@ public class RechargeActivity extends BaseActivity {
     private AlertDialog pw;
     private OkHttpClient client = new OkHttpClient.Builder().build();
 
+
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @SuppressWarnings("unused")
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SDK_PAY_FLAG: {
+                    @SuppressWarnings("unchecked")
+                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                    /**
+                     对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
+                     */
+                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+                    String resultStatus = payResult.getResultStatus();
+                    // 判断resultStatus 为9000则代表支付成功
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
+                        Toast.makeText(RechargeActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+                        Toast.makeText(RechargeActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        };
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +121,7 @@ public class RechargeActivity extends BaseActivity {
         from = getIntent().getStringExtra("from");
         if("ywy".equals(from)){
             etChargeSum.setText("¥"+200.00);
+            etChargeSum.setCursorVisible(false);
         }
     }
 
@@ -119,10 +166,12 @@ public class RechargeActivity extends BaseActivity {
         }
 
 
-        if("mine".equals(from)){
+        if("mine".equals(from)){//账户充值
+            //TODO 缺少支付模式 status字段待确定
             FormBody body = new FormBody.Builder()
                     .add("token", sp.get("token"))
                     .add("balance", money)
+                    .add("status",payMode+"".trim())
                     .build();
             Request request = new Request.Builder()
                     .url(FXConst.USER_RECHARGE_URL)
@@ -136,8 +185,25 @@ public class RechargeActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    if (response.body().string().contains("1000")) {
-                        toastInUI(RechargeActivity.this, "充值成功");
+                    String string = response.body().string();
+                    if (string.contains("1000")) {
+                        try {
+                            JSONObject object = new JSONObject(string);
+                            if(payMode==2){//微信预付订单信息
+                                JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
+                                String mch_id = dataset.getString("mch_id");//商户号
+                                String nonce_str = dataset.getString("nonce_str");//随机字符串
+                                String sign = dataset.getString("sign");//签名
+                                String prepay_id = dataset.getString("prepay_id");//预付订单id
+                                weixinPay(mch_id,prepay_id,nonce_str,sign);//调起微信支付
+                            }else if(payMode==1){//TODO 支付宝支付返回信息
+                                String orderInfo = object.getString("orderInfo");
+                                aliPay(orderInfo);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                     //   toastInUI(RechargeActivity.this, "充值成功");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -151,7 +217,7 @@ public class RechargeActivity extends BaseActivity {
             });
         }else {
            //TODO 支付宝、微信充值押金
-
+            toPay(null);
         }
 
     }
@@ -208,8 +274,11 @@ public class RechargeActivity extends BaseActivity {
 
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("token",sp.get("token"))
-                .add("status",payMode+"".trim())
-                .add("payPassword",password);
+                .add("status",payMode+"".trim());
+        if(password != null){
+            builder.add("payPassword",password);
+        }
+
         FormBody formBody = builder.build();
         Request request = new Request.Builder()
                 .post(formBody)
@@ -226,7 +295,25 @@ public class RechargeActivity extends BaseActivity {
                 String string = response.body().string();
                 LogUtil.i("TAG","支付结果==="+ string);
                 if(string.contains("1000")){
-                    toastInUI(RechargeActivity.this,"押金充值成功！");
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        if(payMode==2){//微信预付订单信息
+                            JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
+                            String mch_id = dataset.getString("mch_id");//商户号
+                            String nonce_str = dataset.getString("nonce_str");//随机字符串
+                            String sign = dataset.getString("sign");//签名
+                            String prepay_id = dataset.getString("prepay_id");//预付订单id
+                            weixinPay(mch_id,prepay_id,nonce_str,sign);//调起微信支付
+                        }else if(payMode==1){//TODO 支付宝支付返回信息
+                            String orderInfo = object.getString("orderInfo");
+                            aliPay(orderInfo);
+                        }else if(payMode==3){//TODO 余额支付返回信息
+                            toastInUI(RechargeActivity.this,"押金充值成功！");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -264,6 +351,48 @@ public class RechargeActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+
+    /**
+     * 调起微信支付
+     */
+    private void weixinPay(String storeId,String prePayId,String random,String sign){
+        PayReq request = new PayReq();
+        request.appId = FXConst.APP_ID;//微信开放平台审核通过的应用APPID
+        request.partnerId = storeId;//微信支付分配的商户号
+        request.prepayId= prePayId;//微信返回的支付交易会话ID
+        request.packageValue = "Sign=WXPay";//暂填写固定值Sign=WXPay
+        request.nonceStr= random;//随机字符串，不长于32位。推荐随机数生成算法
+        request.timeStamp= System.currentTimeMillis()/1000+"".trim();//时间戳(秒)
+        request.sign= sign;//签名
+        MyApplication.getApi().sendReq(request);
+    }
+
+
+    /**
+     * 调起支付宝支付
+     * @param orderInfo
+     */
+    private void aliPay(final String orderInfo) {
+        Runnable payRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask(RechargeActivity.this);
+                Map<String, String> result = alipay.payV2(orderInfo, true);
+                LogUtil.i("TAG", "支付宝支付结果==="+result.toString());
+
+                Message msg = new Message();
+                msg.what = SDK_PAY_FLAG;
+                msg.obj = result;
+                mHandler.sendMessage(msg);
+            }
+        };
+
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
+
     }
 
     @OnClick(R.id.ib_back)

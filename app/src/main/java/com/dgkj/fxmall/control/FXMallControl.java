@@ -57,9 +57,6 @@ public class FXMallControl {
         FXMallModel.authV2(context,authInfo,mHandler);
     }
 
-    /**
-     * 获取需求大厅数据
-     */
     public void getDemandDatas(OnGetDemandDatasFinishedListener listener){
         FXMallModel.getDemandDatas(listener);
     }
@@ -71,7 +68,6 @@ public class FXMallControl {
     public void getStoreProducts(final BaseActivity context, String token, OkHttpClient client, String orderby, int index, int size, int status, OnGetStoreProductsFinishedListener listener){
         FXMallModel.getStoreProducts(context,token,client,orderby,index,size,status,listener);
     }
-
     public void getShopingCarData(OnGetShoppingCarDataListener listener){
         FXMallModel.getShoppingCarData(listener);
     }

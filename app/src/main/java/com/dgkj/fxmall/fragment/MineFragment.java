@@ -186,15 +186,18 @@ public class MineFragment extends Fragment {
                     balance = info.getDouble("balance");
                     MyApplication.balance = balance;
                     LogUtil.i("TAG", "用户信息===" + result + "账户余额==" + balance);
-                    iconUrl = info.getString("headPortrait");
+                    if(info.has("headPortrait")){
+                        iconUrl = info.getString("headPortrait");
+                    }
                     invitationCode = info.getString("invitationCode");
+                    sp.put("invite",invitationCode);
                     phone = info.getString("phone");
                     gender = info.getInt("sex") + "";
                     nickname = info.getString("nickname");
                     realname = info.getString("realname");
                     location = info.getString("location");
                     double cashPledge = info.getDouble("cashPledge");
-                    if(cashPledge > 0){
+                    if(cashPledge > 0){//已充值押金
                         sp.put("ywy","true");//已成为业务员
                     }
                     setData();

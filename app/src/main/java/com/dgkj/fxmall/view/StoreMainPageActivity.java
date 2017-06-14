@@ -26,6 +26,7 @@ import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
+import com.dgkj.fxmall.view.myView.ShareStoreInfoDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -255,7 +256,13 @@ public class StoreMainPageActivity extends BaseActivity {
     @OnClick(R.id.tv_store_share)
     public void share() {
         //TODO 店铺分享
-        ShareInvitaCodeDialog dialog = new ShareInvitaCodeDialog("FENXIOAMENG1236213");
+        ShareStoreInfoDialog dialog;
+        List<String> mainUrl = store.getMainUrls();
+        if(mainUrl.size()>0){
+            dialog = new ShareStoreInfoDialog(store.getName(), mainUrl.get(0));
+        }else {
+            dialog = new ShareStoreInfoDialog(store.getName(), store.getIconUrl());
+        }
         dialog.show(getSupportFragmentManager(), "");
     }
 

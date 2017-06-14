@@ -50,7 +50,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
-                <data android:scheme="tencent100371282" />
+                <data android:scheme="tencent1105848355" />
 
                 <action android:name="android.intent.action.VIEW" />
 
@@ -86,6 +86,9 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind" />
+
+
+
         <activity
             android:name=".view.PictrueChooserActivity"
             android:theme="@style/transparentTheme" />

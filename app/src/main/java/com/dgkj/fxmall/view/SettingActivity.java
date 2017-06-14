@@ -15,6 +15,7 @@ import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.utils.DataCleanManager;
+import com.dgkj.fxmall.utils.UpdateManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -62,6 +63,7 @@ public class SettingActivity extends BaseActivity {
     private View headerview;
     private String icon = "", nick = "", inviteCode = "", gender = "", realname = "", phone = "", location = "";
     private Handler handler = new Handler();
+    private UpdateManager mUpdateManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +151,11 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.ll_clean_cache)
     public void cleanCache() {
-        tvCleanFinish.setVisibility(View.VISIBLE);
+
+        mUpdateManager = new UpdateManager(this);
+        mUpdateManager.checkUpdateInfo();
+
+      /*  tvCleanFinish.setVisibility(View.VISIBLE);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -157,7 +163,7 @@ public class SettingActivity extends BaseActivity {
                 tvCleanFinish.setVisibility(View.INVISIBLE);
                 tvCacheSize.setText("0M");
             }
-        }, 3000);
+        }, 3000);*/
     }
 
     /**

@@ -3,6 +3,8 @@ package com.dgkj.fxmall.view.myView;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -16,12 +18,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.tencent.qzone.QZone;
@@ -37,6 +41,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 public class ShareInvitaCodeDialog extends DialogFragment implements View.OnClickListener{
     private String invitaCode;
     private SpannableString sp;
+    private Bitmap bitmap;
 
     public ShareInvitaCodeDialog(String invitaCode) {
         this.invitaCode = invitaCode;
@@ -46,6 +51,7 @@ public class ShareInvitaCodeDialog extends DialogFragment implements View.OnClic
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.icon1024);
 
         // 使用不带theme的构造器，获得的dialog边框距离屏幕仍有几毫米的缝隙。
         // Dialog dialog = new Dialog(getActivity());
@@ -83,11 +89,12 @@ public class ShareInvitaCodeDialog extends DialogFragment implements View.OnClic
         switch (v.getId()){
             case R.id.tv_share_QQ:
                 dismiss();
-                QQ.ShareParams spQ = new QQ.ShareParams();
-                spQ.setShareType(Platform.SHARE_TEXT);
-                spQ.setTitle("【来自分销商城的邀请码】");
-                spQ.setText("分销商城邀请码："+sp.toString()+"，马上下载分销商城app使用吧，购物优惠多多哦！");
-                Platform qq  = ShareSDK.getPlatform(QQ.NAME);
+                QQ.ShareParams  spQ = new QQ.ShareParams();
+                spQ.setTitle("【来自哎购商城的邀请码】");
+                spQ.setTitleUrl("http://pan.baidu.com/s/1i5Md6jb");
+                spQ.setSite("哎购商城");
+                spQ.setText("哎购商城"+sp.toString()+"，马上下载哎购商城app使用吧，购物优惠多多哦！");
+                Platform qq = ShareSDK.getPlatform(QQ.NAME);
                 qq.setPlatformActionListener(new ShareListener());
                 qq.share(spQ);
                 break;
@@ -95,8 +102,8 @@ public class ShareInvitaCodeDialog extends DialogFragment implements View.OnClic
                 dismiss();
                 Wechat.ShareParams spW = new Wechat.ShareParams();
                 spW.setShareType(Platform.SHARE_TEXT);
-                spW.setTitle("【来自分销商城的邀请码】");
-                spW.setText("分销商城邀请码："+sp.toString()+"，马上下载分销商城app使用吧，购物优惠多多哦！");
+                spW.setTitle("【来自哎购商城的邀请码】");
+                spW.setText("哎购商城"+sp.toString()+"，马上下载哎购商城app使用吧，购物优惠多多哦！");
                 Platform weixin = ShareSDK.getPlatform(Wechat.NAME);
                 weixin.setPlatformActionListener(new ShareListener());
                 weixin.share(spW);
@@ -104,20 +111,40 @@ public class ShareInvitaCodeDialog extends DialogFragment implements View.OnClic
             case R.id.tv_share_qzone:
                dismiss();
                 QZone.ShareParams spZ = new QZone.ShareParams();
-                spZ.setShareType(Platform.SHARE_TEXT);
-                //生成分享口令
-                spZ.setTitle("【来自分销商城的邀请码】");
-                spZ.setText("分销商城邀请码："+sp.toString()+"，马上下载分销商城app使用吧，购物优惠多多哦！");
-                Platform qzone = ShareSDK.getPlatform(QZone.NAME);
-                qzone.setPlatformActionListener(new ShareListener());
+                LogUtil.i("TAG","QQ空间分享1111111111");
+                spZ.setTitle("【来自哎购商城的邀请码】");
+                spZ.setTitleUrl("http://pan.baidu.com/s/1i5Md6jb"); // 标题的超链接
+                LogUtil.i("TAG","QQ空间分享2222222");
+                spZ.setText("哎购商城"+sp.toString()+"，马上下载哎购商城app使用吧，购物优惠多多哦！");
+                //   spZ.setImageUrl("http://www.someserver.com/测试图片网络地址.jpg");
+                spZ.setSite("哎购商城");
+               // spZ.setSiteUrl("发布分享网站的地址");
+                spZ.setImageData(bitmap);
+
+                Platform qzone = ShareSDK.getPlatform (QZone.NAME);
+              // 设置分享事件回调（注：回调放在不能保证在主线程调用，不可以在里面直接处理UI操作）
+                qzone.setPlatformActionListener (new PlatformActionListener() {
+                    public void onError(Platform arg0, int arg1, Throwable arg2) {
+                        LogUtil.i("TAG","QQ空间分享失败=="+arg2.toString());
+                        //失败的回调，arg:平台对象，arg1:表示当前的动作，arg2:异常信息
+                    }
+                    public void onComplete(Platform arg0, int arg1, HashMap arg2) {
+                        //分享成功的回调
+                    }
+                    public void onCancel(Platform arg0, int arg1) {
+                        //取消分享的回调
+                    }
+                });
+             // 执行图文分享
                 qzone.share(spZ);
                 break;
             case R.id.tv_share_friends:
                 dismiss();
                 WechatMoments.ShareParams spF = new WechatMoments.ShareParams();
                 spF.setShareType(Platform.SHARE_TEXT);
-                spF.setTitle("【来自分销商城的邀请码】");
-                spF.setText("分销商城邀请码："+sp.toString()+"，马上下载分销商城app使用吧，购物优惠多多哦！");
+                spF.setTitle("【来自哎购商城的邀请码】");
+                spF.setText("哎购商城"+sp.toString()+"，马上下载哎购商城app使用吧，购物优惠多多哦！");
+                spF.setImageData(bitmap);
                 Platform friends = ShareSDK.getPlatform(WechatMoments.NAME);
                 friends.setPlatformActionListener(new ShareListener());
                 friends.share(spF);
@@ -126,8 +153,9 @@ public class ShareInvitaCodeDialog extends DialogFragment implements View.OnClic
                 dismiss();
                 SinaWeibo.ShareParams spS = new SinaWeibo.ShareParams();
                 spS.setShareType(Platform.SHARE_TEXT);
-                spS.setTitle("【来自分销商城的邀请码】");
-                spS.setText("分销商城邀请码："+sp.toString()+"，马上下载分销商城app使用吧，购物优惠多多哦！");
+                spS.setTitle("【来自哎购商城的邀请码】");
+                spS.setText("哎购商城"+sp.toString()+"，马上下载哎购商城app使用吧，购物优惠多多哦！");
+                spS.setImageData(bitmap);
                 Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
                 weibo.setPlatformActionListener(new ShareListener());
                 weibo.share(spS);
@@ -147,6 +175,7 @@ public class ShareInvitaCodeDialog extends DialogFragment implements View.OnClic
 
       @Override
       public void onError(Platform platform, int i, Throwable throwable) {
+          LogUtil.i("TAG","分享错误===="+throwable.toString());
           dismiss();
       }
 
