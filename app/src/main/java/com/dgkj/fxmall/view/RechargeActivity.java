@@ -2,6 +2,7 @@ package com.dgkj.fxmall.view;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -155,8 +156,6 @@ public class RechargeActivity extends BaseActivity {
                     }else {
                         Toast.makeText(RechargeActivity.this,"您还未设置支付密码,请前往“设置”中进行设置！",Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
                 tvSelectAccount.setText(result);
             }
@@ -315,6 +314,9 @@ public class RechargeActivity extends BaseActivity {
                             aliPay(orderInfo);
                         }else if(payMode==3){//TODO 余额支付返回信息
                             toastInUI(RechargeActivity.this,"押金充值成功！");
+                            sp.put("ywy","true");
+                            sendBroadcast(new Intent("toM"));
+                            finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

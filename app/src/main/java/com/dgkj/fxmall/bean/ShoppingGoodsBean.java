@@ -27,7 +27,8 @@ public class ShoppingGoodsBean implements Parcelable {
     private double totalScore;
     private StoreBean storeBean;
     private String color;
-    private double vipPrice, postage;
+    private double vipPrice;
+    private String postage;
     private String storeName;
     private boolean isDeliverable;//是否支持线上发货
 
@@ -69,7 +70,8 @@ public class ShoppingGoodsBean implements Parcelable {
         storeBean = source.readParcelable(StoreBean.class.getClassLoader());
         color = source.readString();
         vipPrice = source.readDouble();
-        postage = source.readDouble();
+        postage = source.readString();
+        storeName = source.readString();
         isDeliverable = source.readInt()==0?true:false;
     }
 
@@ -103,7 +105,8 @@ public class ShoppingGoodsBean implements Parcelable {
         dest.writeParcelable(storeBean, flags);
         dest.writeString(color);
         dest.writeDouble(vipPrice);
-        dest.writeDouble(postage);
+        dest.writeString(postage);
+        dest.writeString(storeName);
         dest.writeInt(isDeliverable?0:1);
     }
 
@@ -128,11 +131,11 @@ public class ShoppingGoodsBean implements Parcelable {
         this.vipPrice = vipPrice;
     }
 
-    public double getPostage() {
+    public String getPostage() {
         return postage;
     }
 
-    public void setPostage(double postage) {
+    public void setPostage(String postage) {
         this.postage = postage;
     }
 

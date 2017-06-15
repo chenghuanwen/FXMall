@@ -50,7 +50,7 @@ public class LoadProgressDialogUtil {
         progressDialog.setCancelable(true);
         progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         TextView msg = (TextView) progressDialog.findViewById(R.id.id_tv_loadingmsg);
-        msg.setText("卖力加载中");
+        msg.setText("卖力进行中");
         progressDialog.show();
     }
 

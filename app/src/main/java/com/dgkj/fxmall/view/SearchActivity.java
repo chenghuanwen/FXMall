@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
@@ -65,6 +66,7 @@ public class SearchActivity extends BaseActivity {
     private int index = 1;
     private OkHttpClient client;
     private FXMallControl control = new FXMallControl();
+    private int hotCounts;
 
 
     @Override
@@ -87,12 +89,15 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void getHotWords(int index, int searchType) {
+        loadProgressDialogUtil.buildProgressDialog();
       control.getSearchHotwords(index, searchType, new OnGetSearchHotWordsFinishedListener() {
           @Override
           public void onGetSearchHotWordsFinishedListener(final List<String> words) {
+              loadProgressDialogUtil.cancelProgressDialog();
               runOnUiThread(new Runnable() {
                   @Override
                   public void run() {
+                      hotCounts = words.size();
                       adapter.addAll(words,true);
                   }
               });
@@ -177,8 +182,12 @@ public class SearchActivity extends BaseActivity {
 
     @OnClick(R.id.tv_change_batch)
     public void changeBatch() {
-        index++;
-        getHotWords(index, searchType);
+        if(hotCounts < 10){
+            Toast.makeText(this,"没有更多了",Toast.LENGTH_SHORT).show();
+        }else {
+            index++;
+            getHotWords(index, searchType);
+        }
     }
 
     @OnClick(R.id.tv_cancle_search)

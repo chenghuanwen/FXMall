@@ -22,6 +22,7 @@ import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class SearchContentActivity extends BaseActivity {
     private SearchStoreAdapter storeAdapter;
     private String searchType = "", searchTitel = "";
     private int index = 1;
-    private String orderBy = "createTime ";
+    private String orderBy = "createTime";
     private String from = "";
     private int storeId = 0;
     private OkHttpClient client = new OkHttpClient.Builder().build();
@@ -83,6 +84,7 @@ public class SearchContentActivity extends BaseActivity {
 
     private void getSearchData() {
         if ("search".equals(from) && "商品".equals(searchType)) {
+            LogUtil.i("TAG","搜索关键字==="+searchTitel);
             control.getSearchProducts(this, searchTitel,orderBy,null,null,null,null,index, 15, 0,client, new OnSearchProductsFinishedListener() {
                 @Override
                 public void onSearchProductsFinished(final List<MainProductBean> products) {

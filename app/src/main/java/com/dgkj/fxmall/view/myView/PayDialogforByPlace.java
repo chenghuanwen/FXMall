@@ -107,6 +107,9 @@ public class PayDialogforByPlace extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        whetherHasSetPayWord();
+
         // 使用不带theme的构造器，获得的dialog边框距离屏幕仍有几毫米的缝隙。
         // Dialog dialog = new Dialog(getActivity());
         final Dialog dialog = new Dialog(getActivity(), R.style.ColorAndSizeSelectDialog);

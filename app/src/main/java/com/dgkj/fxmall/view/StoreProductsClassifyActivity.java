@@ -32,6 +32,7 @@ public class StoreProductsClassifyActivity extends BaseActivity {
     private View headerview;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
+    private int storeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class StoreProductsClassifyActivity extends BaseActivity {
         setContentView(R.layout.activity_store_products_classify);
         ButterKnife.bind(this);
         initHeaderView();
+        storeId = getIntent().getIntExtra("storeId",-1);
         refresh();
     }
 
@@ -48,7 +50,8 @@ public class StoreProductsClassifyActivity extends BaseActivity {
     }
 
     private void refresh() {
-        control.getStoreProductClassify(this, sp.get("token"), 0, client, new OnGetStoreProductClassifyFinishedListener() {
+        loadProgressDialogUtil.buildProgressDialog();
+        control.getStoreProductClassify(this, storeId, 0, client, new OnGetStoreProductClassifyFinishedListener() {
             @Override
             public void onGetStoreProductClassifyFinished(List<StoreProductClassifyBean> classifyList) {
                 for (int i = 0; i < classifyList.size(); i++) {

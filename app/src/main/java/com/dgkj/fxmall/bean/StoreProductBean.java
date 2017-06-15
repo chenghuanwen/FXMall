@@ -15,7 +15,15 @@ public class StoreProductBean implements Serializable{
     private String color;
     private double price;
     private double vipPrice;
+    private boolean isDeliverable;//是否支持线上发货
 
+    public boolean isDeliverable() {
+        return isDeliverable;
+    }
+
+    public void setDeliverable(boolean deliverable) {
+        isDeliverable = deliverable;
+    }
 
     public double getPrice() {
         return price;

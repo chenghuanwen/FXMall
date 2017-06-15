@@ -80,7 +80,7 @@ public class ProductsMallFragment extends Fragment {
     private FXMallControl control = new FXMallControl();
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private HomePageRecommendBean liangpin, youzhi, youxuan, xinpin;
-  //  private List<ProductClassifyBean> subClassifys = new ArrayList<>();
+    private List<ProductClassifyBean> subClassifys = new ArrayList<>();
     private List<DemandMallClassifyBean> superClassifys = new ArrayList<>();
     private List<NiceStoreBean> recommendStores = new ArrayList<>();
     private LoadProgressDialogUtil progressDialogUtil;
@@ -105,15 +105,15 @@ public class ProductsMallFragment extends Fragment {
     private void initClassifyRecommendData(View view) {
         gv = (GridView) view.findViewById(R.id.gv_classify_recommend);
 
-        //测试
+     /*   //测试
         List<ProductClassifyBean> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             ProductClassifyBean classify = new ProductClassifyBean();
             classify.setTaxon("坚果");
             classify.setUrl("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
             list.add(classify);
-        }
-        gridViewAdapter = new ProductClassifyGridViewAdapter(getContext(), R.layout.item_productmall_classify, list, "product");
+        }*/
+        gridViewAdapter = new ProductClassifyGridViewAdapter(getContext(), R.layout.item_productmall_classify, subClassifys, "product");
         gv.setAdapter(gridViewAdapter);
 
         control.getProductMallAllSubclassify(client, new OnGetSubclassifyFinishedListener() {
@@ -154,7 +154,7 @@ public class ProductsMallFragment extends Fragment {
     }
 
     private void initClassifyData() {
-        List<DemandMallClassifyBean> classifyBeens = new ArrayList<>();
+     /*   List<DemandMallClassifyBean> classifyBeens = new ArrayList<>();
         classifyBeens.add(new DemandMallClassifyBean("美食", R.mipmap.cpdt_ms));
         classifyBeens.add(new DemandMallClassifyBean("母婴", R.mipmap.cpdt_my));
         classifyBeens.add(new DemandMallClassifyBean("美妆", R.mipmap.cpdt_mz));
@@ -165,7 +165,9 @@ public class ProductsMallFragment extends Fragment {
         classifyBeens.add(new DemandMallClassifyBean("电器", R.mipmap.cpdt_dq));
         classifyBeens.add(new DemandMallClassifyBean("汽车", R.mipmap.cpdt_qc));
         classifyBeens.add(new DemandMallClassifyBean("更多", R.mipmap.cpdt_gd));
+*/
 
+        List<DemandMallClassifyBean> classifyBeens = new ArrayList<>();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5);
         gridLayoutManager.setSmoothScrollbarEnabled(true);
         gridLayoutManager.setAutoMeasureEnabled(true);
@@ -179,7 +181,7 @@ public class ProductsMallFragment extends Fragment {
     }
 
 
-    //TEST
+   /* //TEST
     @OnClick({R.id.nice1, R.id.nice2, R.id.nice3, R.id.nice4})
     public void niceRecommend() {
         //TODO 根据推荐是是商品还是商店进行不同的跳转
@@ -232,9 +234,8 @@ public class ProductsMallFragment extends Fragment {
         Intent intent = new Intent(getContext(),ProductDetialActivity.class);
         intent.putExtra("product", productBean);
         getContext().startActivity(intent);
-    }
+    }*/
 
-/*
 
     @OnClick(R.id.nice1)
     public void nice1(){
@@ -249,12 +250,11 @@ public class ProductsMallFragment extends Fragment {
     public void nice4(){
         getProductDetial(xinpin.getLink());
     }
-*/
 
     @OnClick(R.id.nice2)
     public void nice2(){
-      //  toStoreMain(youzhi.getLink());
-        //TEST
+      toStoreMain(youzhi.getLink());
+       /* //TEST
         StoreBean storeBean = new StoreBean();
         storeBean.setName("粉小萌");
         storeBean.setAdress("广东省深圳市龙岗区");
@@ -278,7 +278,7 @@ public class ProductsMallFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable("store", storeBean);
         intent.putExtras(bundle);
-        getContext().startActivity(intent);
+        getContext().startActivity(intent);*/
     }
 
 

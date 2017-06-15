@@ -52,7 +52,7 @@ public class ApplyStoreAllClassifyActivity extends BaseActivity {
                         classifyBeanList.get(i).setSelected(false);
                     } else {
                         classifyBeanList.get(i).setSelected(true);
-                        selectPosition = position;
+                        selectPosition = classifyBeanList.get(position).getId();
                         selectType = classifyBeanList.get(position).getType();
                     }
                 }

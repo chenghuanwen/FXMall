@@ -39,6 +39,7 @@ import com.dgkj.fxmall.listener.OnGetStoreDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.BannerImageLoader;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.NewGoodsActivity;
 import com.dgkj.fxmall.view.ProductDetialActivity;
@@ -148,7 +149,7 @@ public class HomePageFragment extends Fragment {
 
         initBanner();
         //TEST
-        testRecyclerview();
+      //  testRecyclerview();
         //获取所有推荐
         getRecommendData();
         //获取首页展示商品
@@ -166,13 +167,17 @@ public class HomePageFragment extends Fragment {
             control.getSearchHotwords(1, 0, new OnGetSearchHotWordsFinishedListener() {
                 @Override
                 public void onGetSearchHotWordsFinishedListener(List<String> words) {
-                    control.getSearchProducts(getActivity(), words.get(0),"createTime",null,null,null,null,index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
+                    LogUtil.i("TAG","搜索热词==="+words.get(0));
+
+                    //TODO 搜索热词无数据
+                    control.getSearchProducts(getActivity(), "a","createTime",null,null,null,null,index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
                         @Override
                         public void onSearchProductsFinished(final List<MainProductBean> products) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     //TODO 写一个通用的商品实体类
+                                    LogUtil.i("TAG","首页商品展示个数==="+products.size());
                                     productDisplayAdapter.addAll(products,true);
                                     progressDialogUtil.cancelProgressDialog();
                                 }
@@ -188,6 +193,7 @@ public class HomePageFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            progressDialogUtil.cancelProgressDialog();
                             productDisplayAdapter.addAll(mainProducts,true);
                         }
                     });

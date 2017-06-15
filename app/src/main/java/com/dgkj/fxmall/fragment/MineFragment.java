@@ -360,9 +360,19 @@ public class MineFragment extends Fragment {
 
     @OnClick(R.id.rl_withdrawal)
     public void withdawal() {
-        Intent intent = new Intent(getContext(),HomePageActivity.class);
-        intent.putExtra("from","yw");
-        getContext().startActivity(intent);
+        if("true".equals(sp.get("ywy"))){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.show(getContext(), getActivity(), "您已经是业务员了");
+                    getContext().sendBroadcast(new Intent("toYW"));
+                }
+            });
+        }else {
+            Intent intent = new Intent(getContext(),HomePageActivity.class);
+            intent.putExtra("from","yw");
+            getContext().startActivity(intent);
+        }
        // getContext().startActivity(new Intent(getContext(), WithdrawalActivity.class));
     }
 

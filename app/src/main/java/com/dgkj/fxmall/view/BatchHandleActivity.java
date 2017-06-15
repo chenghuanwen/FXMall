@@ -197,8 +197,12 @@ public class BatchHandleActivity extends BaseActivity {
      */
     private void online(int statu) {
         FormBody.Builder builder = new FormBody.Builder()
-                .add("store.user.token", sp.get("token"))
-                .add("status", statu + "");
+                .add("store.user.token", sp.get("token"));
+        if(statu==0){
+            builder.add("status", 1 + "".trim());
+        }else {
+            builder.add("status", 0 + "".trim());
+        }
         for (StoreProductBean selectProduct : selectProducts) {
             builder.add("ids",selectProduct.getId()+"".trim());
         }

@@ -3,29 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#fff"
-    android:layout_marginTop="1dp">
-    <TextView
-        android:id="@+id/tv_product_type"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:text="毛衣"
-        android:layout_marginTop="10dp"
-        android:textSize="14sp"
-        android:textColor="#333"
-        android:gravity="center_vertical"
-        android:background="#fff"
-        android:paddingLeft="10dp"
-        />
-    <TextView
-        android:id="@+id/tv_classify_count"
+    android:layout_marginTop="1dp"
+    android:orientation="vertical">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="12sp"
-        android:gravity="bottom"
-        android:layout_gravity="center_vertical"
-        android:paddingBottom="15dp"
-        android:text="(总共13511件)"
-        android:textColor="#909090"
-        android:drawableRight="@mipmap/yhj_jt"
-        android:paddingRight="10dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_product_type"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="毛衣"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
+            android:textColor="#333"
+            android:gravity="center_vertical"
+            android:background="#fff"
+            android:paddingLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/tv_classify_count"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="12sp"
+            android:gravity="bottom"
+            android:layout_gravity="center_vertical"
+            android:paddingBottom="15dp"
+            android:text="(总共13511件)"
+            android:textColor="#909090"
+            android:drawableRight="@mipmap/yhj_jt"
+            android:paddingRight="10dp"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f7f7f7"/>
 </LinearLayout>

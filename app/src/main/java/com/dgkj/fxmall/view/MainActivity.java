@@ -69,6 +69,8 @@ public class MainActivity extends BaseActivity {
         receiver = new MyReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("toSP");
+        filter.addAction("toYW");
+        filter.addAction("toM");
         registerReceiver(receiver,filter);
     }
 
@@ -157,7 +159,8 @@ public class MainActivity extends BaseActivity {
             shangpuFragment = new ShangpuFragment();
             fragmentTransaction.add(R.id.rl_display, shangpuFragment);
         }
-        fragmentTransaction.commit();
+       // fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();//避免在activity保存状态后再提交时崩溃
         hideFragment(fragmentTransaction);
         fragmentTransaction.show(shangpuFragment);
     }
@@ -168,7 +171,8 @@ public class MainActivity extends BaseActivity {
             yeWuYuanFragment = new YeWuYuanFragment();
             fragmentTransaction.add(R.id.rl_display, yeWuYuanFragment);
         }
-        fragmentTransaction.commit();
+      //  fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
         hideFragment(fragmentTransaction);
         fragmentTransaction.show(yeWuYuanFragment);
     }
@@ -179,7 +183,8 @@ public class MainActivity extends BaseActivity {
             mineFragment = new MineFragment();
             fragmentTransaction.add(R.id.rl_display, mineFragment);
         }
-        fragmentTransaction.commit();
+       // fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
         hideFragment(fragmentTransaction);
         fragmentTransaction.show(mineFragment);
     }
@@ -212,6 +217,10 @@ public class MainActivity extends BaseActivity {
             String action = intent.getAction();
             if("toSP".equals(action)){
                 rbShangpu.setChecked(true);
+            }else if("toYW".equals(action)){
+                rbYewuyuan.setChecked(true);
+            }else if("toM".equals(action)){
+                rbMine.setChecked(true);
             }
         }
     }

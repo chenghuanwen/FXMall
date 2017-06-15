@@ -146,9 +146,16 @@ public class ShangpuFragment extends Fragment {
         progressDialogUtil = new LoadProgressDialogUtil(getContext());
         progressDialogUtil.buildProgressDialog();
 
-        initData();
+       // initData();
         refresh2Home();
         return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
     }
 
     /**
@@ -457,6 +464,7 @@ public class ShangpuFragment extends Fragment {
     public void onSale() {
         Intent intent = new Intent(getContext(), InTheSaleActivity.class);
         intent.putExtra("from", "sale");
+        intent.putExtra("storeId",storeId);
         jumpto(intent);
     }
 
@@ -464,6 +472,7 @@ public class ShangpuFragment extends Fragment {
     public void onRest() {
         Intent intent = new Intent(getContext(), InTheSaleActivity.class);
         intent.putExtra("from", "rest");
+        intent.putExtra("storeId",storeId);
         jumpto(intent);
     }
 

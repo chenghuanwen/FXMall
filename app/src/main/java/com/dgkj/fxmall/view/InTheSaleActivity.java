@@ -14,6 +14,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.StoreProductClassifyBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetStoreProductClassifyFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.List;
 
@@ -48,7 +49,8 @@ public class InTheSaleActivity extends BaseActivity {
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
     private int statu;
-    private int sumCount;
+    private int storeId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class InTheSaleActivity extends BaseActivity {
 
         initHeaderView();
         from = getIntent().getStringExtra("from");
+        storeId = getIntent().getIntExtra("storeId",-1);
         if ("sale".equals(from)) {
             rbOnSale.setChecked(true);
             underline1.setVisibility(View.VISIBLE);
@@ -69,8 +72,18 @@ public class InTheSaleActivity extends BaseActivity {
             underline2.setVisibility(View.VISIBLE);
             statu = 0;
         }
+
         //TODO 需要根据服务器返回的该商家的所有商品类型再来确定有多少子类布局
+        //   refresh();
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         refresh();
+        LogUtil.i("TAG","onresum===============");
     }
 
     @Override
@@ -79,12 +92,16 @@ public class InTheSaleActivity extends BaseActivity {
     }
 
     private void refresh() {
-        control.getStoreProductClassify(this, sp.get("token"), statu, client, new OnGetStoreProductClassifyFinishedListener() {
+        loadProgressDialogUtil.buildProgressDialog();
+        control.getStoreProductClassify(this,storeId, statu, client, new OnGetStoreProductClassifyFinishedListener() {
             @Override
             public void onGetStoreProductClassifyFinished(final List<StoreProductClassifyBean> classifyList) {
+                loadProgressDialogUtil.cancelProgressDialog();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        int sumCount=0;
+                        llStoreProductClassify.removeAllViews();
                         for (int i = 0; i < classifyList.size(); i++) {
                             final StoreProductClassifyBean classify = classifyList.get(i);
                             View view = getLayoutInflater().inflate(R.layout.layout_add_store_product_classify, null);
@@ -97,10 +114,11 @@ public class InTheSaleActivity extends BaseActivity {
                             tvCount.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    goDetial(classify.getName());
+                                    goDetial(classify.getId());
                                 }
                             });
                         }
+                        loadProgressDialogUtil.cancelProgressDialog();
                         tvCountAll.setText("(" + sumCount + "件)");
                     }
                 });
@@ -126,6 +144,9 @@ public class InTheSaleActivity extends BaseActivity {
                     underline2.setVisibility(View.VISIBLE);
                     from = "warehouse";
                 }
+
+                statu = checkedId == R.id.rb_onSale ? 1 : 0;
+                refresh();
             }
         });
     }
@@ -134,15 +155,19 @@ public class InTheSaleActivity extends BaseActivity {
     public void all() {
         Intent intent = new Intent(this, ShangpuAllProductsActivity.class);
         intent.putExtra("from", from);
+        intent.putExtra("statu", statu);
+        intent.putExtra("type", -1);
+        intent.putExtra("storeId",storeId);
         startActivity(intent);
     }
 
 
-    public void goDetial(String type) {
+    public void goDetial(int subId) {
         Intent intent = new Intent(this, ShangpuAllProductsActivity.class);
-        intent.putExtra("type", type);
+        intent.putExtra("type", subId);
         intent.putExtra("from", from);
         intent.putExtra("statu", statu);
+        intent.putExtra("storeId",storeId);
         startActivity(intent);
     }
 

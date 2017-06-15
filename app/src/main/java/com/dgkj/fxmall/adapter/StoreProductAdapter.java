@@ -16,6 +16,8 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.StoreProductBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.MyStoreProductDetialActivity;
 import com.dgkj.fxmall.view.ProductDetialActivity;
@@ -45,6 +47,7 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
     private OkHttpClient client;
     private SharedPreferencesUnit sp;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private LoadProgressDialogUtil loadProgressDialogUtil;
 
     public StoreProductAdapter(Context context, AppCompatActivity activity, int layoutId, List<StoreProductBean> datas, String from) {
         super(context, layoutId, datas);
@@ -53,6 +56,7 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
         this.from = from;
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
+        loadProgressDialogUtil = new LoadProgressDialogUtil(context);
     }
 
     @Override
@@ -159,6 +163,7 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
      * @param id
      */
     private void deleteRemote(int id) {
+        loadProgressDialogUtil.buildProgressDialog();
         FormBody body = new FormBody.Builder()
                 .add("token",sp.get("token"))
                 .add("ids",id+"".trim())
@@ -178,6 +183,7 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
                         @Override
                         public void run() {
                             Toast.makeText(context,"已删除",Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 }else {
@@ -185,6 +191,7 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
                         @Override
                         public void run() {
                             Toast.makeText(context,"删除失败",Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 }
@@ -200,6 +207,8 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
      * @param id    商品ID
      */
     private void online(int id, int statu) {
+        LogUtil.i("TAG","商店商品状态值=="+statu);
+        loadProgressDialogUtil.buildProgressDialog();
         FormBody.Builder builder = new FormBody.Builder()
                 .add("store.user.token", sp.get("token"))
                 .add("ids", id + "");//TODO 此处为数组id
@@ -220,6 +229,7 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
                     @Override
                     public void run() {
                         Toast.makeText(context, "网络异常！", Toast.LENGTH_SHORT).show();
+                        loadProgressDialogUtil.cancelProgressDialog();
                     }
                 });
             }
@@ -230,7 +240,8 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, "操作成功！", Toast.LENGTH_SHORT).show();
+                          //  Toast.makeText(context, "操作成功！", Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 } else {
@@ -238,6 +249,7 @@ public class StoreProductAdapter extends CommonAdapter<StoreProductBean> {
                         @Override
                         public void run() {
                             Toast.makeText(context, "操作失败！", Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 }

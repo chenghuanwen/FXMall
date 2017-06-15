@@ -355,12 +355,17 @@ public class UserMsgActivity extends BaseActivity {
                         String result = response.body().string();
                         if (result.contains("1000")) {
                             toastInUI(UserMsgActivity.this, "性别修改成功！");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvGender.setText(gender);
+                                }
+                            });
                         } else {
                             toastInUI(UserMsgActivity.this, "性别修改失败！");
                         }
                     }
                 });
-                tvGender.setText(gender);
                 alertDialog.dismiss();
             }
         });

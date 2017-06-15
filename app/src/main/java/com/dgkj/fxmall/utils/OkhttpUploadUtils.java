@@ -97,7 +97,7 @@ public class OkhttpUploadUtils {
                     @Override
                     public void run() {
                         loadDialog.cancelProgressDialog();
-                        Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"网络异常！请稍后重试",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -137,7 +137,7 @@ public class OkhttpUploadUtils {
                         @Override
                         public void run() {
                             loadDialog.cancelProgressDialog();
-                            Toast.makeText(context,"网络繁忙！",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,"网络繁忙！请稍后重试",Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

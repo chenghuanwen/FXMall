@@ -23,6 +23,10 @@
         android:paddingLeft="10dp"
         android:drawableRight="@mipmap/yhj_jt"
         android:paddingRight="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f7f7f7"/>
 
     <LinearLayout
         android:id="@+id/ll_store_product_classify"

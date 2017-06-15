@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.CancelYeWuYuanActivity;
 import com.dgkj.fxmall.view.HomePageActivity;
@@ -67,14 +68,19 @@ public class YeWuYuanFragment extends Fragment {
     private float downX, downY = 300;
     private SharedPreferencesUnit sp = SharedPreferencesUnit.getInstance(getContext());
     private OkHttpClient client = new OkHttpClient.Builder().build();
+    private LoadProgressDialogUtil loadProgressDialogUtil;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_ye_wu_yuan, container, false);
         ButterKnife.bind(this, view);
+
+        loadProgressDialogUtil = new LoadProgressDialogUtil(getContext());
+
         initData();
         refresh2Home();
+
         return view;
     }
 
@@ -82,6 +88,7 @@ public class YeWuYuanFragment extends Fragment {
      * 初始化业务员的各基础信息
      */
     private void initData() {
+        loadProgressDialogUtil.buildProgressDialog();
         FormBody body = new FormBody.Builder()
                 .add("user.token", sp.get("token"))
                 .build();
@@ -128,7 +135,7 @@ public class YeWuYuanFragment extends Fragment {
     public void getSomeCount(int time, final TextView tv) {
         FormBody body1 = new FormBody.Builder()
                 .add("user.token", sp.get("token"))
-                .add("time", time + "")
+                .add("time", time + "".trim())
                 .build();
         Request request1 = new Request.Builder()
                 .post(body1)
@@ -141,6 +148,7 @@ public class YeWuYuanFragment extends Fragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                loadProgressDialogUtil.cancelProgressDialog();
                 String string = response.body().string();
                 if (string.contains("1000")) {
                     JSONObject object = null;
@@ -165,7 +173,7 @@ public class YeWuYuanFragment extends Fragment {
     @OnClick(R.id.tv_recharge)
     public void recharge() {
         Intent intent = new Intent(getContext(), RechargeActivity.class);
-        intent.putExtra("from", "ywy");//
+        intent.putExtra("from", "mine");//
         getContext().startActivity(intent);
     }
 

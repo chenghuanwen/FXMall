@@ -3,6 +3,7 @@ package com.dgkj.fxmall.view;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterViewFlipper;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
@@ -50,8 +52,7 @@ public class MyStoreProductDetialActivity extends BaseActivity {
     EditText etDemandCount;
     @BindView(R.id.ll_add_type_container)
     LinearLayout llAddTypeContainer;
-    @BindView(R.id.tv_add_type)
-    TextView tvAddType;
+
     @BindView(R.id.tv_product_detial)
     TextView tvProductDetial;
     @BindView(R.id.tv_product_classify)
@@ -77,6 +78,7 @@ public class MyStoreProductDetialActivity extends BaseActivity {
     private StoreProductBean product;
     private AlertDialog pw;
     private OkHttpClient client = new OkHttpClient.Builder().build();
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,10 +111,10 @@ public class MyStoreProductDetialActivity extends BaseActivity {
 
         if ("sale".equals(from)) {
             btnOnOff.setText("下架");
-            statu = 1;
+            statu = 0;
         } else {
             btnOnOff.setText("上架");
-            statu = 0;
+            statu = 1;
         }
 
         product = (StoreProductBean) intent.getSerializableExtra("product");
@@ -128,6 +130,12 @@ public class MyStoreProductDetialActivity extends BaseActivity {
         etProductType.setText(product.getColor());
         etProductSaveCount.setText(product.getInventory());
         etDemandCount.setText("¥"+product.getBrokerage());
+
+        if(product.isDeliverable()){
+            cbDeliver.setChecked(true);
+        }else {
+            cbDeliver.setChecked(false);
+        }
 
     }
 
@@ -171,12 +179,9 @@ public class MyStoreProductDetialActivity extends BaseActivity {
             public void onClick(View view) {
                 if (titel.contains("删除")) {
                     //TODO 通知服务器删除
-                    Intent intent = new Intent();
-                    intent.putExtra("position", position);
-                    setResult(162, intent);
-                    pw.dismiss();
-                    finish();
+                    deleteRemote(product.getId());
                 } else {
+                    pw.dismiss();
                     online(product.getId(), statu);
                 }
 
@@ -204,6 +209,7 @@ public class MyStoreProductDetialActivity extends BaseActivity {
      * @param id    商品ID
      */
     private void online(int id, int statu) {
+        loadProgressDialogUtil.buildProgressDialog();
         FormBody body = new FormBody.Builder()
                 .add("store.user.token", sp.get("token"))
                 .add("ids", id + "")
@@ -217,17 +223,77 @@ public class MyStoreProductDetialActivity extends BaseActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 toastInUI(MyStoreProductDetialActivity.this, "网络异常");
+                loadProgressDialogUtil.cancelProgressDialog();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body().string().contains("1000")) {
                     toastInUI(MyStoreProductDetialActivity.this, "操作成功");
+                    loadProgressDialogUtil.cancelProgressDialog();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    });
                 } else {
                     toastInUI(MyStoreProductDetialActivity.this, "操作失败");
+                    loadProgressDialogUtil.cancelProgressDialog();
                 }
             }
         });
     }
+
+
+    /**
+     * 删除商品
+     * @param id
+     */
+    private void deleteRemote(int id) {
+        loadProgressDialogUtil.buildProgressDialog();
+        FormBody body = new FormBody.Builder()
+                .add("token",sp.get("token"))
+                .add("ids",id+"".trim())
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.STORE_DELETE_PRODUCTS_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+            @Override
+            public void onResponse(final Call call, Response response) throws IOException {
+                if(response.body().string().contains("1000")){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MyStoreProductDetialActivity.this,"已删除",Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
+                            //删除本地
+                            Intent intent = new Intent();
+                            intent.putExtra("position", position);
+                            setResult(162, intent);
+                            pw.dismiss();
+                            finish();
+                        }
+                    });
+                }else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MyStoreProductDetialActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+
 
 }

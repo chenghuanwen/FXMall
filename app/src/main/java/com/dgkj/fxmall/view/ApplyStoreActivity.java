@@ -206,6 +206,7 @@ public class ApplyStoreActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        sendBroadcast(new Intent("toM"));
                         finish();
                     }
                 });
@@ -533,6 +534,7 @@ public class ApplyStoreActivity extends BaseActivity {
             avfApplyStore.startFlipping();
         } else if (requestCode == 118 && resultCode == 152) {
             classifyId = data.getIntExtra("id", -1);
+            LogUtil.i("TAG","店铺分类ID==="+classifyId);
             classify = data.getStringExtra("classify");
             tvClassify.setText(classify);
         } else {

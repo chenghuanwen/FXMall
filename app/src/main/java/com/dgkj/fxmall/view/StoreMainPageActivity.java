@@ -268,7 +268,9 @@ public class StoreMainPageActivity extends BaseActivity {
 
     @OnClick(R.id.tv_product_classify)
     public void productClassify() {
-        jumpTo(StoreProductsClassifyActivity.class, false);
+        Intent intent = new Intent(this,StoreProductsClassifyActivity.class);
+        intent.putExtra("storeId",store.getId());
+        jumpTo(intent, false);
     }
 
     @OnClick(R.id.tv_store_msg)

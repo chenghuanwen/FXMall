@@ -169,7 +169,8 @@ public class ProductDetialActivity extends BaseActivity {
         //产品信息
         tvProductDetial.setText(product.getIntroduce());
         tvProductPrice.setText("¥" + product.getPrice());
-        tvProductExpress.setText("邮费:¥"+product.getExpress());
+        //tvProductExpress.setText("邮费:¥"+product.getExpress());
+        tvProductExpress.setText(product.getExpress());
         tvProductScales.setText("销量：" + product.getSales() + "笔");
         tvProductAddress.setText(product.getAddress());
         tvVipPrice.setText("会员价:¥" + product.getVipPrice());

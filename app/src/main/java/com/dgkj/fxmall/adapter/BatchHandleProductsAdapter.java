@@ -32,9 +32,9 @@ public class BatchHandleProductsAdapter extends CommonAdapter<StoreProductBean> 
     @Override
     protected void convert(final ViewHolder holder, final StoreProductBean storeProduct, int position) {
         holder.setText(R.id.tv_store_goods_introduce,storeProduct.getDescribe());
-        holder.setText(R.id.tv_store_goods_introduce,"¥"+storeProduct.getPrice());
-        holder.setText(R.id.tv_store_goods_introduce,"销量"+storeProduct.getSales());
-        holder.setText(R.id.tv_store_goods_introduce,"库存"+storeProduct.getInventory());
+        holder.setText(R.id.tv_store_goods_price,"¥"+storeProduct.getPrice());
+        holder.setText(R.id.tv_store_goods_sales,"销量"+storeProduct.getSales());
+        holder.setText(R.id.tv_store_goods_inventory,"库存"+storeProduct.getInventory());
 
         CheckBox cb = holder.getView(R.id.cb_batch_handle);
 

@@ -129,7 +129,12 @@ public class ConfirmOrderActivity extends BaseActivity {
                 View subView = getLayoutInflater().inflate(R.layout.layout_add_product_for_store_in_order, subContainer, false);//当前店铺中商品动态版面
                 ShoppingGoodsBean orderBean = goods.get(j);
                 //计算某件商品邮费（根据发货地址）
-                postageSum += orderBean.getPostage();
+                String express = orderBean.getPostage();
+                if(!express.equals("包邮")){
+                    int indexOf = express.indexOf("¥");
+                    double post = Double.parseDouble(express.substring(indexOf, express.length()));
+                    postageSum += post;
+                }
 
                 if(orderBean.isDeliverable()){//支持线上发货
                     subView.setBackgroundColor(Color.parseColor("#f7f7f7"));

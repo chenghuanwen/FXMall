@@ -46,6 +46,7 @@ public class ShangpuAllProductsActivity extends BaseActivity {
     private String type = "新品";
     private String from = "";
     private int statu;
+    private int subId,storeId;
     private String orderBy = "createTime";
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private int index = 1;
@@ -58,8 +59,14 @@ public class ShangpuAllProductsActivity extends BaseActivity {
         control = new FXMallControl();
         from = getIntent().getStringExtra("from");
         statu = getIntent().getIntExtra("statu", -1);
+        subId = getIntent().getIntExtra("type",-1);
+        storeId = getIntent().getIntExtra("storeId",-1);
         initHeaderView();
-        refresh(orderBy, index, 20, statu);
+        if(subId == -1){//全部
+            refresh(orderBy, index, 20, statu);
+        }else {//子分类
+            refresh(orderBy,storeId, index, 20, subId);
+        }
     }
 
     @Override
@@ -74,6 +81,7 @@ public class ShangpuAllProductsActivity extends BaseActivity {
      * @param statu   0：仓库中，1：销售中
      */
     private void refresh(String orderBy, int index, int size, int statu) {
+        loadProgressDialogUtil.buildProgressDialog();
         //TODO createTime(新品)、inventory（库存）、sales（销量），区分销售中和仓库中
         control.getStoreProducts(this, sp.get("token"), client, orderBy, index, size, statu, new OnGetStoreProductsFinishedListener() {
             @Override
@@ -82,11 +90,32 @@ public class ShangpuAllProductsActivity extends BaseActivity {
                     @Override
                     public void run() {
                         adapter.addAll(products, true);
+                        loadProgressDialogUtil.cancelProgressDialog();
                     }
                 });
             }
         });
     }
+
+
+    /**
+     * 获取我的店铺二级分类商品
+     * @param orderBy
+     * @param index
+     * @param size
+     * @param storeId
+     * @param subId
+     */
+    private void refresh(String orderBy, int index, int size, int storeId,int subId){
+        loadProgressDialogUtil.buildProgressDialog();
+        control.getMyStoreSubClassifyProducts(this, storeId, client, orderBy, index, size, subId, new OnGetStoreProductsFinishedListener() {
+            @Override
+            public void OnGetStoreProductsFinished(List<StoreProductBean> products) {
+
+            }
+        });
+    }
+
 
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
