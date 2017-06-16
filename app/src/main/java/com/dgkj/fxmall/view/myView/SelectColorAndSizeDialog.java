@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.PopupWindowCompat;
@@ -34,6 +35,7 @@ import com.dgkj.fxmall.bean.ShoppingGoodsBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetProductCSFinishedListener;
 import com.dgkj.fxmall.listener.OnSelectColorSizeFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.ConfirmOrderActivity;
 
@@ -78,6 +80,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
             super.handleMessage(msg);
         }
     };
+    private Handler UIhandler = new Handler(Looper.getMainLooper());
     public SelectColorAndSizeDialog(BaseActivity activity, int resId, ShoppingGoodsBean goods, String from, OnSelectColorSizeFinishedListener listener){
         this.resId = resId;
         this.goods = goods;
@@ -109,13 +112,19 @@ public class SelectColorAndSizeDialog extends PopupWindow {
     private void getColorAndSize() {
        control.getProductCS(client, goods.getProductId(), new OnGetProductCSFinishedListener() {
            @Override
-           public void onGetProductCSFinishedListener(List<ColorSizeBean> sizes) {
+           public void onGetProductCSFinishedListener(final List<ColorSizeBean> sizes) {
                for (ColorSizeBean size : sizes) {
                    if(goods.getColor().equals(size.getColor())){
                        size.setCheck(true);
                    }
                }
-              adapter.addAll(sizes,true);
+               UIhandler.post(new Runnable() {
+                   @Override
+                   public void run() {
+                       adapter.addAll(sizes,true);
+                   }
+               });
+
            }
        });
     }
@@ -160,7 +169,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                 @Override
                 public void onClick(View v) {
                     //TODO 加入购物车
-                    control.add2shoppingcar(activity,sp.get("token"),goods.getSkuId(),client);
+                    control.add2shoppingcar(activity,sp.get("token"),goods.getSkuId(),goods.getCount(),client);
                     dismiss();
                 }
             });
@@ -202,6 +211,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                         intent.putExtra("orders",orders);
                         activity.startActivity(intent);
                         listener.selectCompelete(selectColor);
+                        activity.finish();
                     }else {
                         listener.selectCompelete(selectColor);
                         dismiss();

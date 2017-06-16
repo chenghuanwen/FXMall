@@ -163,13 +163,13 @@ public class ProductDetialActivity extends BaseActivity {
 
     private void setDatas() {
         product = getIntent().getParcelableExtra("product");
+        LogUtil.i("TAG","产品详情===="+product.toString());
         if (product == null) {
             return;
         }
         //产品信息
         tvProductDetial.setText(product.getIntroduce());
         tvProductPrice.setText("¥" + product.getPrice());
-        //tvProductExpress.setText("邮费:¥"+product.getExpress());
         tvProductExpress.setText(product.getExpress());
         tvProductScales.setText("销量：" + product.getSales() + "笔");
         tvProductAddress.setText(product.getAddress());
@@ -270,23 +270,25 @@ public class ProductDetialActivity extends BaseActivity {
         jumpTo(intent,false);
     }
 
-    @OnClick(R.id.tv_product_addCar)
+  /*  @OnClick(R.id.tv_product_addCar)
     public void addToCar() {//加入购物车
         control.add2shoppingcar(this, sp.get("token"), product.getSkuId(), client);
-    }
+    }*/
 
     @OnClick(R.id.tv_product_buy)
     public void buyNow() {//立即购买
         ShoppingGoodsBean goodsBean = new ShoppingGoodsBean();
         goodsBean.setCount(product.getCount());
         goodsBean.setIntroduce(product.getIntroduce());
+        goodsBean.setProductId(product.getId());
         goodsBean.setSkuId(product.getSkuId());
         goodsBean.setUrl(product.getUrl());
-        goodsBean.setVipPrice(product.getVipPrice());
+        goodsBean.setPrice(product.getVipPrice());
         goodsBean.setColor(product.getColor());
         goodsBean.setInventory(product.getInventory());
         goodsBean.setStoreBean(product.getStoreBean());
         goodsBean.setDeliverable(product.isDeliverable());
+        goodsBean.setPostage(product.getExpress());
 
         SelectColorAndSizeDialog dialog = new SelectColorAndSizeDialog(this, R.layout.layout_edit_select_color_size, goodsBean, "buy", new OnSelectColorSizeFinishedListener() {
             @Override
@@ -297,11 +299,12 @@ public class ProductDetialActivity extends BaseActivity {
         dialog.showPopupWindow(activityProductDetial);
     }
 
-    @OnClick(R.id.tv_select_color)
+    @OnClick({R.id.tv_select_color,R.id.tv_product_addCar})
     public void setlectCS() {
         ShoppingGoodsBean goodsBean = new ShoppingGoodsBean();
         goodsBean.setCount(product.getCount());
         goodsBean.setIntroduce(product.getIntroduce());
+        goodsBean.setProductId(product.getId());
         goodsBean.setSkuId(product.getSkuId());
         goodsBean.setUrl(product.getUrls().get(0));
         goodsBean.setPrice(product.getVipPrice());

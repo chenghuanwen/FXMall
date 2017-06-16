@@ -52,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="¥5654654"
+                android:text="¥0"
                 android:gravity="center|right"
                 android:textSize="14sp"
                 android:textColor="#333"/>
@@ -78,7 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="顺丰快递"
+            android:text="包邮"
             android:gravity="center|right"
             android:textSize="14sp"
             android:textColor="#333"

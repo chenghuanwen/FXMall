@@ -335,7 +335,7 @@ public class FXMallModel {
                             product.setPrice(jsonObject.getDouble("price"));
                             JSONObject commodity = jsonObject.getJSONObject("commodity");
                             //TODO 根据佣金计算会员价
-                            product.setVipPrice(product.getPrice() - product.getBrokerage() *(1-MyApplication.vipRate/100));
+                            product.setVipPrice(product.getPrice() - product.getBrokerage() *(1-MyApplication.vipRate/100.0));
                             product.setColor(jsonObject.getString("content"));
                             product.setDescribe(commodity.getString("detail"));
                             product.setSales(commodity.getInt("sales") + "");
@@ -425,7 +425,7 @@ public class FXMallModel {
                             product.setPrice(jsonObject.getDouble("price"));
                             JSONObject commodity = jsonObject.getJSONObject("commodity");
                             //TODO 根据佣金计算会员价
-                            product.setVipPrice(product.getPrice() - product.getBrokerage() *(1-MyApplication.vipRate/100));
+                            product.setVipPrice(product.getPrice() - product.getBrokerage() *(1-MyApplication.vipRate/100.0));
                             product.setColor(jsonObject.getString("content"));
                             product.setDescribe(commodity.getString("detail"));
                             product.setSales(commodity.getInt("sales") + "");
@@ -477,6 +477,7 @@ public class FXMallModel {
      */
     public static void getStoreSubClassifyProducts(final BaseActivity context, int storeId, OkHttpClient client, String orderby, int index, int size, int subId, final OnSearchProductsFinishedListener listener){
         final List<MainProductBean> list = new ArrayList<>();
+        final int[] count = new int[1];
         FormBody.Builder builder = new FormBody.Builder()
                 .add("orderby", orderby)
                 .add("index", index + "".trim())
@@ -507,7 +508,7 @@ public class FXMallModel {
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
-                        JSONArray dataset = object.getJSONArray("dataset");
+                        final JSONArray dataset = object.getJSONArray("dataset");
                         for (int i = 0; i < dataset.length(); i++) {
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             final MainProductBean product = new MainProductBean();
@@ -516,7 +517,7 @@ public class FXMallModel {
                             product.setSkuId(jsonObject.getInt("id"));
                             product.setInventory(jsonObject.getInt("inventory"));
                             //TODO 根据佣金和价格算出会员价：
-                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100));
+                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100.0));
                             product.setColor(jsonObject.getString("content"));
 
                             JSONObject commodity = jsonObject.getJSONObject("commodity");
@@ -571,22 +572,27 @@ public class FXMallModel {
                             storeBean.setRecommender("哎购商城");
 
                             product.setStoreBean(storeBean);
-                            product.setAddress(address.substring(0, address.indexOf("市")));
+                            product.setAddress(address.substring(0, address.indexOf("市")+1));
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
+                                    count[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
                                         product.setExpress("邮费:¥"+postage);
                                     }
                                     list.add(product);
+
+                                    if(count[0]==dataset.length()){
+                                        listener.onSearchProductsFinished(list);
+                                    }
                                 }
                             });
 
                         }
 
-                        listener.onSearchProductsFinished(list);
+                      //  listener.onSearchProductsFinished(list);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1091,7 +1097,7 @@ public class FXMallModel {
      * @param skuId
      * @param client
      */
-    public static void add2shoppingcar(final BaseActivity context, String token, int skuId, OkHttpClient client) {
+    public static void add2shoppingcar(final BaseActivity context, String token, int skuId,int num, OkHttpClient client) {
         if (TextUtils.isEmpty(token)) {//未登录
             context.startActivity(new Intent(context, LoginActivity.class));
             return;
@@ -1099,6 +1105,7 @@ public class FXMallModel {
         FormBody formBody = new FormBody.Builder()
                 .add("user.token", token)
                 .add("sku.id", skuId + "")
+                .add("num",num+"")
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.ADD_PRODUCT_TO_SHOPPINGCAR)
@@ -1115,7 +1122,7 @@ public class FXMallModel {
                 if (response.body().string().contains("1000")) {
                     context.toastInUI(context.getApplicationContext(), "添加成功");
                 } else {
-                    context.toastInUI(context.getApplicationContext(), "添加失败");
+                    context.toastInUI(context.getApplicationContext(), "添加失败,可能选择了自己的商品");
                 }
             }
         });
@@ -1187,8 +1194,9 @@ public class FXMallModel {
      */
     public static void getShoppingcarProducts(final BaseActivity context, String token, final int index, final int size, OkHttpClient client, final OnGetShoppingcarProductsFinishedListener listener) {
         final List<ShoppingGoodsBean> list = new ArrayList<>();
+        final int [] count = new int[1];
         FormBody body = new FormBody.Builder()
-                .add("token", token)
+                .add("user.token", token)
                 .add("index", index + "")
                 .add("size", size + "")
                 .build();
@@ -1205,22 +1213,27 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","购物车数据========"+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
-                        JSONArray dataset = object.getJSONArray("dataset");
+                        final JSONArray dataset = object.getJSONArray("dataset");
+                        if(dataset.length()==0){
+                            listener.onGetShoppingcarProductsFinished(list);
+                            return;
+                        }
                         for (int i = 0; i < dataset.length(); i++) {
                             final ShoppingGoodsBean goods = new ShoppingGoodsBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             goods.setCount(jsonObject.getInt("num"));
-                            goods.setPrice(jsonObject.getDouble("price"));
                             goods.setCarId(jsonObject.getInt("id"));
-                            goods.setColor(jsonObject.getString("content"));
                             JSONObject sku = jsonObject.getJSONObject("sku");
+                            goods.setColor(sku.getString("content"));
                             goods.setBrokerage(sku.getInt("brokerage"));
-                            goods.setVipPrice(goods.getPrice()-goods.getBrokerage() * (1 - MyApplication.vipRate));
+                            goods.setVipPrice(goods.getPrice()-goods.getBrokerage() * (1 - MyApplication.vipRate/100.0));
                             goods.setSkuId(sku.getInt("id"));
                             goods.setInventory(sku.getInt("inventory"));
+                            goods.setPrice(sku.getDouble("price"));
 
                             JSONObject commodity = sku.getJSONObject("commodity");
                             goods.setIntroduce(commodity.getString("detail"));
@@ -1272,28 +1285,33 @@ public class FXMallModel {
                             storeBean.setTotalScore(store.getDouble("totalScore"));
                             storeBean.setRecommender("哎购商城");
                             storeBean.setPhone(store.getString("phone"));
-                            storeBean.setKeeper(store.getString("storeKeeper"));
-                            storeBean.setLicence(store.getString(""));
+                           // storeBean.setKeeper(store.getString("storeKeeper"));
+                            //storeBean.setLicence(store.getString(""));
                             int indexOf = address.indexOf("市");
                             goods.setAddress(address.substring(0, indexOf + 1));
                             goods.setStoreBean(storeBean);
-
                             getPostage(goods.getProductId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
+                                    count[0]++;
                                     if(postage==0){
-                                        goods.setPostage("包邮");//TODO 待定
+                                        goods.setPostage("包邮");
                                     }else {
                                         goods.setPostage("邮费:¥"+postage);
                                     }
                                     list.add(goods);
+
+                                    if(count[0]==dataset.length()){
+                                        listener.onGetShoppingcarProductsFinished(list);
+                                    }
                                 }
                             });
                         }
-                        listener.onGetShoppingcarProductsFinished(list);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onGetShoppingcarProductsFinished(list);
                 }
             }
         });
@@ -1653,7 +1671,7 @@ public class FXMallModel {
                             product.setSkuId(jsonObject.getInt("id"));
                             product.setInventory(jsonObject.getInt("inventory"));
                             //TODO 根据佣金和价格算出会员价：
-                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100));
+                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100.0));
                             product.setColor(jsonObject.getString("content"));
 
                             JSONObject commodity = jsonObject.getJSONObject("commodity");
@@ -1708,14 +1726,12 @@ public class FXMallModel {
                             storeBean.setRecommender("哎购商城");
 
                             product.setStoreBean(storeBean);
-                            product.setAddress(address.substring(0, address.indexOf("市")));
-                          /*  product.setExpress("包邮");
-                            list.add(product);*/
+                            product.setAddress(address.substring(0, address.indexOf("市")+1));
+
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
                                     count[0]++;
-                                    LogUtil.i("TAG","计算邮费完成==="+count[0]+"========"+dataset.length());
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
@@ -1729,13 +1745,7 @@ public class FXMallModel {
                                 }
                             });
                         }
-                      /*  handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onSearchProductsFinished(list);
-                            }
-                        },2000);*/
-                       // listener.onSearchProductsFinished(list);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1852,9 +1862,11 @@ public class FXMallModel {
         final List<OrderBean> list = new ArrayList<>();
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("user.token", token)
-                .add("status", statu + "");
+                .add("index",1+"".trim())
+                .add("size",20+"".trim())
+                .add("status", statu + "".trim());
         if (isAll == 0) {
-            builder.add("isAll", isAll + "");
+            builder.add("isAll", isAll + "".trim());
         }
         FormBody body = builder.build();
         Request request = new Request.Builder()
@@ -1870,7 +1882,8 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if (result.contains("1000")) {
+                LogUtil.i("TAG","我的订单======="+result);
+                if (result.contains("1000")  && result.contains("dataset")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         JSONArray dataset = object.getJSONArray("dataset");
@@ -1878,18 +1891,23 @@ public class FXMallModel {
                             OrderBean orderBean = new OrderBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             orderBean.setCount(jsonObject.getInt("num"));
-                            orderBean.setBuyer(jsonObject.getString("data"));
+                           /* if(jsonObject.has("data")){
+                                orderBean.setBuyer(jsonObject.getString("data"));
+                            }*/
 
                             JSONObject order = jsonObject.getJSONObject("orders");
                             orderBean.setId(order.getInt("id"));
                             orderBean.setOrderNum(order.getString("orderNo"));
                             orderBean.setSumPrice(order.getDouble("paySum"));
                             orderBean.setCreateTime(order.getLong("createTime"));
-                            orderBean.setPayTime(order.getLong("payTime"));
+                            if(order.has("payTime")){
+                                orderBean.setPayTime(order.getLong("payTime"));
+                            }
                             //TODO 根据当前定位城市算出邮费
                             orderBean.setPostage(order.getInt("postage"));
                             int status = order.getInt("status");
                             orderBean.setStateNum(status);
+                            if(status==5 || status==6){continue;}
                             switch (status) {//TODO 对退款退货订单还需更细分类，待补充
                                 //买家
                                 case 0:
@@ -1935,6 +1953,7 @@ public class FXMallModel {
                             if(order.has("shoppingAddress")){
                                 JSONObject takeInfo = order.getJSONObject("shoppingAddress");
                                 orderBean.setTakeMan(takeInfo.getString("consignee"));
+                                orderBean.setBuyer(takeInfo.getString("consignee"));
                                 orderBean.setTakePhone(takeInfo.getString("phone"));
                                 StringBuffer sb = new StringBuffer();
                                 sb.append(takeInfo.getString("province")).append(takeInfo.getString("city")).append(takeInfo.getString("county")).append(takeInfo.getString("particular"));
@@ -1958,7 +1977,7 @@ public class FXMallModel {
                             orderBean.setProductId(commodity.getInt("id"));
                             //TODO 是否支持发货(不支持发货时修改订单小状态)
                             //TODO 是否支持发货
-                            if(commodity.has("send")){
+                            if(!commodity.has("send")){
                                 //TODO 是否支持发货(不支持发货时修改订单小状态)
                                 orderBean.setDeliver(commodity.getInt("send")==0?true:false);
                                 if(orderBean.getStateNum()==1 && !orderBean.isDeliver()){
@@ -1983,6 +2002,8 @@ public class FXMallModel {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onGetMyOrderInfoFinished(list);
                 }
             }
         });
@@ -2000,14 +2021,14 @@ public class FXMallModel {
         final List<OrderBean> list = new ArrayList<>();
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("user.token", token)
-                .add("status", statu + "")
-                .add("index", index + "")
-                .add("size", size + "");
+                .add("status", statu + "".trim())
+                .add("index", index + "".trim())
+                .add("size", size + "".trim());
         if (isAll == 0) {
-            builder.add("isAll", isAll + "");
+            builder.add("isAll", isAll + "".trim());
         }
         FormBody body = builder.build();
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .post(body)
                 .url(FXConst.GET_STORE_ORDER_CLASSIFY)
                 .build();
@@ -2020,7 +2041,8 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
-                if (result.contains("1000")) {
+                LogUtil.i("TAG","商铺订单===="+result);
+                if (result.contains("1000") && result.contains("dataset")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         JSONArray dataset = object.getJSONArray("dataset");
@@ -2028,7 +2050,6 @@ public class FXMallModel {
                             OrderBean orderBean = new OrderBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             orderBean.setCount(jsonObject.getInt("num"));
-                            orderBean.setBuyer(jsonObject.getString("data"));
 
                             JSONObject order = jsonObject.getJSONObject("orders");
                             if (order.has("waybill")) {
@@ -2040,13 +2061,15 @@ public class FXMallModel {
                             orderBean.setOrderNum(order.getString("orderNo"));
                             orderBean.setSumPrice(order.getDouble("paySum"));
                             orderBean.setCreateTime(order.getLong("createTime"));
-                            orderBean.setPayTime(order.getLong("payTime"));
                             orderBean.setPostage(order.getInt("postage"));
+                            if(order.has("payTime")){
+                                orderBean.setPayTime(order.getLong("payTime"));
+                            }
 
                             int status = order.getInt("status");
                             orderBean.setStateNum(status);
+                            if(status==0 || status==5 || status==6){continue;}
                             switch (status) {//TODO 对退款退货订单还需更细分类，待补充
-
                                 //卖家
                                 case 1:
                                     orderBean.setState("等待发货");
@@ -2092,6 +2115,7 @@ public class FXMallModel {
                             if(order.has("shoppingAddress")){
                                 JSONObject takeInfo = order.getJSONObject("shoppingAddress");
                                 orderBean.setTakeMan(takeInfo.getString("consignee"));
+                                orderBean.setBuyer(takeInfo.getString("consignee"));
                                 orderBean.setTakePhone(takeInfo.getString("phone"));
                                 StringBuffer sb = new StringBuffer();
                                 sb.append(takeInfo.getString("province")).append(takeInfo.getString("city")).append(takeInfo.getString("county")).append(takeInfo.getString("particular"));
@@ -2104,7 +2128,7 @@ public class FXMallModel {
 
                             JSONObject productInfo = jsonObject.getJSONObject("sku");//
                             orderBean.setBrokerage(productInfo.getInt("brokerage"));
-                            orderBean.setSinglePrice(productInfo.getInt("price")-orderBean.getBrokerage()*(1-MyApplication.vipRate/100));
+                            orderBean.setSinglePrice(productInfo.getInt("price")-orderBean.getBrokerage()*(1-MyApplication.vipRate/100.0));
                             orderBean.setColor(productInfo.getString("content"));
                             orderBean.setSkuId(productInfo.getInt("id"));
 
@@ -2112,7 +2136,7 @@ public class FXMallModel {
                             orderBean.setUrl(commodity.getString("detail"));
                             orderBean.setProductId(commodity.getInt("id"));
                             //TODO 是否支持发货
-                            if(commodity.has("send")){
+                            if(!commodity.has("send")){
                                 //TODO 是否支持发货(不支持发货时修改订单小状态)
                                 orderBean.setDeliver(commodity.getInt("send")==0?true:false);
                                 if(orderBean.getStateNum()==1 && !orderBean.isDeliver()){
@@ -2133,6 +2157,8 @@ public class FXMallModel {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onGetMyOrderInfoFinished(list);
                 }
             }
         });
@@ -2287,9 +2313,9 @@ public class FXMallModel {
      * @param id
      * @param listener
      */
-    public static void getProductCS(OkHttpClient client, int id, final OnGetProductCSFinishedListener listener) {
+    public static void getProductCS(OkHttpClient client, final int id, final OnGetProductCSFinishedListener listener) {
         final List<ColorSizeBean> list = new ArrayList<>();
-        //TEST
+       /* //TEST
         for (int i = 0; i < 5; i++) {
             ColorSizeBean colorSizeBean = new ColorSizeBean();
             colorSizeBean.setId(i + 1);
@@ -2318,7 +2344,7 @@ public class FXMallModel {
             list.add(colorSizeBean);
         }
         listener.onGetProductCSFinishedListener(list);
-
+*/
 
         FormBody body = new FormBody.Builder()
                 .add("commodity.id", id + "".trim())
@@ -2335,6 +2361,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","商品id"+id+"颜色尺寸==="+string);
                 if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
@@ -2372,6 +2399,7 @@ public class FXMallModel {
      */
     public static void getProductsForSubclassify(int subId, String orderBy, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
         final List<MainProductBean> list = new ArrayList<>();
+        final int[] count = new int[1];
         FormBody body = new FormBody.Builder()
                 .add("index", index + "".trim())
                 .add("size", size + "".trim())
@@ -2395,7 +2423,7 @@ public class FXMallModel {
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
-                        JSONArray dataset = object.getJSONArray("dataset");
+                        final JSONArray dataset = object.getJSONArray("dataset");
                         for (int i = 0; i < dataset.length(); i++) {
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             final MainProductBean product = new MainProductBean();
@@ -2403,7 +2431,7 @@ public class FXMallModel {
                             product.setPrice(jsonObject.getDouble("price"));
                             product.setSkuId(jsonObject.getInt("id"));
                             //TODO 根据佣金和价格算出会员价：
-                            product.setVipPrice(product.getPrice() - product.getBrokerage() *(1-MyApplication.vipRate/100));
+                            product.setVipPrice(product.getPrice() - product.getBrokerage() *(1-MyApplication.vipRate/100.0));
                             product.setColor(jsonObject.getString("content"));
                             product.setCount(1);
 
@@ -2459,23 +2487,28 @@ public class FXMallModel {
                             storeBean.setMainUrls(new ArrayList<String>());
                             product.setStoreBean(storeBean);
 
-                            product.setAddress(address.substring(0, address.indexOf("市")));
+                            product.setAddress(address.substring(0, address.indexOf("市")+1));
 
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
+                                    count[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
                                         product.setExpress("邮费:¥"+postage);
                                     }
                                     list.add(product);
+
+                                    if(count[0]==dataset.length()){
+                                        listener.onSearchProductsFinished(list);
+                                    }
                                 }
                             });
 
                         }
 
-                        listener.onSearchProductsFinished(list);
+                      //  listener.onSearchProductsFinished(list);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -2496,6 +2529,7 @@ public class FXMallModel {
      */
     public static void getHomePageProductsDisplay(String token, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
         final List<MainProductBean> list = new ArrayList<>();
+        final int[] count = new int[1];
         FormBody body = new FormBody.Builder()
                 .add("index", index + "".trim())
                 .add("size", size + "".trim())
@@ -2519,7 +2553,7 @@ public class FXMallModel {
                 if (result.contains("1000") && result.contains("dataset")) {
                     try {
                         JSONObject object = new JSONObject(result);
-                        JSONArray dataset = object.getJSONArray("dataset");
+                        final JSONArray dataset = object.getJSONArray("dataset");
                         for (int i = 0; i < dataset.length(); i++) {
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             final MainProductBean product = new MainProductBean();
@@ -2527,7 +2561,7 @@ public class FXMallModel {
                             product.setPrice(jsonObject.getDouble("price"));
                             product.setSkuId(jsonObject.getInt("id"));
                             //TODO 根据佣金和价格算出会员价：
-                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100));
+                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100.0));
                             product.setColor(jsonObject.getString("content"));
                             product.setCount(1);
 
@@ -2582,23 +2616,28 @@ public class FXMallModel {
                             storeBean.setMainUrls(new ArrayList<String>());
                             product.setStoreBean(storeBean);
 
-                            product.setAddress(address.substring(0, address.indexOf("市")));
+                            product.setAddress(address.substring(0, address.indexOf("市")+1));
 
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
+                                    count[0]++;
                                     if(postage==0){
-                                        product.setExpress("包邮");//TODO 待定
+                                        product.setExpress("包邮");
                                     }else {
                                         product.setExpress("邮费:¥"+postage);
                                     }
                                     list.add(product);
+
+                                    if(count[0]==dataset.length()){
+                                        listener.onSearchProductsFinished(list);
+                                    }
                                 }
                             });
 
                         }
 
-                        listener.onSearchProductsFinished(list);
+                       // listener.onSearchProductsFinished(list);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -2620,7 +2659,7 @@ public class FXMallModel {
      * @param listener
      */
     public static void getAllNewProducts(final Activity context,final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
-        //TEST
+      /*  //TEST
         List<MainProductBean> list1 = new ArrayList<>();
         List<String> url = new ArrayList<>();
         url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
@@ -2672,9 +2711,9 @@ public class FXMallModel {
             productBean.setDeliverable(true);
             list1.add(productBean);
         }
-        listener.onSearchProductsFinished(list1);
+        listener.onSearchProductsFinished(list1);*/
 
-
+        final int[] count = new int[1];
         final List<MainProductBean> list = new ArrayList<>();
         FormBody.Builder builder = new FormBody.Builder()
                 .add("index", index + "".trim())
@@ -2702,7 +2741,7 @@ public class FXMallModel {
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
-                        JSONArray dataset = object.getJSONArray("dataset");
+                        final JSONArray dataset = object.getJSONArray("dataset");
                         for (int i = 0; i < dataset.length(); i++) {
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             final MainProductBean product = new MainProductBean();
@@ -2711,7 +2750,7 @@ public class FXMallModel {
                             product.setSkuId(jsonObject.getInt("id"));
                             product.setInventory(jsonObject.getInt("inventory"));
                             //TODO 根据佣金和价格算出会员价：
-                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100));
+                            product.setVipPrice(product.getPrice() - product.getBrokerage()*(1-MyApplication.vipRate/100.0));
                             product.setColor(jsonObject.getString("content"));
 
                             JSONObject commodity = jsonObject.getJSONObject("commodity");
@@ -2766,22 +2805,27 @@ public class FXMallModel {
                             storeBean.setRecommender("哎购商城");
 
                             product.setStoreBean(storeBean);
-                            product.setAddress(address.substring(0, address.indexOf("市")));
+                            product.setAddress(address.substring(0, address.indexOf("市")+1));
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
+                                    count[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
                                         product.setExpress("邮费:¥"+postage);
                                     }
                                     list.add(product);
+
+                                    if(count[0]==dataset.length()){
+                                        listener.onSearchProductsFinished(list);
+                                    }
                                 }
                             });
 
                         }
 
-                        listener.onSearchProductsFinished(list);
+                      //  listener.onSearchProductsFinished(list);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -3105,7 +3149,7 @@ public class FXMallModel {
                         product.setBrokerage(colorSizeBean.getBrokrage());
                         product.setPrice(colorSizeBean.getPrice());
                         product.setCount(1);
-                        product.setVipPrice(colorSizeBean.getPrice() - product.getBrokerage()*(1 - MyApplication.vipRate));
+                        product.setVipPrice(colorSizeBean.getPrice() - product.getBrokerage()*(1 - MyApplication.vipRate/100.0));
                         getPostage(product.getId(), new OnGetPostageFinishedListener() {
                             @Override
                             public void onGetPostageFinishedListener(double postage) {
@@ -3322,7 +3366,7 @@ public class FXMallModel {
      */
 
     public static void getPostage(int productId, final OnGetPostageFinishedListener listener) {
-        LogUtil.i("TAG","开始计算邮费=================商品id=="+productId);
+        if(TextUtils.isEmpty(MyApplication.currentCity)){return;}
         FormBody body = new FormBody.Builder()
                 .add("id", productId + "".trim())
                 .add("address", MyApplication.currentProvince)
@@ -3339,12 +3383,10 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                LogUtil.i("TAG","邮费计算结果======"+string);
                 if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         double total = object.getDouble("total");
-                        LogUtil.i("TAG","完成计算邮费=================");
                         listener.onGetPostageFinishedListener(total);
 
                     } catch (JSONException e) {
@@ -3382,7 +3424,6 @@ public class FXMallModel {
 
     /**
      * 获取购物车中商品数量
-     *
      * @param token
      */
     public static void getShoppingCarCount(String token) {

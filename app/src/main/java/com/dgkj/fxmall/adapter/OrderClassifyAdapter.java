@@ -20,6 +20,9 @@ import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
+import com.dgkj.fxmall.listener.OnPayFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.ApplyRefundActivity;
 import com.dgkj.fxmall.view.LogisticsDetialActivity;
@@ -87,6 +90,8 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
     private Handler handler;
     private List<OrderBean> subOrders;
     private String from = "";
+    private int[] ids = new int[1];
+    private LoadProgressDialogUtil loadProgressDialogUtil;
 
     public OrderClassifyAdapter(Context context, List<SuperOrderBean> datas, FragmentActivity activity) {
         super(context,-1, datas);
@@ -95,6 +100,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
         handler = new Handler(Looper.getMainLooper());
+        loadProgressDialogUtil = new LoadProgressDialogUtil(context);
     }
 
 
@@ -199,8 +205,16 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_pay, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//去付款
-                        PayDialog dialog = new PayDialog(context,superOrderBean.getId());
+                        ids[0] = superOrderBean.getId();
+                        PayDialog dialog = new PayDialog(context,ids);
                         dialog.show(activity.getSupportFragmentManager(),"");
+                        dialog.setPayFinishListener(new OnPayFinishedListener() {
+                            @Override
+                            public void onPayFinishedListener() {
+                                mDatas.remove(position);
+                                notifyDataSetChanged();
+                            }
+                        });
                     }
                 });
                 break;
@@ -940,6 +954,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
      * @param cancleReason 取消理由
      */
     private void cancelOrder(int id, String cancleReason) {
+        loadProgressDialogUtil.buildProgressDialog();
         FormBody body = new FormBody.Builder()
                 .add("user.token",sp.get("token"))
                 .add("id",id+"")
@@ -962,7 +977,12 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body().string().contains("1000")){
+                String string = response.body().string();
+                LogUtil.i("TAG","订单取消结果=="+string);
+
+                loadProgressDialogUtil.cancelProgressDialog();
+
+                if(string.contains("1000")){
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -1050,6 +1070,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
      * @param from
      */
     private void postDeleteInfo2Server(int id, String from) {
+        loadProgressDialogUtil.buildProgressDialog();
         String url = "";
         if("user".equals(from)){
             url = FXConst.DELETE_ORDER_FOR_USER;
@@ -1070,6 +1091,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        loadProgressDialogUtil.cancelProgressDialog();
                         Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -1081,6 +1103,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            loadProgressDialogUtil.cancelProgressDialog();
                             Toast.makeText(context,"删除成功！",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -1088,6 +1111,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
+                            loadProgressDialogUtil.cancelProgressDialog();
                             Toast.makeText(context,"删除失败！",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -1117,6 +1141,14 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         piv.setInputCompletetListener(new InputCompletetListener() {
             @Override
             public void inputComplete() {
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadProgressDialogUtil.buildProgressDialog();
+                    }
+                });
+
                 final String password = piv.getEditContent();
                 //TODO 检测支付密码的正确性,进行提现
                 FormBody body = new FormBody.Builder()
@@ -1130,6 +1162,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        loadProgressDialogUtil.cancelProgressDialog();
                     }
 
                     @Override
@@ -1142,6 +1175,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                                 @Override
                                 public void run() {
                                     Toast.makeText(context,"密码错误！",Toast.LENGTH_SHORT).show();
+                                    loadProgressDialogUtil.cancelProgressDialog();
                                 }
                             });
                         }
@@ -1183,6 +1217,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     @Override
                     public void run() {
                         Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
+                        loadProgressDialogUtil.cancelProgressDialog();
                     }
                 });
             }
@@ -1195,6 +1230,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                         @Override
                         public void run() {
                             Toast.makeText(context,"收货成功！",Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 }else if(result.contains("109")){
@@ -1202,6 +1238,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                         @Override
                         public void run() {
                             Toast.makeText(context,"非法操作！",Toast.LENGTH_SHORT).show();
+                            loadProgressDialogUtil.cancelProgressDialog();
                         }
                     });
                 }
@@ -1214,6 +1251,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
      * 提醒发货
      */
     private void notifyDeliver(OrderBean order,String url) {
+        loadProgressDialogUtil.buildProgressDialog();
         FormBody body = new FormBody.Builder()
                 .add("id",order.getId()+"".trim())
                 .add("user.token",sp.get("token"))
@@ -1228,11 +1266,14 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
                 String string = response.body().string();
+                LogUtil.i("TAG","提醒发货========="+string);
                 if(string.contains("1000")){
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            loadProgressDialogUtil.cancelProgressDialog();
                             Toast toast = Toast.makeText(context,"",Toast.LENGTH_SHORT);
                             View view = activity.getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
                             TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);
@@ -1245,6 +1286,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            loadProgressDialogUtil.cancelProgressDialog();
                             Toast toast = Toast.makeText(context,"",Toast.LENGTH_SHORT);
                             View view = activity.getLayoutInflater().inflate(R.layout.layout_toast_dialog, null);
                             TextView tvContent = (TextView) view.findViewById(R.id.tv_toast_content);

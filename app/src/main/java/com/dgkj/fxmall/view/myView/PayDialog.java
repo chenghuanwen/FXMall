@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -15,6 +16,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,8 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
+import com.dgkj.fxmall.listener.OnPayFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.PayResult;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
@@ -56,8 +61,10 @@ public class PayDialog extends DialogFragment {
     private SharedPreferencesUnit sp;
     private int payMode = 3;
     private boolean isSettPayword;
-
-    private int orderId;
+    private int[] orderIds;
+    private LoadProgressDialogUtil loadProgressDialogUtil;
+    private OnPayFinishedListener listener;
+    private Handler uiHandler = new Handler(Looper.getMainLooper());
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @SuppressWarnings("unused")
@@ -89,16 +96,20 @@ public class PayDialog extends DialogFragment {
     };
 
 
-    public PayDialog(Context context,int orderId) {
+    public PayDialog(Context context,int[] orderIds) {
         this.context = context;
-        this.orderId = orderId;
+        this.orderIds = orderIds;
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
+        loadProgressDialogUtil = new LoadProgressDialogUtil(context);
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        whetherHasSetPayWord();
+
         // 使用不带theme的构造器，获得的dialog边框距离屏幕仍有几毫米的缝隙。
         // Dialog dialog = new Dialog(getActivity());
         final Dialog dialog = new Dialog(getActivity(), R.style.ColorAndSizeSelectDialog);
@@ -119,7 +130,7 @@ public class PayDialog extends DialogFragment {
         tvCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, OrderDetialActivity.class));
+               // context.startActivity(new Intent(context, OrderDetialActivity.class));
                 dialog.dismiss();
             }
         });
@@ -159,11 +170,18 @@ public class PayDialog extends DialogFragment {
      * 支付订单
      */
     private void toPay(String password) {
-
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                loadProgressDialogUtil.buildProgressDialog();
+            }
+        });
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("user.token",sp.get("token"))
-                .add("id",orderId+"".trim())
                 .add("payMode",payMode+"".trim());
+        for (int i = 0; i < orderIds.length; i++) {
+            builder.add("ids",orderIds[i]+"".trim());
+        }
         if(password != null){
             builder.add("user.payPassword",password);
         }
@@ -180,6 +198,13 @@ public class PayDialog extends DialogFragment {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadProgressDialogUtil.cancelProgressDialog();
+                    }
+                });
+
                 String string = response.body().string();
                 LogUtil.i("TAG","支付结果==="+ string);
                 if(string.contains("1000")){
@@ -196,14 +221,28 @@ public class PayDialog extends DialogFragment {
                             String orderInfo = object.getString("orderInfo");
                             aliPay(orderInfo);
                         }else if(payMode==3){//TODO 余额支付返回信息
-
+                            uiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context,"支付完成",Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else if(string.contains("1008")){
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context,"余额不足",Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
-
+               if(listener != null){
+                   listener.onPayFinishedListener();
+               }
             }
         });
 
@@ -216,11 +255,20 @@ public class PayDialog extends DialogFragment {
      * @param
      */
     private void showPayDialog(){
+        whetherHasSetPayWord();
+
         View contentview = getActivity().getLayoutInflater().inflate(R.layout.layout_input_password_dialog2, null);
         final AlertDialog pw = new AlertDialog.Builder(context).create();
         pw.setView(contentview);
         TextView tvCancel = (TextView) contentview.findViewById(R.id.tv_colse);
         final PasswordInputView2 piv = (PasswordInputView2) contentview.findViewById(R.id.piv_set);
+        //自动弹出软键盘
+        final EditText et = (EditText) piv.findViewById(R.id.et_setpassword);
+        et.setFocusable(true);
+        //et.requestFocus();
+        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0,InputMethodManager.HIDE_NOT_ALWAYS);
+
         tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,6 +282,8 @@ public class PayDialog extends DialogFragment {
                 String password = piv.getEditContent();
                 //TODO 检测支付密码的正确性,进行支付
                 checkPayword(password);
+                pw.dismiss();
+                imm.hideSoftInputFromWindow(et.getWindowToken(),0);
 
             }
 
@@ -269,12 +319,13 @@ public class PayDialog extends DialogFragment {
                 if (string.contains("1000")) {
                     toPay(password);
                 } else if (string.contains("1003")) {
-                    getActivity().runOnUiThread(new Runnable() {
+                    uiHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getContext(),"密码错误",Toast.LENGTH_SHORT).show();
                         }
                     });
+
                 }
             }
         });
@@ -342,6 +393,7 @@ public class PayDialog extends DialogFragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","是否设置支付密码==="+result);
                 if (result.contains("1000")) {
                     isSettPayword = true;
                 } else if (result.contains("109")) {
@@ -349,5 +401,9 @@ public class PayDialog extends DialogFragment {
                 }
             }
         });
+    }
+
+    public void setPayFinishListener(OnPayFinishedListener listener){
+        this.listener = listener;
     }
 }

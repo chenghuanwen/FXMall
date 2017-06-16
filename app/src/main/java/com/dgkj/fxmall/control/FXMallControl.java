@@ -120,8 +120,8 @@ public class FXMallControl {
         FXMallModel.getStoreProductClassify(context,id,statu,client,listener);
     }
 
-    public void add2shoppingcar(final BaseActivity context,String token,int skuId,OkHttpClient client){
-        FXMallModel.add2shoppingcar(context,token,skuId,client);
+    public void add2shoppingcar(final BaseActivity context,String token,int skuId,int num,OkHttpClient client){
+        FXMallModel.add2shoppingcar(context,token,skuId,num,client);
     }
 
     public  void getTransactionRecord(final BaseActivity context,String token,int index,int size,OkHttpClient client, OnGetTransactionRecorderFinishedListener listener){

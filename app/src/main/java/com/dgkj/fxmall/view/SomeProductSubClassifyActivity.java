@@ -12,7 +12,9 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
+import com.dgkj.fxmall.bean.StoreProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
@@ -43,8 +45,8 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     private View headerview;
     private List<MainProductBean> productList;
     private MainProductDisplayAdapter adapter;
-    private String type = "totalScore",orderBy="";
-    private int subId,index;
+    private String type = "totalScore",orderBy="createTime",from="";
+    private int subId,index,storeId;
     private FXMallControl control = new FXMallControl();
     private OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     private List<MainProductBean> totalData;
@@ -60,7 +62,11 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
 
         progressDialogUtil = new LoadProgressDialogUtil(this);
 
-        refresh();
+        if("store".equals(from)){
+            refresh(orderBy,1,20,storeId,subId);
+        }else {
+            refresh();
+        }
     }
 
     @Override
@@ -71,7 +77,7 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     private void refresh() {
         progressDialogUtil.buildProgressDialog();
 
-        //TEST
+      /*  //TEST
         control.getSubClassifyProductData(new OnGetSubClassifyProductsFinishedListener() {
             @Override
             public void onGetDemandDatasFinished(final List<MainProductBean> products) {
@@ -84,7 +90,7 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
                 });
 
             }
-        });
+        });*/
 
         control.getProductsOfSubclassify(subId, orderBy, index, 20, okHttpClient, new OnSearchProductsFinishedListener() {
             @Override
@@ -97,6 +103,25 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
                         progressDialogUtil.cancelProgressDialog();
                     }
                 });
+            }
+        });
+    }
+
+
+    /**
+     * 获取店铺二级分类商品
+     * @param orderBy
+     * @param index
+     * @param size
+     * @param storeId
+     * @param subId
+     */
+    private void refresh(String orderBy, int index, int size, int storeId,int subId){
+        loadProgressDialogUtil.buildProgressDialog();
+        control.getMyStoreSubClassifyProducts(this, storeId, okHttpClient, orderBy, index, size, subId, new OnGetStoreProductsFinishedListener() {
+            @Override
+            public void OnGetStoreProductsFinished(List<StoreProductBean> products) {
+
             }
         });
     }
@@ -150,6 +175,10 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, getIntent().getStringExtra("type"));
         subId = getIntent().getIntExtra("subId",0);
+        from = getIntent().getStringExtra("from");
+        if("store".equals(from)){
+            storeId = getIntent().getIntExtra("storeId",-1);
+        }
     }
 
 

@@ -44,6 +44,7 @@ public class ProductClassifyGridViewAdapter extends CommonAdapter<ProductClassif
                 Intent intent = null;
                 if("product".equals(from)){
                     intent = new Intent(context,SomeProductSubClassifyActivity.class);
+                    intent.putExtra("from","product");
                 }else {
                     intent = new Intent(context, SomeDemandClassifyActivity.class);
                 }

@@ -54,6 +54,7 @@ public class StoreProductsClassifyActivity extends BaseActivity {
         control.getStoreProductClassify(this, storeId, 0, client, new OnGetStoreProductClassifyFinishedListener() {
             @Override
             public void onGetStoreProductClassifyFinished(List<StoreProductClassifyBean> classifyList) {
+                loadProgressDialogUtil.cancelProgressDialog();
                 for (int i = 0; i < classifyList.size(); i++) {
                     final StoreProductClassifyBean classify = classifyList.get(i);
                     runOnUiThread(new Runnable() {
@@ -68,7 +69,7 @@ public class StoreProductsClassifyActivity extends BaseActivity {
                             tvCount.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    jump(classify.getName());
+                                    jump(classify.getName(),classify.getId());
                                 }
                             });
                         }
@@ -85,7 +86,7 @@ public class StoreProductsClassifyActivity extends BaseActivity {
 
     @OnClick(R.id.tv_all_products)
     public void toAll() {
-        jump("全部商品");
+        jump("全部商品",-1);
     }
 
    /* @OnClick(R.id.tv_product_type1)
@@ -104,9 +105,12 @@ public class StoreProductsClassifyActivity extends BaseActivity {
     }
 */
 
-    private void jump(String type) {
+    private void jump(String type,int subId) {
         Intent intent = new Intent(this, SomeProductSubClassifyActivity.class);
         intent.putExtra("type", type);
+        intent.putExtra("from","store");
+        intent.putExtra("storeId",storeId);
+        intent.putExtra("subId",subId);
         startActivity(intent);
     }
 

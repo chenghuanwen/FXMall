@@ -319,4 +319,36 @@ public class ShoppingGoodsBean implements Parcelable {
     public void setDeliverable(boolean deliverable) {
         isDeliverable = deliverable;
     }
+
+
+    @Override
+    public String toString() {
+        return "ShoppingGoodsBean{" +
+                "isSelected=" + isSelected +
+                ", url='" + url + '\'' +
+                ", introduce='" + introduce + '\'' +
+                ", address='" + address + '\'' +
+                ", price=" + price +
+                ", count=" + count +
+                ", skuId=" + skuId +
+                ", productId=" + productId +
+                ", carId=" + carId +
+                ", brokerage=" + brokerage +
+                ", inventory=" + inventory +
+                ", mainUrls=" + mainUrls +
+                ", detialUrls=" + detialUrls +
+                ", statu=" + statu +
+                ", sales=" + sales +
+                ", describeScore=" + describeScore +
+                ", priceScore=" + priceScore +
+                ", qualityScore=" + qualityScore +
+                ", totalScore=" + totalScore +
+                ", storeBean=" + storeBean +
+                ", color='" + color + '\'' +
+                ", vipPrice=" + vipPrice +
+                ", postage='" + postage + '\'' +
+                ", storeName='" + storeName + '\'' +
+                ", isDeliverable=" + isDeliverable +
+                '}';
+    }
 }

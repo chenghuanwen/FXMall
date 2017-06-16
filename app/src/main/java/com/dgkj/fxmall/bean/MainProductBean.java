@@ -268,4 +268,32 @@ public class MainProductBean implements Parcelable{
     public void setDeliverable(boolean deliverable) {
         isDeliverable = deliverable;
     }
+
+
+    @Override
+    public String toString() {
+        return "MainProductBean{" +
+                "urls=" + urls +
+                ", detialUrls=" + detialUrls +
+                ", introduce='" + introduce + '\'' +
+                ", price=" + price +
+                ", sales='" + sales + '\'' +
+                ", address='" + address + '\'' +
+                ", express='" + express + '\'' +
+                ", vipPrice=" + vipPrice +
+                ", skuId=" + skuId +
+                ", count=" + count +
+                ", id=" + id +
+                ", color='" + color + '\'' +
+                ", inventory=" + inventory +
+                ", brokerage=" + brokerage +
+                ", storeBean=" + storeBean +
+                ", url='" + url + '\'' +
+                ", describeScore=" + describeScore +
+                ", priceScore=" + priceScore +
+                ", qualityScore=" + qualityScore +
+                ", totalScore=" + totalScore +
+                ", isDeliverable=" + isDeliverable +
+                '}';
+    }
 }

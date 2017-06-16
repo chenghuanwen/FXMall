@@ -86,6 +86,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private LinearLayout contentView;
     private String from = "";
+    private int[] orderIds = new int[1];
 
 
     @Override
@@ -94,6 +95,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         //TODO 根据不同的订单状态选择不同的界面，各界面内不同的控件由findviewbyid查找
         from = getIntent().getStringExtra("from");
         superOrder = (SuperOrderBean) getIntent().getSerializableExtra("order");
+        if(superOrder==null){return;}
         order = superOrder.getSubOrders().get(0);
 
         int stateNum = order.getStateNum();
@@ -303,7 +305,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 startActivityForResult(new Intent(OrderDetialActivity.this,TakeGoodsAdressActivity.class),171);
                 break;
             case R.id.btn_pay://付款
-                PayDialog dialog = new PayDialog(OrderDetialActivity.this,order.getId());
+                orderIds[0] = order.getId();
+                PayDialog dialog = new PayDialog(OrderDetialActivity.this,orderIds);
                 dialog.show(getSupportFragmentManager(), "");
                 break;
             case R.id.btn_notify_deliver://提醒发货
@@ -380,6 +383,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
      * @param id 订单id
      */
     private void notifyTakeGoods(int id) {
+
         FormBody body = new FormBody.Builder()
                 .add("user.token",sp.get("token"))
                 .add("id",id+"".trim())

@@ -19,6 +19,8 @@ import com.dgkj.fxmall.bean.ShoppingCarBean;
 import com.dgkj.fxmall.bean.ShoppingGoodsBean;
 import com.dgkj.fxmall.bean.TakeGoodsAddressBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.OnPayFinishedListener;
+import com.dgkj.fxmall.listener.OnSubmitOrdersFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.view.myView.PayDialog;
 
@@ -75,6 +77,7 @@ public class ConfirmOrderActivity extends BaseActivity {
     private double postageSum;//邮费
     private String phone,man;
     private int[] orderIds;
+    private double orderSumMoney = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,9 +133,9 @@ public class ConfirmOrderActivity extends BaseActivity {
                 ShoppingGoodsBean orderBean = goods.get(j);
                 //计算某件商品邮费（根据发货地址）
                 String express = orderBean.getPostage();
-                if(!express.equals("包邮")){
+                if(express!=null && !"包邮".equals(express)){
                     int indexOf = express.indexOf("¥");
-                    double post = Double.parseDouble(express.substring(indexOf, express.length()));
+                    double post = Double.parseDouble(express.substring(indexOf+1, express.length()));
                     postageSum += post;
                 }
 
@@ -163,12 +166,12 @@ public class ConfirmOrderActivity extends BaseActivity {
                 tvDescribe.setText(orderBean.getIntroduce());
                 tvColorSize.setText("颜色：" + orderBean.getColor());
                 tvCount.setText("x" + orderBean.getCount());
-                tvSinglePrice.setText("¥" + orderBean.getVipPrice());
-                sum = orderBean.getVipPrice() * orderBean.getCount();
+                tvSinglePrice.setText("¥" + orderBean.getPrice());
+                sum = orderBean.getPrice() * orderBean.getCount();
 
                 totalCount += orderBean.getCount();
                 storeSumPrice += sum;
-                LogUtil.i("TAG","商品数量=="+orderBean.getCount()+"单价=="+orderBean.getVipPrice());
+                LogUtil.i("TAG","商品数量=="+orderBean.getCount()+"单价=="+orderBean.getPrice());
                 subContainer.addView(subView);
             }
 
@@ -178,12 +181,12 @@ public class ConfirmOrderActivity extends BaseActivity {
             llOrderContainer.addView(view);
             addViews.add(view);
             //提交当前店铺订单
-            submitOrderForOneStore(goods, i);
+          //  submitOrderForOneStore(goods, i);
 
         }
 
         tvGoodsCount.setText("总共" + totalCount + "件商品");
-        tvTotalMoney.setText("¥" + totalPrice);
+        tvTotalMoney.setText("¥" + (totalPrice+postageSum));
 
     }
 
@@ -193,7 +196,7 @@ public class ConfirmOrderActivity extends BaseActivity {
      */
     private void getDefaultAddress() {
         FormBody body = new FormBody.Builder()
-                .add("token", sp.get("token"))
+                .add("user.token", sp.get("token"))
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.GET_DEFAULT_TAKE_ADDRESS)
@@ -208,6 +211,7 @@ public class ConfirmOrderActivity extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","手机默认地址===="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -255,16 +259,38 @@ public class ConfirmOrderActivity extends BaseActivity {
 
     @OnClick(R.id.tv_submit_order)
     public void submitOrder() {
-        //TODO 如何确认订单ID
-        //订单提交成功，进行付款
-        PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,orderIds[0]);
-        dialog.show(getSupportFragmentManager(),"");
+        loadProgressDialogUtil.buildProgressDialog();
+        for (int i = 0; i < orderList.size(); i++) {
+            ShoppingCarBean carBean = orderList.get(i);
+            ArrayList<ShoppingGoodsBean> goods = carBean.getGoods();
+            submitOrderForOneStore(goods, i, new OnSubmitOrdersFinishedListener() {
+                @Override
+                public void onSubmitOrdersFinishedListener() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //TODO 如何确认订单ID
+                            //订单提交成功，进行付款
+                            PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,orderIds);
+                            dialog.show(getSupportFragmentManager(),"");
+                            dialog.setPayFinishListener(new OnPayFinishedListener() {
+                                @Override
+                                public void onPayFinishedListener() {
+                                    finish();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     /**
      * 提交某家店铺中的订单
      */
-    public void submitOrderForOneStore(List<ShoppingGoodsBean> goods, final int position) {
+    public void submitOrderForOneStore(List<ShoppingGoodsBean> goods, final int position, final OnSubmitOrdersFinishedListener listener) {
         boolean isDeliver = true;
         for (int i = 0; i < goods.size()-1; i++) {
             if(goods.get(i).isDeliverable() && !goods.get(i+1).isDeliverable()){
@@ -274,10 +300,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                 isDeliver = goods.get(i).isDeliverable();
                 LogUtil.i("TAG","是否支持发货=="+isDeliver);
             }
-
-
         }
-
 
         int[] skuIds = new int[goods.size()];
         int[] nums = new int[goods.size()];
@@ -285,13 +308,14 @@ public class ConfirmOrderActivity extends BaseActivity {
             ShoppingGoodsBean orderBean = goods.get(i);
             skuIds[i] = orderBean.getSkuId();
             nums[i] = orderBean.getCount();
+            LogUtil.i("TAG","订单skuId==="+orderBean.getSkuId());
         }
 
         //先向服务器提交订单
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("orders.user.token", sp.get("token"));
         if(isDeliver){
-            builder.add("orders.shoppingAddress.id", defaultAddressId + "");
+            builder.add("orders.shoppingAddress.id", defaultAddressId + "".trim());
         }else {
             if(TextUtils.isEmpty(phone) || TextUtils.isEmpty(man)){
                 Toast.makeText(ConfirmOrderActivity.this,"还没填写个人信息",Toast.LENGTH_SHORT).show();
@@ -301,16 +325,18 @@ public class ConfirmOrderActivity extends BaseActivity {
             .add("orders.phone",phone);
         }
         for (int skuId : skuIds) {
-            builder.add("ids", skuId + "");
+            builder.add("ids", skuId + "".trim());
         }
         for (int num : nums) {
-            builder.add("nums", num + "");
+            builder.add("nums", num + "".trim());
         }
 
         View view = addViews.get(position);
         EditText etLeave = (EditText) view.findViewById(R.id.et_say_to_seller);
-        builder.add("order.leave", etLeave.getText().toString());
-
+        String leave = etLeave.getText().toString();
+        if(!TextUtils.isEmpty(leave)){
+            builder.add("order.leave", leave);
+        }
 
         FormBody formBody = builder.build();
         Request request = new Request.Builder()
@@ -332,9 +358,24 @@ public class ConfirmOrderActivity extends BaseActivity {
                         JSONObject object = new JSONObject(result);
                         int id = object.getInt("data");
                         orderIds[position] = id;
+                        double total = object.getDouble("total");
+                        orderSumMoney += total;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else if(result.contains("1008")){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ConfirmOrderActivity.this,"不可购买自己店铺的商品",Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    });
+                }
+                if(position==orderList.size()-1){
+                    loadProgressDialogUtil.cancelProgressDialog();
+                    LogUtil.i("TAG","应付总价==="+orderSumMoney);
+                    listener.onSubmitOrdersFinishedListener();
                 }
             }
         });
@@ -351,6 +392,7 @@ public class ConfirmOrderActivity extends BaseActivity {
             tvOrderTakeMan.setText(address.getName());
             tvOrderTakeAddress.setText(address.getAddress());
             tvOrderTakePhone.setText(address.getPhone());
+            defaultAddressId = address.getId();
         }else if(requestCode==186 && resultCode==187){
             tvSelectAddress.setVisibility(View.GONE);
             llOrderAddress.setVisibility(View.VISIBLE);

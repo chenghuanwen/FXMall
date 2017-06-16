@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.HomePageFragmentAdapter;
@@ -44,11 +45,11 @@ public class ShangpuOrderActivity extends BaseActivity {
     private List<SuperOrderBean> sold;
     private List<SuperOrderBean> refund;
     private List<SuperOrderBean> waitDeliver;
-    private List<OrderBean> subHasDeliver,subSols,subRefund,subWaitDeliver;
+    private List<OrderBean> subHasDeliver, subSols, subRefund, subWaitDeliver;
     private HomePageFragmentAdapter adapter;
-    private String[] states = new String[]{"等待发货", "已发货", "已完成", "买家申请退货/退款", "等待收货", "等待买家发货", "退款已完成", "已拒绝申请","待接单","已接单"};
+    private String[] states = new String[]{"等待发货", "已发货", "已完成", "买家申请退货/退款", "等待收货", "等待买家发货", "退款已完成", "已拒绝申请", "待接单", "已接单"};
     private String from = "";
-    private int statu, isAll,index=1;
+    private int statu = 0, isAll, index = 1;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
 
@@ -58,9 +59,9 @@ public class ShangpuOrderActivity extends BaseActivity {
         setContentView(R.layout.activity_shangpu_order);
         ButterKnife.bind(this);
         initHeaderView();
-        refresh(statu,0,1);
-        initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
-        initTab();
+        refresh(statu, 0, 1);
+        //   initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
+        // initTab();
     }
 
     @Override
@@ -71,18 +72,23 @@ public class ShangpuOrderActivity extends BaseActivity {
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "我的订单");
-    }
 
-
-    private void initFragment() {
         fragments = new ArrayList<>();
         allOrder = new ArrayList<>();
         waitDeliver = new ArrayList<>();
         hasDeliver = new ArrayList<>();
         sold = new ArrayList<>();
         refund = new ArrayList<>();
+        subHasDeliver = new ArrayList<>();
+        subWaitDeliver = new ArrayList<>();
+        subSols = new ArrayList<>();
+        subRefund = new ArrayList<>();
+    }
 
-        //TEST
+
+    private void initFragment() {
+
+      /*  //TEST
         for (int i = 0; i < 10; i++) {
             List<OrderBean> list = new ArrayList<>();
             SuperOrderBean superOrderBean = new SuperOrderBean();
@@ -124,7 +130,7 @@ public class ShangpuOrderActivity extends BaseActivity {
         refund.add(allOrder.get(5));
         refund.add(allOrder.get(6));
         refund.add(allOrder.get(7));
-
+*/
         fragments.add(new MyOrderClassifyFragment(waitDeliver));
         fragments.add(new MyOrderClassifyFragment(hasDeliver));
         fragments.add(new MyOrderClassifyFragment(sold));
@@ -181,59 +187,62 @@ public class ShangpuOrderActivity extends BaseActivity {
     }
 
 
-
-    private void refresh(int statu, int isAll,int index) {
-        subHasDeliver = new ArrayList<>();
-        subWaitDeliver = new ArrayList<>();
-        subSols = new ArrayList<>();
-        subRefund = new ArrayList<>();
-
-        control.getStoreOrderInfo(this, sp.get("token"), statu, isAll,index,20, client, new OnGetMyOrderInfoFinishedListener() {
+    private void refresh(int statu, int isAll, int index) {
+        loadProgressDialogUtil.buildProgressDialog();
+        control.getStoreOrderInfo(this, sp.get("token"), statu, isAll, index, 20, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
             public void onGetMyOrderInfoFinished(final List<OrderBean> orders) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        allOrder.addAll(sortProductsOfOrder(orders));
+                loadProgressDialogUtil.cancelProgressDialog();
+                if(orders.size()==0){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ShangpuOrderActivity.this,"亲，你还未下过订单哦，快去购买吧！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    allOrder.addAll(sortProductsOfOrder(orders));
+                    for (OrderBean order : orders) {
+                        switch (order.getStateNum()) {
+                            //TODO 根据订单不同状态区分
+                            case 0:
+                                subHasDeliver.add(order);
+                                break;
+                            case 1:
+                                subWaitDeliver.add(order);
+                                break;
+                            case 2:
+                                subSols.add(order);
+                                break;
+                            case 3:
+                                subRefund.add(order);
+                                break;
+                        }
                     }
-                });
-
-                for (OrderBean order : orders) {
-                    switch (order.getStateNum()) {
-                        //TODO 根据订单不同状态区分
-                        case 0:
-                            subHasDeliver.add(order);
-                            break;
-                        case 1:
-                            subWaitDeliver.add(order);
-                            break;
-                        case 2:
-                            subSols.add(order);
-                            break;
-                        case 3:
-                            subRefund.add(order);
-                            break;
-                    }
+                    waitDeliver.addAll(sortProductsOfOrder(subWaitDeliver));
+                    hasDeliver.addAll(sortProductsOfOrder(subHasDeliver));
+                    sold.addAll(sortProductsOfOrder(subSols));
+                    refund.addAll(sortProductsOfOrder(subRefund));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
+                            initTab();
+                        }
+                    });
                 }
-                waitDeliver.addAll(sortProductsOfOrder(subWaitDeliver));
-                hasDeliver.addAll(sortProductsOfOrder(subHasDeliver));
-                sold.addAll(sortProductsOfOrder(subSols));
-                refund.addAll(sortProductsOfOrder(subRefund));
-
-                initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
-                initTab();
             }
         });
     }
 
 
-
     /**
      * 将相同订单id数据放到同一个集合
+     *
      * @param orders
      * @return
      */
-    public  List<SuperOrderBean> sortProductsOfOrder(List<OrderBean> orders) {
+    public List<SuperOrderBean> sortProductsOfOrder(List<OrderBean> orders) {
         //将所有运费模板按照id进行分类，相同的id属于同一个大模板
         List<SuperOrderBean> superPostageList = new ArrayList<>();
         Map<OrderBean, List<OrderBean>> map = new HashMap<>();

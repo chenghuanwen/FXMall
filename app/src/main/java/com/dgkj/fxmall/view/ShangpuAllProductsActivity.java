@@ -110,8 +110,14 @@ public class ShangpuAllProductsActivity extends BaseActivity {
         loadProgressDialogUtil.buildProgressDialog();
         control.getMyStoreSubClassifyProducts(this, storeId, client, orderBy, index, size, subId, new OnGetStoreProductsFinishedListener() {
             @Override
-            public void OnGetStoreProductsFinished(List<StoreProductBean> products) {
-
+            public void OnGetStoreProductsFinished(final List<StoreProductBean> products) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(products, true);
+                        loadProgressDialogUtil.cancelProgressDialog();
+                    }
+                });
             }
         });
     }

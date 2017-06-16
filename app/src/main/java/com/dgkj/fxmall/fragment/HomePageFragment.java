@@ -170,7 +170,7 @@ public class HomePageFragment extends Fragment {
                     LogUtil.i("TAG","搜索热词==="+words.get(0));
 
                     //TODO 搜索热词无数据
-                    control.getSearchProducts(getActivity(), "a","createTime",null,null,null,null,index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
+                    control.getSearchProducts(getActivity(), words.get(2),"createTime",null,null,null,null,index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
                         @Override
                         public void onSearchProductsFinished(final List<MainProductBean> products) {
                             getActivity().runOnUiThread(new Runnable() {

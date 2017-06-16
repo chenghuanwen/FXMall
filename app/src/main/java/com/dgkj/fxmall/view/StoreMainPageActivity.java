@@ -25,6 +25,7 @@ import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
 import com.dgkj.fxmall.view.myView.ShareStoreInfoDialog;
 
@@ -79,7 +80,7 @@ public class StoreMainPageActivity extends BaseActivity {
     private StoreBean store;
     private List<MainProductBean> goods;
     private MainProductDisplayAdapter adapter;
-    private String orderBy="totalScore ";
+    private String orderBy="createTime";
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
     private int index = 1;
@@ -99,6 +100,7 @@ public class StoreMainPageActivity extends BaseActivity {
     }
 
     private void refresh() {
+        LogUtil.i("TAG","获取商店主页商品==========storeId=="+store.getId());
             control.getSearchProducts(this, null, orderBy,null,null,null,null,index, 20, store.getId(), client, new OnSearchProductsFinishedListener() {
                 @Override
                 public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
@@ -147,10 +149,11 @@ public class StoreMainPageActivity extends BaseActivity {
         }
         Glide.with(this).load(store.getIconUrl()).error(R.mipmap.sz_tx).into(civShangpuItem);
         tvStoreName.setText(store.getName());
-        tvStoreAddress.setText(store.getAdress());
+        String adress = store.getAdress();
+        tvStoreAddress.setText(adress.substring(0,adress.indexOf("市")+1));
 
-        tvStoreSales.setText("销售总量" + store.getTotalScals());
-        tvStoreGoods.setText("宝贝数" + store.getGoodsCount());
+        tvStoreSales.setText("销售总量：" + store.getTotalScals());
+        tvStoreGoods.setText("宝贝数：" + store.getGoodsCount());
         //TODO 设置商品评分图片
        // double stars = (store.getDescribeScore() + store.getQualityScore() + store.getPriceScore()) / 3;
         double stars = store.getTotalScore();

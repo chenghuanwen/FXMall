@@ -71,7 +71,7 @@ public class FXConst {
     public static final String GET_STORE_SALE_COUNT = FXM_URL_PORT+"commodityAction_getStatusTotal";
 
     public static final String GET_STORE_DETIAL_INFO = FXM_URL_PORT+"storeAction_storeDetail";
-    public static final String ADD_PRODUCT_TO_SHOPPINGCAR = FXM_URL_PORT+"shoppingCartAction_getCart";
+    public static final String ADD_PRODUCT_TO_SHOPPINGCAR = FXM_URL_PORT+"shoppingCartAction_addCart";
     public static final String GET_SHOPPINGCAR_PRODUCTS = FXM_URL_PORT+"shoppingCartAction_getCart";
     public static final String CHAGNE_PRODUCT_COUNT_IN_CAR = FXM_URL_PORT+"shoppingCartAction_updateCart";
     public static final String DELETE_PRODUCT_COUNT_IN_CAR = FXM_URL_PORT+"shoppingCartAction_deleteCart";
@@ -94,7 +94,7 @@ public class FXConst {
 
     public static final String SUBMIT_ORDER_URL = FXM_URL_PORT+"orderCommodityAction_addOrder";
     public static final String GET_ORDER_CALSSIFY = FXM_URL_PORT+"orderAction_orderInfo";
-    public static final String CANCEL_ORDER_URL = FXM_URL_PORT+"orderAction_closeOrde";
+    public static final String CANCEL_ORDER_URL = FXM_URL_PORT+"orderAction_closeOrder";
 
     public static final String PAY_ORDER_URL = FXM_URL_PORT+"orderAction_pay";
 
@@ -107,7 +107,7 @@ public class FXConst {
     public static final String PUBLISH_COMMENT_URL = FXM_URL_PORT+"estimateAction_estimate";
     public static final String GET_COMMENTS_FOR_ONE_PRODUCT = FXM_URL_PORT+"estimateAction_getEstimate";
 
-    public static final String GET_STORE_ORDER_CLASSIFY = FXM_URL_PORT+"orderAction_storeOrde";
+    public static final String GET_STORE_ORDER_CLASSIFY = FXM_URL_PORT+"orderAction_storeOrder";
     public static final String DELETE_ORDER_FOR_STORE = FXM_URL_PORT+"orderAction_delSO";
     public static final String DELETE_ORDER_FOR_USER = FXM_URL_PORT+"orderAction_delUO";
     public static final String USER_APPLY_REFUND_URL = FXM_URL_PORT+"refundOrderAction";

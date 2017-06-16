@@ -58,7 +58,7 @@ public class MyOrdersActivity extends BaseActivity {
     private HomePageFragmentAdapter adapter;
     private String[] states = new String[]{"等待买家付款", "等待卖家发货", "等待买家收货", "等待买家评价", "交易完成","待确认","商家已接单","待付款(不支持发货)"};
     private String from = "";
-    private int statu, isAll;
+    private int statu=0, isAll;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private FXMallControl control = new FXMallControl();
 
@@ -69,9 +69,9 @@ public class MyOrdersActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initHeaderView();
-    //    refresh(statu, 0);
-        initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
-        initTab();
+         refresh(statu, 0);
+      //  initFragment();//必须在TabLayout之前初始化，否则TabLayout标题无法显示
+       // initTab();
     }
 
     @Override
@@ -80,6 +80,7 @@ public class MyOrdersActivity extends BaseActivity {
     }
 
     private void refresh(int statu, int isAll) {
+        loadProgressDialogUtil.buildProgressDialog();
         waitPayOrders = new ArrayList<>();
         waitDeliverOrders = new ArrayList<>();
         waitTakeOrders = new ArrayList<>();
@@ -88,6 +89,15 @@ public class MyOrdersActivity extends BaseActivity {
         control.getMyOrderInfo(this, sp.get("token"), statu, isAll, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
             public void onGetMyOrderInfoFinished(List<OrderBean> orders) {
+                loadProgressDialogUtil.cancelProgressDialog();
+                if(orders.size()==0){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MyOrdersActivity.this,"亲，你还未下过订单哦，快去购买吧！",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
                 allOrder.addAll(sortProductsOfOrder(orders));
                 for (OrderBean order : orders) {
                     switch (order.getStateNum()) {
@@ -117,20 +127,14 @@ public class MyOrdersActivity extends BaseActivity {
                         initTab();
                     }
                 });
-
+            }
             }
         });
     }
 
     private void initFragment() {
-        fragments = new ArrayList<>();
-        allOrder = new ArrayList<>();
-        waitPay = new ArrayList<>();
-        waitDeliver = new ArrayList<>();
-        waitTakeGoods = new ArrayList<>();
-        waitComment = new ArrayList<>();
 
-        //TEST
+     /*   //TEST
         for (int i = 0; i < 8; i++) {
             List<OrderBean> list = new ArrayList<>();
             SuperOrderBean superOrderBean = new SuperOrderBean();
@@ -169,7 +173,7 @@ public class MyOrdersActivity extends BaseActivity {
         waitTakeGoods.add(allOrder.get(2));
         waitTakeGoods.add(allOrder.get(4));
         waitComment.add(allOrder.get(3));
-
+*/
 
 
 
@@ -238,6 +242,13 @@ public class MyOrdersActivity extends BaseActivity {
     private void initHeaderView() {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "我的订单");
+
+        fragments = new ArrayList<>();
+        allOrder = new ArrayList<>();
+        waitPay = new ArrayList<>();
+        waitDeliver = new ArrayList<>();
+        waitTakeGoods = new ArrayList<>();
+        waitComment = new ArrayList<>();
     }
 
     @OnClick(R.id.ib_back)

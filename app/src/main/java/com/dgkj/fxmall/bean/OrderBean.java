@@ -10,7 +10,7 @@ public class OrderBean implements Serializable{
     private String storeName,url,introduce,color,size;
     private String storeUser,storePhone,storeAddress;
     private int count;
-    private int singlePrice;
+    private double singlePrice;
     private int postage;
     private String state;
     private String orderNum;
@@ -324,11 +324,11 @@ public class OrderBean implements Serializable{
         this.count = count;
     }
 
-    public int getSinglePrice() {
+    public double getSinglePrice() {
         return singlePrice;
     }
 
-    public void setSinglePrice(int singlePrice) {
+    public void setSinglePrice(double singlePrice) {
         this.singlePrice = singlePrice;
     }
 

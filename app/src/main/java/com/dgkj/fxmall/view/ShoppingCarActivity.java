@@ -111,16 +111,18 @@ public class ShoppingCarActivity extends BaseActivity {
     }
 
     private void refresh() {
-        control.getShopingCarData(new OnGetShoppingCarDataListener() {
+        loadProgressDialogUtil.buildProgressDialog();
+      /*  control.getShopingCarData(new OnGetShoppingCarDataListener() {
             @Override
             public void onGetShoppingCarDataFinished(List<ShoppingCarBean> carBeanList) {
                 goodsCount = carBeanList.size();
                 adapter.addAll(carBeanList, true);
             }
-        });
-        control.getShoppingcarProducts(this, sp.get("token"), index, 15, client, new OnGetShoppingcarProductsFinishedListener() {
+        });*/
+        control.getShoppingcarProducts(this, sp.get("token"), index, 20, client, new OnGetShoppingcarProductsFinishedListener() {
             @Override
             public void onGetShoppingcarProductsFinished(final List<ShoppingGoodsBean> carBeanList) {
+                loadProgressDialogUtil.cancelProgressDialog();
                 goodsCount = carBeanList.size();
                 runOnUiThread(new Runnable() {
                     @Override

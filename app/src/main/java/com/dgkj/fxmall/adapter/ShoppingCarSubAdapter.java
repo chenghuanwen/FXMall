@@ -129,7 +129,7 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                 product.setDescribeScore(goods.getDescribeScore());
                 product.setPriceScore(goods.getPriceScore());
                 product.setQualityScore(goods.getQualityScore());
-                product.setExpress(goods.getPostage()+"");//TODO 邮费
+                product.setExpress(goods.getPostage());//TODO 邮费
                 product.setIntroduce(goods.getIntroduce());
                 product.setSales(goods.getSales()+"");
                 product.setStoreBean(goods.getStoreBean());
