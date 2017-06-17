@@ -218,7 +218,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/circler_msg_count_shape"
-                android:text="2"
+                android:text=""
                 android:gravity="center"
                 android:layout_gravity="right"
                 android:layout_marginTop="5dp"

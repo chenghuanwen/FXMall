@@ -24,11 +24,7 @@ public class LoadingActivity extends BaseActivity {
             getWindow().setStatusBarColor(Color.parseColor("#1f7bbe"));
         }
         FXMallModel.getVipRate();
-        String token = sp.get("token");
-        if(!TextUtils.isEmpty(token)){
-            FXMallModel.getShoppingCarCount(token);
-            FXMallModel.getAllUnreadMsgCount(token);
-        }
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {

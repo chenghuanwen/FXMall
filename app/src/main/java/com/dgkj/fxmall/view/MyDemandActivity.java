@@ -86,7 +86,7 @@ public class MyDemandActivity extends BaseActivity {
         //TODO 获取数据
         storeList = new ArrayList<>();
         demandList = new ArrayList<>();
-        //TEST
+      /*  //TEST
         for (int i = 0; i < 10; i++) {
             List<String> url = new ArrayList<>();
             url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490872429670&di=b95cc27dc9781e9510de7753a6709f39&imgtype=0&src=http%3A%2F%2Fp.nanrenwo.net%2Fuploads%2Fallimg%2F170223%2F8450-1F223100J2.jpg");
@@ -97,7 +97,7 @@ public class MyDemandActivity extends BaseActivity {
             demand.setUrls(url);
             demandList.add(demand);
         }
-
+*/
         loadProgressDialogUtil.buildProgressDialog();
         control.getMyDemandData(this, sp.get("token"), demandIndex, 10, client, new OnGetMyDemandDataFinishedListener() {
             @Override
@@ -108,7 +108,7 @@ public class MyDemandActivity extends BaseActivity {
         });
 
 
-        //TEST
+      /*  //TEST
         for (int i = 0; i < 10; i++) {
             StoreBean store = new StoreBean();
             store.setAdress("广东深圳");
@@ -121,7 +121,7 @@ public class MyDemandActivity extends BaseActivity {
             store.setStars(5);
             store.setTotalScals(100000);
             storeList.add(store);
-        }
+        }*/
 
         control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_MY_RECOMMEND_STORES, storeIndex, 20, client, new OnGetMyRecommendStoreFinishedListener() {
             @Override

@@ -128,11 +128,11 @@ public class ShoppingCarActivity extends BaseActivity {
                     @Override
                     public void run() {
                         if(goodsCount==0){
-                            tvEmptyView.setVisibility(View.GONE);
+                            tvEmptyView.setVisibility(View.VISIBLE);
                             llContainer.setVisibility(View.GONE);
                         }else {
                             tvEmptyView.setVisibility(View.GONE);
-                            llContainer.setVisibility(View.GONE);
+                            llContainer.setVisibility(View.VISIBLE);
                             adapter.addAll(getGoodsOfOneStore(carBeanList), true);
                         }
                     }

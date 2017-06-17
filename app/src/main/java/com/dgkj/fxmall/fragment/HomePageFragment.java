@@ -264,75 +264,6 @@ public class HomePageFragment extends Fragment {
     }
 
 
-    //TEST
-    private void testRecyclerview() {
-        List<ProductClassifyBean> list1 = new ArrayList<>();
-        List<MainProductBean> list = new ArrayList<>();
-        List<String> url = new ArrayList<>();
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        for (int i = 0; i < 5; i++) {
-            MainProductBean productBean = new MainProductBean();
-            productBean.setUrls(url);
-            productBean.setDetialUrls(url);
-            productBean.setPrice(35);
-            productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-            productBean.setSales("10000");
-            productBean.setAddress("深圳");
-            productBean.setExpress("包邮");
-            productBean.setVipPrice(25);
-            productBean.setSkuId(i + 1);
-            productBean.setCount(3);
-            productBean.setId(i + 2);
-            productBean.setColor("绿色-M");
-            productBean.setInventory(100);
-            productBean.setBrokerage(20);
-            StoreBean storeBean = new StoreBean();
-            storeBean.setName("粉小萌");
-            storeBean.setAdress("广东省深圳市龙岗区");
-            storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-            storeBean.setCreateTime("2017-5-2");
-            storeBean.setStars(3);
-            storeBean.setTotalScals(300);
-            storeBean.setGoodsCount(1000);
-            storeBean.setId(i + 1);
-            storeBean.setDescribeScore(4.8);
-            storeBean.setPriceScore(4.0);
-            storeBean.setQualityScore(4.2);
-            storeBean.setTotalScore(4.5);
-            storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-            storeBean.setMainUrls(url);
-            storeBean.setKeeper("小成成");
-            storeBean.setPhone("15641651432");
-            storeBean.setRecommender("小成成");
-            productBean.setStoreBean(storeBean);
-            productBean.setUrl(url.get(0));
-            productBean.setDescribeScore(4);
-            productBean.setPriceScore(4);
-            productBean.setQualityScore(4);
-            productBean.setTotalScore(4);
-            if(i<2){
-                productBean.setDeliverable(true);
-            }else {
-                productBean.setDeliverable(false);
-            }
-            list.add(productBean);
-        }
-        productDisplayAdapter.addAll(list, true);
-
-        for (int i = 0; i < 8; i++) {
-            ProductClassifyBean bean = new ProductClassifyBean();
-            bean.setUrl("http://img.my.csdn.net/uploads/201407/26/1406383291_6518.jpg");
-            bean.setTaxon("衣服");
-            list1.add(bean);
-        }
-        classifyAdapter.addAll(list1, true);
-
-    }
 
     private void initview(View rootView) {
         okHttpClient = new OkHttpClient.Builder().build();
@@ -354,20 +285,8 @@ public class HomePageFragment extends Fragment {
         rvHomeDisplay.setHasFixedSize(true);
         rvHomeDisplay.setAdapter(productDisplayAdapter);
 
-        //TEST
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689173&di=e3c6c0aac909543ffe89fb9b67f917d7&imgtype=0&src=http%3A%2F%2Fzkres2.myzaker.com%2F201703%2F58de50e11bc8e02d3400005c_640.jpg").into(ivStore1);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689155&di=2a9cccc3be8dc8477b0a02cd825ab3c3&imgtype=0&src=http%3A%2F%2Fwww.hxw163.com%2Fuploadfile%2F2017%2F0325%2F20170325110600403.jpg").into(ivStore2);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493973689152&di=2c76f93145aa678f6c8e10ba452fb0a8&imgtype=0&src=http%3A%2F%2Fzkres2.myzaker.com%2F201703%2F58de0c3ca07aec595d04543c_640.jpg").into(ivStore3);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150352&di=50d4277e4cbbb74f24803b0cc967c70a&imgtype=0&src=http%3A%2F%2Fimg4.duitang.com%2Fuploads%2Fitem%2F201608%2F02%2F20160802172340_W528L.jpeg").into(newGoods1);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150344&di=0ba39eb86045a759464936ad002dec0c&imgtype=0&src=http%3A%2F%2Fimg5.duitang.com%2Fuploads%2Fitem%2F201512%2F09%2F20151209225838_2G3Zc.thumb.700_0.jpeg").into(newGoods2);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150340&di=6c86ce998672986123e8df590335555a&imgtype=0&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201604%2F26%2F20160426184930_ivKdF.jpeg").into(newGoods3);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974150336&di=48182bee774f3d62e89100a7f73fbea2&imgtype=0&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201607%2F23%2F20160723104550_hFtTn.thumb.700_0.jpeg").into(newGoods4);
-        Glide.with(getContext()).load("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1493974260222&di=7e54dac3ff5cfff89438fa1da97c2242&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201510%2F27%2F20151027171037_3tiQZ.jpeg").into(newGoods5);
-
-
     }
 
-/*
 
     @OnClick(R.id.iv_store1)
     public void toStore1() {
@@ -409,90 +328,8 @@ public class HomePageFragment extends Fragment {
         getProductDetial(newGoodsRecommends.get(3).getLink());
     }
 
-*/
 
-    //TEST
-    @OnClick(R.id.rl_store)
-    public void toStore(){
-        StoreBean storeBean = new StoreBean();
-        storeBean.setName("粉小萌");
-        storeBean.setAdress("广东省深圳市龙岗区");
-        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setCreateTime("2017-5-2");
-        storeBean.setStars(3);
-        storeBean.setTotalScals(300);
-        storeBean.setGoodsCount(1000);
-        storeBean.setId(5);
-        storeBean.setDescribeScore(4.8);
-        storeBean.setPriceScore(4.0);
-        storeBean.setQualityScore(4.2);
-        storeBean.setTotalScore(4.5);
-        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setMainUrls(new ArrayList<String>());
-        storeBean.setKeeper("小成成");
-        storeBean.setPhone("15641651432");
-        storeBean.setRecommender("小成成");
 
-        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("store", storeBean);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);
-    }
-
-    //TEST
-    @OnClick({R.id.new_goods1, R.id.new_goods2, R.id.new_goods3, R.id.new_goods4, R.id.new_goods5})
-    public void newGoods() {
-        Intent intent = new Intent(getContext(), ProductDetialActivity.class);
-        //TODO 需将商铺推荐数据实体类集合传递下去
-        MainProductBean productBean = new MainProductBean();
-        List<String> url = new ArrayList<>();
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        productBean.setUrls(url);
-        productBean.setDetialUrls(url);
-        productBean.setPrice(35);
-        productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-        productBean.setSales("10000");
-        productBean.setAddress("深圳");
-        productBean.setExpress("包邮");
-        productBean.setVipPrice(25);
-        productBean.setSkuId(1);
-        productBean.setCount(3);
-        productBean.setId( 2);
-        productBean.setColor("绿色-M");
-        productBean.setInventory(100);
-        productBean.setBrokerage(20);
-        StoreBean storeBean = new StoreBean();
-        storeBean.setName("粉小萌");
-        storeBean.setAdress("广东省深圳市龙岗区");
-        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setCreateTime("2017-5-2");
-        storeBean.setStars(3);
-        storeBean.setTotalScals(300);
-        storeBean.setGoodsCount(1000);
-        storeBean.setId(5);
-        storeBean.setDescribeScore(4.8);
-        storeBean.setPriceScore(4.0);
-        storeBean.setQualityScore(4.2);
-        storeBean.setTotalScore(4.5);
-        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setMainUrls(url);
-        storeBean.setKeeper("小成成");
-        storeBean.setPhone("15641651432");
-        storeBean.setRecommender("小成成");
-        productBean.setStoreBean(storeBean);
-        productBean.setUrl(url.get(0));
-        productBean.setDescribeScore(4);
-        productBean.setPriceScore(4);
-        productBean.setQualityScore(4);
-        productBean.setTotalScore(4);
-        intent.putExtra("product", productBean);
-        jumpTo(intent, false);
-    }
 
 
     //TODO 全部新品
@@ -505,7 +342,7 @@ public class HomePageFragment extends Fragment {
     //初始化banner图
     private void initBanner() {
         bannerDatas = new ArrayList<>();
-      /*  control.getBanners(okHttpClient, new OnGetBannerFinishedListener() {
+        control.getBanners(okHttpClient, new OnGetBannerFinishedListener() {
             @Override
             public void onGetBannerFinishedListener(final List<BannerBean> banners) {
                 for (BannerBean bannerBean : banners) {
@@ -531,76 +368,9 @@ public class HomePageFragment extends Fragment {
                     }
                 });
             }
-        });*/
-
-
-        //TEST
-        bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
-        bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383291_6518.jpg");
-        bannerDatas.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        banner.setImageLoader(new BannerImageLoader());
-        banner.setImages(bannerDatas);
-        banner.start();
-        banner.setOnBannerListener(new OnBannerListener() {//根据不同的推荐内容跳转到不同的详情界面
-            @Override
-            public void OnBannerClick(int position) {
-                switch (position) {
-                    case 0:
-                    case 1:
-                    case 2:
-                        Intent intent = new Intent(getContext(), ProductDetialActivity.class);
-                        //TODO 需将商铺推荐数据实体类集合传递下去
-                        MainProductBean productBean = new MainProductBean();
-                        List<String> url = new ArrayList<>();
-                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-                        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-                        productBean.setUrls(url);
-                        productBean.setDetialUrls(url);
-                        productBean.setPrice(35);
-                        productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-                        productBean.setSales("10000");
-                        productBean.setAddress("深圳");
-                        productBean.setExpress("包邮");
-                        productBean.setVipPrice(25);
-                        productBean.setSkuId(1);
-                        productBean.setCount(3);
-                        productBean.setId( 2);
-                        productBean.setColor("绿色-M");
-                        productBean.setInventory(100);
-                        productBean.setBrokerage(20);
-                        StoreBean storeBean = new StoreBean();
-                        storeBean.setName("粉小萌");
-                        storeBean.setAdress("广东省深圳市龙岗区");
-                        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-                        storeBean.setCreateTime("2017-5-2");
-                        storeBean.setStars(3);
-                        storeBean.setTotalScals(300);
-                        storeBean.setGoodsCount(1000);
-                        storeBean.setId(5);
-                        storeBean.setDescribeScore(4.8);
-                        storeBean.setPriceScore(4.0);
-                        storeBean.setQualityScore(4.2);
-                        storeBean.setTotalScore(4.5);
-                        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-                        storeBean.setMainUrls(url);
-                        storeBean.setKeeper("小成成");
-                        storeBean.setPhone("15641651432");
-                        storeBean.setRecommender("小成成");
-                        productBean.setStoreBean(storeBean);
-                        productBean.setUrl(url.get(0));
-                        productBean.setDescribeScore(4);
-                        productBean.setPriceScore(4);
-                        productBean.setQualityScore(4);
-                        productBean.setTotalScore(4);
-                        intent.putExtra("product", productBean);
-                        jumpTo(intent, false);
-                        break;
-                }
-            }
         });
+
+
     }
 
     /**

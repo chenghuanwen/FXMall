@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -32,6 +33,8 @@ import com.dgkj.fxmall.fragment.ProductsMallFragment;
 import com.dgkj.fxmall.fragment.HomePageFragment;
 import com.dgkj.fxmall.fragment.JoinUsFragment;
 import com.dgkj.fxmall.fragment.DemandMallFragment;
+import com.dgkj.fxmall.listener.OnGetSomeCountFinishedListener;
+import com.dgkj.fxmall.model.FXMallModel;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.PermissionUtil;
 
@@ -98,7 +101,7 @@ public class HomePageActivity extends BaseActivity {
         initViewPager();
         initTabLayout();
         initFooter();
-
+        getMsgCount();
         //注册百度定位监听
         mLocationClient = new LocationClient(MyApplication.getContext());
         initLocation();
@@ -113,18 +116,44 @@ public class HomePageActivity extends BaseActivity {
             vpFragment.setCurrentItem(3);
         }
 
-        if(MyApplication.shoppingCount == 0){
-            tvCarCount.setVisibility(View.GONE);
-        }else {
-            tvCarCount.setVisibility(View.VISIBLE);
-            tvCarCount.setText(MyApplication.shoppingCount+"");
-        }
+    }
 
-        if(MyApplication.msgCount == 0){
-            tvMsgCount.setVisibility(View.GONE);
-        }else {
-            tvMsgCount.setVisibility(View.VISIBLE);
-            tvMsgCount.setText(MyApplication.msgCount+"");
+    private void getMsgCount() {
+        String token = sp.get("token");
+        if(!TextUtils.isEmpty(token)){
+            FXMallModel.getShoppingCarCount(token, new OnGetSomeCountFinishedListener() {
+                @Override
+                public void onGetSomeCountFinishedListener(final int count) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(count == 0){
+                                tvCarCount.setVisibility(View.GONE);
+                            }else {
+                                tvCarCount.setVisibility(View.VISIBLE);
+                                tvCarCount.setText(count+"");
+                            }
+                        }
+                    });
+                }
+            });
+            FXMallModel.getAllUnreadMsgCount(token, new OnGetSomeCountFinishedListener() {
+                @Override
+                public void onGetSomeCountFinishedListener(final int count) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            LogUtil.i("TAG","消息中心==="+count);
+                            if(count == 0){
+                                tvMsgCount.setVisibility(View.GONE);
+                            }else {
+                                tvMsgCount.setVisibility(View.VISIBLE);
+                                tvMsgCount.setText(count+"");
+                            }
+                        }
+                    });
+                }
+            });
         }
     }
 

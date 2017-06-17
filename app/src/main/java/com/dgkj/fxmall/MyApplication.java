@@ -22,7 +22,7 @@ public class MyApplication extends Application {
     private static IWXAPI api;
     public static List<String> selectedPictures;
     public static String currentProvince = "",currentCity="";
-    public static int vipRate,shoppingCount,msgCount,systemMsgCount=5,orderMsgCount=5,warmMsgCount=5,accountMsgCount=5;
+    public static int vipRate,shoppingCount,msgCount,systemMsgCount,orderMsgCount,warmMsgCount,accountMsgCount;
     public static double balance;
     public static String root;//本APP文件夹路径
 

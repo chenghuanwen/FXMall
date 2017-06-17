@@ -60,6 +60,7 @@ import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSearchHotWordsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
 import com.dgkj.fxmall.listener.OnGetShoppingcarProductsFinishedListener;
+import com.dgkj.fxmall.listener.OnGetSomeCountFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductClassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
@@ -242,13 +243,13 @@ public class FXMallModel {
     public static void getDemandClassify(final Handler handler, final Context context, OkHttpClient client, final OnGetDemandClassifyFinishedListener listener) {
 
         final List<ProductClassifyBean> list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+      /*  for (int i = 0; i < 20; i++) {
             ProductClassifyBean classifyBean = new ProductClassifyBean();
             classifyBean.setTaxon("食品");
             classifyBean.setUrl("http://img3.duitang.com/uploads/item/201505/05/20150505210633_NHRj4.jpeg");
             list.add(classifyBean);
         }
-        listener.onGetDemandClassifyFinished(list);
+        listener.onGetDemandClassifyFinished(list);*/
 
         Request request = new Request.Builder()
                 .url(FXConst.GET_APPLY_STORE_CLASSIFY)
@@ -267,6 +268,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","需求大厅数据====="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -277,7 +279,7 @@ public class FXMallModel {
                             classify.setTaxon(jsonObject.getString("name"));
                             classify.setUrl(jsonObject.getString("url"));
                             //TODO TEST
-                            classify.setUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494337489197&di=ccbe296f381cf9b3fb7ef8ba5ac453ee&imgtype=0&src=http%3A%2F%2Fimg.tupianzj.com%2Fuploads%2Fallimg%2F160223%2F9-1602230Z405-50.jpg");
+                          //  classify.setUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494337489197&di=ccbe296f381cf9b3fb7ef8ba5ac453ee&imgtype=0&src=http%3A%2F%2Fimg.tupianzj.com%2Fuploads%2Fallimg%2F160223%2F9-1602230Z405-50.jpg");
                             classify.setId(jsonObject.getInt("id"));
                             list.add(classify);
                         }
@@ -1228,12 +1230,12 @@ public class FXMallModel {
                             goods.setCount(jsonObject.getInt("num"));
                             goods.setCarId(jsonObject.getInt("id"));
                             JSONObject sku = jsonObject.getJSONObject("sku");
+                            goods.setPrice(sku.getDouble("price"));
                             goods.setColor(sku.getString("content"));
                             goods.setBrokerage(sku.getInt("brokerage"));
                             goods.setVipPrice(goods.getPrice()-goods.getBrokerage() * (1 - MyApplication.vipRate/100.0));
                             goods.setSkuId(sku.getInt("id"));
                             goods.setInventory(sku.getInt("inventory"));
-                            goods.setPrice(sku.getDouble("price"));
 
                             JSONObject commodity = sku.getJSONObject("commodity");
                             goods.setIntroduce(commodity.getString("detail"));
@@ -1272,7 +1274,9 @@ public class FXMallModel {
                             storeBean.setCreateTime(store.getString("createTime"));
                             goods.setStoreName(storeBean.getName());
                             storeBean.setId(store.getInt("id"));
-                            storeBean.setIconUrl(store.getString("logo"));//TODO 缺少
+                            if(store.has("logo")){
+                                storeBean.setIconUrl(store.getString("logo"));//TODO 缺少
+                            }
                             storeBean.setStars(3);
                             storeBean.setQualityScore(store.getDouble("qualityScore"));
                             storeBean.setDescribeScore(store.getDouble("describeScore"));
@@ -2284,6 +2288,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","轮播图数据==="+string);
                 if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
@@ -3426,9 +3431,9 @@ public class FXMallModel {
      * 获取购物车中商品数量
      * @param token
      */
-    public static void getShoppingCarCount(String token) {
+    public static void getShoppingCarCount(String token, final OnGetSomeCountFinishedListener listener) {
         FormBody body = new FormBody.Builder()
-                .add("", token)
+                .add("user.token", token)
                 .build();
         Request request = new Request.Builder()
                 .post(body)
@@ -3442,11 +3447,13 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","购物车数量===="+string);
                 if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         int total = object.getInt("total");
                         MyApplication.shoppingCount = total;
+                        listener.onGetSomeCountFinishedListener(total);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -3459,7 +3466,7 @@ public class FXMallModel {
      * 获取未读消息总数
      * @param token
      */
-    public static void getAllUnreadMsgCount(String token){
+    public static void getAllUnreadMsgCount(String token, final OnGetSomeCountFinishedListener listener){
         FormBody body = new FormBody.Builder()
                 .add("toUser.token",token)
                 .build();
@@ -3489,6 +3496,7 @@ public class FXMallModel {
                         MyApplication.warmMsgCount = warn;
                         MyApplication.accountMsgCount = account;
                         MyApplication.msgCount = system+order+warn+account;
+                        listener.onGetSomeCountFinishedListener(system+order+warn+account);
                     } catch (JSONException e) {
                     }
                 }
