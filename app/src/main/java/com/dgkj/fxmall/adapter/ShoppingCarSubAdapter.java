@@ -69,6 +69,12 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                     msg.obj = goods;
                     msg.what = 1;//统计价格增加
                     handler.sendMessage(msg);
+                    //通知父item该条被选中
+                    Message supMsg = Message.obtain();
+                    supMsg.arg1 = superPosition;
+                    supMsg.arg2 = position;
+                    supMsg.what = 1;
+                    superHandler.sendMessage(supMsg);
 
                     //轮询当前店铺所有商品，若均已选中则通知父adapter将店铺设为全选状态
                     for (ShoppingGoodsBean data : datas) {
@@ -78,7 +84,7 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                     }
                     Message msg1 = Message.obtain();
                     msg1.arg1 = superPosition;
-                    msg1.what = 0;//父item全选
+                    msg1.what = 3;//父item全选
                     superHandler.sendMessage(msg1);
 
                 }else {
@@ -87,8 +93,14 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                     msg.obj = goods;
                     msg.what = 2;//统计价格减少
                     handler.sendMessage(msg);
+                    //通知父item该条被取消
+                    Message supMsg = Message.obtain();
+                    supMsg.arg1 = superPosition;
+                    supMsg.arg2 = position;
+                    supMsg.what = 2;
+                    superHandler.sendMessage(supMsg);
 
-                    //轮询当前店铺所有商品，若均未选中则通知父adapter将店铺设为全选状态
+                    //轮询当前店铺所有商品，若均未选中则通知父adapter将店铺设为全不选状态
                     for (ShoppingGoodsBean data : datas) {
                         if(data.isSelected()){
                             return;
@@ -96,7 +108,7 @@ public class ShoppingCarSubAdapter extends CommonAdapter<ShoppingGoodsBean> {
                     }
                     Message msg1 = Message.obtain();
                     msg1.arg1 = superPosition;
-                    msg1.what = 1;//父item全选
+                    msg1.what = 4;//父item全选
                     superHandler.sendMessage(msg1);
                 }
 

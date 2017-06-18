@@ -52,7 +52,6 @@ public class MydemandFragment extends Fragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(),2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        LogUtil.i("TAG","更新数据=========");
         adapter.addAll(mainList,true);
     }
 }

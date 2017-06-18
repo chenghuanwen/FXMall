@@ -321,9 +321,8 @@ public class PostageSettingEditActivity extends BaseActivity {
                 .add("freightProvinces[0].increaseCost", addPay)
                 .add("freightProvinces[0].provinces", "[]");
         if ("edit".equals(from)) {
-            builder.add("freightProvinces[0].id", editSuperPost.getPosts().get(0).getDistrictId() + "".trim())
-                    .add("id", editSuperPost.getId() + "".trim());
-            LogUtil.i("TAG","编辑运费模板==="+editSuperPost.getPosts().get(0).getId()+"=="+editSuperPost.getId());
+            builder.add("freightProvinces[0].id", editSuperPost.getPosts().get(0).getDistrictId() + "".trim());
+            LogUtil.i("TAG","编辑运费模板==="+editSuperPost.getPosts().get(0).getId()+"=="+editSuperPost.getPosts().get(0).getDistrictId());
         }
 
         for (int i = 0; i < viewList.size(); i++) {
@@ -357,8 +356,9 @@ public class PostageSettingEditActivity extends BaseActivity {
                     .add("freightProvinces[" + (i + 1) + "].provinces", provinces.get(i));
             LogUtil.i("TAG","选择省份JSON=="+provinces.get(i));
             if ("edit".equals(from)) {
+                LogUtil.i("TAG","更新运费模板==="+editSuperPost.getId()+"==="+editSuperPost.getPosts().get(i + 1).getDistrictId());
                 builder.add("freightProvinces[" + (i + 1) + "].id", editSuperPost.getPosts().get(i + 1).getDistrictId() + "".trim())
-                        .add("id", editSuperPost.getId() + "".trim());
+                        .add("id",editSuperPost.getId() + "".trim());
             }
         }
         //用于返回上个界面显示
@@ -369,6 +369,7 @@ public class PostageSettingEditActivity extends BaseActivity {
         requestBuild.post(body);
         if ("edit".equals(from)) {
             requestBuild.url(FXConst.UPDATE_POSTAGE_MODEL);
+            LogUtil.i("TAG","更新运费模板==="+FXConst.UPDATE_POSTAGE_MODEL);
         } else {
             requestBuild.url(FXConst.ADD_POSTAGE_MODEL);
         }
@@ -384,7 +385,9 @@ public class PostageSettingEditActivity extends BaseActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.body().string().contains("1000")) {
+                String string = response.body().string();
+                LogUtil.i("TAG","添加运费模板结果========"+string);
+                if (string.contains("1000")) {
                     toastInUI(PostageSettingEditActivity.this, "已成功新增运费模板");
                     uploadPostageFinish();
                     runOnUiThread(new Runnable() {

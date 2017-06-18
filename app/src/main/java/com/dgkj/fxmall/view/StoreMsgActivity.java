@@ -78,7 +78,7 @@ public class StoreMsgActivity extends BaseActivity {
         if (store == null) {
             return;
         }
-        Glide.with(this).load(store.getIconUrl()).placeholder(R.mipmap.android_quanzi).into(civStoreIcon);
+        Glide.with(this).load(store.getIconUrl()).into(civStoreIcon);
         //TODO 设置商品评分图片
         double stars = (store.getDescribeScore() + store.getQualityScore() + store.getPriceScore()) / 3;
         if(stars<=1.0){
@@ -102,9 +102,9 @@ public class StoreMsgActivity extends BaseActivity {
         }
 
         tvStoreName.setText(store.getName());
-        tvStoreSales.setText("销售总量" + store.getTotalScals());
-        tvStoreGoods.setText("宝贝数" + store.getGoodsCount());
-        tvCreateTimeAdress.setText(String.format("创建时间：%s I %s", store.getCreateTime(), store.getAdress()));
+        tvStoreSales.setText("销售总量：" + store.getTotalScals());
+        tvStoreGoods.setText("宝贝数：" + store.getGoodsCount());
+        tvCreateTimeAdress.setText(String.format("创建时间：%s I %s", " "+store.getCreateTime()+" ", store.getAdress()));
         tvStoreDescribeOk.setText(store.getDescribeScore()+"");
         tvStorePriceOk.setText(store.getPriceScore()+"");
         tvStoreQualityOk.setText(store.getQualityScore()+"");

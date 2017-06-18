@@ -107,7 +107,7 @@ public class ShangpuDeliverActivity extends BaseActivity {
 
     @OnClick(R.id.tv_take_express)
     public void selectExpress(){
-        View contentview = getLayoutInflater().inflate(R.layout.layout_searchtype_select_window, null);
+        View contentview = getLayoutInflater().inflate(R.layout.layout_express_select_dialog, null);
         pw = new PopupWindow(contentview, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         ListView lvExpress = (ListView) contentview.findViewById(R.id.lv_express);
         adapter = new CommonAdapter<ExpressCompanyBean>(this,R.layout.item_express_select,expressList) {

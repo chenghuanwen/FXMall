@@ -129,10 +129,16 @@ public class DemandDetialActivity extends BaseActivity {
     private void getRecommendStore() {
         client = new OkHttpClient.Builder().build();
         control = new FXMallControl();
-        control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_RECOMMEND_STORES_FOR_DEMAND, 1, 20, client, new OnGetMyRecommendStoreFinishedListener() {
+        control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_RECOMMEND_STORES_FOR_DEMAND,demandBean.getId(), 1, 20, client, new OnGetMyRecommendStoreFinishedListener() {
             @Override
-            public void onGetMyRecommendStoreFinished(List<StoreBean> stores) {
-                storeAdapter.addAll(stores, true);
+            public void onGetMyRecommendStoreFinished(final List<StoreBean> stores) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        storeAdapter.addAll(stores, true);
+                    }
+                });
+
             }
         });
     }

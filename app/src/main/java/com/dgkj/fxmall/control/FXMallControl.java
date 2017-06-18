@@ -140,8 +140,8 @@ public class FXMallControl {
         FXMallModel.getDemandByClassify(context,classifyId,index,size,client,listener);
     }
 
-    public void getMyRecommendStore(final BaseActivity context, String token, String url,int index, int size, OkHttpClient client,OnGetMyRecommendStoreFinishedListener listener){
-        FXMallModel.getMyRecommendStore(context,token,url,index,size,client,listener);
+    public void getMyRecommendStore(final BaseActivity context, String token, String url,int id,int index, int size, OkHttpClient client,OnGetMyRecommendStoreFinishedListener listener){
+        FXMallModel.getMyRecommendStore(context,token,url,id,index,size,client,listener);
     }
 
     public void getSearchProducts(Activity context, String key, String orderBy, String token,String startPrice,String endPice,String address,int index, int size, int storeId,OkHttpClient client, OnSearchProductsFinishedListener listener){

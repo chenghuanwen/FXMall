@@ -559,7 +559,7 @@ public class FXMallModel {
                             storeBean.setAdress(address);
                             storeBean.setGoodsCount(store.getInt("cnum"));
                             storeBean.setTotalScals(store.getInt("sales"));
-                            storeBean.setCreateTime(store.getString("createTime"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(store.getLong("createTime")));
                             storeBean.setQualityScore(store.getDouble("qualityScore"));
                             storeBean.setDescribeScore(store.getDouble("describeScore"));
                             storeBean.setPriceScore(store.getDouble("transportScore"));
@@ -1234,6 +1234,7 @@ public class FXMallModel {
                             goods.setColor(sku.getString("content"));
                             goods.setBrokerage(sku.getInt("brokerage"));
                             goods.setVipPrice(goods.getPrice()-goods.getBrokerage() * (1 - MyApplication.vipRate/100.0));
+                            goods.setPrice(goods.getVipPrice());
                             goods.setSkuId(sku.getInt("id"));
                             goods.setInventory(sku.getInt("inventory"));
 
@@ -1271,7 +1272,7 @@ public class FXMallModel {
                             JSONObject store = commodity.getJSONObject("store");
                             StoreBean storeBean = new StoreBean();
                             storeBean.setName(store.getString("storeName"));
-                            storeBean.setCreateTime(store.getString("createTime"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(store.getLong("createTime")));
                             goods.setStoreName(storeBean.getName());
                             storeBean.setId(store.getInt("id"));
                             if(store.has("logo")){
@@ -1352,10 +1353,14 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","获取我的需求==="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         JSONArray dataset = object.getJSONArray("dataset");
+                        if(dataset.length()==0){
+                            listener.onGetMyDemandDataFinished(list);
+                        }
                         for (int i = 0; i < dataset.length(); i++) {
                             MainDemandBean demandBean = new MainDemandBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
@@ -1365,7 +1370,7 @@ public class FXMallModel {
                             demandBean.setPhone(jsonObject.getString("phone"));
                             demandBean.setId(jsonObject.getInt("id"));
                             demandBean.setDemand(jsonObject.getInt("num"));
-                            String photo = object.getString("url");
+                            String photo = jsonObject.getString("url");
                             JSONArray photos = new JSONArray(photo);
                             List<String> urls = new ArrayList<>();
                             for (int j = 0; j < photos.length(); j++) {
@@ -1458,40 +1463,16 @@ public class FXMallModel {
      * @param client
      * @param listener
      */
-    public static void getMyRecommendStore(final BaseActivity context, String token, String url, final int index, int size, OkHttpClient client, final OnGetMyRecommendStoreFinishedListener listener) {
+    public static void getMyRecommendStore(final BaseActivity context, String token, String url, int id,final int index, int size, OkHttpClient client, final OnGetMyRecommendStoreFinishedListener listener) {
         final List<StoreBean> list = new ArrayList<>();
-        //TEST
-        for (int i = 0; i < 10; i++) {
-            StoreBean store = new StoreBean();
-            store.setAdress("广东深圳");
-            store.setDescribeScore(5.00);
-            store.setGoodsCount(134);
-            store.setIconUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490872429670&di=b95cc27dc9781e9510de7753a6709f39&imgtype=0&src=http%3A%2F%2Fp.nanrenwo.net%2Fuploads%2Fallimg%2F170223%2F8450-1F223100J2.jpg");
-            store.setName("粉小萌");
-            store.setPriceScore(4.9);
-            store.setQualityScore(5.0);
-            store.setStars(5);
-            store.setTotalScals(100000);
-            store.setTotalScore(4.9);
-            store.setCreateTime("2017-5-15");
-            store.setId(i + 2);
-            store.setRecommender("哎购商城");
-            store.setKeeper("小成成");
-            store.setLicence("");
-            store.setMainUrls(new ArrayList<String>());
-            store.setPhone("01665135123");
-            list.add(store);
-            listener.onGetMyRecommendStoreFinished(list);
-        }
-
 
         FormBody.Builder builder = new FormBody.Builder()
                 .add("index", index + "")
                 .add("size", size + "");
-        if (url.equals(FXConst.GET_MY_RECOMMEND_STORES)) {
+        if (id==0) {
             builder.add("uuser.token", token);
         } else {
-            builder.add("desired.id", token);
+            builder.add("desired.id", id+"".trim());
         }
         FormBody body = builder.build();
         Request request = new Request.Builder()
@@ -1507,6 +1488,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","获取我推荐的店铺======"+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -1530,10 +1512,11 @@ public class FXMallModel {
                             storeBean.setMainUrls(new ArrayList<String>());
                            // storeBean.setLicence(jsonObject.getString("license"));
                             storeBean.setKeeper(jsonObject.getString("storekeeper"));
-                            storeBean.setCreateTime(jsonObject.getString("createTime"));
-
-                            JSONObject user = jsonObject.getJSONObject("user");
-                            storeBean.setRecommender(user.getString("nickname"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(jsonObject.getLong("createTime")));
+                            if(jsonObject.has("user")){
+                                JSONObject user = jsonObject.getJSONObject("user");
+                                storeBean.setRecommender(user.getString("nickname"));
+                            }
                             list.add(storeBean);
                         }
                         listener.onGetMyRecommendStoreFinished(list);
@@ -1556,60 +1539,6 @@ public class FXMallModel {
      * @param listener
      */
     public static void getSearchProducts(final Activity context, String key, String orderBy, String token,String startPrice,String endPice,String address,final int index, int size, int storeId, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
-        //TEST
-       /* List<MainProductBean> list1 = new ArrayList<>();
-        List<String> url = new ArrayList<>();
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        for (int i = 0; i < 15; i++) {
-            MainProductBean productBean = new MainProductBean();
-            productBean.setUrls(url);
-            productBean.setDetialUrls(url);
-            productBean.setPrice(35);
-            productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-            productBean.setSales("10000");
-            productBean.setAddress("深圳");
-            productBean.setExpress("包邮");
-            productBean.setVipPrice(25);
-            productBean.setSkuId(i + 1);
-            productBean.setCount(3);
-            productBean.setId(i + 2);
-            productBean.setColor("绿色-M");
-            productBean.setInventory(100);
-            productBean.setBrokerage(20);
-            StoreBean storeBean = new StoreBean();
-            storeBean.setName("粉小萌");
-            storeBean.setAdress("广东省深圳市龙岗区");
-            storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-            storeBean.setCreateTime("2017-5-2");
-            storeBean.setStars(3);
-            storeBean.setTotalScals(300);
-            storeBean.setGoodsCount(1000);
-            storeBean.setId(i + 1);
-            storeBean.setDescribeScore(4.8);
-            storeBean.setPriceScore(4.0);
-            storeBean.setQualityScore(4.2);
-            storeBean.setTotalScore(4.5);
-            storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-            storeBean.setMainUrls(url);
-            storeBean.setKeeper("小成成");
-            storeBean.setPhone("15641651432");
-            storeBean.setRecommender("小成成");
-            productBean.setStoreBean(storeBean);
-            productBean.setUrl(url.get(0));
-            productBean.setDescribeScore(4);
-            productBean.setPriceScore(4);
-            productBean.setQualityScore(4);
-            productBean.setTotalScore(4);
-            productBean.setDeliverable(true);
-            list1.add(productBean);
-        }
-        listener.onSearchProductsFinished(list1);*/
-
 
         final int[] count = new int[1];
         final List<MainProductBean> list = new ArrayList<>();
@@ -1715,7 +1644,7 @@ public class FXMallModel {
                             storeBean.setAdress(address);
                             storeBean.setGoodsCount(store.getInt("cnum"));
                             storeBean.setTotalScals(store.getInt("sales"));
-                            storeBean.setCreateTime(store.getString("createTime"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(store.getLong("createTime")));
                             storeBean.setQualityScore(store.getDouble("qualityScore"));
                             storeBean.setDescribeScore(store.getDouble("describeScore"));
                             storeBean.setPriceScore(store.getDouble("transportScore"));
@@ -1735,6 +1664,7 @@ public class FXMallModel {
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
+                                    LogUtil.i("TAG","邮费计算完成========");
                                     count[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
@@ -1829,7 +1759,7 @@ public class FXMallModel {
                             storeBean.setAdress(address);
                             storeBean.setGoodsCount(jsonObject.getInt("cnum"));
                             storeBean.setTotalScals(jsonObject.getInt("sales"));
-                            storeBean.setCreateTime(jsonObject.getString("createTime"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(jsonObject.getLong("createTime")));
                             storeBean.setQualityScore(jsonObject.getDouble("qualityScore"));
                             storeBean.setDescribeScore(jsonObject.getDouble("describeScore"));
                             storeBean.setPriceScore(jsonObject.getDouble("transportScore"));
@@ -2188,6 +2118,7 @@ public class FXMallModel {
                                             @Override
                                             public void onResponse(Call call, Response response) throws IOException {
                                                 String result = response.body().string();
+                                                LogUtil.i("TAG","获取物流公司信息======"+result);
                                                 if (result.contains("1000")) {
                                                     try {
                                                         JSONObject object = new JSONObject(result);
@@ -2477,7 +2408,7 @@ public class FXMallModel {
                             storeBean.setAdress(address);
                             storeBean.setGoodsCount(store.getInt("cnum"));
                             storeBean.setTotalScals(store.getInt("sales"));
-                            storeBean.setCreateTime(store.getString("createTime"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(store.getLong("createTime")));
                             storeBean.setQualityScore(store.getDouble("qualityScore"));
                             storeBean.setDescribeScore(store.getDouble("describeScore"));
                             storeBean.setPriceScore(store.getDouble("transportScore"));
@@ -2606,7 +2537,7 @@ public class FXMallModel {
                             storeBean.setAdress(address);
                             storeBean.setGoodsCount(store.getInt("cnum"));
                             storeBean.setTotalScals(store.getInt("sales"));
-                            storeBean.setCreateTime(store.getString("createTime"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(store.getLong("createTime")));
                             storeBean.setQualityScore(store.getDouble("qualityScore"));
                             storeBean.setDescribeScore(store.getDouble("describeScore"));
                             storeBean.setPriceScore(store.getDouble("transportScore"));
@@ -2664,59 +2595,6 @@ public class FXMallModel {
      * @param listener
      */
     public static void getAllNewProducts(final Activity context,final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
-      /*  //TEST
-        List<MainProductBean> list1 = new ArrayList<>();
-        List<String> url = new ArrayList<>();
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        url.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
-        for (int i = 0; i < 15; i++) {
-            MainProductBean productBean = new MainProductBean();
-            productBean.setUrls(url);
-            productBean.setDetialUrls(url);
-            productBean.setPrice(35);
-            productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-            productBean.setSales("10000");
-            productBean.setAddress("深圳");
-            productBean.setExpress("包邮");
-            productBean.setVipPrice(25);
-            productBean.setSkuId(i + 1);
-            productBean.setCount(3);
-            productBean.setId(i + 2);
-            productBean.setColor("绿色-M");
-            productBean.setInventory(100);
-            productBean.setBrokerage(20);
-            StoreBean storeBean = new StoreBean();
-            storeBean.setName("粉小萌");
-            storeBean.setAdress("广东省深圳市龙岗区");
-            storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-            storeBean.setCreateTime("2017-5-2");
-            storeBean.setStars(3);
-            storeBean.setTotalScals(300);
-            storeBean.setGoodsCount(1000);
-            storeBean.setId(i + 1);
-            storeBean.setDescribeScore(4.8);
-            storeBean.setPriceScore(4.0);
-            storeBean.setQualityScore(4.2);
-            storeBean.setTotalScore(4.5);
-            storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-            storeBean.setMainUrls(url);
-            storeBean.setKeeper("小成成");
-            storeBean.setPhone("15641651432");
-            storeBean.setRecommender("小成成");
-            productBean.setStoreBean(storeBean);
-            productBean.setUrl(url.get(0));
-            productBean.setDescribeScore(4);
-            productBean.setPriceScore(4);
-            productBean.setQualityScore(4);
-            productBean.setTotalScore(4);
-            productBean.setDeliverable(true);
-            list1.add(productBean);
-        }
-        listener.onSearchProductsFinished(list1);*/
 
         final int[] count = new int[1];
         final List<MainProductBean> list = new ArrayList<>();
@@ -2743,6 +2621,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","获取所有新品====="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -2795,7 +2674,7 @@ public class FXMallModel {
                             storeBean.setAdress(address);
                             storeBean.setGoodsCount(store.getInt("cnum"));
                             storeBean.setTotalScals(store.getInt("sales"));
-                            storeBean.setCreateTime(store.getString("createTime"));
+                            storeBean.setCreateTime(TimeFormatUtils.long2String(store.getLong("createTime")));
                             storeBean.setQualityScore(store.getDouble("qualityScore"));
                             storeBean.setDescribeScore(store.getDouble("describeScore"));
                             storeBean.setPriceScore(store.getDouble("transportScore"));
@@ -3034,7 +2913,7 @@ public class FXMallModel {
                         storeBean.setAdress(address);
                         storeBean.setGoodsCount(jsonObject.getInt("cnum"));
                         storeBean.setTotalScals(jsonObject.getInt("sales"));
-                        storeBean.setCreateTime(jsonObject.getString("createTime"));
+                        storeBean.setCreateTime(TimeFormatUtils.long2String(jsonObject.getLong("createTime")));
                         storeBean.setQualityScore(jsonObject.getDouble("qualityScore"));
                         storeBean.setDescribeScore(jsonObject.getDouble("describeScore"));
                         storeBean.setPriceScore(jsonObject.getDouble("transportScore"));
@@ -3119,7 +2998,7 @@ public class FXMallModel {
                         storeBean.setAdress(address);
                         storeBean.setGoodsCount(store.getInt("cnum"));
                         storeBean.setTotalScals(store.getInt("sales"));
-                        storeBean.setCreateTime(store.getString("createTime"));
+                        storeBean.setCreateTime(TimeFormatUtils.long2String(store.getLong("createTime")));
                         storeBean.setQualityScore(store.getDouble("qualityScore"));
                         storeBean.setDescribeScore(store.getDouble("describeScore"));
                         storeBean.setPriceScore(store.getDouble("transportScore"));
@@ -3285,39 +3164,6 @@ public class FXMallModel {
      */
     public static void getNotifyMsgData(String token, final OnGetNotifyMsgFinishedListener listener){
         final ArrayList<NotifyMsgBean> list = new ArrayList<>();
-        //TEST
-        for (int i = 0; i < 20; i++) {
-            NotifyMsgBean msgBean = new NotifyMsgBean();
-            if(i<5){
-                msgBean.setTitle("商品发布成功");
-                msgBean.setType("order");
-                msgBean.setCotent("到拉萨可佛阿斯蒂芬金卡圣诞节佛怕速度快");
-                msgBean.setTime("2017-5-17");
-                msgBean.setState(1);
-                msgBean.setUrl("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1495013543&di=17604e076572a82f013ba693926c372d&src=http://image41.360doc.com/DownloadImg/2011/10/3106/18890186_7.jpg");
-            }else if(i>4 && i<10){
-                msgBean.setTitle("你已被取消业务员资格");
-                msgBean.setState(0);
-                msgBean.setType("system");
-                msgBean.setCotent("加快了鉴定费卡死的就发了");
-                msgBean.setTime("2017-5-17");
-            }else if(i>9 && i<15){
-                msgBean.setState(1);
-                msgBean.setType("warn");
-                msgBean.setCotent("了肯定卡见风使舵类库加");
-                msgBean.setTime("2017-5-17");
-            }else if(i>14){
-                msgBean.setTitle("你的账户已更新");
-                msgBean.setType("account");
-                msgBean.setState(0);
-                msgBean.setCotent("你刚充值了100元");
-                msgBean.setTime("2017-5-17");
-            }
-            list.add(msgBean);
-        }
-        listener.OnGetLogisticsMsgFinished(list);
-
-
 
         FormBody body = new FormBody.Builder()
                 .add("toUser.token",token)
@@ -3334,6 +3180,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","获取系统消息结果===="+string);
                 if(string.contains("1000")){
                     try {
                         JSONObject object = new JSONObject(string);
@@ -3371,7 +3218,9 @@ public class FXMallModel {
      */
 
     public static void getPostage(int productId, final OnGetPostageFinishedListener listener) {
+
         if(TextUtils.isEmpty(MyApplication.currentCity)){return;}
+        LogUtil.i("TAG","开始计算邮费====");
         FormBody body = new FormBody.Builder()
                 .add("id", productId + "".trim())
                 .add("address", MyApplication.currentProvince)
@@ -3482,10 +3331,11 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","未读消息数量========="+string);
                 if(string.contains("1000")){
                     try {
                         JSONObject object = new JSONObject(string);
-                        JSONArray dataset = object.getJSONArray("dataset");
+                        JSONArray dataset = object.getJSONArray("data");
                         //[system,order,warn,account]
                         int system = dataset.getInt(0);
                         int order = dataset.getInt(1);

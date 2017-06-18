@@ -105,14 +105,7 @@ public class ProductsMallFragment extends Fragment {
     private void initClassifyRecommendData(View view) {
         gv = (GridView) view.findViewById(R.id.gv_classify_recommend);
 
-     /*   //测试
-        List<ProductClassifyBean> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            ProductClassifyBean classify = new ProductClassifyBean();
-            classify.setTaxon("坚果");
-            classify.setUrl("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
-            list.add(classify);
-        }*/
+
         gridViewAdapter = new ProductClassifyGridViewAdapter(getContext(), R.layout.item_productmall_classify, subClassifys, "product");
         gv.setAdapter(gridViewAdapter);
 
@@ -139,33 +132,10 @@ public class ProductsMallFragment extends Fragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvNiceRecommend.setLayoutManager(linearLayoutManager);
         rvNiceRecommend.setAdapter(niceStoreRecommendAdapter);
-        //测试
-        List<NiceStoreBean> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            NiceStoreBean store = new NiceStoreBean();
-            store.setAddress("深圳市龙岗区");
-            store.setIntroduce("好店粉小萌再次上传好店粉小萌再次上传好店粉小萌再次上传好店粉小萌再次上传");
-            store.setName("粉小萌");
-            store.setUrl("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
-            list.add(store);
-        }
-        niceStoreRecommendAdapter.addAll(list, true);
 
     }
 
     private void initClassifyData() {
-     /*   List<DemandMallClassifyBean> classifyBeens = new ArrayList<>();
-        classifyBeens.add(new DemandMallClassifyBean("美食", R.mipmap.cpdt_ms));
-        classifyBeens.add(new DemandMallClassifyBean("母婴", R.mipmap.cpdt_my));
-        classifyBeens.add(new DemandMallClassifyBean("美妆", R.mipmap.cpdt_mz));
-        classifyBeens.add(new DemandMallClassifyBean("家居", R.mipmap.cpdt_jz));
-        classifyBeens.add(new DemandMallClassifyBean("箱包", R.mipmap.cpdt_xb));
-        classifyBeens.add(new DemandMallClassifyBean("女装", R.mipmap.cpdt_nz));
-        classifyBeens.add(new DemandMallClassifyBean("男装", R.mipmap.cpdt_nanz));
-        classifyBeens.add(new DemandMallClassifyBean("电器", R.mipmap.cpdt_dq));
-        classifyBeens.add(new DemandMallClassifyBean("汽车", R.mipmap.cpdt_qc));
-        classifyBeens.add(new DemandMallClassifyBean("更多", R.mipmap.cpdt_gd));
-*/
 
         List<DemandMallClassifyBean> classifyBeens = new ArrayList<>();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5);
@@ -181,60 +151,7 @@ public class ProductsMallFragment extends Fragment {
     }
 
 
-   /* //TEST
-    @OnClick({R.id.nice1, R.id.nice2, R.id.nice3, R.id.nice4})
-    public void niceRecommend() {
-        //TODO 根据推荐是是商品还是商店进行不同的跳转
-        MainProductBean productBean = new MainProductBean();
-        List<String> url = new ArrayList<>();
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        url.add("http://pic1.win4000.com/wallpaper/2/576bae0dcf028.jpg");
-        productBean.setUrls(url);
-        productBean.setDetialUrls(url);
-        productBean.setPrice(35);
-        productBean.setIntroduce("粉小萌正酣上线，绝对独一无二，吃货的福利");
-        productBean.setSales("10000");
-        productBean.setAddress("深圳");
-        productBean.setExpress("包邮");
-        productBean.setVipPrice(25);
-        productBean.setSkuId(1);
-        productBean.setCount(3);
-        productBean.setId( 2);
-        productBean.setColor("绿色-M");
-        productBean.setInventory(100);
-        productBean.setBrokerage(20);
-        StoreBean storeBean = new StoreBean();
-        storeBean.setName("粉小萌");
-        storeBean.setAdress("广东省深圳市龙岗区");
-        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setCreateTime("2017-5-2");
-        storeBean.setStars(3);
-        storeBean.setTotalScals(300);
-        storeBean.setGoodsCount(1000);
-        storeBean.setId(5);
-        storeBean.setDescribeScore(4.8);
-        storeBean.setPriceScore(4.0);
-        storeBean.setQualityScore(4.2);
-        storeBean.setTotalScore(4.5);
-        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setMainUrls(url);
-        storeBean.setKeeper("小成成");
-        storeBean.setPhone("15641651432");
-        storeBean.setRecommender("小成成");
-        productBean.setStoreBean(storeBean);
-        productBean.setUrl(url.get(0));
-        productBean.setDescribeScore(4);
-        productBean.setPriceScore(4);
-        productBean.setQualityScore(4);
-        productBean.setTotalScore(4);
 
-        Intent intent = new Intent(getContext(),ProductDetialActivity.class);
-        intent.putExtra("product", productBean);
-        getContext().startActivity(intent);
-    }*/
 
 
     @OnClick(R.id.nice1)
@@ -254,31 +171,7 @@ public class ProductsMallFragment extends Fragment {
     @OnClick(R.id.nice2)
     public void nice2(){
       toStoreMain(youzhi.getLink());
-       /* //TEST
-        StoreBean storeBean = new StoreBean();
-        storeBean.setName("粉小萌");
-        storeBean.setAdress("广东省深圳市龙岗区");
-        storeBean.setIconUrl("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setCreateTime("2017-5-2");
-        storeBean.setStars(3);
-        storeBean.setTotalScals(300);
-        storeBean.setGoodsCount(1000);
-        storeBean.setId(5);
-        storeBean.setDescribeScore(4.8);
-        storeBean.setPriceScore(4.0);
-        storeBean.setQualityScore(4.2);
-        storeBean.setTotalScore(4.5);
-        storeBean.setLicence("http://img2015.zdface.com/20170417/06bf77be0521dc47da46f596893b0dbf.jpg");
-        storeBean.setMainUrls(new ArrayList<String>());
-        storeBean.setKeeper("小成成");
-        storeBean.setPhone("15641651432");
-        storeBean.setRecommender("小成成");
 
-        Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("store", storeBean);
-        intent.putExtras(bundle);
-        getContext().startActivity(intent);*/
     }
 
 

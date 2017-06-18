@@ -168,7 +168,6 @@ public class HomePageFragment extends Fragment {
                 @Override
                 public void onGetSearchHotWordsFinishedListener(List<String> words) {
                     LogUtil.i("TAG","搜索热词==="+words.get(0));
-
                     //TODO 搜索热词无数据
                     control.getSearchProducts(getActivity(), words.get(2),"createTime",null,null,null,null,index, 20, 0,okHttpClient, new OnSearchProductsFinishedListener() {
                         @Override
@@ -177,9 +176,22 @@ public class HomePageFragment extends Fragment {
                                 @Override
                                 public void run() {
                                     //TODO 写一个通用的商品实体类
-                                    LogUtil.i("TAG","首页商品展示个数==="+products.size());
-                                    productDisplayAdapter.addAll(products,true);
                                     progressDialogUtil.cancelProgressDialog();
+                                    LogUtil.i("TAG","首页商品展示个数==="+products.size());
+
+                                    if(products.size()==0){return;}
+
+                                    ArrayList<MainProductBean> list = new ArrayList<>();
+                                    for (int i = 0; i < products.size()-1; i++) {//同一件商品的不同型号只显示一个
+                                            if(products.get(i).getId() != products.get(i+1).getId()){
+                                                list.add(products.get(i));
+                                            }
+                                        }
+                                    if(products.get(products.size()-1) != list.get(list.size()-1)){
+                                        list.add(products.get(products.size()-1));
+                                    }
+
+                                    productDisplayAdapter.addAll(list,true);
                                 }
                             });
                         }
@@ -194,7 +206,18 @@ public class HomePageFragment extends Fragment {
                         @Override
                         public void run() {
                             progressDialogUtil.cancelProgressDialog();
-                            productDisplayAdapter.addAll(mainProducts,true);
+                            if(mainProducts.size()==0){return;}
+                            ArrayList<MainProductBean> list = new ArrayList<>();
+                            for (int i = 0; i < mainProducts.size()-1; i++) {//同一件商品的不同型号只显示一个
+                                if(mainProducts.get(i).getId() != mainProducts.get(i+1).getId()){
+                                    list.add(mainProducts.get(i));
+                                }
+                            }
+                            if(mainProducts.get(mainProducts.size()-1) != list.get(list.size()-1)){
+                                list.add(mainProducts.get(mainProducts.size()-1));
+                            }
+
+                            productDisplayAdapter.addAll(list,true);
                         }
                     });
                 }
@@ -235,7 +258,7 @@ public class HomePageFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                      //  setData();
+                      setData();
                     }
                 });
 
@@ -248,16 +271,17 @@ public class HomePageFragment extends Fragment {
         Glide.with(getContext()).load(storeRecommends.get(0).getUrl()).error(R.mipmap.android_quanzi).into(ivStore2);
         Glide.with(getContext()).load(storeRecommends.get(1).getUrl()).error(R.mipmap.android_quanzi).into(ivStore3);
         Glide.with(getContext()).load(newGoods.getUrl()).error(R.mipmap.android_quanzi).into(newGoods1);
-        Glide.with(getContext()).load(newGoodsRecommends.get(0).getUrl()).error(R.mipmap.android_quanzi).into(newGoods2);
-        Glide.with(getContext()).load(newGoodsRecommends.get(1).getUrl()).error(R.mipmap.android_quanzi).into(newGoods3);
-        Glide.with(getContext()).load(newGoodsRecommends.get(2).getUrl()).error(R.mipmap.android_quanzi).into(newGoods4);
-        Glide.with(getContext()).load(newGoodsRecommends.get(3).getUrl()).error(R.mipmap.android_quanzi).into(newGoods5);
-        tvStore1Name.setText(store.getTitel());
+        Glide.with(getContext()).load(newGoodsRecommends.get(0).getUrl()).into(newGoods2);
+        Glide.with(getContext()).load(newGoodsRecommends.get(1).getUrl()).into(newGoods3);
+        Glide.with(getContext()).load(newGoodsRecommends.get(2).getUrl()).into(newGoods4);
+        Glide.with(getContext()).load(newGoodsRecommends.get(3).getUrl()).into(newGoods5);
+        //TODO 缺少店铺信息
+       /* tvStore1Name.setText(store.getTitel());
         tvStore1Describe.setText(store.getIntroduce());
         tvStore2Name.setText(storeRecommends.get(0).getTitel());
         tvStore2Describe.setText(storeRecommends.get(0).getIntroduce());
         tvStore3Name.setText(storeRecommends.get(1).getTitel());
-        tvStore3Describe.setText(storeRecommends.get(1).getIntroduce());
+        tvStore3Describe.setText(storeRecommends.get(1).getIntroduce());*/
 
         classifyAdapter.addAll(list, true);
 

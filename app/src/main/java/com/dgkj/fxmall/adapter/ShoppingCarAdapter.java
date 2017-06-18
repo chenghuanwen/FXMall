@@ -24,17 +24,32 @@ import java.util.List;
 public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
     private Context context;
     private ShoppingCarSubAdapter subAdapter;
+    private boolean isSuperCheck;//当全选状态时，由于单个子项取消了，此时改变全选状态，但不应触发全不选事件
     private Handler handler;
     private Handler superHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case 0://全选某商店商品
+                case 1://某个商店的某个商品被选中
+                  int superPosition = msg.arg1;
+                    int subPosition = msg.arg2;
+                    mDatas.get(superPosition).getGoods().get(subPosition).setSelected(true);
+                    break;
+                case 2://某个商店的某个商品取消
+                    int superPosition1 = msg.arg1;
+                    int subPosition1 = msg.arg2;
+                    mDatas.get(superPosition1).getGoods().get(subPosition1).setSelected(false);
+                    //更改全选状态
+                    mDatas.get(superPosition1).setSelected(false);
+                    notifyItemChanged(superPosition1);
+                    isSuperCheck = true;
+                    break;
+                case 3://全选某商店商品
                     int superposition = msg.arg1;
                     mDatas.get(superposition).setSelected(true);
                     notifyItemChanged(superposition);
                     break;
-                case 1://全不选某商店商品
+                case 4://全不选某商店商品
                     int superposition1 = msg.arg1;
                     mDatas.get(superposition1).setSelected(false);
                     notifyItemChanged(superposition1);
@@ -65,9 +80,11 @@ public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
         rv.setAdapter(subAdapter);
 
         if(shoppingCar.isSelected()){
-            checkBox.setChecked(true);
+           // checkBox.setChecked(true);
+            checkBox.setButtonDrawable(R.mipmap.yixuan);
         }else {
             checkBox.setChecked(false);
+            checkBox.setButtonDrawable(R.mipmap.weixuan);
         }
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -75,23 +92,31 @@ public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
                 if(isChecked){
                     shoppingCar.setSelected(true);
                     for (ShoppingGoodsBean good : goods) {
-                        good.setSelected(true);
+                        if(!good.isSelected()){
+                            good.setSelected(true);
 
-                        Message msg = Message.obtain();
-                        msg.obj = good;
-                        msg.what = 1;//统计价格增加
-                        handler.sendMessage(msg);
+                            Message msg = Message.obtain();
+                            msg.obj = good;
+                            msg.what = 1;//统计价格增加
+                            handler.sendMessage(msg);
+                        }
                     }
                 }else {
-                    shoppingCar.setSelected(false);
-                    for (ShoppingGoodsBean good : goods) {
-                        good.setSelected(false);
+                    if(!isSuperCheck){
+                        shoppingCar.setSelected(false);
+                        for (ShoppingGoodsBean good : goods) {
+                            if(good.isSelected()){
+                                good.setSelected(false);
 
-                        Message msg = Message.obtain();
-                        msg.obj = good;
-                        msg.what = 2;//统计价格减少
-                        handler.sendMessage(msg);
+                                Message msg = Message.obtain();
+                                msg.obj = good;
+                                msg.what = 2;//统计价格减少
+                                handler.sendMessage(msg);
+                            }
+                        }
+
                     }
+                    isSuperCheck = false;
                 }
                 handler.post(new Runnable() {
                     @Override
@@ -111,7 +136,9 @@ public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
             mData.setSelected(true);
             ArrayList<ShoppingGoodsBean> goods = mData.getGoods();
             for (ShoppingGoodsBean good : goods) {
-                good.setSelected(true);
+                if(!good.isSelected()){
+                    good.setSelected(true);
+                }
             }
         }
         notifyDataSetChanged();
@@ -122,7 +149,9 @@ public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
             mData.setSelected(false);
             ArrayList<ShoppingGoodsBean> goods = mData.getGoods();
             for (ShoppingGoodsBean good : goods) {
-                good.setSelected(false);
+                if(good.isSelected()){
+                    good.setSelected(false);
+                }
             }
         }
         notifyDataSetChanged();

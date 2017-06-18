@@ -225,7 +225,7 @@
                         style="@style/usercenter_textview2"
                         android:layout_toRightOf="@+id/iv1"/>
                     <TextView
-                        android:text="3亿用户的选择"
+                        android:text="用户的明智选择"
                         android:layout_below="@+id/tv_recharge"
                         style="@style/usercenter_textview3"
                         android:layout_marginLeft="20dp"

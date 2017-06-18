@@ -57,8 +57,10 @@ public class MainDemandDisplayAdapter extends CommonAdapter<MainDemandBean> {
 
         //viewHolder.setImageUrl(R.id.iv_main_item,product.getUrl());
         viewHolder.setText(R.id.tv_main_item_title,product.getIntroduce());
-        viewHolder.setText(R.id.tv_main_item_address,product.getAddress());
         viewHolder.setText(R.id.tv_main_item_sale,"需求数量："+product.getDemand());
+        String address = product.getAddress();
+        int indexOf = address.indexOf("市");
+        viewHolder.setText(R.id.tv_main_item_address, address.substring(0,indexOf+1));
         ImageView view = viewHolder.getView(R.id.iv_main_item);
         ImageView ivdelete = viewHolder.getView(R.id.iv_demand_delete);
         if("demand".equals(from)){

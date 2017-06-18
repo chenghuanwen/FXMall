@@ -50,11 +50,12 @@
             android:textSize="16sp"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"/>
+
         <TextView
             android:id="@+id/tv_buyers_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="粉小萌味道绝对正宗，而且颜值很高，吃货的福利来啦，你还在等什么"
+            tools:text="粉小萌味道绝对正宗，而且颜值很高，吃货的福利来啦，你还在等什么"
             android:textColor="#999"
             android:textSize="13sp"
             android:layout_marginLeft="10dp"
@@ -130,7 +131,7 @@
         android:layout_marginTop="10dp">
         <TextView
             style="@style/demand_detial_texview2"
-            android:text="退货物流："
+            android:text="发货物流："
             android:textColor="#333"
             />
         <TextView

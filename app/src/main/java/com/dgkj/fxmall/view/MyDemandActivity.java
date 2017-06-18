@@ -78,7 +78,7 @@ public class MyDemandActivity extends BaseActivity {
 
         getData();
         setListener();
-        showMyDemand();
+        //showMyDemand();
         handlerScroll();
     }
 
@@ -86,47 +86,34 @@ public class MyDemandActivity extends BaseActivity {
         //TODO 获取数据
         storeList = new ArrayList<>();
         demandList = new ArrayList<>();
-      /*  //TEST
-        for (int i = 0; i < 10; i++) {
-            List<String> url = new ArrayList<>();
-            url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490872429670&di=b95cc27dc9781e9510de7753a6709f39&imgtype=0&src=http%3A%2F%2Fp.nanrenwo.net%2Fuploads%2Fallimg%2F170223%2F8450-1F223100J2.jpg");
-            MainDemandBean demand = new MainDemandBean();
-            demand.setAddress("广东深圳");
-            demand.setDemand(100);
-            demand.setIntroduce("粉小萌酸辣粉，没有比这更好吃的了....");
-            demand.setUrls(url);
-            demandList.add(demand);
-        }
-*/
+
         loadProgressDialogUtil.buildProgressDialog();
-        control.getMyDemandData(this, sp.get("token"), demandIndex, 10, client, new OnGetMyDemandDataFinishedListener() {
+        control.getMyDemandData(this, sp.get("token"), demandIndex, 30, client, new OnGetMyDemandDataFinishedListener() {
             @Override
             public void onGetMyDemandDataFinished(List<MainDemandBean> demands) {
                 demandList.addAll(demands);
+                showMyDemand();
                 loadProgressDialogUtil.cancelProgressDialog();
             }
         });
 
 
-      /*  //TEST
-        for (int i = 0; i < 10; i++) {
-            StoreBean store = new StoreBean();
-            store.setAdress("广东深圳");
-            store.setDescribeScore(5.00);
-            store.setGoodsCount(134);
-            store.setIconUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490872429670&di=b95cc27dc9781e9510de7753a6709f39&imgtype=0&src=http%3A%2F%2Fp.nanrenwo.net%2Fuploads%2Fallimg%2F170223%2F8450-1F223100J2.jpg");
-            store.setName("粉小萌");
-            store.setPriceScore(4.9);
-            store.setQualityScore(5.0);
-            store.setStars(5);
-            store.setTotalScals(100000);
-            storeList.add(store);
-        }*/
 
-        control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_MY_RECOMMEND_STORES, storeIndex, 20, client, new OnGetMyRecommendStoreFinishedListener() {
+
+        control.getMyRecommendStore(this, sp.get("token"), FXConst.GET_MY_RECOMMEND_STORES, 0,storeIndex, 20, client, new OnGetMyRecommendStoreFinishedListener() {
             @Override
             public void onGetMyRecommendStoreFinished(List<StoreBean> stores) {
-                storeList.addAll(stores);
+                if(stores.size()==0){return;}
+                ArrayList<StoreBean> list = new ArrayList<>();
+                for (int i = 0; i < stores.size()-1; i++) {
+                    if(!stores.get(i).getName().equals(stores.get(i+1).getName())){
+                        list.add(stores.get(i));
+                    }
+                }
+                if(!stores.get(stores.size()-1).getName().equals(list.get(list.size()-1))){
+                    list.add(list.get(list.size()-1));
+                }
+                storeList.addAll(list);
             }
         });
     }

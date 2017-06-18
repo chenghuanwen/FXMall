@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.fragment.RecommendFragment;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class RecommendStoreDialog extends DialogFragment implements View.OnClick
     private EditText etStoreName;
     private SharedPreferencesUnit sp;
     private Handler handler;
+    private LoadProgressDialogUtil loadProgressDialogUtil;
 
     public RecommendStoreDialog(Context context,int demandId){
         this.context = context;
@@ -49,6 +51,7 @@ public class RecommendStoreDialog extends DialogFragment implements View.OnClick
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
         handler = new Handler(Looper.getMainLooper());
+        loadProgressDialogUtil = new LoadProgressDialogUtil(context);
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -98,6 +101,7 @@ public class RecommendStoreDialog extends DialogFragment implements View.OnClick
      * @param name
      */
     private void doRecommend(String name) {
+        loadProgressDialogUtil.buildProgressDialog();
         FormBody body = new FormBody.Builder()
                 .add("user.token",sp.get("token"))
                 .add("store.storeName",name)
@@ -113,6 +117,7 @@ public class RecommendStoreDialog extends DialogFragment implements View.OnClick
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        loadProgressDialogUtil.cancelProgressDialog();
                    Toast.makeText(context,"网络异常！",Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -124,6 +129,7 @@ public class RecommendStoreDialog extends DialogFragment implements View.OnClick
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                loadProgressDialogUtil.cancelProgressDialog();
                                 Toast.makeText(context,"推荐成功！",Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -132,6 +138,7 @@ public class RecommendStoreDialog extends DialogFragment implements View.OnClick
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                loadProgressDialogUtil.cancelProgressDialog();
                                 Toast.makeText(context,"推荐失败！",Toast.LENGTH_SHORT).show();
                             }
                         });

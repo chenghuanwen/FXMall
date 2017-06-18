@@ -101,9 +101,11 @@ public class StoreMainPageActivity extends BaseActivity {
 
     private void refresh() {
         LogUtil.i("TAG","获取商店主页商品==========storeId=="+store.getId());
+        loadProgressDialogUtil.buildProgressDialog();
             control.getSearchProducts(this, null, orderBy,null,null,null,null,index, 20, store.getId(), client, new OnSearchProductsFinishedListener() {
                 @Override
                 public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
+                    loadProgressDialogUtil.cancelProgressDialog();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -278,7 +280,11 @@ public class StoreMainPageActivity extends BaseActivity {
 
     @OnClick(R.id.tv_store_msg)
     public void storeMsg() {
-        jumpTo(StoreMsgActivity.class, false);
+        Intent intent = new Intent(this,StoreMsgActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("store",store);
+        intent.putExtras(bundle);
+        jumpTo(intent, false);
     }
 
     @OnClick(R.id.ib_back)

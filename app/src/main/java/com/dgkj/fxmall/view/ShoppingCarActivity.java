@@ -24,6 +24,7 @@ import com.dgkj.fxmall.bean.ShoppingCarBean;
 import com.dgkj.fxmall.bean.ShoppingGoodsBean;
 import com.dgkj.fxmall.constans.Position;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.OnDatasClassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnGetShoppingCarDataListener;
 import com.dgkj.fxmall.listener.OnGetShoppingcarProductsFinishedListener;
 
@@ -64,7 +65,7 @@ public class ShoppingCarActivity extends BaseActivity {
     private List<ShoppingCarBean> carBeanList;
     private List<ShoppingGoodsBean> selectGoods = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient.Builder().build();
-    private int sumPrice = 0;
+    private double sumPrice = 0;
     private int index = 1;
     private Handler handler = new Handler() {
         @Override
@@ -133,7 +134,12 @@ public class ShoppingCarActivity extends BaseActivity {
                         }else {
                             tvEmptyView.setVisibility(View.GONE);
                             llContainer.setVisibility(View.VISIBLE);
-                            adapter.addAll(getGoodsOfOneStore(carBeanList), true);
+                            getGoodsOfOneStore(carBeanList, new OnDatasClassifyFinishedListener() {
+                                @Override
+                                public void onDatasClassifyFinishedListener(List<ShoppingCarBean> list) {
+                                    adapter.addAll(list,true);
+                                }
+                            });
                         }
                     }
                 });
@@ -149,7 +155,7 @@ public class ShoppingCarActivity extends BaseActivity {
      * @param list
      * @return
      */
-    private List<ShoppingCarBean> getGoodsOfOneStore(List<ShoppingGoodsBean> list) {
+    private void getGoodsOfOneStore(List<ShoppingGoodsBean> list, OnDatasClassifyFinishedListener listener) {
         //将所有商品按照店名进行分类，相同的店名放入同一集合1
         List<ShoppingCarBean> carList = new ArrayList<>();
         Map<ShoppingGoodsBean, List<ShoppingGoodsBean>> map = new HashMap<>();
@@ -157,7 +163,7 @@ public class ShoppingCarActivity extends BaseActivity {
         if (list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 String key = list.get(i).getStoreName();//获取当条数据的店名值
-                if (product.getStoreName()!=null && product.getStoreName().length() >= 0) {
+                if (product.getStoreName()!=null && product.getStoreName().length()>0) {
                     boolean b = !key.equals(product.getStoreName());//当该店名值与key值中的店名值不同时，则创建新的key,保证key值唯一
                     if (b) {
                         product = new ShoppingGoodsBean();
@@ -192,7 +198,7 @@ public class ShoppingCarActivity extends BaseActivity {
 
 
         }
-        return carList;
+        listener.onDatasClassifyFinishedListener(carList);
     }
 
 
@@ -253,10 +259,16 @@ public class ShoppingCarActivity extends BaseActivity {
     @OnClick(R.id.btn_pay)
     public void pay() {
         //TODO 计算总价格付账
-        Intent intent = new Intent(this, ConfirmOrderActivity.class);
-        intent.putParcelableArrayListExtra("orders", (ArrayList<ShoppingCarBean>) getGoodsOfOneStore(selectGoods));
-        startActivity(intent);
-        finish();
+        final Intent intent = new Intent(this, ConfirmOrderActivity.class);
+        getGoodsOfOneStore(selectGoods, new OnDatasClassifyFinishedListener() {
+            @Override
+            public void onDatasClassifyFinishedListener(List<ShoppingCarBean> list) {
+                intent.putParcelableArrayListExtra("orders", (ArrayList<ShoppingCarBean>) list);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 
     @Override

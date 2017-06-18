@@ -110,9 +110,11 @@ public class NewGoodsActivity extends BaseActivity {
 
 
     private void refresh() {
+        loadProgressDialogUtil.buildProgressDialog();
         control.getAllNewProducts(this, index, 20, client, new OnSearchProductsFinishedListener() {
             @Override
             public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
+                loadProgressDialogUtil.cancelProgressDialog();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
