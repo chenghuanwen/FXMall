@@ -385,9 +385,11 @@ public class HomePageFragment extends Fragment {
                     public void OnBannerClick(int position) {
                         BannerBean bannerBean = banners.get(position);
                         if (bannerBean.getType() == 0) {//商品
+                            LogUtil.i("TAG","banner跳转到商品==========");
                             getProductDetial(bannerBean.getProductId());
                         } else {//商铺
                             getStoreDetial(bannerBean.getProductId());
+                            LogUtil.i("TAG","banner跳转到商铺==========");
                         }
                     }
                 });
@@ -403,9 +405,11 @@ public class HomePageFragment extends Fragment {
      * @param productId
      */
     private void getProductDetial(int productId) {
+        progressDialogUtil.buildProgressDialog();
         control.getProductDetialById(productId, new OnGetProductDetialFinishedListener() {
             @Override
             public void onGetProductDetialFinishedListener(MainProductBean product) {
+                progressDialogUtil.cancelProgressDialog();
                 //跳转到商品详情
                 Intent intent = new Intent(getContext(), ProductDetialActivity.class);
                 Bundle bundle = new Bundle();
@@ -424,9 +428,11 @@ public class HomePageFragment extends Fragment {
      * @param productId
      */
     private void getStoreDetial(int productId) {
+        progressDialogUtil.buildProgressDialog();
         control.getStoreDetialByid(productId, new OnGetStoreDetialFinishedListener() {
             @Override
             public void onGetStoreDetialFinishedListener(StoreBean store) {
+                progressDialogUtil.cancelProgressDialog();
                 //TODO 跳转到商铺详情
                 Intent intent = new Intent(getContext(), StoreMainPageActivity.class);
                 Bundle bundle = new Bundle();

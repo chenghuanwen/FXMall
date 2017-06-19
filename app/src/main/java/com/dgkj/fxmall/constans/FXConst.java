@@ -11,7 +11,7 @@ public class FXConst {
     /** 支付宝账户登录授权业务：入参pid值 */
     public static final String PID = "";
     /** 支付宝账户登录授权业务：入参target_id值 */
-    public static final String TARGET_ID = "";
+    public static final String TARGET_ID = "2017061307481478";
     /** 商户私钥，pkcs8格式 */
     /** 如下私钥，RSA2_PRIVATE 或者 RSA_PRIVATE 只需要填入一个 */
     /** 如果商户两个都设置了，优先使用 RSA2_PRIVATE */

@@ -2904,9 +2904,11 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","根据id查询商铺详情=========="+string);
                 if(string.contains("1000")){
                     try {
-                        JSONObject jsonObject = new JSONObject(string);
+                        JSONObject object = new JSONObject(string);
+                        JSONObject jsonObject = object.getJSONObject("data");
                         StoreBean storeBean = new StoreBean();
                         storeBean.setName(jsonObject.getString("storeName"));
                         String address = jsonObject.getString("address");
@@ -2959,6 +2961,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","根据id查询商品详情=========="+string);
                 if (string.contains("1000")) {
                     final MainProductBean product = new MainProductBean();
                     try {

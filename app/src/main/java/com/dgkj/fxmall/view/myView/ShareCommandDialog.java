@@ -33,6 +33,7 @@ import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnSelectColorSizeFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.ConfirmOrderActivity;
 import com.dgkj.fxmall.view.HomePageActivity;
@@ -87,7 +88,12 @@ public class ShareCommandDialog extends PopupWindow {
         getProductData(new LoadFinishedListener() {
             @Override
             public void onLoadFinished() {
-              //  setData();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setData();
+                    }
+                });
             }
         });
     }
@@ -106,13 +112,14 @@ public class ShareCommandDialog extends PopupWindow {
         }
         String clip = pate.toString();
         if (clip.contains("FXMall")) {
-            Pattern pattern = Pattern.compile("^\\d+$");
+            Pattern pattern = Pattern.compile("\\d");
             Matcher matcher = pattern.matcher(clip);
             while (matcher.find()) {
                 int start = matcher.start();
                 int end = matcher.end();
-                productId = clip.substring(start, end + 1);
+                productId = clip.substring(start, end);
             }
+            LogUtil.i( "TAG","分享商品ID===="+productId);
             if(TextUtils.isEmpty(productId)){productId=0+"".trim();}
             control.getProductDetialById(Integer.parseInt(productId), new OnGetProductDetialFinishedListener() {
                 @Override
