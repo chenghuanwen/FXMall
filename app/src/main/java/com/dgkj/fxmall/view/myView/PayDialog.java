@@ -1,6 +1,7 @@
 package com.dgkj.fxmall.view.myView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -57,6 +58,7 @@ import static com.dgkj.fxmall.constans.FXConst.SDK_PAY_FLAG;
 @SuppressLint("ValidFragment")
 public class PayDialog extends DialogFragment {
     private Context context;
+    private Activity activity;
     private OkHttpClient client;
     private SharedPreferencesUnit sp;
     private int payMode = 3;
@@ -96,12 +98,14 @@ public class PayDialog extends DialogFragment {
     };
 
 
-    public PayDialog(Context context,int[] orderIds) {
+    public PayDialog(Context context,int[] orderIds,Activity activity) {
         this.context = context;
         this.orderIds = orderIds;
+        this.activity = activity;
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
         loadProgressDialogUtil = new LoadProgressDialogUtil(context);
+        LogUtil.i("TAG","下单ID==="+orderIds[0]);
     }
 
     @NonNull
@@ -218,7 +222,7 @@ public class PayDialog extends DialogFragment {
                             String prepay_id = dataset.getString("prepay_id");//预付订单id
                             weixinPay(mch_id,prepay_id,nonce_str,sign);//调起微信支付
                         }else if(payMode==1){//TODO 支付宝支付返回信息
-                            String orderInfo = object.getString("orderInfo");
+                            String orderInfo = object.getString("data");
                             aliPay(orderInfo);
                         }else if(payMode==3){//TODO 余额支付返回信息
                             uiHandler.post(new Runnable() {
@@ -357,10 +361,14 @@ public class PayDialog extends DialogFragment {
 
             @Override
             public void run() {
-                PayTask alipay = new PayTask(getActivity());//此处获取activity对象可能失败
-                Map<String, String> result = alipay.payV2(orderInfo, true);
-                LogUtil.i("TAG", "支付宝支付结果==="+result.toString());
+                PayTask alipay = new PayTask(activity);//此处获取activity对象可能失败
+                int indexOf = orderInfo.indexOf("&", 0);
+                String substring = orderInfo.substring(indexOf + 1, orderInfo.length());
+                LogUtil.i("TAG","支付参数==========="+substring);
 
+                Map<String, String> result = alipay.payV2(substring, true);
+
+                LogUtil.i("TAG", "支付宝支付结果==="+result.toString());
                 Message msg = new Message();
                 msg.what = SDK_PAY_FLAG;
                 msg.obj = result;

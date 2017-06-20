@@ -271,7 +271,7 @@ public class ConfirmOrderActivity extends BaseActivity {
                         public void run() {
                             //TODO 如何确认订单ID
                             //订单提交成功，进行付款
-                            PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,orderIds);
+                            PayDialog dialog = new PayDialog(ConfirmOrderActivity.this,orderIds,ConfirmOrderActivity.this);
                             dialog.show(getSupportFragmentManager(),"");
                             dialog.setPayFinishListener(new OnPayFinishedListener() {
                                 @Override

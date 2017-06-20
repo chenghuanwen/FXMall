@@ -206,7 +206,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     @Override
                     public void onClick(View v) {//去付款
                         ids[0] = superOrderBean.getId();
-                        PayDialog dialog = new PayDialog(context,ids);
+                        PayDialog dialog = new PayDialog(context,ids,activity);
                         dialog.show(activity.getSupportFragmentManager(),"");
                         dialog.setPayFinishListener(new OnPayFinishedListener() {
                             @Override
