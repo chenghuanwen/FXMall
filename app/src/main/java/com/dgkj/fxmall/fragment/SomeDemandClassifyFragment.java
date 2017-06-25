@@ -16,6 +16,7 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainDemandDisplayAdapter;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.bean.MainDemandBean;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.view.myView.EndlessRecyclerOnScrollListener;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -38,6 +39,7 @@ public class SomeDemandClassifyFragment extends Fragment {
     public SomeDemandClassifyFragment(List<MainDemandBean> datas){
         mainList = datas;
       //  mHandler = handler;
+        LogUtil.i("TAG","二级分类需求数量===="+mainList);
 
     }
     @Nullable

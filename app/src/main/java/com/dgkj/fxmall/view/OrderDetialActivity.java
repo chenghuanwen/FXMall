@@ -306,7 +306,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.btn_pay://付款
                 orderIds[0] = order.getId();
-                PayDialog dialog = new PayDialog(OrderDetialActivity.this,orderIds,OrderDetialActivity.this);
+                PayDialog dialog = new PayDialog(OrderDetialActivity.this,orderIds,OrderDetialActivity.this,order.getSumPrice());
                 dialog.show(getSupportFragmentManager(), "");
                 break;
             case R.id.btn_notify_deliver://提醒发货

@@ -19,6 +19,7 @@ import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.bean.StoreProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
@@ -181,7 +182,7 @@ public class SearchContentActivity extends BaseActivity {
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
         productList = new ArrayList<>();
-        adapter = new MainProductDisplayAdapter(this, R.layout.item_main_product, productList, "product");
+        adapter = new MainProductDisplayAdapter(this, productList, "product");
 
         storeList = new ArrayList<>();
         storeAdapter = new SearchStoreAdapter(this, R.layout.item_shangpu_search_result, storeList, "search");
@@ -224,6 +225,14 @@ public class SearchContentActivity extends BaseActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+
+        adapter.setLoadMoreListener(new LoadMoreListener() {
+            @Override
+            public void onLoadmore() {
+                index++;
+                getSearchData();
             }
         });
     }

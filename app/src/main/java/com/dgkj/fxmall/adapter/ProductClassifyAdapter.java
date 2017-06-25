@@ -3,6 +3,7 @@ package com.dgkj.fxmall.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -27,12 +28,14 @@ public class ProductClassifyAdapter extends CommonAdapter<ProductClassifyBean> {
     private String from;//区分从产品大厅或需求大厅来
     private String subClassify="";
     private int subClassifyId;
-    public ProductClassifyAdapter(Context context, int layoutId, List<ProductClassifyBean> datas,String from) {
-        super(context, layoutId, datas);
+    public ProductClassifyAdapter(Context context,int resId, List<ProductClassifyBean> datas,String from) {
+        super(context, resId, datas);
         this.datas = datas;
         this.context = context;
         this.from = from;
     }
+
+
 
     @Override
     protected void convert(final ViewHolder viewHolder, final ProductClassifyBean item, final int position) {

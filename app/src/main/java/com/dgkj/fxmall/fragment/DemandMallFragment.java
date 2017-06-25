@@ -17,6 +17,7 @@ import com.dgkj.fxmall.adapter.ProductClassifyAdapter;
 import com.dgkj.fxmall.bean.ProductClassifyBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetDemandClassifyFinishedListener;
+import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class DemandMallFragment extends Fragment {
     private FXMallControl control;
     private OkHttpClient client;
     private Handler handler;
+    private LoadProgressDialogUtil loadProgressDialogUtil;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class DemandMallFragment extends Fragment {
         control = new FXMallControl();
         client = new OkHttpClient.Builder().build();
         handler = new Handler(Looper.getMainLooper());
+        loadProgressDialogUtil = new LoadProgressDialogUtil(getContext());
         initview(view);
         refresh();
         return view;
@@ -44,10 +47,12 @@ public class DemandMallFragment extends Fragment {
 
     private void refresh() {
         List<ProductClassifyBean> list = new ArrayList<>();
+        loadProgressDialogUtil.buildProgressDialog();
         //TODO 刷新数据
         control.getDemandClassifyDatas(handler,getContext(),client,new OnGetDemandClassifyFinishedListener() {
             @Override
             public void onGetDemandClassifyFinished(final List<ProductClassifyBean> calssifys) {
+                loadProgressDialogUtil.cancelProgressDialog();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

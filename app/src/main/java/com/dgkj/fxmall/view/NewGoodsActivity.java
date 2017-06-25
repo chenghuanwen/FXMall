@@ -7,12 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 
@@ -69,10 +71,18 @@ public class NewGoodsActivity extends BaseActivity {
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
         productList = new ArrayList<>();
-        adapter = new MainProductDisplayAdapter(this, R.layout.item_main_product, productList, "product");
+        adapter = new MainProductDisplayAdapter(this, productList, "product");
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvSearchContent.setLayoutManager(layoutManager);
         rvSearchContent.setAdapter(adapter);
+
+        adapter.setLoadMoreListener(new LoadMoreListener() {
+            @Override
+            public void onLoadmore() {
+                index++;
+                refresh();
+            }
+        });
        /* tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -119,7 +129,14 @@ public class NewGoodsActivity extends BaseActivity {
                     @Override
                     public void run() {
                         totalData = mainProducts;
-                        adapter.addAll(mainProducts, true);
+                        if(index>1 && totalData.size()<20){
+                            Toast.makeText(NewGoodsActivity.this,"已经到底啦！！",Toast.LENGTH_SHORT).show();
+                        }
+                        if(index>1){
+                            adapter.addAll(totalData, false);
+                        }else {
+                            adapter.addAll(totalData, true);
+                        }
                     }
                 });
 

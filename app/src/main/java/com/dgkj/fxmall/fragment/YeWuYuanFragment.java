@@ -200,6 +200,7 @@ public class YeWuYuanFragment extends Fragment {
     private void refresh2Home() {
         srlRefresh.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.RED, Color.YELLOW);
         srlRefresh.setNestedScrollingEnabled(true);
+        srlRefresh.setDistanceToTriggerSync(50);
         srlRefresh.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

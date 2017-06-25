@@ -66,6 +66,7 @@ public class PayDialog extends DialogFragment {
     private int[] orderIds;
     private LoadProgressDialogUtil loadProgressDialogUtil;
     private OnPayFinishedListener listener;
+    private double paySum=0.0;
     private Handler uiHandler = new Handler(Looper.getMainLooper());
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -98,10 +99,11 @@ public class PayDialog extends DialogFragment {
     };
 
 
-    public PayDialog(Context context,int[] orderIds,Activity activity) {
+    public PayDialog(Context context,int[] orderIds,Activity activity,double paySum) {
         this.context = context;
         this.orderIds = orderIds;
         this.activity = activity;
+        this.paySum = paySum;
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
         loadProgressDialogUtil = new LoadProgressDialogUtil(context);
@@ -138,7 +140,7 @@ public class PayDialog extends DialogFragment {
                 dialog.dismiss();
             }
         });
-        tvNeedPay.setText("");
+        tvNeedPay.setText("¥"+paySum);
         rgPay.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {

@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -118,7 +117,7 @@ public class MineFragment extends Fragment {
     @BindView(R.id.tv_jump_tip)
     TextView tvJumpTip;
     @BindView(R.id.scrollView)
-    NestedScrollView scrollView;
+    ScrollView scrollView;
     private float downX, downY = 300;
     private SharedPreferencesUnit sp;
     private OkHttpClient client;
@@ -213,7 +212,7 @@ public class MineFragment extends Fragment {
     private void refresh2Home() {
         srlRefresh.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.RED, Color.YELLOW);
         srlRefresh.setNestedScrollingEnabled(true);
-
+        srlRefresh.setDistanceToTriggerSync(50);
         srlRefresh.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -231,8 +230,8 @@ public class MineFragment extends Fragment {
                     case MotionEvent.ACTION_MOVE:
                         float dx = x - downX;
                         float dy = y - downY;
-                        //  LogUtil.i("TAG", "滑动距离 x==" + dx + "y===" + dy);
-                        if (dy>0 && Math.abs(dy)>Math.abs(dx) && dy>300 && srlRefresh.isRefreshing()) {
+                     //    LogUtil.i("TAG", "滑动距离 x==" + dx + "y===" + dy);
+                        if (dy>0 && Math.abs(dy)>Math.abs(dx) && dy>300 ) {
                             //   LogUtil.i("TAG", "向下滑动======");
                           /*  layoutParams.height = 200;
                             tvJumpTip.setLayoutParams(layoutParams);*/
@@ -254,7 +253,7 @@ public class MineFragment extends Fragment {
         srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                srlRefresh.setRefreshing(false);
+               srlRefresh.setRefreshing(false);
                 tvJumpTip.setVisibility(View.GONE);
                 Intent intent = new Intent(getContext(), HomePageActivity.class);
                 intent.putExtra("from", "");

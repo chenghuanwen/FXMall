@@ -121,6 +121,7 @@ public class MessageCenterActivity extends BaseActivity {
                 }else {
                     tvMsgCount1.setVisibility(View.VISIBLE);
                     tvMsgTime1.setVisibility(View.VISIBLE);
+                    if(orderMsg.size()==0){return;}
                     tvMsgCount1.setText(MyApplication.orderMsgCount+"");
                     tvMsgContent1.setText(orderMsg.get(0).getCotent());
                     tvMsgTime1.setText(orderMsg.get(0).getTime());

@@ -14,7 +14,7 @@
         android:id="@+id/iv_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@mipmap/android_quanzi"
+        android:src="@mipmap/icon144"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:layout_below="@+id/headerview"/>
@@ -31,10 +31,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#999"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:gravity="center"
         android:layout_above="@+id/ib_back"
-        android:text="copyrigt2017   @fenxiaomeng" />
+        android:text="哎购商城V1.0版权所有：山东易铭信网络科技有限公司" />
 
     <ImageButton
         android:id="@+id/ib_back"

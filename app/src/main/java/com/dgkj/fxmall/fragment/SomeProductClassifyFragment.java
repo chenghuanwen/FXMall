@@ -19,6 +19,7 @@ import com.dgkj.fxmall.adapter.ShoppingCarSubAdapter;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.ShoppingCarBean;
 import com.dgkj.fxmall.bean.SomeProductClassifyBean;
+import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.view.myView.EndlessRecyclerOnScrollListener;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
@@ -57,13 +58,19 @@ public class SomeProductClassifyFragment extends Fragment {
 
     private void initData(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_some_classify);
-        adapter = new MainProductDisplayAdapter(getContext(),R.layout.item_main_product,mainList,"product");
+        adapter = new MainProductDisplayAdapter(getContext(),mainList,"product");
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(),2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_refresh);
+        adapter.setLoadMoreListener(new LoadMoreListener() {
+            @Override
+            public void onLoadmore() {
 
+            }
+        });
+/*
         footerWrapper = new HeaderAndFooterWrapper<>(adapter);
         footerWrapper.addFootView(getActivity().getLayoutInflater().inflate(R.layout.layout_pull_load_more,null,false));
 
@@ -100,7 +107,7 @@ public class SomeProductClassifyFragment extends Fragment {
                 },2000);
 
             }
-        });
+        });*/
     }
 
     /**

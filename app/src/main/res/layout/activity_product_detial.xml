@@ -136,7 +136,7 @@
             <TextView
                 android:id="@+id/tv_all_comment"
                 style="@style/demand_detial_texview2"
-                android:text="买家评论（20）"
+                android:text="买家评论"
                 android:textSize="12sp"
                 android:paddingTop="5dp"
                 android:layout_width="match_parent"

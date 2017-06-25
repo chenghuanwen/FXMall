@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.MyApplication;
@@ -24,6 +25,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
@@ -109,7 +111,15 @@ public class StoreMainPageActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            adapter.addAll(mainProducts,true);
+
+                            if(index>1 && mainProducts.size()<20){
+                                Toast.makeText(StoreMainPageActivity.this,"已经到底啦！！",Toast.LENGTH_SHORT).show();
+                            }
+                            if(index>1){
+                                adapter.addAll(mainProducts, false);
+                            }else {
+                                adapter.addAll(mainProducts, true);
+                            }
                         }
                     });
                 }
@@ -180,7 +190,7 @@ public class StoreMainPageActivity extends BaseActivity {
         }
 
         goods = new ArrayList<>();
-        adapter = new MainProductDisplayAdapter(this, R.layout.item_main_product, goods, "product");
+        adapter = new MainProductDisplayAdapter(this, goods, "product");
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvStoreMain.setLayoutManager(gridLayoutManager);
         rvStoreMain.setAdapter(adapter);
@@ -221,6 +231,14 @@ public class StoreMainPageActivity extends BaseActivity {
                 bundle.putParcelable("store", store);
                 intent.putExtras(bundle);
                 jumpTo(intent, false);
+            }
+        });
+
+        adapter.setLoadMoreListener(new LoadMoreListener() {
+            @Override
+            public void onLoadmore() {
+                index++;
+                refresh();
             }
         });
     }

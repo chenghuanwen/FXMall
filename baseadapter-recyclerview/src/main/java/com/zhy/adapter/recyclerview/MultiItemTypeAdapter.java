@@ -86,8 +86,9 @@ public class MultiItemTypeAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+     //   Log.i("TAG","填充数据============================"+mDatas.size());
+        if(mDatas.size()==0){return;}
         convert(holder, mDatas.get(position));
-      //  Log.i("TAG","填充数据============================");
     }
 
     @Override

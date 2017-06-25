@@ -108,6 +108,12 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
     protected void convert(ViewHolder holder, final SuperOrderBean superOrderBean, final int position) {
         subOrders = superOrderBean.getSubOrders();
         final OrderBean order = subOrders.get(0);
+
+        View commonView = holder.getView(R.id.order_common);
+        if(!order.isDeliver()){
+            commonView.setBackgroundColor(Color.parseColor("#f0f7fd"));
+        }
+
         holder.setText(R.id.tv_order_storename,order.getStoreName());
         holder.setText(R.id.tv_order_state,order.getState());
         holder.setText(R.id.tv_car_goods_introduce,order.getIntroduce());
@@ -125,14 +131,17 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         ImageView iv = holder.getView(R.id.iv_car_goods);
         Glide.with(context).load(order.getUrl()).placeholder(R.mipmap.android_quanzi).into(iv);
 
-        //动态添加多个商品信息
-        LinearLayout subContainer = holder.getView(R.id.ll_order_sub_container);
+        //动态添加多个不同商品信息
+        final LinearLayout subContainer = holder.getView(R.id.ll_order_sub_container);
+
         if(subOrders.size() > 1){
             for (int i = 1; i < subOrders.size(); i++) {
                 OrderBean orderBean = subOrders.get(i);
+                OrderBean bean = subOrders.get(i - 1);
+                if(orderBean.getProductId()==bean.getProductId()){return;}
                 View view = mInflater.inflate(R.layout.item_order_subcommon, subContainer, false);
                 subContainer.addView(view);
-                if(!order.isDeliver()){
+                if(!orderBean.isDeliver()){
                     view.setBackgroundColor(Color.parseColor("#f0f7fd"));
                 }
                 TextView tvContent = (TextView) view.findViewById(R.id.tv_car_goods_introduce);
@@ -206,7 +215,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     @Override
                     public void onClick(View v) {//去付款
                         ids[0] = superOrderBean.getId();
-                        PayDialog dialog = new PayDialog(context,ids,activity);
+                        PayDialog dialog = new PayDialog(context,ids,activity,superOrderBean.getSubOrders().get(0).getSumPrice());
                         dialog.show(activity.getSupportFragmentManager(),"");
                         dialog.setPayFinishListener(new OnPayFinishedListener() {
                             @Override

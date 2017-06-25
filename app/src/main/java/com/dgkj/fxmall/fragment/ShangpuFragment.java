@@ -457,6 +457,9 @@ public class ShangpuFragment extends Fragment {
         storeBean.setIconUrl(logo);
         storeBean.setName(name);
         storeBean.setAdress(address);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("store",storeBean);
+        intent.putExtras(bundle);
         jumpto(intent);
     }
 
@@ -531,6 +534,7 @@ public class ShangpuFragment extends Fragment {
     private void refresh2Home() {
         srlRefresh.setColorSchemeColors(Color.BLUE, Color.GREEN, Color.RED, Color.YELLOW);
         srlRefresh.setNestedScrollingEnabled(true);
+        srlRefresh.setDistanceToTriggerSync(50);
         srlRefresh.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -564,7 +568,12 @@ public class ShangpuFragment extends Fragment {
                             tvJumpTip.setVisibility(View.GONE);
                         }
                         break;
+                    case MotionEvent.ACTION_CANCEL:
+                        tvJumpTip.setVisibility(View.GONE);
+                        LogUtil.i("TAG","touch cancel=======");
+                        break;
                 }
+
                 return false;
             }
         });

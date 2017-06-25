@@ -89,6 +89,7 @@ public class SomeDemandClassifyActivity extends BaseActivity {
      */
     private void getData() {
         //根据一级分类获取对应的二级分类
+        final int[] index = {0};
         progressDialogUtil.buildProgressDialog();
         control.getSubclassify(this, superId, client, new OnGetSubclassifyFinishedListener() {
             @Override
@@ -100,54 +101,31 @@ public class SomeDemandClassifyActivity extends BaseActivity {
                     subId[i] = subList.get(i).getId();
                 }
                 for (int j = 0; j < subClassify.length; j++) {
+                    index[0] = j;
                     final SomeDemandClassifyBean classifyBean = new SomeDemandClassifyBean();
                     classifyBean.setType(subClassify[j]);
-                    control.getDemandByClassify(SomeDemandClassifyActivity.this, subId[j], index, 20, client, new OnGetMyDemandDataFinishedListener() {
+                    control.getDemandByClassify(SomeDemandClassifyActivity.this, subId[j], index[0], 20, client, new OnGetMyDemandDataFinishedListener() {
                         @Override
                         public void onGetMyDemandDataFinished(List<MainDemandBean> demandList) {
                             classifyBean.setSubList(demandList);
+                            mainList.add(classifyBean);
+                            if(index[0]==subClassify.length-1){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        initTab(mainList);
+                                    }
+                                });
+                            }
                         }
                     });
-                    mainList.add(classifyBean);
+
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        initTab(mainList);
-                    }
-                });
+
 
             }
         });
 
-        //TEST 本地测试数据
-        String[] type = new String[]{"上衣", "寸衫", "风衣", "T恤", "马甲", "丝巾", "披肩"};
-        List<String> url = new ArrayList<>();
-        url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
-        url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
-        url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
-        url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
-        url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
-        url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
-        url.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492433529&di=de2494834a545a7e044f2cf696345ace&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.wmtuku.com%2Fd%2Ffile%2F2017-02-17%2F2858b31981db27e4af218207575658dc.jpg");
-        for (int i = 0; i < 6; i++) {
-            SomeDemandClassifyBean classifyBean = new SomeDemandClassifyBean();
-            classifyBean.setType(type[i]);
-            List<MainDemandBean> list = new ArrayList<>();
-            for (int j = 0; j < 5; j++) {
-                MainDemandBean productBean = new MainDemandBean();
-                productBean.setUrls(url);
-                productBean.setAddress("广东深圳");
-                productBean.setIntroduce("粉小萌，够猛，够萌，够亮，够酸，够辣，这酸辣爽");
-                productBean.setDemand(100);
-                productBean.setPhone("161561362");
-                productBean.setTitel("粉小萌酸辣粉");
-                list.add(productBean);
-            }
-            classifyBean.setSubList(list);
-            mainList.add(classifyBean);
-        }
-      //  initTab(mainList);
     }
 
     /**

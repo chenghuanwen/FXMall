@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.adapter.MainProductDisplayAdapter;
@@ -14,10 +15,12 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.StoreProductBean;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,21 +80,6 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     private void refresh() {
         progressDialogUtil.buildProgressDialog();
 
-      /*  //TEST
-        control.getSubClassifyProductData(new OnGetSubClassifyProductsFinishedListener() {
-            @Override
-            public void onGetDemandDatasFinished(final List<MainProductBean> products) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        totalData = products;
-                        adapter.addAll(totalData, true);
-                    }
-                });
-
-            }
-        });*/
-
         control.getProductsOfSubclassify(subId, orderBy, index, 20, okHttpClient, new OnSearchProductsFinishedListener() {
             @Override
             public void onSearchProductsFinished(List<MainProductBean> mainProducts) {
@@ -99,7 +87,15 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.addAll(totalData, true);
+                        if(index>1 && totalData.size()<20){
+                            Toast.makeText(SomeProductSubClassifyActivity.this,"已经到底啦！！",Toast.LENGTH_SHORT).show();
+                        }
+                        if(index>1){
+                            adapter.addAll(totalData, false);
+                        }else {
+                            adapter.addAll(totalData, true);
+                        }
+
                         progressDialogUtil.cancelProgressDialog();
                     }
                 });
@@ -118,10 +114,17 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
      */
     private void refresh(String orderBy, int index, int size, int storeId,int subId){
         loadProgressDialogUtil.buildProgressDialog();
-        control.getMyStoreSubClassifyProducts(this, storeId, okHttpClient, orderBy, index, size, subId, new OnGetStoreProductsFinishedListener() {
+        control.getStoreSubClassifyProducts(this, storeId, okHttpClient, orderBy, index, size, subId, new OnSearchProductsFinishedListener() {
             @Override
-            public void OnGetStoreProductsFinished(List<StoreProductBean> products) {
-
+            public void onSearchProductsFinished(List<MainProductBean> mainProducts) {
+                totalData = mainProducts;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(totalData, true);
+                        progressDialogUtil.cancelProgressDialog();
+                    }
+                });
             }
         });
     }
@@ -134,7 +137,7 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
         productList = new ArrayList<>();
-        adapter = new MainProductDisplayAdapter(this, R.layout.item_main_product, productList, "product");
+        adapter = new MainProductDisplayAdapter(this, productList, "product");
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvSearchContent.setLayoutManager(layoutManager);
         rvSearchContent.setAdapter(adapter);
@@ -144,17 +147,14 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         orderBy = "totalScore";
-                        adapter.addAll(totalData, true);
                         refresh();
                         break;
                     case 1:
                         orderBy = "sales";
-                        adapter.addAll(totalData.subList(0, 6), true);
                         refresh();
                         break;
                     case 2:
                         orderBy = "createTime";
-                        adapter.addAll(totalData.subList(6, totalData.size()), true);
                         refresh();
                         break;
                 }
@@ -169,6 +169,15 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
             }
         });
 
+
+        adapter.setLoadMoreListener(new LoadMoreListener() {
+            @Override
+            public void onLoadmore() {
+                index++;
+                refresh();
+            }
+        });
+
     }
 
     private void initHeaderView() {
@@ -179,6 +188,8 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
         if("store".equals(from)){
             storeId = getIntent().getIntExtra("storeId",-1);
         }
+
+        LogUtil.i("TAG","商店商品分类===storeid=="+storeId+"===="+subId);
     }
 
 

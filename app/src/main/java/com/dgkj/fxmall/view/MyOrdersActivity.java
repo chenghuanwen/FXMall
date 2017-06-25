@@ -134,49 +134,6 @@ public class MyOrdersActivity extends BaseActivity {
 
     private void initFragment() {
 
-     /*   //TEST
-        for (int i = 0; i < 8; i++) {
-            List<OrderBean> list = new ArrayList<>();
-            SuperOrderBean superOrderBean = new SuperOrderBean();
-            for (int j = 0; j <5; j++) {
-                OrderBean order = new OrderBean();
-                order.setStoreName("粉小萌酸辣粉旗舰店");
-                order.setColor("蓝色");
-                order.setSize("均码");
-                order.setCount(j+1);
-                order.setHasComment(true);
-                order.setIntroduce("啊好多覅家乐福卡静安寺独立开发安静地离开房间阿萨德开了房");
-                order.setPostage(20);
-                order.setOrderNum("41313213213232");
-                order.setSinglePrice(56);
-                order.setSumPrice(56);
-                order.setState(states[i]);
-                order.setStateNum(j);
-                order.setId(i+2);
-                order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
-                if(i>4){
-                    order.setDeliver(false);
-                }else {
-                    order.setDeliver(true);
-                }
-                list.add(order);
-            }
-            superOrderBean.setId(i);
-            superOrderBean.setSubOrders(list);
-            allOrder.add(superOrderBean);
-        }
-
-        waitPay.add(allOrder.get(0));
-        waitPay.add(allOrder.get(7));
-        waitDeliver.add(allOrder.get(1));
-        waitDeliver.add(allOrder.get(5));
-        waitTakeGoods.add(allOrder.get(2));
-        waitTakeGoods.add(allOrder.get(4));
-        waitComment.add(allOrder.get(3));
-*/
-
-
-
         fragments.add(new MyOrderClassifyFragment(allOrder));
         fragments.add(new MyOrderClassifyFragment(waitPay));
         fragments.add(new MyOrderClassifyFragment(waitDeliver));

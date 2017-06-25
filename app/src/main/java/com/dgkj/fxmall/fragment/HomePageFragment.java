@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.MyApplication;
@@ -30,6 +31,7 @@ import com.dgkj.fxmall.bean.ProductClassifyBean;
 import com.dgkj.fxmall.bean.StoreBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
+import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.listener.OnGetBannerFinishedListener;
 import com.dgkj.fxmall.listener.OnGetHomeRecommendFinishedListener;
 import com.dgkj.fxmall.listener.OnGetMainRecommendStoreFinishedListener;
@@ -155,6 +157,8 @@ public class HomePageFragment extends Fragment {
         //获取首页展示商品
         getDisplayProducts();
 
+
+
         return rootView;
     }
 
@@ -191,7 +195,15 @@ public class HomePageFragment extends Fragment {
                                         list.add(products.get(products.size()-1));
                                     }
 
-                                    productDisplayAdapter.addAll(list,true);
+                                    if(index>1 && mainProducts.size()<20){
+                                        Toast.makeText(getContext(),"已经到底啦！！",Toast.LENGTH_SHORT).show();
+                                    }
+                                    if(index>1){
+                                        productDisplayAdapter.addAll(list,false);
+                                    }else {
+                                        productDisplayAdapter.addAll(list,true);
+                                    }
+                                  //  productDisplayAdapter.addAll(list,true);
                                 }
                             });
                         }
@@ -217,7 +229,14 @@ public class HomePageFragment extends Fragment {
                                 list.add(mainProducts.get(mainProducts.size()-1));
                             }
 
-                            productDisplayAdapter.addAll(list,true);
+                            if(index>1 && mainProducts.size()<20){
+                                Toast.makeText(getContext(),"已经到底啦！！",Toast.LENGTH_SHORT).show();
+                            }
+                            if(index>1){
+                                productDisplayAdapter.addAll(list,false);
+                            }else {
+                                productDisplayAdapter.addAll(list,true);
+                            }
                         }
                     });
                 }
@@ -296,11 +315,11 @@ public class HomePageFragment extends Fragment {
         FullyLinearLayoutManager linearLayoutManager = new FullyLinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvRecommendGoods.setLayoutManager(linearLayoutManager);
-        classifyAdapter = new ProductClassifyAdapter(getContext(), R.layout.item_product_classify, classifys, "product");
+        classifyAdapter = new ProductClassifyAdapter(getContext(),R.layout.item_product_classify, classifys, "product");
         rvRecommendGoods.setAdapter(classifyAdapter);
         //  rvHomeDisplay.setLayoutManager(new FullyLinearLayoutManager(getContext()));
 
-        productDisplayAdapter = new MainProductDisplayAdapter(getContext(), R.layout.item_main_product, mainProducts, "product");
+        productDisplayAdapter = new MainProductDisplayAdapter(getContext(), mainProducts, "product");
 
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getContext(), 2);
         gridLayoutManager.setAutoMeasureEnabled(true);
@@ -308,6 +327,14 @@ public class HomePageFragment extends Fragment {
         rvHomeDisplay.setLayoutManager(gridLayoutManager);
         rvHomeDisplay.setHasFixedSize(true);
         rvHomeDisplay.setAdapter(productDisplayAdapter);
+
+        productDisplayAdapter.setLoadMoreListener(new LoadMoreListener() {
+            @Override
+            public void onLoadmore() {
+                index++;
+                getDisplayProducts();
+            }
+        });
 
     }
 

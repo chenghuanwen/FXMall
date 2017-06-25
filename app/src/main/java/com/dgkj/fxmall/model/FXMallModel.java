@@ -507,6 +507,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","获取商铺分类商品====="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -946,6 +947,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","需求二级分类===="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -1420,10 +1422,15 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","获取二级分类需求结果=========="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         JSONArray dataset = object.getJSONArray("dataset");
+                        if(dataset.length()==0){
+                            listener.onGetMyDemandDataFinished(list);
+                            return;
+                        }
                         for (int i = 0; i < dataset.length(); i++) {
                             MainDemandBean demandBean = new MainDemandBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
@@ -1433,7 +1440,7 @@ public class FXMallModel {
                             demandBean.setPhone(jsonObject.getString("phone"));
                             demandBean.setId(jsonObject.getInt("id"));
                             demandBean.setDemand(jsonObject.getInt("num"));
-                            String photo = object.getString("url");
+                            String photo = jsonObject.getString("url");
                             JSONArray photos = new JSONArray(photo);
                             List<String> urls = new ArrayList<>();
                             for (int j = 0; j < photos.length(); j++) {
@@ -1911,9 +1918,9 @@ public class FXMallModel {
                             orderBean.setProductId(commodity.getInt("id"));
                             //TODO 是否支持发货(不支持发货时修改订单小状态)
                             //TODO 是否支持发货
-                            if(!commodity.has("send")){
-                                //TODO 是否支持发货(不支持发货时修改订单小状态)
-                                orderBean.setDeliver(commodity.getInt("send")==0?true:false);
+                            //TODO 是否支持发货(不支持发货时修改订单小状态)
+                            orderBean.setDeliver(commodity.getInt("send")==0?true:false);
+                            if(!orderBean.isDeliver()){
                                 if(orderBean.getStateNum()==1 && !orderBean.isDeliver()){
                                     orderBean.setState("待确认");
                                 }else if(orderBean.getStateNum()==2 && !orderBean.isDeliver()){
@@ -2070,9 +2077,9 @@ public class FXMallModel {
                             orderBean.setUrl(commodity.getString("detail"));
                             orderBean.setProductId(commodity.getInt("id"));
                             //TODO 是否支持发货
-                            if(!commodity.has("send")){
-                                //TODO 是否支持发货(不支持发货时修改订单小状态)
-                                orderBean.setDeliver(commodity.getInt("send")==0?true:false);
+                            //TODO 是否支持发货(不支持发货时修改订单小状态)
+                            orderBean.setDeliver(commodity.getInt("send")==0?true:false);
+                            if(!orderBean.isDeliver()){
                                 if(orderBean.getStateNum()==1 && !orderBean.isDeliver()){
                                     orderBean.setState("待接单");
                                 }else if(orderBean.getStateNum()==2 && !orderBean.isDeliver()){
@@ -3067,14 +3074,7 @@ public class FXMallModel {
      */
     public static void getMySubVipData(String url, String token, int index, int size, final OnGetMyVipFinishedListener listener){
         final List<MyVipBean> list = new ArrayList<>();
-        //TEST
-        for (int i = 0; i < 20; i++) {
-            MyVipBean vipBean = new MyVipBean();
-            vipBean.setNick("瘟神");
-            vipBean.setTime("2017-15-17");
-            vipBean.setUrl("https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1380084653,2448555822&fm=23&gp=0.jpg");
-            list.add(vipBean);
-        }
+
         listener.onGetMyVipFinishedListener(list);
 
         FormBody body = new FormBody.Builder()
@@ -3094,6 +3094,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","我的下级会员列表===="+string);
                 if(string.contains("1000")){
                     try {
                         JSONObject object = new JSONObject(string);
@@ -3142,6 +3143,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","我的上级会员列表===="+string);
                 if(string.contains("1000")){
                     try {
                         JSONObject object = new JSONObject(string);
