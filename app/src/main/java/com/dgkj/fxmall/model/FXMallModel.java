@@ -479,13 +479,16 @@ public class FXMallModel {
      */
     public static void getStoreSubClassifyProducts(final BaseActivity context, int storeId, OkHttpClient client, String orderby, int index, int size, int subId, final OnSearchProductsFinishedListener listener){
         final List<MainProductBean> list = new ArrayList<>();
-        final int[] count = new int[1];
+        int[] count = null ;
+        if(count == null){
+            count = new int[1];
+        }
         FormBody.Builder builder = new FormBody.Builder()
                 .add("orderby", orderby)
                 .add("index", index + "".trim())
                 .add("size", size + "".trim())
                 .add("store.id", storeId + "".trim())
-                .add("subCategory.id", subId+"".trim());
+                .add("subCastegory.id", subId+"".trim());
 
         FormBody body = builder.build();
         Request.Builder post = new Request.Builder()
@@ -493,6 +496,7 @@ public class FXMallModel {
         post.url(FXConst.GET_STORE_SUBCLASSIFY_PRODUCTS);
 
         Request request = post.build();
+        final int[] finalCount = count;
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -508,7 +512,7 @@ public class FXMallModel {
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
                 LogUtil.i("TAG","获取商铺分类商品====="+result);
-                if (result.contains("1000")) {
+                if (result.contains("1000") && result.contains("dataset")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         final JSONArray dataset = object.getJSONArray("dataset");
@@ -579,7 +583,7 @@ public class FXMallModel {
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
-                                    count[0]++;
+                                    finalCount[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
@@ -587,7 +591,7 @@ public class FXMallModel {
                                     }
                                     list.add(product);
 
-                                    if(count[0]==dataset.length()){
+                                    if(finalCount[0]==dataset.length()){
                                         listener.onSearchProductsFinished(list);
                                     }
                                 }
@@ -1547,7 +1551,10 @@ public class FXMallModel {
      */
     public static void getSearchProducts(final Activity context, String key, String orderBy, String token,String startPrice,String endPice,String address,final int index, int size, int storeId, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
 
-        final int[] count = new int[1];
+        int[] count = null ;
+        if(count == null){
+            count = new int[1];
+        }
         final List<MainProductBean> list = new ArrayList<>();
         FormBody.Builder builder = new FormBody.Builder()
                 .add("orderby", orderBy)
@@ -1583,6 +1590,7 @@ public class FXMallModel {
             post.url(FXConst.SEARCH_ONE_STORE_PRODUCT);
         }
         Request request = post.build();
+        final int[] finalCount = count;
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -1672,7 +1680,7 @@ public class FXMallModel {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
                                     LogUtil.i("TAG","邮费计算完成========");
-                                    count[0]++;
+                                    finalCount[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
@@ -1680,7 +1688,7 @@ public class FXMallModel {
                                     }
                                     list.add(product);
 
-                                    if(count[0]==dataset.length()){
+                                    if(finalCount[0]==dataset.length()){
                                         listener.onSearchProductsFinished(list);
                                     }
                                 }
@@ -1690,6 +1698,8 @@ public class FXMallModel {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onSearchProductsFinished(list);
                 }
             }
         });
@@ -2342,7 +2352,10 @@ public class FXMallModel {
      */
     public static void getProductsForSubclassify(int subId, String orderBy, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
         final List<MainProductBean> list = new ArrayList<>();
-        final int[] count = new int[1];
+        int[] count = null ;
+        if(count == null){
+            count = new int[1];
+        }
         FormBody body = new FormBody.Builder()
                 .add("index", index + "".trim())
                 .add("size", size + "".trim())
@@ -2353,6 +2366,7 @@ public class FXMallModel {
                 .post(body)
                 .url(FXConst.GET_PRODUCTS_OF_SUBCALSSIFY)
                 .build();
+        final int[] finalCount = count;
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -2435,7 +2449,7 @@ public class FXMallModel {
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
-                                    count[0]++;
+                                    finalCount[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
@@ -2443,7 +2457,7 @@ public class FXMallModel {
                                     }
                                     list.add(product);
 
-                                    if(count[0]==dataset.length()){
+                                    if(finalCount[0]==dataset.length()){
                                         listener.onSearchProductsFinished(list);
                                     }
                                 }
@@ -2472,7 +2486,10 @@ public class FXMallModel {
      */
     public static void getHomePageProductsDisplay(String token, final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
         final List<MainProductBean> list = new ArrayList<>();
-        final int[] count = new int[1];
+        int[] count = null ;
+        if(count == null){
+            count = new int[1];
+        }
         FormBody body = new FormBody.Builder()
                 .add("index", index + "".trim())
                 .add("size", size + "".trim())
@@ -2482,6 +2499,7 @@ public class FXMallModel {
                 .post(body)
                 .url(FXConst.GET_HOME_MainProducts_URL)
                 .build();
+        final int[] finalCount = count;
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -2564,7 +2582,7 @@ public class FXMallModel {
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
-                                    count[0]++;
+                                    finalCount[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
@@ -2572,7 +2590,7 @@ public class FXMallModel {
                                     }
                                     list.add(product);
 
-                                    if(count[0]==dataset.length()){
+                                    if(finalCount[0]==dataset.length()){
                                         listener.onSearchProductsFinished(list);
                                     }
                                 }
@@ -2584,6 +2602,8 @@ public class FXMallModel {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onSearchProductsFinished(list);
                 }
             }
         });
@@ -2603,7 +2623,10 @@ public class FXMallModel {
      */
     public static void getAllNewProducts(final Activity context,final int index, int size, OkHttpClient client, final OnSearchProductsFinishedListener listener) {
 
-        final int[] count = new int[1];
+        int[] count = null ;
+        if(count == null){
+            count = new int[1];
+        }
         final List<MainProductBean> list = new ArrayList<>();
         FormBody.Builder builder = new FormBody.Builder()
                 .add("index", index + "".trim())
@@ -2614,6 +2637,7 @@ public class FXMallModel {
                 .post(body);
         post.url(FXConst.GET_HOME_PAGE_ALL_NEWGOODS);
         Request request = post.build();
+        final int[] finalCount = count;
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -2700,7 +2724,7 @@ public class FXMallModel {
                             getPostage(product.getId(), new OnGetPostageFinishedListener() {
                                 @Override
                                 public void onGetPostageFinishedListener(double postage) {
-                                    count[0]++;
+                                    finalCount[0]++;
                                     if(postage==0){
                                         product.setExpress("包邮");
                                     }else {
@@ -2708,7 +2732,7 @@ public class FXMallModel {
                                     }
                                     list.add(product);
 
-                                    if(count[0]==dataset.length()){
+                                    if(finalCount[0]==dataset.length()){
                                         listener.onSearchProductsFinished(list);
                                     }
                                 }
@@ -2809,9 +2833,14 @@ public class FXMallModel {
                             recommend.setType(object.getInt("type"));
                             if(object.has("detail")){
                                 String detailString = object.getString("detail");
+                                LogUtil.i("TAG","datastring===="+detailString);
                                 JSONObject detail = new JSONObject(detailString);
-                                recommend.setTitel(detail.getString("name"));
-                                if (recommend.getType() == 1) {//商铺
+                                if(detail.has("name")){
+                                    LogUtil.i("TAG","datastringObject===="+detail);
+                                    recommend.setTitel(detail.getString("name"));
+                                }
+
+                                if (recommend.getType()==1 && !TextUtils.isEmpty(detailString)) {//商铺
                                     recommend.setStoreName(detail.getString("storeName"));
                                     recommend.setLogo(detail.getString("logo"));
                                     recommend.setIntroduce(detail.getString("intro"));
@@ -3147,10 +3176,11 @@ public class FXMallModel {
                 if(string.contains("1000")){
                     try {
                         JSONObject object = new JSONObject(string);
+                        JSONObject data = object.getJSONObject("data");
                         MyVipBean vipBean = new MyVipBean();
-                        vipBean.setNick(object.getString("nickname"));
-                        vipBean.setTime(TimeFormatUtils.long2String(object.getLong("createTime")));
-                        vipBean.setUrl(object.getString("headPortrait"));
+                        vipBean.setNick(data.getString("nickname"));
+                        vipBean.setTime(TimeFormatUtils.long2String(data.getLong("createTime")));
+                        vipBean.setUrl(data.getString("headPortrait"));
                         list.add(vipBean);
                         listener.onGetMyVipFinishedListener(list);
 
@@ -3225,7 +3255,7 @@ public class FXMallModel {
     public static void getPostage(int productId, final OnGetPostageFinishedListener listener) {
 
         if(TextUtils.isEmpty(MyApplication.currentCity)){return;}
-        LogUtil.i("TAG","开始计算邮费====");
+        LogUtil.i("TAG","开始计算邮费====id==="+productId);
         FormBody body = new FormBody.Builder()
                 .add("id", productId + "".trim())
                 .add("address", MyApplication.currentProvince)
@@ -3242,7 +3272,8 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if (string.contains("1000")) {
+                LogUtil.i("TAG","邮费计算结果======"+string);
+                if (string.contains("1000") && string.contains("total")) {
                     try {
                         JSONObject object = new JSONObject(string);
                         double total = object.getDouble("total");
@@ -3251,6 +3282,8 @@ public class FXMallModel {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onGetPostageFinishedListener(0.0);
                 }
             }
         });

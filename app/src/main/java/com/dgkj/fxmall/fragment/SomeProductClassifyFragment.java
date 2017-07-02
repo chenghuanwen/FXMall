@@ -21,6 +21,7 @@ import com.dgkj.fxmall.bean.ShoppingCarBean;
 import com.dgkj.fxmall.bean.SomeProductClassifyBean;
 import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.view.myView.EndlessRecyclerOnScrollListener;
+import com.dgkj.fxmall.view.myView.ItemOffsetDecoration;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class SomeProductClassifyFragment extends Fragment {
         adapter = new MainProductDisplayAdapter(getContext(),mainList,"product");
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(),2);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new ItemOffsetDecoration(10));
         recyclerView.setAdapter(adapter);
 
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_refresh);

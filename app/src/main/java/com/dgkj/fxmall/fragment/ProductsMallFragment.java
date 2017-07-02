@@ -227,10 +227,10 @@ public class ProductsMallFragment extends Fragment {
                     String position = homePageRecommendBean.getPosition();
                     switch (position) {
                         case "product_GStore":
-                            liangpin = homePageRecommendBean;
+                            youzhi = homePageRecommendBean;
                             break;
                         case "product_GCommodity":
-                            youzhi = homePageRecommendBean;
+                            liangpin = homePageRecommendBean;
                             break;
                         case "product_Fcommodity":
                             youxuan = homePageRecommendBean;

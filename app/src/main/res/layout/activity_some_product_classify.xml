@@ -18,7 +18,12 @@
         android:background="#fff"
         app:tabIndicatorColor="@color/main_color"
         app:tabSelectedTextColor="@color/main_color"
-        app:tabTextColor="#333" />
+        app:tabTextColor="#333"
+        android:layout_marginBottom="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f3f3f3"></View>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

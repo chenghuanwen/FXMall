@@ -67,7 +67,9 @@ public class SearchStoreAdapter extends CommonAdapter<StoreBean> {
 
         Glide.with(context).load(storeBean.getIconUrl()).placeholder(R.mipmap.android_quanzi).into(icon);
         holder.setText(R.id.tv_store_name,storeBean.getName());
-        holder.setText(R.id.tv_store_address,storeBean.getAdress());
+        String adress = storeBean.getAdress();
+        int indexOf = adress.indexOf("市");
+        holder.setText(R.id.tv_store_address, adress.substring(0,indexOf+1));
         holder.setText(R.id.tv_total_sales,""+storeBean.getTotalScals());
         holder.setText(R.id.tv_total_goods,""+storeBean.getGoodsCount());
 

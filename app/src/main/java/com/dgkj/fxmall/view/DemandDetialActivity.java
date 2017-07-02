@@ -115,7 +115,7 @@ public class DemandDetialActivity extends BaseActivity {
         tvTakeAddress.setText(address);
 
         storeList = new ArrayList<>();
-        storeAdapter = new SearchStoreAdapter(this, R.layout.item_shangpu_search_result, storeList, "search");
+        storeAdapter = new SearchStoreAdapter(this, R.layout.item_shangpu_search_result, storeList, "demand");
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         rvRecommendStore.setLayoutManager(layoutManager1);
         rvRecommendStore.setAdapter(storeAdapter);

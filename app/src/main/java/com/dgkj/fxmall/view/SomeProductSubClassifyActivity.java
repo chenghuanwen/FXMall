@@ -21,6 +21,7 @@ import com.dgkj.fxmall.listener.OnGetSubClassifyProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
 import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.view.myView.ItemOffsetDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,12 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
         progressDialogUtil = new LoadProgressDialogUtil(this);
 
         if("store".equals(from)){
-            refresh(orderBy,1,20,storeId,subId);
+            if(subId == -1){
+                refresh(storeId);
+            }else {
+                refresh(orderBy,1,20,storeId,subId);
+            }
+            LogUtil.i("TAG","获取商铺二级分类商品============"+orderBy+"===="+storeId+"===="+subId);
         }else {
             refresh();
         }
@@ -130,6 +136,35 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
     }
 
 
+    /**
+     * 获取商铺所有商品
+     * @param storeId
+     */
+    private void refresh(int storeId) {
+        loadProgressDialogUtil.buildProgressDialog();
+        control.getSearchProducts(this, null, orderBy,null,null,null,null,index, 20, storeId, okHttpClient, new OnSearchProductsFinishedListener() {
+            @Override
+            public void onSearchProductsFinished(final List<MainProductBean> mainProducts) {
+                loadProgressDialogUtil.cancelProgressDialog();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(index>1 && mainProducts.size()<20){
+                            Toast.makeText(SomeProductSubClassifyActivity.this,"已经到底啦！！",Toast.LENGTH_SHORT).show();
+                        }
+                        if(index>1){
+                            adapter.addAll(mainProducts, false);
+                        }else {
+                            adapter.addAll(mainProducts, true);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
     private void initTabLayout() {
         tabLayout.addTab(tabLayout.newTab().setText("综合"), true);
         tabLayout.addTab(tabLayout.newTab().setText("销量"));
@@ -140,6 +175,7 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
         adapter = new MainProductDisplayAdapter(this, productList, "product");
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvSearchContent.setLayoutManager(layoutManager);
+        rvSearchContent.addItemDecoration(new ItemOffsetDecoration(10));
         rvSearchContent.setAdapter(adapter);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

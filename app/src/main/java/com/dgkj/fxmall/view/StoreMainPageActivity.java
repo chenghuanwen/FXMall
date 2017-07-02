@@ -28,6 +28,7 @@ import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.LoadMoreListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.view.myView.ItemOffsetDecoration;
 import com.dgkj.fxmall.view.myView.ShareInvitaCodeDialog;
 import com.dgkj.fxmall.view.myView.ShareStoreInfoDialog;
 
@@ -193,6 +194,7 @@ public class StoreMainPageActivity extends BaseActivity {
         adapter = new MainProductDisplayAdapter(this, goods, "product");
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         rvStoreMain.setLayoutManager(gridLayoutManager);
+        rvStoreMain.addItemDecoration(new ItemOffsetDecoration(10));
         rvStoreMain.setAdapter(adapter);
 
         tabStoreMain.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

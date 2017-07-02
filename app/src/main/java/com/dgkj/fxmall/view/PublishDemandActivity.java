@@ -124,7 +124,7 @@ public class PublishDemandActivity extends BaseActivity {
         String describe = etDemandDestribe.getText().toString();
         String count = etDemandCount.getText().toString();
         String phone = etDemandPhone.getText().toString();
-        String address = etDetialAdress.getText().toString() + etCurrentAddress.getText().toString();
+        String address = etCurrentAddress.getText().toString()+etDetialAdress.getText().toString();
         if (TextUtils.isEmpty(titel) || TextUtils.isEmpty(describe) || TextUtils.isEmpty(count) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(address)) {
             toast("请填写完整信息");
             return;

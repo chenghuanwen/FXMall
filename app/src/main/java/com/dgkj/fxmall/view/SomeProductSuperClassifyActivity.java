@@ -26,6 +26,7 @@ import com.dgkj.fxmall.listener.OnGetMyDemandDataFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,27 +101,32 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
             public void onGetSubclassifyFinished(List<ProductClassifyBean> subList) {
                 subClassify = new String[subList.size()];
                 subId = new int[subList.size()];
+                LogUtil.i("TAG","子分类个数==="+subList.size());
                 for (int i = 0; i < subList.size(); i++) {
                     subClassify[i] = subList.get(i).getTaxon();
                     subId[i] = subList.get(i).getId();
                 }
+                final int[] count = {0};
                 for (int j = 0; j < subClassify.length; j++) {
+
                     final SomeProductClassifyBean classifyBean = new SomeProductClassifyBean();
                     classifyBean.setType(subClassify[j]);
                     control.getProductsOfSubclassify(subId[j], "createTime", index, 20, client, new OnSearchProductsFinishedListener() {
                         @Override
                         public void onSearchProductsFinished(List<MainProductBean> mainProducts) {
+                            count[0]++;
+                            LogUtil.i("TAG","二级分类商品数量==="+mainProducts.size());
                             classifyBean.setSubList(mainProducts);
+                            mainList.add(classifyBean);
+                            LogUtil.i("TAG","正在获取第几个子分类的数据===="+count[0]);
+                            if(count[0] == subClassify.length){
+                                initTab(mainList);
+                            }
                         }
                     });
-                    mainList.add(classifyBean);
+
+
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        initTab(mainList);
-                    }
-                });
 
             }
         });
@@ -128,7 +134,7 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
 
 
 
-
+/*
         //  TEST TODO 数据获取完成后
         String[] type = new String[]{"上衣", "寸衫", "风衣", "T恤", "马甲", "丝巾", "披肩"};
         List<String> url = new ArrayList<>();
@@ -171,32 +177,38 @@ public class SomeProductSuperClassifyActivity extends BaseActivity {
             classifyBean.setSubList(list);
             mainList.add(classifyBean);
         }
-        initTab(mainList);
+        initTab(mainList);*/
     }
 
     /**
      * 初始化导航栏，需要根据查询改类别商品分为多少种小类别，以各小类别的名称为导航栏标题
      * 如服装类分为上衣、裤子、秋装、春装等...
      */
-    private void initTab(List<SomeProductClassifyBean> list) {
-        fragments = new ArrayList<>();
-        for (SomeProductClassifyBean classifyBean : list) {
-            fragments.add(new SomeProductClassifyFragment(classifyBean.getSubList()));
-        }
-        vpProduct.setAdapter(new HomePageFragmentAdapter(getSupportFragmentManager(), fragments));
-        vpProduct.setCurrentItem(0);
-        vpProduct.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+    private void initTab(final List<SomeProductClassifyBean> list) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fragments = new ArrayList<>();
+                for (SomeProductClassifyBean classifyBean : list) {
+                    fragments.add(new SomeProductClassifyFragment(classifyBean.getSubList()));
+                }
+                vpProduct.setAdapter(new HomePageFragmentAdapter(getSupportFragmentManager(), fragments));
+                vpProduct.setCurrentItem(0);
+                vpProduct.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        for (SomeProductClassifyBean classifyBean : list) {
-            tabLayout.addTab(tabLayout.newTab().setText(classifyBean.getType()), true);
-        }
-        tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        tabLayout.setupWithViewPager(vpProduct, true);
-        for (int i = 0; i < list.size(); i++) {//与viewpager连用后续重新设置标题
-            tabLayout.getTabAt(i).setText(list.get(i).getType());
-        }
+                for (SomeProductClassifyBean classifyBean : list) {
+                    tabLayout.addTab(tabLayout.newTab().setText(classifyBean.getType()), true);
+                }
+                tabLayout.setTabMode(TabLayout.MODE_FIXED);
+                tabLayout.setupWithViewPager(vpProduct, true);
+                for (int i = 0; i < list.size(); i++) {//与viewpager连用后续重新设置标题
+                    tabLayout.getTabAt(i).setText(list.get(i).getType());
+                }
 
-        loadProgressDialogUtil.cancelProgressDialog();
+                loadProgressDialogUtil.cancelProgressDialog();
+            }
+        });
+
     }
 
     private void initTitle() {

@@ -42,7 +42,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:textColor="#333"
-                        android:text="粉小萌8盒全国包邮"
+                        tools:text="粉小萌8盒全国包邮"
                         android:layout_marginTop="10dp"
                         android:layout_marginLeft="10dp"/>
                     <TextView
@@ -51,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
                         android:textColor="#999"
-                        android:text="够萌够靓够味"
+                        tools:text="够萌够靓够味"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_below="@+id/tv_store1_name"/>
@@ -74,7 +74,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:textColor="#333"
-                        android:text="粉小萌8盒全国包邮"
+                        tools:text="粉小萌8盒全国包邮"
                         android:layout_marginTop="10dp"
                         android:layout_marginLeft="10dp"/>
                     <TextView
@@ -83,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
                         android:textColor="#999"
-                        android:text="够萌够靓够味"
+                        tools:text="够萌够靓够味"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_below="@+id/tv_store2_name"/>
@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
                         android:textColor="#333"
-                        android:text="粉小萌8盒全国包邮"
+                        tools:text="粉小萌8盒全国包邮"
                         android:layout_marginTop="10dp"
                         android:layout_marginLeft="10dp"/>
                     <TextView
@@ -118,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
                         android:textColor="#999"
-                        android:text="够萌够靓够味"
+                        tools:text="够萌够靓够味"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_below="@+id/tv_store3_name"/>

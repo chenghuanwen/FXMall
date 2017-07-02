@@ -61,7 +61,7 @@ public class MainProductDisplayAdapter extends CommonAdapter<MainProductBean> {
             view = mInflater.inflate( R.layout.item_main_product,null);
             return new ViewHolder(context,view);
         }else {
-           view = mInflater.inflate(R.layout.item_load_more,null);
+          view = mInflater.inflate(R.layout.item_load_more,null);
            // view = mInflater.inflate( R.layout.item_main_product,null);
             return new ViewHolder(context,view);
         }

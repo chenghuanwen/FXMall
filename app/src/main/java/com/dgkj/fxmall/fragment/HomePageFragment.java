@@ -47,6 +47,7 @@ import com.dgkj.fxmall.view.NewGoodsActivity;
 import com.dgkj.fxmall.view.ProductDetialActivity;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
 import com.dgkj.fxmall.view.myView.FullyLinearLayoutManager;
+import com.dgkj.fxmall.view.myView.ItemOffsetDecoration;
 import com.dgkj.fxmall.view.myView.MyGridLayoutManager;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
@@ -218,7 +219,10 @@ public class HomePageFragment extends Fragment {
                         @Override
                         public void run() {
                             progressDialogUtil.cancelProgressDialog();
-                            if(mainProducts.size()==0){return;}
+                            if(mainProducts.size()==0){
+                                Toast.makeText(getContext(),"没有更多商品啦！！",Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             ArrayList<MainProductBean> list = new ArrayList<>();
                             for (int i = 0; i < mainProducts.size()-1; i++) {//同一件商品的不同型号只显示一个
                                 if(mainProducts.get(i).getId() != mainProducts.get(i+1).getId()){
@@ -325,6 +329,7 @@ public class HomePageFragment extends Fragment {
         gridLayoutManager.setAutoMeasureEnabled(true);
         gridLayoutManager.setSmoothScrollbarEnabled(true);
         rvHomeDisplay.setLayoutManager(gridLayoutManager);
+        rvHomeDisplay.addItemDecoration(new ItemOffsetDecoration(10));
         rvHomeDisplay.setHasFixedSize(true);
         rvHomeDisplay.setAdapter(productDisplayAdapter);
 
