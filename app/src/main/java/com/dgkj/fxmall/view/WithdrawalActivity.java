@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
@@ -52,6 +51,8 @@ public class WithdrawalActivity extends BaseActivity {
     ImageView ivType;
     @BindView(R.id.activity_withdrawal)
     LinearLayout activityWithdrawal;
+    @BindView(R.id.et_bank_account)
+    EditText etBankAccount;
     private View headerview;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private SharedPreferencesUnit sp = SharedPreferencesUnit.getInstance(this);
@@ -92,14 +93,14 @@ public class WithdrawalActivity extends BaseActivity {
 
     @OnClick(R.id.tv_select_account)
     public void selectAccount() {
-        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式",R.layout.layout_withdrawal_selector_dialog);
+        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式", R.layout.layout_withdrawal_selector_dialog);
         dialog.show(getSupportFragmentManager(), "");
         dialog.setSelectListener(new OnSelectAccountFinishedListener() {
             @Override
             public void OnSelectAccountFinished(String result) {
-                if(result.contains("微信")){
+                if (result.contains("微信")) {
                     ivType.setImageResource(R.mipmap.weixin);
-                }else {
+                } else {
                     ivType.setImageResource(R.mipmap.zhifubao);
                 }
                 tvSelectAccount.setText(result);
@@ -111,12 +112,14 @@ public class WithdrawalActivity extends BaseActivity {
     @OnClick(R.id.btn_confirm)
     public void withdrawabl() {
         String sum = etRechargeSum.getText().toString();
-        if (TextUtils.isEmpty(sum)) {
-            toast("请输入金额");
+        String account = etBankAccount.getText().toString();
+        String user = etWithdrawalAccount.getText().toString();
+        if (TextUtils.isEmpty(sum) || TextUtils.isEmpty(account) || TextUtils.isEmpty(user)) {
+            toast("请输入完整信息！");
             return;
         } else {
             Double money = Double.parseDouble(sum);
-            showDeleteDialog(money);
+            showDeleteDialog(money,account,user);
         }
     }
 
@@ -125,7 +128,7 @@ public class WithdrawalActivity extends BaseActivity {
         finish();
     }
 
-    private void showDeleteDialog(Double money) {
+    private void showDeleteDialog(final Double money, final String account, final String user) {
         View contentview = getLayoutInflater().inflate(R.layout.layout_withdrawabl_dialog, null);
         final AlertDialog pw = new AlertDialog.Builder(this).create();
         pw.setView(contentview);
@@ -143,12 +146,14 @@ public class WithdrawalActivity extends BaseActivity {
         piv.setInputCompletetListener(new InputCompletetListener() {
             @Override
             public void inputComplete() {
-                String password = piv.getEditContent();
-                if(TextUtils.isEmpty(password)){return;}
+                final String password = piv.getEditContent();
+                if (TextUtils.isEmpty(password)) {
+                    return;
+                }
                 //TODO 检测支付密码的正确性,进行提现
                 FormBody body = new FormBody.Builder()
-                        .add("token",sp.get("token"))
-                        .add("payPassword",password)
+                        .add("token", sp.get("token"))
+                        .add("payPassword", password)
                         .build();
                 Request request = new Request.Builder()
                         .post(body)
@@ -162,10 +167,11 @@ public class WithdrawalActivity extends BaseActivity {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         String string = response.body().string();
-                        if(string.contains("1000")){
-                           //TODO 提现
-                        }else if(string.contains("1003")){
-                           toastInUI(WithdrawalActivity.this,"密码错误！");
+                        if (string.contains("1000")) {
+                            //TODO 提现
+                            tixian(password,account,user,money+"".trim());
+                        } else if (string.contains("1003")) {
+                            toastInUI(WithdrawalActivity.this, "密码错误！");
                         }
                     }
                 });
@@ -183,4 +189,43 @@ public class WithdrawalActivity extends BaseActivity {
         pw.setCanceledOnTouchOutside(false);
         pw.show();
     }
+
+
+    /**
+     * 提现
+     * @param password 支付密码
+     * @param account 银行账户
+     * @param user 开户姓名
+     */
+    private void tixian(String password,String account,String user,String money) {
+        FormBody body = new FormBody.Builder()
+                .add("user.token",sp.get("token"))
+                .add("payPassword",password)
+                .add("money",money)
+                .add("cardNo",account)
+                .add("name",user)
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.TIXIAN_URL)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                toastInUI(WithdrawalActivity.this,"网络异常！");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    toastInUI(WithdrawalActivity.this,"提现成功！");
+                }else if(string.contains("109")){
+                    toastInUI(WithdrawalActivity.this,"余额不足！！");
+                }
+            }
+        });
+    }
+
+
 }

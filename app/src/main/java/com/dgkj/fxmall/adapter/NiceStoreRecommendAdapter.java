@@ -43,7 +43,10 @@ public class NiceStoreRecommendAdapter extends CommonAdapter<NiceStoreBean> {
         holder.setText(R.id.tv_nicestore_introduce,storeBean.getIntroduce());
         holder.setText(R.id.tv_nicestore_address,storeBean.getAddress());
         ImageView view = holder.getView(R.id.iv_nicestore);
-        Glide.with(context).load(storeBean.getUrl()).placeholder(R.mipmap.android_quanzi).into(view);
+        ImageView icon = holder.getView(R.id.iv_store_icon);
+
+        Glide.with(context).load(storeBean.getUrl()).into(view);
+        Glide.with(context).load(storeBean.getLogo()).into(view);
         holder.setOnClickListener(R.id.iv_nicestore, new View.OnClickListener() {
             @Override
             public void onClick(View v) {

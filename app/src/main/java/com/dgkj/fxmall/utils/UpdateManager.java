@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
+import com.dgkj.fxmall.constans.FXConst;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -250,9 +251,9 @@ public class UpdateManager {
 	}
 
 
-	String url = "http://123.206.58.158/doupaiapp/versionAction_getVersions?version.system=2";
+	//String url = "http://123.206.58.158/doupaiapp/versionAction_getVersions?version.system=2";
 	public void getCurrentVersion(final OnGetVersionFinishListener listener){
-		Request request = new Request.Builder()
+		/*Request request = new Request.Builder()
 				.url(url)
 				.build();
 		client.newCall(request).enqueue(new Callback() {
@@ -274,7 +275,42 @@ public class UpdateManager {
 					e.printStackTrace();
 				}
 			}
+		});*/
+
+		FormBody body = new FormBody.Builder()
+				.add("type","1")
+				.build();
+		Request request = new Request.Builder()
+				.post(body)
+				.url(FXConst.VERSION_UPDATE_URL)
+				.build();
+		client.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(Call call, IOException e) {
+
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				String string = response.body().string();
+				LogUtil.i("TAG","版本信息========"+string);
+				if(string.contains("1000")){
+					try {
+						JSONObject object = new JSONObject(string);
+						JSONObject data = object.getJSONObject("data");
+						 versionUrl = data.getString("url");
+						String version = data.getString("version");
+						double v = Double.parseDouble(version);
+						//versionUrl = version.getString("versionUrl");
+						listener.onGetVersionFinish(v);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		});
+
+
 	}
 
 	public interface OnGetVersionFinishListener{

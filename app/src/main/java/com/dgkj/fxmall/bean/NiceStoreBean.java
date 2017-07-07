@@ -9,7 +9,16 @@ public class NiceStoreBean {
     private String name;
     private String introduce;
     private String address;
+    private String logo;
     private int id;
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
     public int getId() {
         return id;

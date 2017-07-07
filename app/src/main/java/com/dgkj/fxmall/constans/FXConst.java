@@ -162,6 +162,8 @@ public class FXConst {
 
     public static final String GET_STORE_SUBCLASSIFY_PRODUCTS = FXM_URL_PORT+"commodityAction_subCategory";
     public static final String RECHARGE_YEWUYUAN_CASHPLEDGE = FXM_URL_PORT+"userAction_cashPledge";
+    public static final String TIXIAN_URL = FXM_URL_PORT+"withdrawalsAction_cash";
+    public static final String VERSION_UPDATE_URL = FXM_URL_PORT+"editionAction_renew";
 
 
 

@@ -14,9 +14,14 @@ import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
+import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.DataCleanManager;
 import com.dgkj.fxmall.utils.UpdateManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -24,6 +29,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class SettingActivity extends BaseActivity {
 
@@ -64,6 +75,7 @@ public class SettingActivity extends BaseActivity {
     private String icon = "", nick = "", inviteCode = "", gender = "", realname = "", phone = "", location = "";
     private Handler handler = new Handler();
     private UpdateManager mUpdateManager;
+    private OkHttpClient client  = new OkHttpClient.Builder().build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +151,43 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.tv_check_update)
     public void updateVersion() {
+
+        mUpdateManager = new UpdateManager(this);
+        mUpdateManager.checkUpdateInfo();
+
+
+        FormBody body = new FormBody.Builder()
+                .add("type","1")
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(FXConst.VERSION_UPDATE_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                if(string.contains("1000")){
+                    try {
+                        JSONObject object = new JSONObject(string);
+                        JSONObject data = object.getJSONObject("data");
+                        String url = data.getString("url");
+                        String version = data.getString("version");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+
+
         tvNewstVersion.setVisibility(View.VISIBLE);
         handler.postDelayed(new Runnable() {
             @Override
@@ -152,10 +201,7 @@ public class SettingActivity extends BaseActivity {
     @OnClick(R.id.ll_clean_cache)
     public void cleanCache() {
 
-        mUpdateManager = new UpdateManager(this);
-        mUpdateManager.checkUpdateInfo();
-
-      /*  tvCleanFinish.setVisibility(View.VISIBLE);
+       tvCleanFinish.setVisibility(View.VISIBLE);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -163,7 +209,7 @@ public class SettingActivity extends BaseActivity {
                 tvCleanFinish.setVisibility(View.INVISIBLE);
                 tvCacheSize.setText("0M");
             }
-        }, 3000);*/
+        }, 3000);
     }
 
     /**

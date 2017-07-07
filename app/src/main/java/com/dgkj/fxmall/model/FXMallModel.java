@@ -2844,7 +2844,7 @@ public class FXMallModel {
                                     recommend.setStoreName(detail.getString("storeName"));
                                     recommend.setLogo(detail.getString("logo"));
                                     recommend.setIntroduce(detail.getString("intro"));
-                                    recommend.setAddress(detail.getString("address"));
+                                  // recommend.setAddress(detail.getString("address"));
                                 }
                             }
                             list.add(recommend);

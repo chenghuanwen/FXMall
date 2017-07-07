@@ -35,9 +35,11 @@ import com.dgkj.fxmall.listener.OnGetProductDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreDetialFinishedListener;
 import com.dgkj.fxmall.listener.OnGetSubclassifyFinishedListener;
 import com.dgkj.fxmall.utils.LoadProgressDialogUtil;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.view.ProductDetialActivity;
 import com.dgkj.fxmall.view.StoreMainPageActivity;
 import com.dgkj.fxmall.view.myView.FullyLinearLayoutManager;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -254,6 +256,7 @@ public class ProductsMallFragment extends Fragment {
                             storeBean.setIntroduce(homePageRecommendBean.getIntroduce());
                             storeBean.setAddress(homePageRecommendBean.getAddress());
                             storeBean.setId(homePageRecommendBean.getLink());
+                            storeBean.setLogo(homePageRecommendBean.getLogo());
                             recommendStores.add(storeBean);
                             break;
                        /* case "product_SubCategory":
@@ -283,6 +286,7 @@ public class ProductsMallFragment extends Fragment {
         niceStoreRecommendAdapter.addAll(recommendStores,true);
         //最后一条为“更多”
         superClassifys.add(new DemandMallClassifyBean("更多", R.mipmap.cpdt_gd));
+        LogUtil.i("TAG","产品大厅分类个数====="+superClassifys.size());
         classifyAdapter.addAll(superClassifys,true);
     }
 }
