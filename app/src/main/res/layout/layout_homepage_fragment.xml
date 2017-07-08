@@ -44,7 +44,8 @@
                         android:textColor="#333"
                         tools:text="粉小萌8盒全国包邮"
                         android:layout_marginTop="10dp"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:visibility="gone"/>
                     <TextView
                         android:id="@+id/tv_store1_describe"
                         android:layout_width="wrap_content"
@@ -54,7 +55,8 @@
                         tools:text="够萌够靓够味"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
-                        android:layout_below="@+id/tv_store1_name"/>
+                        android:layout_below="@+id/tv_store1_name"
+                        android:visibility="gone"/>
                     <com.dgkj.fxmall.view.myView.FullImageView
                         android:id="@+id/iv_store1"
                         android:layout_width="match_parent"
@@ -76,7 +78,8 @@
                         android:textColor="#333"
                         tools:text="粉小萌8盒全国包邮"
                         android:layout_marginTop="10dp"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:visibility="gone"/>
                     <TextView
                         android:id="@+id/tv_store2_describe"
                         android:layout_width="wrap_content"
@@ -86,10 +89,11 @@
                         tools:text="够萌够靓够味"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
-                        android:layout_below="@+id/tv_store2_name"/>
+                        android:layout_below="@+id/tv_store2_name"
+                        android:visibility="gone"/>
                     <ImageView
                         android:id="@+id/iv_store2"
-                        android:layout_width="100dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@+id/tv_store2_describe"
                         android:src="@mipmap/android_quanzi"
@@ -111,7 +115,8 @@
                         android:textColor="#333"
                         tools:text="粉小萌8盒全国包邮"
                         android:layout_marginTop="10dp"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:visibility="gone"/>
                     <TextView
                         android:id="@+id/tv_store3_describe"
                         android:layout_width="wrap_content"
@@ -121,10 +126,11 @@
                         tools:text="够萌够靓够味"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
-                        android:layout_below="@+id/tv_store3_name"/>
+                        android:layout_below="@+id/tv_store3_name"
+                        android:visibility="gone"/>
                     <ImageView
                         android:id="@+id/iv_store3"
-                        android:layout_width="100dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@+id/tv_store3_describe"
                         android:src="@mipmap/android_quanzi"

@@ -21,6 +21,7 @@ import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetExpressCompanyFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -144,7 +145,7 @@ public class ShangpuDeliverActivity extends BaseActivity {
 
     @OnClick(R.id.btn_submit)
     public void submit(){
-        String expressNum = tvExpressNumber.getText().toString();
+        final String expressNum = tvExpressNumber.getText().toString();
         if(TextUtils.isEmpty(expressNum)){
             toast("请填写物流单号");
             return;
@@ -171,8 +172,11 @@ public class ShangpuDeliverActivity extends BaseActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body().string().contains("1000")){
+                String string = response.body().string();
+                LogUtil.i("TAG","商铺发货结果========"+string+"expressid=="+expressId+"orderid=="+order.getId()+"expressNum=="+expressNum+"token=="+sp.get("token"));
+                if(string.contains("1000")){
                     toastInUI(ShangpuDeliverActivity.this,"发货成功！");
+                    finish();
                 }
             }
         });

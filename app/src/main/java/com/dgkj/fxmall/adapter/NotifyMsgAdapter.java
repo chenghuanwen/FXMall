@@ -96,11 +96,13 @@ public class NotifyMsgAdapter extends CommonAdapter<NotifyMsgBean> {
         tvGirl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //TODO 通知服务器删除
+                deleteMsgOfServe(mDatas.get(position).getId());
+
                 mDatas.remove(position);
                 notifyDataSetChanged();
                 pw.dismiss();
-                //TODO 通知服务器删除
-                deleteMsgOfServe(mDatas.get(position).getId());
             }
         });
         TextView tvBoy = (TextView) contentview.findViewById(R.id.tv_cancle);

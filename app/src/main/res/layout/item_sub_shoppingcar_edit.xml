@@ -74,7 +74,7 @@
                 android:textSize="13sp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:drawableRight="@mipmap/dpsx_xl"/>
+                android:clickable="false"/>
           <!--  <TextView
                 android:id="@+id/tv_edit_car_goods_size"
                 android:layout_width="0dp"

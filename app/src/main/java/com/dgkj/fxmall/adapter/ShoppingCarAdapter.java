@@ -138,6 +138,11 @@ public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
             for (ShoppingGoodsBean good : goods) {
                 if(!good.isSelected()){
                     good.setSelected(true);
+
+                    Message msg = Message.obtain();
+                    msg.obj = good;
+                    msg.what = 1;//统计价格增加
+                    handler.sendMessage(msg);
                 }
             }
         }
@@ -151,6 +156,11 @@ public class ShoppingCarAdapter extends CommonAdapter<ShoppingCarBean> {
             for (ShoppingGoodsBean good : goods) {
                 if(good.isSelected()){
                     good.setSelected(false);
+
+                    Message msg = Message.obtain();
+                    msg.obj = good;
+                    msg.what = 2;//统计价格减少
+                    handler.sendMessage(msg);
                 }
             }
         }

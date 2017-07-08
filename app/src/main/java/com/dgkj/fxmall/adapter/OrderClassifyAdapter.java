@@ -235,13 +235,14 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                         notifyDeliver(order,FXConst.NOTIFY_STORER_DELIVER_URL);
                     }
                 });
+
                 break;
             case WAIT_TAKE_GOODS:
                 tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
 
@@ -257,7 +258,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
@@ -280,7 +281,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {
@@ -301,7 +302,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_submit_logistic, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提交物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
                 break;
@@ -341,7 +342,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
                 break;
@@ -350,7 +351,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {//删除订单
@@ -399,7 +400,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_agree_refund, new View.OnClickListener() {
@@ -421,7 +422,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//查看物流信息
-                        gotoDetial("target",order);
+                        gotoDetial("logist",order);
                     }
                 });
                 holder.setOnClickListener(R.id.btn_delete_order, new View.OnClickListener() {

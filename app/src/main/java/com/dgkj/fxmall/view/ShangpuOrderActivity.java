@@ -205,16 +205,16 @@ public class ShangpuOrderActivity extends BaseActivity {
                     for (OrderBean order : orders) {
                         switch (order.getStateNum()) {
                             //TODO 根据订单不同状态区分
-                            case 0:
+                            case 2:
                                 subHasDeliver.add(order);
                                 break;
                             case 1:
                                 subWaitDeliver.add(order);
                                 break;
-                            case 2:
+                            case 3:
                                 subSols.add(order);
                                 break;
-                            case 3:
+                            case 4:
                                 subRefund.add(order);
                                 break;
                         }

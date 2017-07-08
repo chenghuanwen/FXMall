@@ -101,6 +101,7 @@ public class SubmitLogisticsMsgActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.body().string().contains("1000")){
                     toastInUI(SubmitLogisticsMsgActivity.this,"提交成功！");
+                    finish();
                 }else {
                     toastInUI(SubmitLogisticsMsgActivity.this,"提交失败！");
                 }

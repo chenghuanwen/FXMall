@@ -567,7 +567,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         paramas.put("reason", cancleReason);
         paramas.put("orderCommodity.orders.id", order.getId() + "");
         paramas.put("orderCommodity.sku.id", order.getSkuId() + "");
-
+        LogUtil.i("TAG","退款参数=="+order.getId()+"=="+order.getSkuId());
         OkhttpUploadUtils.getInstance(this).sendMultipart(FXConst.USER_APPLY_REFUND_URL, paramas, null, null, null, null, null, null, new OnUploadPicturesFinishedListener() {
             @Override
             public void onUploadPicturesFinishedListener() {

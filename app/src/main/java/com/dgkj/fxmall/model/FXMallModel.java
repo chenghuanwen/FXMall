@@ -603,6 +603,8 @@ public class FXMallModel {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onSearchProductsFinished(list);
                 }
             }
         });
@@ -716,13 +718,13 @@ public class FXMallModel {
     public static void getLogisticsDetial(int id, String expNo, final OnGetLogisticsDetialFinishedListener listener) {
         final List<LogisticsBean> list = new ArrayList<>();
         //TEST
-        for (int i = 0; i < 10; i++) {
+      /*  for (int i = 0; i < 10; i++) {
             LogisticsBean msg = new LogisticsBean();
             msg.setArriveTime("2017-4-6 16:16:16");
             msg.setCurrentAddress("广东省深圳市龙岗区布吉街道官坑北六巷八号一楼");
             list.add(msg);
         }
-        listener.OnGetLogisticsDetialFinished(list);
+        listener.OnGetLogisticsDetialFinished(list);*/
 
 
         FormBody body = new FormBody.Builder()
@@ -741,12 +743,17 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","物流详情===="+string);
                 if(string.contains("1000")){
                     try {
                         JSONObject object = new JSONObject(string);
                         String dataset = object.getString("dataset");
                         JSONObject jsonObject = new JSONObject(dataset);
                         JSONArray traces = jsonObject.getJSONArray("Traces");
+                        if(traces.length()==0){
+                            listener.OnGetLogisticsDetialFinished(list);
+                            return;
+                        }
                         for (int i = 0; i < traces.length(); i++) {
                             JSONObject trace = traces.getJSONObject(i);
                             LogisticsBean logisticsBean = new LogisticsBean();
@@ -2377,7 +2384,8 @@ public class FXMallModel {
             public void onResponse(Call call, Response response) throws IOException {
 
                 String result = response.body().string();
-                if (result.contains("1000")) {
+                LogUtil.i("TAG","二级分类商品========="+result);
+                if (result.contains("1000") && result.contains("dataset")) {
                     try {
                         JSONObject object = new JSONObject(result);
                         final JSONArray dataset = object.getJSONArray("dataset");
@@ -2469,6 +2477,8 @@ public class FXMallModel {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }else {
+                    listener.onSearchProductsFinished(list);
                 }
             }
         });
@@ -3202,6 +3212,8 @@ public class FXMallModel {
 
         FormBody body = new FormBody.Builder()
                 .add("toUser.token",token)
+                .add("index",1+"")
+                .add("size",20+"")
                 .build();
         Request request = new Request.Builder()
                 .post(body)
@@ -3224,7 +3236,7 @@ public class FXMallModel {
                             NotifyMsgBean msgBean = new NotifyMsgBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             msgBean.setType(jsonObject.getString("type"));
-                            msgBean.setTime(TimeFormatUtils.long2String(jsonObject.getLong("sendTime")));
+                            msgBean.setTime(TimeFormatUtils.long2String(jsonObject.getLong("sendtime")));
                             msgBean.setId(jsonObject.getInt("id"));
                             msgBean.setTitle(jsonObject.getString("title"));
                             msgBean.setCotent(jsonObject.getString("content"));

@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dgkj.fxmall.R;
@@ -69,9 +70,19 @@ public class LogisticsDetialActivity extends BaseActivity {
     private void refresh() {
         control.getLogisticsDetial(orderBean.getId(),orderBean.getOrderNum(),new OnGetLogisticsDetialFinishedListener() {
             @Override
-            public void OnGetLogisticsDetialFinished(List<LogisticsBean> msgs) {
-                adapter.addAll(msgs, true);
-                timeline.setTimelineCount(msgs.size());
+            public void OnGetLogisticsDetialFinished(final List<LogisticsBean> msgs) {
+
+                if(msgs.size()==0){
+                    toastInUI(LogisticsDetialActivity.this,"暂无物流消息！");
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.addAll(msgs, true);
+                        timeline.setTimelineCount(msgs.size());
+                    }
+                });
+
             }
         });
 

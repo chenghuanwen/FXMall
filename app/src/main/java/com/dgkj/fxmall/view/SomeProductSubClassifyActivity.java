@@ -223,9 +223,10 @@ public class SomeProductSubClassifyActivity extends BaseActivity {
         from = getIntent().getStringExtra("from");
         if("store".equals(from)){
             storeId = getIntent().getIntExtra("storeId",-1);
+            LogUtil.i("TAG","商店商品分类===storeid=="+storeId+"===="+subId);
         }
 
-        LogUtil.i("TAG","商店商品分类===storeid=="+storeId+"===="+subId);
+
     }
 
 
