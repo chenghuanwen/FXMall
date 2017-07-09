@@ -54,7 +54,7 @@ public class MyOrdersActivity extends BaseActivity {
     private List<SuperOrderBean> waitDeliver;
     private List<SuperOrderBean> waitTakeGoods;
     private List<SuperOrderBean> waitComment;
-    private List<OrderBean> waitPayOrders,waitDeliverOrders,waitTakeOrders,waitCommentOrders;
+    private List<OrderBean> waitPayOrders,waitDeliverOrders,waitTakeOrders,waitCommentOrders,allOrders;
     private HomePageFragmentAdapter adapter;
     private String[] states = new String[]{"等待买家付款", "等待卖家发货", "等待买家收货", "等待买家评价", "交易完成","待确认","商家已接单","待付款(不支持发货)"};
     private String from = "";
@@ -85,6 +85,7 @@ public class MyOrdersActivity extends BaseActivity {
         waitDeliverOrders = new ArrayList<>();
         waitTakeOrders = new ArrayList<>();
         waitCommentOrders = new ArrayList<>();
+        allOrders = new ArrayList<>();
 
         control.getMyOrderInfo(this, sp.get("token"), statu, isAll, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
@@ -98,23 +99,30 @@ public class MyOrdersActivity extends BaseActivity {
                         }
                     });
                 }else {
-                allOrder.addAll(sortProductsOfOrder(orders));
+
                 for (OrderBean order : orders) {
                     switch (order.getStateNum()) {
                         case 0:
                             waitPayOrders.add(order);
+                           allOrders.add(order);
                             break;
                         case 1:
                             waitDeliverOrders.add(order);
+                            allOrders.add(order);
                             break;
                         case 2:
                             waitTakeOrders.add(order);
+                            allOrders.add(order);
                             break;
                         case 3:
                             waitCommentOrders.add(order);
+                            allOrders.add(order);
                             break;
                     }
                 }
+
+                    allOrder.addAll(sortProductsOfOrder(allOrders));
+
                 waitDeliver.addAll(sortProductsOfOrder(waitDeliverOrders));
                 waitPay.addAll(sortProductsOfOrder(waitPayOrders));
                 waitTakeGoods.addAll(sortProductsOfOrder(waitTakeOrders));

@@ -15,6 +15,7 @@ import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
 import com.dgkj.fxmall.model.FXMallModel;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class RefundActivity extends BaseActivity {
 
     private void initData() {
         orderBeanList = new ArrayList<>();
-        //TEST
+     /*   //TEST
         for (int i = 0; i < 5; i++) {
             List<OrderBean> list = new ArrayList<>();
             SuperOrderBean superOrderBean = new SuperOrderBean();
@@ -83,7 +84,7 @@ public class RefundActivity extends BaseActivity {
             superOrderBean.setSubOrders(list);
             orderBeanList.add(superOrderBean);
         }
-
+*/
 
         control.getMyOrderInfo(this, sp.get("token"), statu, isAll, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
@@ -93,8 +94,16 @@ public class RefundActivity extends BaseActivity {
                         refundOrders.add(order);
                     }
                 }
-                List<SuperOrderBean> superOrderBeen = sortProductsOfOrder(refundOrders);
-                adapter.addAll(superOrderBeen,true);
+                LogUtil.i("TAG","退货退款订单数=="+refundOrders.size());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<SuperOrderBean> superOrderBeen = sortProductsOfOrder(refundOrders);
+                        LogUtil.i("TAG","退货退款订单分类数=="+superOrderBeen.size());
+                        adapter.addAll(superOrderBeen,true);
+                    }
+                });
+
             }
         });
 
@@ -124,7 +133,7 @@ public class RefundActivity extends BaseActivity {
             for (int i = 0; i < orders.size(); i++) {
                 int key = orders.get(i).getId();//获取当条数据的id值
                 if (post.getId() >= 0) {
-                    boolean b = key == post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
+                    boolean b = key != post.getId();//当该id值与key值中的id值不同时，则创建新的key,保证key值唯一
                     if (b) {
                         post = new OrderBean();
                     }

@@ -115,11 +115,31 @@ public class RefundDetialActivity extends BaseActivity {
                 break;
             case "等待商家处理退款申请":
                 tvRefundState.setText("等待商家处理退款申请");
-            case "商家拒绝退款":
-                tvRefundState.setText("商家拒绝退款");
                 setContentView(R.layout.activity_refund_detial_for_change);
                 Button btnChange = (Button) findViewById(R.id.btn_refused_apply_change);
                 btnChange.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {//修改退款申请
+                        Intent intent1 = new Intent(RefundDetialActivity.this,ApplyRefundActivity.class);
+                        intent1.putExtra("from","refund");
+                        intent1.putExtra("explain",explain);
+                        intent1.putExtra("money",money);
+                        intent1.putExtra("number",number);
+                        intent1.putExtra("reason",reason);
+                        intent1.putExtra("timeFormat",timeFormat);
+                        intent1.putExtra("refundType",refundType);
+                        intent1.putExtra("storeName",storeName);
+                        intent1.putExtra("refundId",refundId);
+                        intent1.putStringArrayListExtra("evidences",evidences);
+                        startActivity(intent1);
+                    }
+                });
+                break;
+            case "商家拒绝退款":
+                tvRefundState.setText("商家拒绝退款");
+                setContentView(R.layout.activity_refund_detial_for_change);
+                Button btnChange1 = (Button) findViewById(R.id.btn_refused_apply_change);
+                btnChange1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//修改退款申请
                         Intent intent1 = new Intent(RefundDetialActivity.this,ApplyRefundActivity.class);

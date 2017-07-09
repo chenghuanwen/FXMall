@@ -1617,6 +1617,10 @@ public class FXMallModel {
                     try {
                         JSONObject object = new JSONObject(result);
                         final JSONArray dataset = object.getJSONArray("dataset");
+                        if(dataset.length()==0){
+                            listener.onSearchProductsFinished(list);
+                            return;
+                        }
                         for ( int i = 0; i < dataset.length(); i++) {
 
                             JSONObject jsonObject = dataset.getJSONObject(i);

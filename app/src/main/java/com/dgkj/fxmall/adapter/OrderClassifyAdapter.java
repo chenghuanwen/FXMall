@@ -174,20 +174,9 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
         holder.setOnClickListener(R.id.order_comment, new View.OnClickListener() {
             @Override
-            public void onClick(View v) {//评论
-                Intent intent = new Intent(context, OrderDetialActivity.class);
-                intent.putExtra("order",superOrderBean);
-                intent.putExtra("from",from);
-                context.startActivity(intent);
-            }
-        });
-
-
-
-        holder.setOnClickListener(R.id.ll_order_sub_container, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {//商品详情或退款详情
+            public void onClick(View v) {//订单详情或退款详情
                 Intent intent;
+                LogUtil.i("TAG","订单状态码===="+order.getStateNum());
                 if(order.getStateNum()==4){
                     intent = new Intent(context, RefundDetialActivity.class);
                     intent.putExtra("order",order);
@@ -197,9 +186,24 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 }
                 intent.putExtra("from",from);
                 context.startActivity(intent);
+
             }
         });
 
+
+
+        holder.setOnClickListener(R.id.ll_order_sub_container, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {//商品详情
+                Intent intent = new Intent(context, OrderDetialActivity.class);
+                intent.putExtra("order",superOrderBean);
+                intent.putExtra("from",from);
+                context.startActivity(intent);
+            }
+        });
+
+
+        LogUtil.i("TAG","当前订单类型==="+getItemViewType(position));
 
         switch (getItemViewType(position)){
             case WAIT_PAY:
@@ -294,6 +298,15 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     @Override
                     public void onClick(View v) {//已评价
 
+                    }
+                });
+                break;
+            case APPLAY_REFUND:
+                holder.setOnClickListener(R.id.btn_check_detial, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                      Intent  intent = new Intent(context, RefundDetialActivity.class);
+                        intent.putExtra("order",order);
                     }
                 });
                 break;
