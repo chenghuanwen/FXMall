@@ -17,6 +17,7 @@ import com.dgkj.fxmall.bean.SuperOrderBean;
 import com.dgkj.fxmall.control.FXMallControl;
 import com.dgkj.fxmall.fragment.MyOrderClassifyFragment;
 import com.dgkj.fxmall.listener.OnGetMyOrderInfoFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,49 +89,6 @@ public class ShangpuOrderActivity extends BaseActivity {
 
     private void initFragment() {
 
-      /*  //TEST
-        for (int i = 0; i < 10; i++) {
-            List<OrderBean> list = new ArrayList<>();
-            SuperOrderBean superOrderBean = new SuperOrderBean();
-            for (int j = 0; j < 5; j++) {
-                OrderBean order = new OrderBean();
-                order.setStoreName("粉小萌酸辣粉旗舰店");
-                order.setColor("蓝色");
-                order.setSize("均码");
-                order.setCount(i);
-                order.setHasComment(true);
-                order.setIntroduce("啊好多覅家乐福卡静安寺独立开发安静地离开房间阿萨德开了房");
-                order.setPostage(20);
-                order.setSinglePrice(56);
-                order.setSumPrice(56);
-                order.setOrderNum("4215415635");
-                order.setId(i+1);
-                order.setState(states[i]);
-                order.setStateNum(j);
-                order.setUrl("http://img.12584.cn/ent/tt/201702/f50d628a6ce9a0005ee581e4e0a6a985.jpg");
-                if(i>7){
-                    order.setDeliver(false);
-                }else {
-                    order.setDeliver(true);
-                }
-                list.add(order);
-            }
-            superOrderBean.setId(i);
-            superOrderBean.setSubOrders(list);
-            allOrder.add(superOrderBean);
-        }
-
-        waitDeliver.add(allOrder.get(0));
-        waitDeliver.add(allOrder.get(8));
-        hasDeliver.add(allOrder.get(1));
-        hasDeliver.add(allOrder.get(9));
-        sold.add(allOrder.get(2));
-        refund.add(allOrder.get(3));
-        refund.add(allOrder.get(4));
-        refund.add(allOrder.get(5));
-        refund.add(allOrder.get(6));
-        refund.add(allOrder.get(7));
-*/
         fragments.add(new MyOrderClassifyFragment(waitDeliver));
         fragments.add(new MyOrderClassifyFragment(hasDeliver));
         fragments.add(new MyOrderClassifyFragment(sold));
@@ -189,10 +147,11 @@ public class ShangpuOrderActivity extends BaseActivity {
 
     private void refresh(int statu, int isAll, int index) {
         loadProgressDialogUtil.buildProgressDialog();
-        control.getStoreOrderInfo(this, sp.get("token"), statu, isAll, index, 20, client, new OnGetMyOrderInfoFinishedListener() {
+        control.getStoreOrderInfo(this, sp.get("token"), statu, isAll, index,50, client, new OnGetMyOrderInfoFinishedListener() {
             @Override
             public void onGetMyOrderInfoFinished(final List<OrderBean> orders) {
                 loadProgressDialogUtil.cancelProgressDialog();
+
                 if(orders.size()==0){
                     runOnUiThread(new Runnable() {
                         @Override
@@ -220,6 +179,7 @@ public class ShangpuOrderActivity extends BaseActivity {
                         }
                     }
                     waitDeliver.addAll(sortProductsOfOrder(subWaitDeliver));
+                    LogUtil.i("TAG","商铺待发货订单数量==="+subWaitDeliver.size());
                     hasDeliver.addAll(sortProductsOfOrder(subHasDeliver));
                     sold.addAll(sortProductsOfOrder(subSols));
                     refund.addAll(sortProductsOfOrder(subRefund));

@@ -30,7 +30,8 @@
         android:icon="@mipmap/icon144"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        >
 
         <!-- 百度地图 -->
         <service
@@ -91,122 +92,145 @@
 
         <activity
             android:name=".view.PictrueChooserActivity"
-            android:theme="@style/transparentTheme" />
-        <activity android:name=".view.PayActivity"></activity>
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".view.PayActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.HomePageActivity"
             android:label="@string/app_name"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
-        <activity android:name=".view.SearchActivity" />
+        <activity android:name=".view.SearchActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ShoppingCarActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.HomeMsgActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ShangpuRecommendActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.TodayRecommendActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.NewGoodsActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.ProductDetialActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.AllProductsRecommendActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.ShoppingCarEditActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.MessageCenterActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.LogisticsMsgActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.DemandMsgActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.NotifyMsgActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SearchContentActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.SomeProductSuperClassifyActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.SomeDemandClassifyActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.DemandDetialActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.StoreMainPageActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.StoreMsgActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.UserMsgActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
@@ -216,7 +240,8 @@
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.dgkj.fxmall.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
@@ -224,154 +249,203 @@
 
         <activity
             android:name=".view.SetNicknameActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ChangePhoneActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.BindNewphoneActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.LocationCurrenterCityActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.TakeGoodsAdressActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.AddGoodsAdressActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SettingActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SettingPasswordActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.AboutUsActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.AdviceFeedbackActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.MyOrdersActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.RefundActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.RechargeActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.WithdrawalActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.PublishDemandActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.AllClassifyActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ApplyStoreActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ReviewProgressActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.MyDemandActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.LoginActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.RegistActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ForgetPasswordActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SetPasswordActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SetRegistPasswordActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.InTheSaleActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.TotalCommentActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.OrderDetialActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ShangpuOrderActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.RefundDetialActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ApplyRefundActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SubmitLogisticsMsgActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.LogisticsDetialActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.PublishProductActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ShangpuAllProductsActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.BatchHandleActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.TheBalanceOfUserActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ShangpuDeliverActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SetPostageActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.PostageSettingEditActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.TransactionRecordActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.StoreInfoEditActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.PublishCommentActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ConfirmOrderActivity"
             android:theme="@style/transparentTheme" />
         <activity
             android:name=".view.StoreProductsClassifyActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ScreeningProductActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ScreeningStoreActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.SetPayPasswordActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.AccountSafeActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ResetPayPasswordActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.PublishProductDetialActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
@@ -379,40 +453,49 @@
         <activity
             android:name=".view.MoreClassifyActivity"
             android:theme="@style/transparentTheme"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.SomeProductSubClassifyActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="com.dgkj.fxmall.utils.GlideConfiguration"
                 android:value="GlideModule" />
         </activity>
         <activity
             android:name=".view.ApplyStoreAllClassifyActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ChangePhoneByPasswordActivity"
             android:label="@string/title_activity_change_phone_by_password"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.MyStoreProductDetialActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.CancelYeWuYuanActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.MyVIPActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.CancelYeWuYuanFinishActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.GuideActivity"
-            android:theme="@style/transparentTheme">
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -421,15 +504,19 @@
         </activity>
         <activity
             android:name=".view.LoadingActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.BuyProductPlaceActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ConfirmBuyProductPlaceActivity"
-            android:theme="@style/transparentTheme" />
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"/>
         <activity android:name=".view.WriteAddressOfTakeBySelfActivity"
-            android:theme="@style/transparentTheme" ></activity>
+            android:theme="@style/transparentTheme"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

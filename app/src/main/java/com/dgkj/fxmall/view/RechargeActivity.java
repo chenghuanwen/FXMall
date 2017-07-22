@@ -191,6 +191,7 @@ public class RechargeActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String string = response.body().string();
+                    LogUtil.i("TAG","充值结果========"+string);
                     if (string.contains("1000")) {
                         try {
                             JSONObject object = new JSONObject(string);

@@ -100,8 +100,11 @@ public class SettingActivity extends BaseActivity {
         Glide.with(this).load(icon).error(R.mipmap.sz_tx).into(civSet);
         tvInviteCode.setText(inviteCode);
         try {
-            String nickname = URLDecoder.decode(nick, "utf-8");
-            tvUsername.setText(nickname);
+            if(nick!=null){
+                String nickname = URLDecoder.decode(nick, "utf-8");
+                tvUsername.setText(nickname);
+            }
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

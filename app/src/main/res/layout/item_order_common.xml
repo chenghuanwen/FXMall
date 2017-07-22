@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#fff"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp">
@@ -46,9 +47,10 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/order_comment"
+        android:id="@+id/order_comment_real"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="120dp"
+        android:clickable="true">
         <ImageView
             android:id="@+id/iv_car_goods"
             android:layout_width="72dp"

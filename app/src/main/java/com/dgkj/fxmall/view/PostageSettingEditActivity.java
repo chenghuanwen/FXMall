@@ -92,6 +92,7 @@ public class PostageSettingEditActivity extends BaseActivity {
     private void initData() {
         from = getIntent().getStringExtra("from");
         if ("edit".equals(from)) {
+            tvAddDistrictPostage.setVisibility(View.GONE);
             editSuperPost = (SuperPostageBean) getIntent().getSerializableExtra("postage");
             editPosition = getIntent().getIntExtra("position", -1);
             List<PostageBean> posts = editSuperPost.getPosts();
@@ -356,6 +357,7 @@ public class PostageSettingEditActivity extends BaseActivity {
                     .add("freightProvinces[" + (i + 1) + "].provinces", provinces.get(i));
             LogUtil.i("TAG","选择省份JSON=="+provinces.get(i));
             if ("edit".equals(from)) {
+                tvAddDistrictPostage.setVisibility(View.GONE);
                 LogUtil.i("TAG","更新运费模板==="+editSuperPost.getId()+"==="+editSuperPost.getPosts().get(i + 1).getDistrictId());
                 builder.add("freightProvinces[" + (i + 1) + "].id", editSuperPost.getPosts().get(i + 1).getDistrictId() + "".trim())
                         .add("id",editSuperPost.getId() + "".trim());

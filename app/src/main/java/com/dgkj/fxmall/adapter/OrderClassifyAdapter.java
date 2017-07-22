@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -107,6 +108,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
     @Override
     protected void convert(ViewHolder holder, final SuperOrderBean superOrderBean, final int position) {
         subOrders = superOrderBean.getSubOrders();
+        LogUtil.i("TAG","某个订单中的商品数量==="+subOrders.size());
         final OrderBean order = subOrders.get(0);
 
         View commonView = holder.getView(R.id.order_common);
@@ -172,7 +174,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         TextView tvIsDeliver = holder.getView(R.id.tv_order_isDeliver);
 
 
-        holder.setOnClickListener(R.id.order_comment, new View.OnClickListener() {
+        holder.setOnClickListener(R.id.order_comment_real, new View.OnClickListener() {
             @Override
             public void onClick(View v) {//订单详情或退款详情
                 Intent intent;
@@ -224,8 +226,14 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                         dialog.setPayFinishListener(new OnPayFinishedListener() {
                             @Override
                             public void onPayFinishedListener() {
-                                mDatas.remove(position);
-                                notifyDataSetChanged();
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mDatas.remove(position);
+                                        notifyDataSetChanged();
+                                    }
+                                });
+
                             }
                         });
                     }
@@ -305,8 +313,10 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                 holder.setOnClickListener(R.id.btn_check_detial, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                      //  LogUtil.i("TAG","查看退款详情==========");
                       Intent  intent = new Intent(context, RefundDetialActivity.class);
                         intent.putExtra("order",order);
+                        activity.startActivity(intent);
                     }
                 });
                 break;
@@ -350,6 +360,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     }
                 });
                 break;
+
             case SELLER_HAS_DELIVER:
                 tvIsDeliver.setVisibility(View.INVISIBLE);
                 holder.setOnClickListener(R.id.btn_logistics_msg, new View.OnClickListener() {
@@ -596,7 +607,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
         }else {
             intent = new Intent(context, RefundDetialActivity.class);
         }
-        intent.putExtra("order",order);
+        intent.putExtra("logist",order);
         context.startActivity(intent);
     }
 

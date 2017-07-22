@@ -15,6 +15,7 @@ import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.TimeFormatUtils;
 
 import org.json.JSONArray;
@@ -57,9 +58,9 @@ public class RefundDetialActivity extends BaseActivity {
     ImageView ivEvidence2;
     @BindView(R.id.iv_evidence3)
     ImageView ivEvidence3;
-    @BindView(R.id.tv_refund_state)
+   // @BindView(R.id.tv_refund_state)
     TextView tvRefundState;
-    @BindView(R.id.tv_user_type)
+  //  @BindView(R.id.tv_user_type)
     TextView tvUserType;
     @BindView(R.id.tv_user_name)
     TextView tvUserName;
@@ -82,24 +83,19 @@ public class RefundDetialActivity extends BaseActivity {
         //根据退款不同状态显示不同的界面
         Intent intent = getIntent();
         from = intent.getStringExtra("from");
-        orderBean = (OrderBean) getIntent().getSerializableExtra("order");
+        orderBean = (OrderBean) getIntent().getSerializableExtra("logist");
         storeId = orderBean.getStoreId();
         orderId = orderBean.getId();
         state = orderBean.getState();
-        if ("store".equals(from)) {
-            storeName = orderBean.getBuyer();
-            hasDeliver = intent.getBooleanExtra("isDeliver", false);
-            tvUserType.setText("买家名称");
-        }else {
-            tvUserType.setText("店铺名称");
-            storeName = orderBean.getStoreName();
-        }
+
         switch (state) {
             //买家退款详情
             case "商家同意退款":
-                tvRefundState.setText("商家同意退款");
+
                 setContentView(R.layout.activity_refund_detial_for_logistics);
                 Button btnLog = (Button) findViewById(R.id.btn_refused_apply_logistics);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("商家同意退款");
                 btnLog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//提交物流信息，再次进入为查看物流信息
@@ -110,13 +106,19 @@ public class RefundDetialActivity extends BaseActivity {
                 });
                 break;
             case "退款成功":
-                tvRefundState.setText("退款成功");
+
                 setContentView(R.layout.activity_refund_detial_for_successed);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("退款成功");
                 break;
             case "等待商家处理退款申请":
-                tvRefundState.setText("等待商家处理退款申请");
+                //LogUtil.i("TAG","退款详情=========="+tvRefundType);
+
                 setContentView(R.layout.activity_refund_detial_for_change);
+
                 Button btnChange = (Button) findViewById(R.id.btn_refused_apply_change);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("等待商家处理退款申请");
                 btnChange.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {//修改退款申请
@@ -136,8 +138,10 @@ public class RefundDetialActivity extends BaseActivity {
                 });
                 break;
             case "商家拒绝退款":
-                tvRefundState.setText("商家拒绝退款");
+
                 setContentView(R.layout.activity_refund_detial_for_change);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("商家拒绝退款");
                 Button btnChange1 = (Button) findViewById(R.id.btn_refused_apply_change);
                 btnChange1.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -160,8 +164,10 @@ public class RefundDetialActivity extends BaseActivity {
 
             //卖家退款详情
             case "等待买家发货":
-                tvRefundState.setText("等待买家发货");
+
                 setContentView(R.layout.activity_refund_detial_for_logistics);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("等待买家发货");
                 Button btn = (Button) findViewById(R.id.btn_refused_apply_logistics);
                 btn.setText("提醒发货");
                 btn.setOnClickListener(new View.OnClickListener() {
@@ -172,8 +178,10 @@ public class RefundDetialActivity extends BaseActivity {
                 });
                 break;
             case "等待收货":
-                tvRefundState.setText("等待收货");
+
                 setContentView(R.layout.activity_refund_detial_for_store);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("等待收货");
                 Button btnRefuse = (Button) findViewById(R.id.btn_refused_apply);
                 Button btnAgree = (Button) findViewById(R.id.btn_agree_apply);
                 btnAgree.setText("同意退款");
@@ -194,12 +202,16 @@ public class RefundDetialActivity extends BaseActivity {
                 });
                 break;
             case "退款已完成":
-                tvRefundState.setText("退款已完成");
+
                 setContentView(R.layout.activity_refund_detial_for_successed);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("退款已完成");
                 break;
             case "买家申请退货/退款":
-                tvRefundState.setText("买家申请退货/退款");
+
                 setContentView(R.layout.activity_refund_detial_for_store);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("买家申请退货/退款");
                 TextView tvState = (TextView) findViewById(R.id.tv_refund_state);
                 TextView tvEvidence = (TextView) findViewById(R.id.tv_evidence);
                 LinearLayout tvContainer = (LinearLayout) findViewById(R.id.ll_evidence_container);
@@ -228,9 +240,21 @@ public class RefundDetialActivity extends BaseActivity {
                 });
                 break;
             case "已拒绝申请":
-                tvRefundState.setText("已拒绝申请");
+
                 setContentView(R.layout.activity_refund_detial_for_successed);
+                tvRefundState = (TextView) findViewById(R.id.tv_refund_state);
+                tvRefundState.setText("已拒绝申请");
                 break;
+        }
+
+        tvUserType = (TextView) findViewById(R.id.tv_user_type);
+        if ("store".equals(from)) {
+            storeName = orderBean.getBuyer();
+            hasDeliver = intent.getBooleanExtra("isDeliver", false);
+            tvUserType.setText("买家名称");
+        }else {
+            tvUserType.setText("店铺名称");
+            storeName = orderBean.getStoreName();
         }
 
         ButterKnife.bind(this);
@@ -248,6 +272,7 @@ public class RefundDetialActivity extends BaseActivity {
                 .add("store.id", storeId + "".trim())
                 .add("orderCommodity.id", orderId + "".trim())
                 .build();
+        LogUtil.i("TAG","退款详情参数==="+storeId+"==="+orderId);
         final Request request = new Request.Builder()
                 .post(body)
                 .url(FXConst.GET_REFUND_DETIAL_URL)
@@ -260,6 +285,7 @@ public class RefundDetialActivity extends BaseActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
+                LogUtil.i("TAG","退款详情========"+string);
                 if (string.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(string);

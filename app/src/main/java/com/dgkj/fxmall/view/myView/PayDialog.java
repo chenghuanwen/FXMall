@@ -76,6 +76,7 @@ public class PayDialog extends DialogFragment {
                 case SDK_PAY_FLAG: {
                     @SuppressWarnings("unchecked")
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                    LogUtil.i("TAG","支付结果====="+payResult);
                     /**
                      对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
                      */
@@ -217,6 +218,7 @@ public class PayDialog extends DialogFragment {
                     try {
                         JSONObject object = new JSONObject(string);
                         if(payMode==2){//微信预付订单信息
+
                             JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
                             String mch_id = dataset.getString("mch_id");//商户号
                             String nonce_str = dataset.getString("nonce_str");//随机字符串

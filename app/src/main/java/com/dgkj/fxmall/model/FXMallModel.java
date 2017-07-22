@@ -2029,6 +2029,7 @@ public class FXMallModel {
                             }
 
                             int status = order.getInt("status");
+                            LogUtil.i("TAG","商铺订单state=="+status);
                             orderBean.setStateNum(status);
                             if(status==0 || status==5 || status==6){continue;}
                             switch (status) {//TODO 对退款退货订单还需更细分类，待补充
@@ -2115,13 +2116,15 @@ public class FXMallModel {
                             orderBean.setUrl(pictures.getString(0));
                             list.add(orderBean);
                         }
+                        LogUtil.i("TAG","商铺订单数量为========="+list.size());
                         listener.onGetMyOrderInfoFinished(list);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else {
-                    listener.onGetMyOrderInfoFinished(list);
-                }
+                }/*else {
+                    LogUtil.i("TAG","商铺订单数量为0=========");
+                        listener.onGetMyOrderInfoFinished(list);
+                }*/
             }
         });
     }
@@ -2797,7 +2800,7 @@ public class FXMallModel {
                             classifyBean.setTaxon(jsonObject.getString("name"));
                             classifyBean.setUrl(jsonObject.getString("url"));
                             //TODO TEST
-                            classifyBean.setUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494931644&di=cb0c2d26f89d25f7d4a60791cc7170e4&imgtype=jpg&er=1&src=http%3A%2F%2Feasyread.ph.126.net%2FCoWpYcImMA_a85z6H-s5Gg%3D%3D%2F7916552989221381682.jpg");
+                           // classifyBean.setUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494931644&di=cb0c2d26f89d25f7d4a60791cc7170e4&imgtype=jpg&er=1&src=http%3A%2F%2Feasyread.ph.126.net%2FCoWpYcImMA_a85z6H-s5Gg%3D%3D%2F7916552989221381682.jpg");
                             list.add(classifyBean);
                         }
                         listener.onGetSubclassifyFinished(list);

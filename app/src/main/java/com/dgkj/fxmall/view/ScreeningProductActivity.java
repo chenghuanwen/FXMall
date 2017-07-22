@@ -28,7 +28,7 @@ public class ScreeningProductActivity extends BaseActivity {
     EditText etSpan1;
     @BindView(R.id.et_span2)
     EditText etSpan2;
-    @BindView(R.id.tv_reset)
+    @BindView(R.id.tv_reset1)
     TextView tvReset;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
@@ -66,14 +66,14 @@ public class ScreeningProductActivity extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.tv_rest)
+    @OnClick(R.id.tv_reset1)
     public void reset(){
         etSpan1.setText("");
         etSpan2.setText("");
         rbTime.setChecked(true);
     }
 
-    @OnClick(R.id.tv_confirm)
+    @OnClick(R.id.btn_confirm)
     public void confirm(){
         startPrice = etSpan1.getText().toString();
         endPrice = etSpan2.getText().toString();

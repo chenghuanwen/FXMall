@@ -52,12 +52,18 @@ public class SetPostageActivity extends BaseActivity {
         setContentView(R.layout.activity_set_postage);
         ButterKnife.bind(this);
         initHeaderView();
-        refresh();
+       // refresh();
     }
 
     @Override
     public View getContentView() {
         return null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
     }
 
     private void refresh() {

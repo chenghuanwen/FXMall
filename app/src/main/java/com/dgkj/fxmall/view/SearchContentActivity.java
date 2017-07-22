@@ -24,6 +24,7 @@ import com.dgkj.fxmall.listener.OnGetMyRecommendStoreFinishedListener;
 import com.dgkj.fxmall.listener.OnGetStoreProductsFinishedListener;
 import com.dgkj.fxmall.listener.OnSearchProductsFinishedListener;
 import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.view.myView.ItemOffsetDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,10 +191,12 @@ public class SearchContentActivity extends BaseActivity {
         if ("商品".equals(searchType)) {
             GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
             rvSearchContent.setLayoutManager(layoutManager);
+            rvSearchContent.addItemDecoration(new ItemOffsetDecoration(10));
             rvSearchContent.setAdapter(adapter);
         } else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             rvSearchContent.setLayoutManager(layoutManager);
+            rvSearchContent.addItemDecoration(new ItemOffsetDecoration(10));
             rvSearchContent.setAdapter(storeAdapter);
         }
 

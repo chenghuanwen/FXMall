@@ -72,7 +72,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     TextView tvOrderExpress;
     @BindView(R.id.iv_back)
     FrameLayout ivBack;
-    @BindView(R.id.tv_order_number)
+   // @BindView(R.id.tv_order_number)
     TextView tvOrderNum;
     @BindView(R.id.tv_order_create_time)
     TextView tvCreateTime;
@@ -105,7 +105,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 tvChangeTakeAddress = (TextView) findViewById(R.id.tv_chagne_address);
                 tvCancelOrder = (TextView) findViewById(R.id.tv_cancle_order);
                 tvCreateTime = (TextView) findViewById(R.id.tv_order_create_time);
-                tvOrderNum = (TextView) findViewById(R.id.tv_order_number);
+
                 btnPay = (Button) findViewById(R.id.btn_pay);
                 tvChangeTakeAddress.setOnClickListener(this);
                 tvCancelOrder.setOnClickListener(this);
@@ -133,8 +133,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     btnDeliver = (Button) findViewById(R.id.btn_deliver);//发货
                     btnDeliver.setOnClickListener(this);
                 }
-                tvPayTime = (TextView) findViewById(R.id.tv_order_pay_time);
-                tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
+              //  tvPayTime = (TextView) findViewById(R.id.tv_order_pay_time);
+          //      tvPayTime.setText("付款时间："+ TimeFormatUtils.long2String(order.getPayTime()));
                 addProductLayout(R.layout.item_order_detail_apply_refund_common);
                 break;
             case 2:
@@ -217,6 +217,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         tvOrderStoreName.setText(order.getStoreName());
         tvOrderGetMoney.setText("¥"+order.getSumPrice());
 
+
+        tvOrderNum = (TextView) findViewById(R.id.tv_order_number);
         tvOrderNum.setText("订单编号:"+order.getOrderNum());
         tvCreateTime.setText("创建时间："+ TimeFormatUtils.long2String(order.getCreateTime()));
 
@@ -297,7 +299,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tv_logistics://物流信息
                 Intent intent = new Intent(OrderDetialActivity.this,LogisticsDetialActivity.class);
-                intent.putExtra("orderId",order.getId());
+                intent.putExtra("logist",order);
                 jumpTo(intent,false);
                 break;
 

@@ -3,6 +3,7 @@ package com.dgkj.fxmall;
 import android.app.Application;
 import android.content.Context;
 
+import com.alipay.sdk.app.EnvUtils;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.utils.LoggerUtil;
 import com.dgkj.fxmall.utils.SDUtils;
@@ -37,6 +38,8 @@ public class MyApplication extends Application {
         api.registerApp(FXConst.APP_ID);
 
         createAiGouFolder();
+
+      //  EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
 
         // 初始化Looger工具
       //  LoggerUtil.init(true);

@@ -17,6 +17,7 @@ import com.dgkj.fxmall.adapter.OrderClassifyAdapter;
 import com.dgkj.fxmall.bean.MainProductBean;
 import com.dgkj.fxmall.bean.OrderBean;
 import com.dgkj.fxmall.bean.SuperOrderBean;
+import com.dgkj.fxmall.utils.LogUtil;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class MyOrderClassifyFragment extends Fragment {
     public MyOrderClassifyFragment(List<SuperOrderBean> datas){
         mainList = datas;
       //  mHandler = handler;
-
+        LogUtil.i("TAG","商铺某个订单数量==="+mainList.size());
     }
     @Nullable
     @Override

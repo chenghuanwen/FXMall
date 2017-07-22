@@ -290,14 +290,22 @@ public class HomePageFragment extends Fragment {
     }
 
     private void setData() {
-        Glide.with(getContext()).load(store.getUrl()).error(R.mipmap.android_quanzi).into(ivStore1);
-        Glide.with(getContext()).load(storeRecommends.get(0).getUrl()).error(R.mipmap.android_quanzi).into(ivStore2);
-        Glide.with(getContext()).load(storeRecommends.get(1).getUrl()).error(R.mipmap.android_quanzi).into(ivStore3);
-        Glide.with(getContext()).load(newGoods.getUrl()).error(R.mipmap.android_quanzi).into(newGoods1);
-        Glide.with(getContext()).load(newGoodsRecommends.get(0).getUrl()).into(newGoods2);
-        Glide.with(getContext()).load(newGoodsRecommends.get(1).getUrl()).into(newGoods3);
-        Glide.with(getContext()).load(newGoodsRecommends.get(2).getUrl()).into(newGoods4);
-        Glide.with(getContext()).load(newGoodsRecommends.get(3).getUrl()).into(newGoods5);
+        if(store!=null)
+        Glide.with(getContext()).load(store.getUrl()).into(ivStore1);
+        if(storeRecommends!=null){
+            Glide.with(getContext()).load(storeRecommends.get(0).getUrl()).into(ivStore2);
+            Glide.with(getContext()).load(storeRecommends.get(1).getUrl()).into(ivStore3);
+        }
+
+        if(newGoods!=null)
+        Glide.with(getContext()).load(newGoods.getUrl()).into(newGoods1);
+        if(newGoodsRecommends!=null){
+            Glide.with(getContext()).load(newGoodsRecommends.get(0).getUrl()).into(newGoods2);
+            Glide.with(getContext()).load(newGoodsRecommends.get(1).getUrl()).into(newGoods3);
+            Glide.with(getContext()).load(newGoodsRecommends.get(2).getUrl()).into(newGoods4);
+            Glide.with(getContext()).load(newGoodsRecommends.get(3).getUrl()).into(newGoods5);
+        }
+
         //TODO 缺少店铺信息
        /* tvStore1Name.setText(store.getTitel());
         tvStore1Describe.setText(store.getIntroduce());

@@ -89,7 +89,7 @@ public class LogisticsDetialActivity extends BaseActivity {
     }
 
     private void initData() {
-        orderBean = (OrderBean) getIntent().getSerializableExtra("order");
+        orderBean = (OrderBean) getIntent().getSerializableExtra("logist");
         Glide.with(this).load(orderBean.getUrl()).error(R.mipmap.android_quanzi).into(ivLogistics);
         tvLogisticsMan.setText("收件人："+orderBean.getTakeMan());
         tvLogisticsAddress.setText("收货地址："+orderBean.getTakeAddress());
