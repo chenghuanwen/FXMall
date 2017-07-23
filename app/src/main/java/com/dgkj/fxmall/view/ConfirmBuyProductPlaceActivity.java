@@ -113,7 +113,7 @@ public class ConfirmBuyProductPlaceActivity extends BaseActivity {
     @OnClick(R.id.btn_submit)
     public void goBuy() {
         //TODO 确定支付id
-        PayDialogforByPlace dialog = new PayDialogforByPlace(this, count, new OnUploadPicturesFinishedListener() {
+        PayDialogforByPlace dialog = new PayDialogforByPlace(this, this,count, new OnUploadPicturesFinishedListener() {
             @Override
             public void onUploadPicturesFinishedListener() {
                 finish();

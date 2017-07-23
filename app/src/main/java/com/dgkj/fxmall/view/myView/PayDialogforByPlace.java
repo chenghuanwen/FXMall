@@ -1,6 +1,7 @@
 package com.dgkj.fxmall.view.myView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -33,6 +34,8 @@ import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.OrderDetialActivity;
 import com.dgkj.fxmall.view.RechargeActivity;
 import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +64,7 @@ public class PayDialogforByPlace extends DialogFragment {
     private int count = 1;
     private LoadProgressDialogUtil progressDialogUtil;
     private Handler handler;
+    private Activity activity;
     private OnUploadPicturesFinishedListener listener;
 
     private boolean isSettPayword;
@@ -93,10 +97,12 @@ public class PayDialogforByPlace extends DialogFragment {
             }
         };
     };
+    private IWXAPI msgApi;
 
-    public PayDialogforByPlace(Context context, int count,OnUploadPicturesFinishedListener listener) {
+    public PayDialogforByPlace(Activity activity,Context context, int count, OnUploadPicturesFinishedListener listener) {
         this.context = context;
         this.listener = listener;
+        this.activity = activity;
         client = new OkHttpClient.Builder().build();
         sp = SharedPreferencesUnit.getInstance(context);
         progressDialogUtil = new LoadProgressDialogUtil(context);
@@ -109,6 +115,10 @@ public class PayDialogforByPlace extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         whetherHasSetPayWord();
+
+        msgApi = WXAPIFactory.createWXAPI(activity, FXConst.APP_ID);
+        // 将该app注册到微信
+        msgApi.registerApp(FXConst.APP_ID);
 
         // 使用不带theme的构造器，获得的dialog边框距离屏幕仍有几毫米的缝隙。
         // Dialog dialog = new Dialog(getActivity());
@@ -212,16 +222,17 @@ public class PayDialogforByPlace extends DialogFragment {
                 }*/
                 if(string.contains("1000")){
                     try {
-                        JSONObject object = new JSONObject(string);
+                        JSONObject dataset = new JSONObject(string);
                         if(payMode==2){//微信预付订单信息
-                            JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
+                          //  JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
                             String mch_id = dataset.getString("mch_id");//商户号
                             String nonce_str = dataset.getString("nonce_str");//随机字符串
                             String sign = dataset.getString("sign");//签名
                             String prepay_id = dataset.getString("prepay_id");//预付订单id
-                            weixinPay(mch_id,prepay_id,nonce_str,sign);//调起微信支付
+                            String timestamp = dataset.getString("timestamp");
+                            weixinPay(mch_id,prepay_id,nonce_str,sign,timestamp);//调起微信支付
                         }else if(payMode==1){//TODO 支付宝支付返回信息
-                            String orderInfo = object.getString("orderInfo");
+                            String orderInfo = dataset.getString("orderInfo");
                             aliPay(orderInfo);
                         }else if(payMode==3){//TODO 余额支付返回信息
                             listener.onUploadPicturesFinishedListener();
@@ -298,7 +309,7 @@ public class PayDialogforByPlace extends DialogFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getContext(),"密码错误",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,"密码错误",Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -310,16 +321,17 @@ public class PayDialogforByPlace extends DialogFragment {
     /**
      * 调起微信支付
      */
-    private void weixinPay(String storeId,String prePayId,String random,String sign){
+    private void weixinPay(String storeId,String prePayId,String random,String sign,String time){
         PayReq request = new PayReq();
         request.appId = FXConst.APP_ID;//微信开放平台审核通过的应用APPID
         request.partnerId = storeId;//微信支付分配的商户号
         request.prepayId= prePayId;//微信返回的支付交易会话ID
         request.packageValue = "Sign=WXPay";//暂填写固定值Sign=WXPay
         request.nonceStr= random;//随机字符串，不长于32位。推荐随机数生成算法
-        request.timeStamp= System.currentTimeMillis()/1000+"".trim();//时间戳(秒)
+        request.timeStamp= time;//时间戳(秒)
         request.sign= sign;//签名
-        MyApplication.getApi().sendReq(request);
+        msgApi.sendReq(request);
+     //   MyApplication.getApi().sendReq(request);
     }
 
 

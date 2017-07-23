@@ -231,14 +231,14 @@ public class ProductDetialActivity extends BaseActivity {
         //商品评论区
         commentList = new ArrayList<>();
         //TEST
-        for (int i = 0; i < 4; i++) {
+     /*   for (int i = 0; i < 4; i++) {
             CommentBean commentBean = new CommentBean();
             commentBean.setIcon("http://img2015.zdface.com/20161230/3e633f4d71c824931bff72fff3d241b8.jpg");
             commentBean.setContent("棒棒哒");
             commentBean.setName("鼎诰瘟神");
             commentBean.setStars(4.6f);
             commentList.add(commentBean);
-        }
+        }*/
         commentAdapter = new CommentAdapter(this, R.layout.item_comment, commentList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvDetialComment.setLayoutManager(linearLayoutManager);

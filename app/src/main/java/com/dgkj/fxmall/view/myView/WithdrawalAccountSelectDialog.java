@@ -74,7 +74,7 @@ public class WithdrawalAccountSelectDialog extends DialogFragment {
                         break;
                     case R.id.tv_balance_pay:
                         if(MyApplication.balance<200.0){
-                            Toast.makeText(getContext(),"余额不足,请选择其他支付方式",Toast.LENGTH_LONG).show();
+                         //   Toast.makeText(getContext(),"余额不足,请选择其他支付方式",Toast.LENGTH_LONG).show();
                             return;
                         }
                         listener.OnSelectAccountFinished("余额");

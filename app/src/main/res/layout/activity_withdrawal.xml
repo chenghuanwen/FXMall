@@ -67,8 +67,7 @@
             android:textColor="#333"
             android:text="开户名："
             android:gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            />
+            android:layout_marginLeft="10dp" />
         <EditText
             android:id="@+id/et_withdrawal_account"
             android:layout_width="match_parent"
@@ -148,7 +147,7 @@
         android:layout_height="40dp"
         android:textSize="14sp"
         android:textColor="#909090"
-        android:text="提现24小时内到达支付宝/微信账户"
+        android:text="提现24小时内到达银行账户"
         android:gravity="center_vertical"
         android:layout_marginLeft="10dp"/>
     <Button

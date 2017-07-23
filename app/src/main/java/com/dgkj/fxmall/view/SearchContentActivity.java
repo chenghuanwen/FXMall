@@ -38,6 +38,8 @@ public class SearchContentActivity extends BaseActivity {
 
     @BindView(R.id.tv_search_title)
     TextView tvSearchTitle;
+    @BindView(R.id.tv_screening)
+    TextView tvScreening;
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;
     @BindView(R.id.rv_search_content)
@@ -164,6 +166,7 @@ public class SearchContentActivity extends BaseActivity {
         Intent intent = getIntent();
         searchType = intent.getStringExtra("type");
         searchTitel = intent.getStringExtra("key");
+        tvSearchTitle.setText(searchTitel);
         from = intent.getStringExtra("from");
         if("screening".equals(from)){
             rank = intent.getStringExtra("orderBy");
@@ -194,6 +197,7 @@ public class SearchContentActivity extends BaseActivity {
             rvSearchContent.addItemDecoration(new ItemOffsetDecoration(10));
             rvSearchContent.setAdapter(adapter);
         } else {
+            tvScreening.setVisibility(View.GONE);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             rvSearchContent.setLayoutManager(layoutManager);
             rvSearchContent.addItemDecoration(new ItemOffsetDecoration(10));
@@ -254,6 +258,10 @@ public class SearchContentActivity extends BaseActivity {
 
     @OnClick(R.id.tv_screening)
     public void screening() {
-        jumpTo(ScreeningProductActivity.class, true);
+        if ("商品".equals(searchType)) {
+            jumpTo(ScreeningProductActivity.class, true);
+        }/*else {
+            jumpTo(ScreeningStoreActivity.class, true);
+        }*/
     }
 }

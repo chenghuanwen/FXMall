@@ -170,8 +170,9 @@ public class PublishCommentActivity extends BaseActivity {
                 if(id != productIds[productIds.length-1]){return;}
                 if (response.body().string().contains("1000")) {
                     toastInUI(PublishCommentActivity.this, "评论成功");
+                    finish();
                 } else {
-                    toastInUI(PublishCommentActivity.this, "评论失败");
+                    toastInUI(PublishCommentActivity.this, "评论失败,请稍后重试！");
                 }
             }
         });

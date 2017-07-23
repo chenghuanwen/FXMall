@@ -55,6 +55,6 @@ public class TransacitonRecordAdapter extends CommonAdapter<TransactionRecordBea
             view = mInflater.inflate(R.layout.item_transaction_record,parent,false);
             viewHolder = new ViewHolder(context,view);
         }
-        return super.onCreateViewHolder(parent, viewType);
+        return viewHolder;
     }
 }

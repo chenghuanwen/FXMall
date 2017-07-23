@@ -9,47 +9,6 @@
     tools:context="com.dgkj.fxmall.view.CancelYeWuYuanActivity">
     <include layout="@layout/activityheader"
         android:id="@+id/headerview"/>
-    <LinearLayout
-        android:id="@+id/tv_account_type"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:background="@drawable/whitecircler_corner_shape3">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="提现账户类型"
-            android:gravity="center_vertical"
-            android:textColor="#333"
-            android:textSize="15sp"
-            android:paddingRight="10dp"
-            android:layout_margin="10dp" />
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-        <ImageView
-            android:id="@+id/iv_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-        <TextView
-            android:id="@+id/tv_select_account"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:textSize="12sp"
-            android:textColor="#909090"
-            android:text="请选择"
-            android:drawableRight="@mipmap/yhj_jt"
-            android:layout_marginRight="10dp"
-            android:gravity="right|center_vertical"
-            android:drawablePadding="10dp"
-            android:layout_marginLeft="10dp"
-            />
-    </LinearLayout>
-
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,7 +29,7 @@
                 android:textColor="#333"
                 android:text="提现账号："
                 android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="20dp"
                 />
             <EditText
                 android:id="@+id/et_withdrawal_account"
@@ -79,6 +38,44 @@
                 android:textSize="14sp"
                 android:textColor="#909090"
                 android:hint="请输入提现账户号"
+                android:inputType="number"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#f7f7f7"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:background="@drawable/whitecircler_corner_shape3">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:background="#fff"
+            android:layout_marginTop="1dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textSize="14sp"
+                android:textColor="#333"
+                android:text="开户人姓名："
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                />
+            <EditText
+                android:id="@+id/et_withdrawal_account_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="14sp"
+                android:textColor="#909090"
+                android:hint="开户人姓名"
                 android:layout_marginLeft="10dp"
                 android:background="@null"
                 />
@@ -116,7 +113,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="24小时内到达支付宝/微信账户"
+        android:text="24小时内到达银行账户"
         android:textSize="15sp"
         android:textColor="@color/main_color"
         android:gravity="center"/>
@@ -127,7 +124,7 @@
         android:background="@drawable/circlebutton_shape"
         android:textColor="#fff"
         android:textSize="15sp"
-        android:text="确认转出"
+        android:text="确认提现"
         android:layout_margin="10dp"/>
     <View
         android:layout_width="match_parent"
@@ -141,4 +138,5 @@
         android:src="@mipmap/title_return_icon"
         android:layout_margin="10dp"/>
 
+</LinearLayout>
 </LinearLayout>

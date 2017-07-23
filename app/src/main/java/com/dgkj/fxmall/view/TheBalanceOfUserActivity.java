@@ -26,7 +26,7 @@ public class TheBalanceOfUserActivity extends BaseActivity {
     @BindView(R.id.tv_withdrawal)
     TextView tvWithdrawal;
     private View headerview;
-    private String balance;
+    private double balance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class TheBalanceOfUserActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
 
-        balance = getIntent().getStringExtra("balance");
-        tvBalance.setText(balance);
+        balance = getIntent().getDoubleExtra("balance",0);
+        tvBalance.setText(balance+"");
     }
 
     @Override
@@ -63,8 +63,9 @@ public class TheBalanceOfUserActivity extends BaseActivity {
 
     @OnClick(R.id.tv_withdrawal)
     public void withdrawal(){
-
-        jumpTo(WithdrawalActivity.class,false);
+        Intent intent = new Intent(this,WithdrawalActivity.class);
+        intent.putExtra("rest",balance);
+        jumpTo(intent,false);
     }
 
 

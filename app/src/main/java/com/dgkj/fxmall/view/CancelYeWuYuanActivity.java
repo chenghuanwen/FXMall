@@ -1,43 +1,53 @@
 package com.dgkj.fxmall.view;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.base.BaseActivity;
+import com.dgkj.fxmall.constans.FXConst;
+import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.listener.OnSelectAccountFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
+import com.dgkj.fxmall.view.myView.PasswordInputView;
 import com.dgkj.fxmall.view.myView.WithdrawalAccountSelectDialog;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class CancelYeWuYuanActivity extends BaseActivity {
 
+
     @BindView(R.id.et_withdrawal_account)
     EditText etWithdrawalAccount;
+    @BindView(R.id.et_withdrawal_account_name)
+    EditText etWithdrawalAccountName;
     @BindView(R.id.tv_withdrawal_count)
     TextView tvWithdrawalCount;
+    @BindView(R.id.btn_confirm)
+    Button btnConfirm;
     @BindView(R.id.ib_back)
     ImageButton ibBack;
     @BindView(R.id.activity_cancel_ye_wu_yuan)
     LinearLayout activityCancelYeWuYuan;
-    @BindView(R.id.iv_type)
-    ImageView ivType;
-    @BindView(R.id.tv_select_account)
-    TextView tvSelectAccount;
-    @BindView(R.id.tv_account_type)
-    LinearLayout tvAccountType;
-    @BindView(R.id.btn_confirm)
-    Button btnConfirm;
     private View headerview;
+    private OkHttpClient client = new OkHttpClient.Builder().build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,38 +64,24 @@ public class CancelYeWuYuanActivity extends BaseActivity {
         setHeaderTitle(headerview, "申请取消业务员");
     }
 
-    @OnClick(R.id.tv_account_type)
-    public void selectAccountType() {
-        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式",R.layout.layout_withdrawal_selector_dialog);
-        dialog.show(getSupportFragmentManager(), "");
-        dialog.setSelectListener(new OnSelectAccountFinishedListener() {
-            @Override
-            public void OnSelectAccountFinished(String result) {
-                if(result.contains("微信")){
-                    ivType.setImageResource(R.mipmap.weixin);
-                }else {
-                    ivType.setImageResource(R.mipmap.zhifubao);
-                }
-                tvSelectAccount.setText(result);
-            }
-        });
-    }
+
 
 
     @OnClick(R.id.btn_confirm)
     public void confirm() {
-        String type = tvSelectAccount.getText().toString();
+
         String account = etWithdrawalAccount.getText().toString();
-        if (TextUtils.isEmpty(type)) {
-            toast("您还未选择账户类型");
-            return;
-        }
-        if (TextUtils.isEmpty(account)) {
-            toast("请输入提现账户");
+        String name = etWithdrawalAccountName.getText().toString();
+
+        if (TextUtils.isEmpty(account) || TextUtils.isEmpty(name)) {
+            toast("请输入完整信息！");
             return;
         }
 
-        jumpTo(CancelYeWuYuanFinishActivity.class, true);
+        showDeleteDialog(200.0, account, name);
+
+
+       // jumpTo(CancelYeWuYuanFinishActivity.class, true);
     }
 
     @Override
@@ -97,4 +93,134 @@ public class CancelYeWuYuanActivity extends BaseActivity {
     public void back() {
         finish();
     }
+
+
+
+
+    private void showDeleteDialog(final Double money, final String account, final String user) {
+        View contentview = getLayoutInflater().inflate(R.layout.layout_withdrawabl_dialog, null);
+        final AlertDialog pw = new AlertDialog.Builder(this).create();
+        pw.setView(contentview);
+        TextView tvCancel = (TextView) contentview.findViewById(R.id.tv_colse);
+        final TextView tvMoney = (TextView) contentview.findViewById(R.id.tv_money);
+        tvMoney.setText("¥" + money);
+        final PasswordInputView piv = (PasswordInputView) contentview.findViewById(R.id.piv_set);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+            }
+        });
+
+        piv.setInputCompletetListener(new InputCompletetListener() {
+            @Override
+            public void inputComplete() {
+                final String password = piv.getEditContent();
+                if (TextUtils.isEmpty(password)) {
+                    return;
+                }
+                //TODO 检测支付密码的正确性,进行提现
+                FormBody body = new FormBody.Builder()
+                        .add("token", sp.get("token"))
+                        .add("payPassword", password)
+                        .build();
+                Request request = new Request.Builder()
+                        .post(body)
+                        .url(FXConst.CHECK_PAY_PASSWORD)
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String string = response.body().string();
+                        if (string.contains("1000")) {
+                            //TODO 提现
+                            tixian(password, account, user, money + "".trim());
+                            pw.dismiss();
+                        } else if (string.contains("1003")) {
+                            toastInUI(CancelYeWuYuanActivity.this, "密码错误！");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    piv.clearEditContent();
+                                }
+                            });
+
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void deleteContent(boolean isDelete) {
+
+            }
+        });
+
+
+        //设置触摸对话框以外区域，对话框消失
+        pw.setCanceledOnTouchOutside(false);
+        pw.show();
+    }
+
+
+
+    /**
+     * 提现
+     * @param password 支付密码
+     * @param account  银行账户
+     * @param user     开户姓名
+     */
+    private void tixian(String password, String account, String user, String money) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadProgressDialogUtil.buildProgressDialog();
+            }
+        });
+
+        FormBody body = new FormBody.Builder()
+                .add("user.token", sp.get("token"))
+                .add("payPassword", password)
+                .add("money", money)
+                .add("cardNo", account)
+                .add("name", user)
+                .build();
+        Request request = new Request.Builder()
+                .url(FXConst.TIXIAN_URL)
+                .post(body)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                toastInUI(CancelYeWuYuanActivity.this, "网络异常！");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                LogUtil.i("TAG","提现结果===="+string);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadProgressDialogUtil.cancelProgressDialog();
+                    }
+                });
+                if (string.contains("1000")) {
+                    toastInUI(CancelYeWuYuanActivity.this, "提现成功！");
+                    jumpTo(CancelYeWuYuanFinishActivity.class, true);
+                } else if (string.contains("109")) {
+                    toastInUI(CancelYeWuYuanActivity.this, "余额不足！！");
+                }
+            }
+        });
+    }
+
+
+
 }

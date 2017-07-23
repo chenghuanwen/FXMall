@@ -16,6 +16,7 @@ import com.dgkj.fxmall.base.BaseActivity;
 import com.dgkj.fxmall.constans.FXConst;
 import com.dgkj.fxmall.listener.InputCompletetListener;
 import com.dgkj.fxmall.listener.OnSelectAccountFinishedListener;
+import com.dgkj.fxmall.utils.LogUtil;
 import com.dgkj.fxmall.utils.SharedPreferencesUnit;
 import com.dgkj.fxmall.view.myView.PasswordInputView;
 import com.dgkj.fxmall.view.myView.WithdrawalAccountSelectDialog;
@@ -33,26 +34,27 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class WithdrawalActivity extends BaseActivity {
+
+    @BindView(R.id.et_bank_account)
+    EditText etBankAccount;
+    @BindView(R.id.iv_type)
+    ImageView ivType;
+    @BindView(R.id.tv_select_account)
+    TextView tvSelectAccount;
+    @BindView(R.id.et_withdrawal_account)
+    EditText etWithdrawalAccount;
     @BindView(R.id.et_recharge_sum)
     EditText etRechargeSum;
     @BindView(R.id.tv_availabe_balance)
     TextView tvAvailabeBalance;
     @BindView(R.id.tv_withdrawal_all)
     TextView tvWithdrawalAll;
-    @BindView(R.id.ib_back)
-    ImageButton ibBack;
-    @BindView(R.id.tv_select_account)
-    TextView tvSelectAccount;
-    @BindView(R.id.et_withdrawal_account)
-    EditText etWithdrawalAccount;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
-    @BindView(R.id.iv_type)
-    ImageView ivType;
+    @BindView(R.id.ib_back)
+    ImageButton ibBack;
     @BindView(R.id.activity_withdrawal)
     LinearLayout activityWithdrawal;
-    @BindView(R.id.et_bank_account)
-    EditText etBankAccount;
     private View headerview;
     private OkHttpClient client = new OkHttpClient.Builder().build();
     private SharedPreferencesUnit sp = SharedPreferencesUnit.getInstance(this);
@@ -75,11 +77,11 @@ public class WithdrawalActivity extends BaseActivity {
         headerview = findViewById(R.id.headerview);
         setHeaderTitle(headerview, "提现");
 
-        int rest = getIntent().getIntExtra("rest", -1);
-        if (rest <= 200) {
+        double rest = getIntent().getDoubleExtra("rest", -1);
+        if (rest <= 200.0) {
             restCount = 0;
         } else {
-            restCount = rest - 200;
+            restCount = rest - 200.0;
         }
         tvAvailabeBalance.setText("可提现金额额:¥" + restCount);
     }
@@ -88,25 +90,10 @@ public class WithdrawalActivity extends BaseActivity {
     @OnClick(R.id.tv_withdrawal_all)
     public void withdrawalALL() {
         String balance = tvAvailabeBalance.getText().toString();
-        etRechargeSum.setText(balance.substring(balance.indexOf("额") + 2, balance.length() - 1));
+        etRechargeSum.setText(balance.substring(balance.indexOf("¥") + 1, balance.length()));
+        etRechargeSum.setSelection(etRechargeSum.length());
     }
 
-    @OnClick(R.id.tv_select_account)
-    public void selectAccount() {
-        WithdrawalAccountSelectDialog dialog = new WithdrawalAccountSelectDialog("提现方式", R.layout.layout_withdrawal_selector_dialog);
-        dialog.show(getSupportFragmentManager(), "");
-        dialog.setSelectListener(new OnSelectAccountFinishedListener() {
-            @Override
-            public void OnSelectAccountFinished(String result) {
-                if (result.contains("微信")) {
-                    ivType.setImageResource(R.mipmap.weixin);
-                } else {
-                    ivType.setImageResource(R.mipmap.zhifubao);
-                }
-                tvSelectAccount.setText(result);
-            }
-        });
-    }
 
 
     @OnClick(R.id.btn_confirm)
@@ -119,7 +106,7 @@ public class WithdrawalActivity extends BaseActivity {
             return;
         } else {
             Double money = Double.parseDouble(sum);
-            showDeleteDialog(money,account,user);
+            showDeleteDialog(money, account, user);
         }
     }
 
@@ -169,9 +156,16 @@ public class WithdrawalActivity extends BaseActivity {
                         String string = response.body().string();
                         if (string.contains("1000")) {
                             //TODO 提现
-                            tixian(password,account,user,money+"".trim());
+                            tixian(password, account, user, money + "".trim());
+                            pw.dismiss();
                         } else if (string.contains("1003")) {
                             toastInUI(WithdrawalActivity.this, "密码错误！");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    piv.clearEditContent();
+                                }
+                            });
                         }
                     }
                 });
@@ -193,17 +187,25 @@ public class WithdrawalActivity extends BaseActivity {
 
     /**
      * 提现
+     *
      * @param password 支付密码
-     * @param account 银行账户
-     * @param user 开户姓名
+     * @param account  银行账户
+     * @param user     开户姓名
      */
-    private void tixian(String password,String account,String user,String money) {
+    private void tixian(String password, String account, String user, String money) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadProgressDialogUtil.buildProgressDialog();
+            }
+        });
+
         FormBody body = new FormBody.Builder()
-                .add("user.token",sp.get("token"))
-                .add("payPassword",password)
-                .add("money",money)
-                .add("cardNo",account)
-                .add("name",user)
+                .add("user.token", sp.get("token"))
+                .add("payPassword", password)
+                .add("money", money)
+                .add("cardNo", account)
+                .add("name", user)
                 .build();
         Request request = new Request.Builder()
                 .url(FXConst.TIXIAN_URL)
@@ -212,16 +214,24 @@ public class WithdrawalActivity extends BaseActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                toastInUI(WithdrawalActivity.this,"网络异常！");
+                toastInUI(WithdrawalActivity.this, "网络异常！");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
-                if(string.contains("1000")){
-                    toastInUI(WithdrawalActivity.this,"提现成功！");
-                }else if(string.contains("109")){
-                    toastInUI(WithdrawalActivity.this,"余额不足！！");
+                LogUtil.i("TAG","提现结果===="+string);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadProgressDialogUtil.cancelProgressDialog();
+                    }
+                });
+                if (string.contains("1000")) {
+                    toastInUI(WithdrawalActivity.this, "提现成功！");
+                } else if (string.contains("109")) {
+                    toastInUI(WithdrawalActivity.this, "余额不足！！");
                 }
             }
         });

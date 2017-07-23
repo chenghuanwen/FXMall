@@ -29,6 +29,8 @@ import com.dgkj.fxmall.view.myView.PasswordInputView;
 import com.dgkj.fxmall.view.myView.PasswordInputView2;
 import com.dgkj.fxmall.view.myView.WithdrawalAccountSelectDialog;
 import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,6 +104,7 @@ public class RechargeActivity extends BaseActivity {
             }
         };
     };
+    private IWXAPI msgApi;
 
 
     @Override
@@ -111,6 +114,10 @@ public class RechargeActivity extends BaseActivity {
         ButterKnife.bind(this);
         initHeaderView();
         whetherHasSetPayWord();
+
+        msgApi = WXAPIFactory.createWXAPI(this, FXConst.APP_ID);
+        // 将该app注册到微信
+        msgApi.registerApp(FXConst.APP_ID);
     }
 
     @Override
@@ -194,16 +201,17 @@ public class RechargeActivity extends BaseActivity {
                     LogUtil.i("TAG","充值结果========"+string);
                     if (string.contains("1000")) {
                         try {
-                            JSONObject object = new JSONObject(string);
+                            JSONObject dataset = new JSONObject(string);
                             if(payMode==2){//微信预付订单信息
-                                JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
+                             //   JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
                                 String mch_id = dataset.getString("mch_id");//商户号
                                 String nonce_str = dataset.getString("nonce_str");//随机字符串
                                 String sign = dataset.getString("sign");//签名
-                                String prepay_id = dataset.getString("prepay_id");//预付订单id
-                                weixinPay(mch_id,prepay_id,nonce_str,sign);//调起微信支付
+                                String prepay_id = dataset.getString("partnerid");//预付订单id
+                                String timestamp = dataset.getString("timestamp");
+                                weixinPay(mch_id,prepay_id,nonce_str,sign,timestamp);//调起微信支付
                             }else if(payMode==1){//TODO 支付宝支付返回信息
-                                String orderInfo = object.getString("orderInfo");
+                                String orderInfo = dataset.getString("orderInfo");
                                 aliPay(orderInfo);
                             }
                         } catch (JSONException e) {
@@ -302,16 +310,17 @@ public class RechargeActivity extends BaseActivity {
                 LogUtil.i("TAG","支付结果==="+ string);
                 if(string.contains("1000")){
                     try {
-                        JSONObject object = new JSONObject(string);
+                        JSONObject dataset = new JSONObject(string);
                         if(payMode==2){//微信预付订单信息
-                            JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
+                          //  JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
                             String mch_id = dataset.getString("mch_id");//商户号
                             String nonce_str = dataset.getString("nonce_str");//随机字符串
                             String sign = dataset.getString("sign");//签名
                             String prepay_id = dataset.getString("prepay_id");//预付订单id
-                            weixinPay(mch_id,prepay_id,nonce_str,sign);//调起微信支付
+                            String timestamp = dataset.getString("timestamp");
+                            weixinPay(mch_id,prepay_id,nonce_str,sign,timestamp);//调起微信支付
                         }else if(payMode==1){//TODO 支付宝支付返回信息
-                            String orderInfo = object.getString("orderInfo");
+                            String orderInfo = dataset.getString("orderInfo");
                             aliPay(orderInfo);
                         }else if(payMode==3){//TODO 余额支付返回信息
                             toastInUI(RechargeActivity.this,"押金充值成功！");
@@ -366,16 +375,17 @@ public class RechargeActivity extends BaseActivity {
     /**
      * 调起微信支付
      */
-    private void weixinPay(String storeId,String prePayId,String random,String sign){
+    private void weixinPay(String storeId,String prePayId,String random,String sign,String time){
         PayReq request = new PayReq();
         request.appId = FXConst.APP_ID;//微信开放平台审核通过的应用APPID
         request.partnerId = storeId;//微信支付分配的商户号
         request.prepayId= prePayId;//微信返回的支付交易会话ID
         request.packageValue = "Sign=WXPay";//暂填写固定值Sign=WXPay
         request.nonceStr= random;//随机字符串，不长于32位。推荐随机数生成算法
-        request.timeStamp= System.currentTimeMillis()/1000+"".trim();//时间戳(秒)
+        request.timeStamp= time;//时间戳(秒)
         request.sign= sign;//签名
-        MyApplication.getApi().sendReq(request);
+        msgApi.sendReq(request);
+      //  MyApplication.getApi().sendReq(request);
     }
 
 

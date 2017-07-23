@@ -1203,12 +1203,14 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     public void onResponse(Call call, Response response) throws IOException {
                         String string = response.body().string();
                         if(string.contains("1000")){
+                            pw.dismiss();
                             confirmTakeGoods(orderBean.getId(),password);
                         }else if(string.contains("1003")){
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     Toast.makeText(context,"密码错误！",Toast.LENGTH_SHORT).show();
+                                    piv.clearEditContent();
                                     loadProgressDialogUtil.cancelProgressDialog();
                                 }
                             });

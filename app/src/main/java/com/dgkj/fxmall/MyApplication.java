@@ -34,8 +34,8 @@ public class MyApplication extends Application {
         ShareSDK.initSDK(this);
 
         // 将该app注册到微信,用于微信支付
-        api = WXAPIFactory.createWXAPI(context, null);
-        api.registerApp(FXConst.APP_ID);
+     //  api = WXAPIFactory.createWXAPI(context, null);
+     //   api.registerApp(FXConst.APP_ID);
 
         createAiGouFolder();
 
@@ -58,7 +58,7 @@ public class MyApplication extends Application {
      */
     private void createAiGouFolder() {
         if(SDUtils.isSDCardEnable()){
-            root = SDUtils.getSDCardPath() + "Doupai";
+            root = SDUtils.getSDCardPath() + "AiGou";
             SDUtils.isFolderExists(root);
         }
     }

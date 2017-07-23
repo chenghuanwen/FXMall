@@ -17,7 +17,7 @@
     <string name="get_prepayid_fail" formatted="false">获取prepayid失败，原因%s</string>
 
     <!-- WXPayEntryActivity -->
-    <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
+    <string name="pay_result_tip">交易成功！</string>
     <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
     <string name="app_tip">提示</string>
     <string name="title_activity_home_page">HomePageActivity</string>
