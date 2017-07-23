@@ -205,13 +205,13 @@ public class RechargeActivity extends BaseActivity {
                             if(payMode==2){//微信预付订单信息
                              //   JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
                                 String mch_id = dataset.getString("mch_id");//商户号
-                                String nonce_str = dataset.getString("nonce_str");//随机字符串
+                                String nonce_str = dataset.getString("noncestr");//随机字符串
                                 String sign = dataset.getString("sign");//签名
                                 String prepay_id = dataset.getString("partnerid");//预付订单id
                                 String timestamp = dataset.getString("timestamp");
                                 weixinPay(mch_id,prepay_id,nonce_str,sign,timestamp);//调起微信支付
                             }else if(payMode==1){//TODO 支付宝支付返回信息
-                                String orderInfo = dataset.getString("orderInfo");
+                                String orderInfo = dataset.getString("data");
                                 aliPay(orderInfo);
                             }
                         } catch (JSONException e) {
@@ -231,7 +231,7 @@ public class RechargeActivity extends BaseActivity {
             });
         }else {
            //TODO 支付宝、微信充值押金
-            toPay(null);
+            toPay(null,etChargeSum.getText().toString());
         }
 
     }
@@ -278,7 +278,7 @@ public class RechargeActivity extends BaseActivity {
     /**
      * 支付订单
      */
-    private void toPay(String password) {
+    private void toPay(String password,String balance) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -288,7 +288,8 @@ public class RechargeActivity extends BaseActivity {
 
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("token",sp.get("token"))
-                .add("status",payMode+"".trim());
+                .add("status",payMode+"".trim())
+                .add("balance",balance);
         if(password != null){
             builder.add("payPassword",password);
         }
@@ -362,7 +363,7 @@ public class RechargeActivity extends BaseActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
                 if (string.contains("1000")) {
-                    toPay(password);
+                    toPay(password,etChargeSum.getText().toString());
                     pw.dismiss();
                 } else if (string.contains("1003")) {
                     toastInUI(RechargeActivity.this, "密码错误！");

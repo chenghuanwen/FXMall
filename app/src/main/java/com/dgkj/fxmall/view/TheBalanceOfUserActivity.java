@@ -57,8 +57,17 @@ public class TheBalanceOfUserActivity extends BaseActivity {
 
     @OnClick(R.id.tv_recharge)
     public void recharge(){
+        Intent intent = new Intent(this,RechargeActivity.class);
+        intent.putExtra("from","mine");
+        jumpTo(intent,false);
 
-        jumpTo(RechargeActivity.class,false);
+
+
+
+
+
+
+
     }
 
     @OnClick(R.id.tv_withdrawal)

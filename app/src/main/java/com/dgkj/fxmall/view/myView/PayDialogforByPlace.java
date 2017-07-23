@@ -226,13 +226,13 @@ public class PayDialogforByPlace extends DialogFragment {
                         if(payMode==2){//微信预付订单信息
                           //  JSONObject dataset = object.getJSONObject("dataset");//TODO 该字段待定
                             String mch_id = dataset.getString("mch_id");//商户号
-                            String nonce_str = dataset.getString("nonce_str");//随机字符串
+                            String nonce_str = dataset.getString("noncestr");//随机字符串
                             String sign = dataset.getString("sign");//签名
                             String prepay_id = dataset.getString("prepay_id");//预付订单id
                             String timestamp = dataset.getString("timestamp");
                             weixinPay(mch_id,prepay_id,nonce_str,sign,timestamp);//调起微信支付
                         }else if(payMode==1){//TODO 支付宝支付返回信息
-                            String orderInfo = dataset.getString("orderInfo");
+                            String orderInfo = dataset.getString("data");
                             aliPay(orderInfo);
                         }else if(payMode==3){//TODO 余额支付返回信息
                             listener.onUploadPicturesFinishedListener();
@@ -339,12 +339,20 @@ public class PayDialogforByPlace extends DialogFragment {
      * 调起支付宝支付
      * @param orderInfo
      */
+
+
+
+
+
+
+
+
     private void aliPay(final String orderInfo) {
         Runnable payRunnable = new Runnable() {
 
             @Override
             public void run() {
-                PayTask alipay = new PayTask(getActivity());
+                PayTask alipay = new PayTask(activity);
                 Map<String, String> result = alipay.payV2(orderInfo, true);
                 LogUtil.i("TAG", "支付宝支付结果==="+result.toString());
 

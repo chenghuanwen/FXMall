@@ -187,7 +187,6 @@ public class WithdrawalActivity extends BaseActivity {
 
     /**
      * 提现
-     *
      * @param password 支付密码
      * @param account  银行账户
      * @param user     开户姓名

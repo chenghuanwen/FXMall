@@ -211,6 +211,7 @@ public class SelectColorAndSizeDialog extends PopupWindow {
                         intent.putExtra("orders",orders);
                         activity.startActivity(intent);
                         listener.selectCompelete(selectColor);
+                        dismiss();
                         activity.finish();
                     }else {
                         listener.selectCompelete(selectColor);
