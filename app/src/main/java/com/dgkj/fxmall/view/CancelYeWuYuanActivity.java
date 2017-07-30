@@ -70,15 +70,15 @@ public class CancelYeWuYuanActivity extends BaseActivity {
     @OnClick(R.id.btn_confirm)
     public void confirm() {
 
-        String account = etWithdrawalAccount.getText().toString();
+     /*   String account = etWithdrawalAccount.getText().toString();
         String name = etWithdrawalAccountName.getText().toString();
 
         if (TextUtils.isEmpty(account) || TextUtils.isEmpty(name)) {
             toast("请输入完整信息！");
             return;
-        }
+        }*/
 
-        showDeleteDialog(200.0, account, name);
+       showDeleteDialog(200.0);
 
 
        // jumpTo(CancelYeWuYuanFinishActivity.class, true);
@@ -97,7 +97,7 @@ public class CancelYeWuYuanActivity extends BaseActivity {
 
 
 
-    private void showDeleteDialog(final Double money, final String account, final String user) {
+    private void showDeleteDialog(final Double money) {
         View contentview = getLayoutInflater().inflate(R.layout.layout_withdrawabl_dialog, null);
         final AlertDialog pw = new AlertDialog.Builder(this).create();
         pw.setView(contentview);
@@ -138,7 +138,7 @@ public class CancelYeWuYuanActivity extends BaseActivity {
                         String string = response.body().string();
                         if (string.contains("1000")) {
                             //TODO 提现
-                            tixian(password, account, user, money + "".trim());
+                            tixian(password);
                             pw.dismiss();
                         } else if (string.contains("1003")) {
                             toastInUI(CancelYeWuYuanActivity.this, "密码错误！");
@@ -172,10 +172,8 @@ public class CancelYeWuYuanActivity extends BaseActivity {
     /**
      * 提现
      * @param password 支付密码
-     * @param account  银行账户
-     * @param user     开户姓名
      */
-    private void tixian(String password, String account, String user, String money) {
+    private void tixian(String password) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -184,14 +182,11 @@ public class CancelYeWuYuanActivity extends BaseActivity {
         });
 
         FormBody body = new FormBody.Builder()
-                .add("user.token", sp.get("token"))
+                .add("token", sp.get("token"))
                 .add("payPassword", password)
-                .add("money", money)
-                .add("cardNo", account)
-                .add("name", user)
                 .build();
         Request request = new Request.Builder()
-                .url(FXConst.TIXIAN_URL)
+                .url(FXConst.TIQU_YAJIN_URL)
                 .post(body)
                 .build();
         client.newCall(request).enqueue(new Callback() {

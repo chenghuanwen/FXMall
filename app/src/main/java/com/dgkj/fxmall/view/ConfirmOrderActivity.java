@@ -351,6 +351,7 @@ public class ConfirmOrderActivity extends BaseActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                orderSumMoney = 0;
                 String result = response.body().string();
                 LogUtil.i("TAG", "订单提交结果===" + result);
                 if (result.contains("1000")) {

@@ -20,6 +20,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,6 +32,7 @@ import com.dgkj.fxmall.MyApplication;
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.constans.FXConst;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,6 +76,7 @@ public class UpdateManager {
     private Thread downLoadThread;
     
     private boolean interceptFlag = false;
+	private Handler uiHandler = new Handler(Looper.getMainLooper());
     
     private Handler mHandler = new Handler(){
     	public void handleMessage(Message msg) {
@@ -82,7 +85,7 @@ public class UpdateManager {
 				mProgress.setProgress(progress);
 				break;
 			case DOWN_OVER:
-				
+				downloadDialog.dismiss();
 				installApk();
 				break;
 			default:
@@ -100,11 +103,17 @@ public class UpdateManager {
 
 		getCurrentVersion(new OnGetVersionFinishListener() {
 			@Override
-			public void onGetVersionFinish(Double version) {
+			public void onGetVersionFinish(String version) {
 				Log.i("TAG","++++++++++++onGetVersionFinish++++当前版本号+++++++++++"+version);
 
-               if(version>Double.parseDouble(getVersionName(mContext))){
-					showNoticeDialog();
+               if(!version.equals(getVersionName(mContext))){
+				   uiHandler.post(new Runnable() {
+					   @Override
+					   public void run() {
+						   showNoticeDialog();
+					   }
+				   });
+
 				}else {
 				   Toast toast = Toast.makeText(mContext, "已是最新版本！", Toast.LENGTH_SHORT);
 				   toast.setGravity(Gravity.CENTER,0,0);
@@ -191,6 +200,8 @@ public class UpdateManager {
 		    	    mHandler.sendEmptyMessage(DOWN_UPDATE);
 		    		if(numread <= 0){
 						//下载完成通知安装
+
+
 		    			mHandler.sendEmptyMessage(DOWN_OVER);
 		    			break;
 		    		}
@@ -253,29 +264,7 @@ public class UpdateManager {
 
 	//String url = "http://123.206.58.158/doupaiapp/versionAction_getVersions?version.system=2";
 	public void getCurrentVersion(final OnGetVersionFinishListener listener){
-		/*Request request = new Request.Builder()
-				.url(url)
-				.build();
-		client.newCall(request).enqueue(new Callback() {
-			@Override
-			public void onFailure(Call call, IOException e) {
-			}
 
-			@Override
-			public void onResponse(Call call, Response response) throws IOException {
-				String string = response.body().string();
-
-				try {
-					JSONObject object = new JSONObject(string);
-					JSONObject version = object.getJSONObject("version");
-					double v = version.getDouble("versionUID");
-					versionUrl = version.getString("versionUrl");
-					listener.onGetVersionFinish(v);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		});*/
 
 		FormBody body = new FormBody.Builder()
 				.add("type","1")
@@ -297,12 +286,13 @@ public class UpdateManager {
 				if(string.contains("1000")){
 					try {
 						JSONObject object = new JSONObject(string);
-						JSONObject data = object.getJSONObject("data");
-						 versionUrl = data.getString("url");
-						String version = data.getString("version");
-						double v = Double.parseDouble(version);
-						//versionUrl = version.getString("versionUrl");
-						listener.onGetVersionFinish(v);
+						JSONArray data = object.getJSONArray("data");
+						JSONObject jsonObject = data.getJSONObject(0);
+						versionUrl = jsonObject.getString("url");
+						String version = jsonObject.getString("version");
+
+
+						listener.onGetVersionFinish(version);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -314,6 +304,6 @@ public class UpdateManager {
 	}
 
 	public interface OnGetVersionFinishListener{
-		void onGetVersionFinish(Double version);
+		void onGetVersionFinish(String version);
 	}
 }

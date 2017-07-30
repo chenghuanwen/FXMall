@@ -201,7 +201,7 @@ public class WithdrawalActivity extends BaseActivity {
 
         FormBody body = new FormBody.Builder()
                 .add("user.token", sp.get("token"))
-                .add("payPassword", password)
+                .add("user.payPassword", password)
                 .add("money", money)
                 .add("cardNo", account)
                 .add("name", user)

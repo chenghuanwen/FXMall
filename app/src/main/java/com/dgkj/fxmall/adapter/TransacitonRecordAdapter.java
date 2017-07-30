@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.dgkj.fxmall.R;
 import com.dgkj.fxmall.bean.TransactionRecordBean;
+import com.dgkj.fxmall.utils.TimeFormatUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -27,8 +28,14 @@ public class TransacitonRecordAdapter extends CommonAdapter<TransactionRecordBea
 
     @Override
     protected void convert(ViewHolder holder, TransactionRecordBean transactionRecordBean, int position) {
-        holder.setText(R.id.tv_transaction_time,transactionRecordBean.getTime());
-        holder.setText(R.id.tv_transaction_money,transactionRecordBean.getMoney());
+        holder.setText(R.id.tv_transaction_time, TimeFormatUtils.long2String(Long.parseLong(transactionRecordBean.getTime())));
+        int itemViewType = getItemViewType(position);
+        if(itemViewType==INPUT_TYPE){
+            holder.setText(R.id.tv_transaction_money,"+"+transactionRecordBean.getMoney());
+        }else {
+            holder.setText(R.id.tv_transaction_money,"-"+transactionRecordBean.getMoney());
+        }
+
     }
 
     @Override
@@ -36,9 +43,11 @@ public class TransacitonRecordAdapter extends CommonAdapter<TransactionRecordBea
         int type = mDatas.get(position).getType();
         switch (type){
             case 1:
-                return INPUT_TYPE;
-            case 3:
             case 2:
+            case 0:
+                return INPUT_TYPE;
+            case 4:
+            case 3:
                 return OUTPUT_TYPE;
         }
         return super.getItemViewType(position);

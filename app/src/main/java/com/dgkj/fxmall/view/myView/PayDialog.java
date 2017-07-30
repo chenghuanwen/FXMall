@@ -154,6 +154,10 @@ public class PayDialog extends DialogFragment {
                 dialog.dismiss();
             }
         });
+
+        if(paySum==0){
+            dismiss();
+        }
         tvNeedPay.setText("¥"+paySum);
         rgPay.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -384,11 +388,11 @@ public class PayDialog extends DialogFragment {
             @Override
             public void run() {
                 PayTask alipay = new PayTask(activity);//此处获取activity对象可能失败
-                int indexOf = orderInfo.indexOf("&", 0);
-                String substring = orderInfo.substring(indexOf + 1, orderInfo.length());
-                LogUtil.i("TAG","支付参数==========="+substring);
+              //  int indexOf = orderInfo.indexOf("&", 0);
+              //  String substring = orderInfo.substring(indexOf + 1, orderInfo.length());
+              //  LogUtil.i("TAG","支付参数==========="+substring);
 
-                Map<String, String> result = alipay.payV2(substring, true);
+                Map<String, String> result = alipay.payV2(orderInfo, true);
 
                 LogUtil.i("TAG", "支付宝支付结果==="+result.toString());
                 Message msg = new Message();

@@ -59,7 +59,7 @@
                             android:textColor="#333"
                             />
                         <TextView
-                            tools:text="申请将达成并退款至你的支付宝或微信"
+                            android:text="申请将达成并退款至你的账户余额"
                             android:textColor="#909090"
                             android:layout_marginLeft="0dp"
                             style="@style/demand_detial_texview1"/>
@@ -75,7 +75,7 @@
                             android:textColor="#333"
                             />
                         <TextView
-                            tools:text="将需要你修改退款申请"
+                            android:text="将需要你修改退款申请"
                             android:textColor="#909090"
                             android:layout_marginLeft="0dp"
                             style="@style/demand_detial_texview1"/>
@@ -91,7 +91,7 @@
                             android:textColor="#333"
                             />
                         <TextView
-                            tools:text="超过2天则退款达成并为你退款"
+                            android:text="超过2天则退款达成并为你退款"
                             android:textColor="#909090"
                             android:layout_marginLeft="0dp"
                             style="@style/demand_detial_texview1"/>

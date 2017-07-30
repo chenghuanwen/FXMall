@@ -159,7 +159,7 @@ public class SettingActivity extends BaseActivity {
         mUpdateManager.checkUpdateInfo();
 
 
-        FormBody body = new FormBody.Builder()
+     /*   FormBody body = new FormBody.Builder()
                 .add("type","1")
                 .build();
         Request request = new Request.Builder()
@@ -198,7 +198,7 @@ public class SettingActivity extends BaseActivity {
                 DataCleanManager.clearAllCache(SettingActivity.this);
                 tvNewstVersion.setVisibility(View.INVISIBLE);
             }
-        }, 3000);
+        }, 3000);*/
     }
 
     @OnClick(R.id.ll_clean_cache)

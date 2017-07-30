@@ -7,9 +7,9 @@ package com.dgkj.fxmall.constans;
 public class FXConst {
     public static final int SDK_PAY_FLAG = 1;//支付宝支付结果标志
     public static final int SDK_AUTH_FLAG = 2;//支付宝授权结果标志
-    public static final String APPID = "";//支付宝平台申请的APPID
+    public static final String APPID = "2017061307481478";//支付宝平台申请的APPID
     /** 支付宝账户登录授权业务：入参pid值 */
-    public static final String PID = "";
+    public static final String PID = "2017061307481478";
     /** 支付宝账户登录授权业务：入参target_id值 */
     public static final String TARGET_ID = "2017061307481478";
     /** 商户私钥，pkcs8格式 */
@@ -164,6 +164,7 @@ public class FXConst {
     public static final String RECHARGE_YEWUYUAN_CASHPLEDGE = FXM_URL_PORT+"userAction_cashPledge";
     public static final String TIXIAN_URL = FXM_URL_PORT+"withdrawalsAction_cash";
     public static final String VERSION_UPDATE_URL = FXM_URL_PORT+"editionAction_renew";
+    public static final String TIQU_YAJIN_URL = FXM_URL_PORT+"userAction_extract";
 
 
 

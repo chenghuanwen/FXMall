@@ -36,6 +36,8 @@ public class RegistActivity extends BaseActivity {
     EditText etCheckCode;
     @BindView(R.id.tv_get_code)
     TextView tvGetCode;
+    @BindView(R.id.tv_service)
+    TextView tvService;
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
     @BindView(R.id.ib_back)
@@ -173,6 +175,12 @@ public class RegistActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+
+    @OnClick(R.id.tv_service)
+    public void serviceAgreement(){
+            jumpTo(ServiceAgreementActivity.class,false);
     }
 
 

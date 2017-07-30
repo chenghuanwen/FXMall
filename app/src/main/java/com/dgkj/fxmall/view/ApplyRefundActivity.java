@@ -137,6 +137,12 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
             money = intent.getDoubleExtra("money", -1);
             etRefundMoney.setText("¥"+money);
         }
+
+        if(refundType==2){
+            ivRefund2.setVisibility(View.GONE);
+            ivRefund3.setVisibility(View.GONE);
+            tvSelectPictures.setText("上传物流信息截图");
+        }
     }
 
     @Override
@@ -202,6 +208,7 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
 
     @OnClick(R.id.btn_submit)
     public void submit() {
+        cancleReason = tvSelectRefundReason.getText().toString();
         if(TextUtils.isEmpty(cancleReason)){
             toast("你还未选择退款原因");
             return;
@@ -210,7 +217,7 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
         Map<String, String> paramas = new HashMap<>();
         paramas.put("orderCommodity.orders.user.token", sp.get("token"));
         paramas.put("type", refundType + "");
-        paramas.put("money", money + "");
+        paramas.put("money", money1 + "");
         paramas.put("reason", cancleReason);
         String describe = etRefundDescribe.getText().toString();
         if(!TextUtils.isEmpty(describe)){
@@ -219,6 +226,7 @@ public class ApplyRefundActivity extends BaseActivity implements View.OnClickLis
         if("refund".equals(from)){//修改申请
             paramas.put("id",refundId+"".trim());
             url = FXConst.CHANGE_REFUND_MSG_URL;
+            LogUtil.i("TAG","修改退款申请==url=="+FXConst.CHANGE_REFUND_MSG_URL+"type="+refundType+"==="+money1+"reason=="+cancleReason+"id=="+refundId+"FROM=="+from);
         }else {
             paramas.put("orderCommodity.orders.id", orderId + "");
             paramas.put("orderCommodity.sku.id", skuId + "");

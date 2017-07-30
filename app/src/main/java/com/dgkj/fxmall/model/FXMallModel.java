@@ -1175,6 +1175,7 @@ public class FXMallModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result = response.body().string();
+                LogUtil.i("TAG","交易明细==="+result);
                 if (result.contains("1000")) {
                     try {
                         JSONObject object = new JSONObject(result);
@@ -1853,6 +1854,7 @@ public class FXMallModel {
                             OrderBean orderBean = new OrderBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             orderBean.setCount(jsonObject.getInt("num"));
+                            orderBean.setRefundId(jsonObject.getInt("id"));
                            /* if(jsonObject.has("data")){
                                 orderBean.setBuyer(jsonObject.getString("data"));
                             }*/
@@ -2012,6 +2014,7 @@ public class FXMallModel {
                             OrderBean orderBean = new OrderBean();
                             JSONObject jsonObject = dataset.getJSONObject(i);
                             orderBean.setCount(jsonObject.getInt("num"));
+                            orderBean.setRefundId(jsonObject.getInt("id"));
 
                             JSONObject order = jsonObject.getJSONObject("orders");
                             if (order.has("waybill")) {

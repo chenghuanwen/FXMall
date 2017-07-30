@@ -138,7 +138,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
 
         if(subOrders.size() > 1){
             for (int i = 1; i < subOrders.size(); i++) {
-                OrderBean orderBean = subOrders.get(i);
+                final OrderBean orderBean = subOrders.get(i);
                 OrderBean bean = subOrders.get(i - 1);
                 if(orderBean.getProductId()==bean.getProductId()){return;}
                 View view = mInflater.inflate(R.layout.item_order_subcommon, subContainer, false);
@@ -165,6 +165,26 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
                     tvPostage.setText("(含邮费¥"+ postage1 +")");
                 }
                 Glide.with(context).load(orderBean.getUrl()).placeholder(R.mipmap.android_quanzi).into(ivPhoto);
+
+                LinearLayout content = (LinearLayout) view.findViewById(R.id.order_comment);
+                content.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent;
+                        LogUtil.i("TAG","订单状态码===="+orderBean.getStateNum()+"点击位置position=="+position);
+                        if(orderBean.getStateNum()==4){
+                            intent = new Intent(context, RefundDetialActivity.class);
+                            intent.putExtra("order",orderBean);
+                        }else {
+                            intent = new Intent(context, OrderDetialActivity.class);
+                            intent.putExtra("order",superOrderBean);
+                        }
+                        intent.putExtra("from",from);
+                        context.startActivity(intent);
+
+
+                    }
+                });
             }
         }
 
@@ -178,7 +198,7 @@ public class OrderClassifyAdapter extends CommonAdapter<SuperOrderBean> implemen
             @Override
             public void onClick(View v) {//订单详情或退款详情
                 Intent intent;
-                LogUtil.i("TAG","订单状态码===="+order.getStateNum());
+                LogUtil.i("TAG","订单状态码===="+order.getStateNum()+"点击位置position=="+position);
                 if(order.getStateNum()==4){
                     intent = new Intent(context, RefundDetialActivity.class);
                     intent.putExtra("order",order);

@@ -83,9 +83,9 @@ public class RefundDetialActivity extends BaseActivity {
         //根据退款不同状态显示不同的界面
         Intent intent = getIntent();
         from = intent.getStringExtra("from");
-        orderBean = (OrderBean) getIntent().getSerializableExtra("logist");
+        orderBean = (OrderBean) getIntent().getSerializableExtra("order");
         storeId = orderBean.getStoreId();
-        orderId = orderBean.getId();
+        orderId = orderBean.getRefundId();
         state = orderBean.getState();
 
         switch (state) {
@@ -129,7 +129,7 @@ public class RefundDetialActivity extends BaseActivity {
                         intent1.putExtra("number",number);
                         intent1.putExtra("reason",reason);
                         intent1.putExtra("timeFormat",timeFormat);
-                        intent1.putExtra("refundType",refundType);
+                        intent1.putExtra("refundType1",refundType);
                         intent1.putExtra("storeName",storeName);
                         intent1.putExtra("refundId",refundId);
                         intent1.putStringArrayListExtra("evidences",evidences);
@@ -333,6 +333,10 @@ public class RefundDetialActivity extends BaseActivity {
                                     Glide.with(RefundDetialActivity.this).load(evidences.get(0)).error(R.mipmap.android_quanzi).into(ivEvidence1);
                                     Glide.with(RefundDetialActivity.this).load(evidences.get(1)).error(R.mipmap.android_quanzi).into(ivEvidence2);
                                     Glide.with(RefundDetialActivity.this).load(evidences.get(2)).error(R.mipmap.android_quanzi).into(ivEvidence3);
+                                }else {
+                                    ivEvidence1.setVisibility(View.GONE);
+                                    ivEvidence2.setVisibility(View.GONE);
+                                    ivEvidence3.setVisibility(View.GONE);
                                 }
                             }
                         });
