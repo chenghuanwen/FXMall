@@ -17,7 +17,7 @@
 #}
 
 # 支付宝混淆
--libraryjars libs/alipaySdk.jar
+#-libraryjars libs/alipaySdk.jar
 -keep class com.alipay.android.app.IAlixPay{*;}
 -keep class com.alipay.android.app.IAlixPay$Stub{*;}
 -keep class com.alipay.android.app.IRemoteServiceCallback{*;}
@@ -62,9 +62,9 @@
 }
 
 # Gson
--keepattributes Signature-keepattributes *Annotation*
--keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.stream.** { *; }
+#-keepattributes Signature-keepattributes *Annotation*
+#-keep class sun.misc.Unsafe { *; }
+#-keep class com.google.gson.stream.** { *; }
 # 使用Gson时需要配置Gson的解析对象及变量都不混淆。不然Gson会找不到变量。
 # 将下面替换成自己的实体类
 -keep class com.dgkj.fxmall.bean.** { *; }
@@ -81,22 +81,22 @@
 
 
 # xutils
--keep class org.xutils.**
--dontwarn org.xutils.**
--keep class * extends java.lang.annotation.Annotation { *; }
+#-keep class org.xutils.**
+#-dontwarn org.xutils.**
+#-keep class * extends java.lang.annotation.Annotation { *; }
 
--keep class com.dgkj.tianmi.consts.TimmyConst{*;}
+#-keep class com.dgkj.tianmi.consts.TimmyConst{*;}
 
 # OrmLite
--keepattributes *DatabaseField*
--keepattributes *DatabaseTable*
--keepattributes *SerializedName*
--keep class com.j256.**
--keepclassmembers class com.j256.** { *; }
--keep enum com.j256.**
--keepclassmembers enum com.j256.** { *; }
--keep interface com.j256.**
--keepclassmembers interface com.j256.** { *; }
+#-keepattributes *DatabaseField*
+#-keepattributes *DatabaseTable*
+#-keepattributes *SerializedName*
+#-keep class com.j256.**
+#-keepclassmembers class com.j256.** { *; }
+#-keep enum com.j256.**
+#-keepclassmembers enum com.j256.** { *; }
+#-keep interface com.j256.**
+#-keepclassmembers interface com.j256.** { *; }
 
 # glide 的混淆代码
 -keep public class * implements com.bumptech.glide.module.GlideModule
